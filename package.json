@@ -1,0 +1,58 @@
+{
+  "name": "brick-slider",
+  "author": "Marcus Loren Lopes Torres",
+  "description": "Simple slider plugin, made to be lightweight and practical and with tailwind class support.",
+  "license": "MIT",
+  "version": "0.0.0",
+  "keywords": [
+    "brick-slider",
+    "slider",
+    "typescript-slider",
+    "react-slider",
+    "vanilla-slider"
+  ],
+  "private": true,
+  "type": "module",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "main": "./dist/brick-slider.js",
+  "module": "./dist/brick-slider.js",
+  "types": "./index.d.ts",
+  "exports": {
+    "import": "./dist/brick-slider.js"
+  },
+  "scripts": {
+    "start": "vite",
+    "test": "vitest",
+    "build": "tsc && vite build",
+    "format": "prettier . --write --parser typescript \"**/*.[tj]s?(x)\"",
+    "lint": "eslint --ext .ts {src,__tests__}/**.ts",
+    "commit": "git-cz",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
+    "prettier": "^3.0.1",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.5.2",
+    "vitest": "^0.34.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
