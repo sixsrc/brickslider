@@ -20,7 +20,6 @@
   ],
   "main": "./dist/brick-slider.js",
   "module": "./dist/brick-slider.js",
-  "types": "./index.d.ts",
   "exports": {
     "import": "./dist/brick-slider.js"
   },
