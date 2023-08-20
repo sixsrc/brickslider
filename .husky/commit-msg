@@ -9,4 +9,5 @@ if [ "$2" = "template" ]; then
 fi
 
 
-npx --no -- commitlint --edit "$1"
+
+npx --no-install commitlint --edit 
