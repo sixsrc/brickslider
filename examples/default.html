@@ -47,11 +47,16 @@
 
     <script src="../dist/brick-slider.js"></script>
     <script>
-      const slider = new BrickSlider("#slide1_container", { infinite: true});
+      const slider = new BrickSlider("#slide1_container", { infinite: true, arrows: false});
+
       slider.init()
+
       const slider2 = new BrickSlider("#slide2_container");
+
       slider2.init()
+
       const slider3 = new BrickSlider("#slide3_container");
+      
       slider3.init()
     </script>
     

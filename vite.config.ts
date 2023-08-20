@@ -13,8 +13,9 @@ export default defineConfig({
   },
   build: {
     lib: {
+      name: 'BrickSlider',
       entry: './src/index.ts',
-      formats: ['es'],
+      formats: ['es', 'cjs', 'umd'],
       fileName: 'brick-slider'
     }
   },

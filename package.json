@@ -1,7 +1,7 @@
 {
-  "name": "brick-slider",
+  "name": "@brick-slider/slider",
   "author": "Marcus Loren Lopes Torres",
-  "description": "Simple slider plugin, made to be lightweight and practical and with tailwind class support.",
+  "description": "Simple slider plugin, made to be lightweight and practical and with tailwind classes support.",
   "license": "MIT",
   "version": "0.0.0",
   "keywords": [
@@ -11,17 +11,18 @@
     "react-slider",
     "vanilla-slider"
   ],
-  "private": true,
   "type": "module",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
-  "main": "./dist/brick-slider.js",
+  "main": "./dist/brick-slider.cjs.js",
   "module": "./dist/brick-slider.js",
   "exports": {
-    "import": "./dist/brick-slider.js"
+    "import": "./dist/brick-slider.js",
+    "umd": "./dist/brick-slider.umd.cjs",
+    "cjs": "./dist/brick-slider.cjs"
   },
   "scripts": {
     "start": "vite",
@@ -44,6 +45,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
     "prettier": "^3.0.1",
+    "standard-changelog": "^3.0.0",
     "typescript": "^5.1.6",
     "vite": "^4.4.9",
     "vite-plugin-dts": "^3.5.2",

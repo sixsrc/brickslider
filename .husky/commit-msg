@@ -1,4 +1,13 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-npx --no -- commitlint --edit ${1}
+. "$(dirname "$0")/_/husky.sh"
+
+# Executa o Commitizen
+npm run commit
+
+# Executa o Commitlint
+npx commitlint --edit "$1"
+
+# Executa o Standard Changelog
+npm run changelog
+
