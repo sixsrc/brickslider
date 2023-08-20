@@ -1,0 +1,39 @@
+{
+  "name": "@brick-slider/slider",
+  "author": "@malopestorres",
+  "description": "Simple slider plugin, made to be lightweight and practical and with tailwind classes support.",
+  "license": "MIT",
+  "version": "0.0.0",
+  "keywords": [
+    "brick-slider",
+    "typescript-slider",
+    "vanilla-slider",
+    "react-slider",
+    "carousel-slider",
+    "tailwind-slider",
+    "css-mask"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bricksoftware/brick-slider.git"
+  },
+  "type": "module",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "main": "./dist/brick-slider.cjs.js",
+  "module": "./dist/brick-slider.js",
+  "exports": {
+    "import": "./dist/brick-slider.js",
+    "umd": "./dist/brick-slider.umd.cjs",
+    "cjs": "./dist/brick-slider.cjs"
+  },
+  "scripts": {
+    "start": "vite",
+    "test": "vitest",
+    "build": "tsc && vite build"
+  }
+ 
+}
