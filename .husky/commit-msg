@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+npx --no-install commitlint --edit "$1"
 
 #fix
 if [ "$2" = "template" ]; then
@@ -8,6 +9,3 @@ if [ "$2" = "template" ]; then
   
 fi
 
-
-
-npx --no-install commitlint --edit 
