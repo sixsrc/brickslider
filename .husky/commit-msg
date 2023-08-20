@@ -6,4 +6,4 @@ if [ "$2" = "template" ]; then
   exec < /dev/tty && npx cz --hook || true
 fi
 
-npx --no -- commitlint --edit "$1"
+npx commitlint --edit
