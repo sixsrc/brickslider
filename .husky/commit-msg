@@ -1,11 +1,8 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-#fix
-if [ "$2" = "template" ]; then
+if [ "$1" = "prepare-commit-msg" ]; then
   exec < /dev/tty && npx cz --hook || true
-  npx --no -- commitlint --edit ${1}
-  
 fi
 
 
