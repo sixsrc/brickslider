@@ -4,8 +4,10 @@
 #fix
 if [ "$2" = "template" ]; then
   exec < /dev/tty && npx cz --hook || true
+  npx --no -- commitlint --edit ${1}
   
 fi
+
 
 
 
