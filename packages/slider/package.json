@@ -23,7 +23,7 @@
     "dist",
     "src"
   ],
-  "main": "./dist/brick-slider.cjs.js",
+  "main": "dist/brick-slider.cjs",
   "module": "./dist/brick-slider.js",
   "exports": {
     "import": "./dist/brick-slider.js",
