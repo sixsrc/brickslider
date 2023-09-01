@@ -15,8 +15,6 @@ import { isValidSelector } from './functions/isValidSelector'
 import { Options } from '../option/Options'
 import { initSliderControls } from './functions/initSliderControls'
 import { BrickMethods } from './BrickMethods'
-//import { TouchEvents } from "../event/Touch/TouchEvents";
-//import { TouchActions } from "../event/Touch/TouchActions";
 
 export class BrickSlider extends BrickMethods {
   private clonedSlides: HTMLElement[] = []
@@ -26,7 +24,7 @@ export class BrickSlider extends BrickMethods {
 
   constructor(rootSelector: string, options?: Options) {
     super()
-    assert(isValidSelector(rootSelector), 'Brick Slider Selector Not Found')
+    assert(isValidSelector(rootSelector), 'Main Selector Not Found')
     this.rootSelector = rootSelector
     this.options = { ...new Options(), ...options }
   }
