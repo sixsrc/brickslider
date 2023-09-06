@@ -1,4 +1,4 @@
-export class BrickMethods {
+export class Methods {
   constructor() {}
 
   next() {}
@@ -6,7 +6,7 @@ export class BrickMethods {
   prev() {}
 
   goTo(index: number) {
-    console.log("index do slider é", index);
+    console.log("index do slider é", index)
   }
 
   play() {}

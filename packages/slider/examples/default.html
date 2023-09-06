@@ -13,10 +13,10 @@
    <div class="container">
     <div id="slide1_container" class="slider brick-slider">
       <div class="slider__container">
-       <div class="slider__slide"> <img src="./images/image1.jpg" /></div>
-      <div  class="slider__slide"> <img   src="./images/image2.jpg" /></div>
-       <div  class="slider__slide"> <img   src="./images/image3.jpg" /></div>
-       <div  class="slider__slide"> <img  src="./images/image4.jpg" /></div>
+       <section class="slider__slide"> <img src="./images/image1.jpg" /></section>
+      <section  class="slider__slide"> <img   src="./images/image2.jpg" /></section>
+       <section class="slider__slide"> <img   src="./images/image3.jpg" /></section>
+       <section class="slider__slide"> <img  src="./images/image4.jpg" /></section>
       
       </div>
     </div>
@@ -47,7 +47,7 @@
 
     <script src="../dist/brick-slider.js"></script>
     <script>
-      const slider = new BrickSlider("#slide1_container", { infinite: true, arrows: false});
+      const slider = new BrickSlider("#slide1_container", { infinite: true});
 
       slider.init()
 

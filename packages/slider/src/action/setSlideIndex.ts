@@ -1,43 +1,21 @@
-import { FROM } from "./setCurrentSlide";
-
-/*export function setSlideIndex(
-  from: string,
-  currentSlideIndex: number,
-  index: number | undefined
-): number {
-  switch (from) {
-    case FROM.NEXT:
-      currentSlideIndex++;
-      break;
-    case FROM.PREV:
-      currentSlideIndex--;
-      break;
-    case FROM.DOTS:
-      currentSlideIndex = index ?? currentSlideIndex;
-      break;
-    default:
-      break;
-  }
-  return currentSlideIndex;
-}
-*/
+import { FROM } from "./setCurrentSlide"
 
 export function setSlideIndex(params: {
-  from: string;
-  currentSlideIndex: number;
-  index?: number;
+  from: string
+  currentSlideIndex: number
+  index?: number
 }): number {
-  const { from, currentSlideIndex, index } = params;
+  const { from, currentSlideIndex, index } = params
 
   switch (from) {
     case FROM.NEXT:
-      return currentSlideIndex + 1;
+      return currentSlideIndex + 1
     case FROM.PREV:
-      return currentSlideIndex - 1;
+      return currentSlideIndex - 1
     case FROM.DOTS:
     case FROM.TOUCH:
-      return index ?? currentSlideIndex;
+      return index ?? currentSlideIndex
     default:
-      return currentSlideIndex;
+      return currentSlideIndex
   }
 }

@@ -33,6 +33,7 @@
   "scripts": {
     "start": "vite build --watch",
     "test": "vitest",
+    "lint": "eslint --ext .ts {src,__tests__}/**.ts",
     "build": "tsc && vite build"
   }
  
