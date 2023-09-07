@@ -1,3 +1,9 @@
+/*!
+ * brick-slider.js
+ * Version  : 0.0.0
+ * License  : MIT
+ * Copyright: 2023 @malopestorres
+ */
 var z = Object.defineProperty;
 var q = (e, t, s) => t in e ? z(e, t, { enumerable: !0, configurable: !0, writable: !0, value: s }) : e[t] = s;
 var o = (e, t, s) => (q(e, typeof t != "symbol" ? t + "" : t, s), s);
@@ -59,7 +65,7 @@ function T(e, t, s) {
 function Z(e, t) {
   e.style.transform = `translateX(${t()}px)`;
 }
-var n = /* @__PURE__ */ ((e) => (e.RootSelector = "rootSelector", e.SlideIndex = "slideIndex", e.NumberOfSlides = "numberOfSlides", e.SliderWidth = "sliderWidth", e.SliderReady = "sliderReady", e.isStopSlider = "isStopSlider", e.isDragging = "isDragging", e.startPos = "startPos", e.prevTranslate = "prevTranslate", e.currentTranslate = "currentTranslate", e.animationID = "animationID", e.Autoplay = "autoplay", e.AutoplaySpeed = "autoplaySpeed", e.Dots = "dots", e.Arrows = "arrows", e.Touch = "touch", e.Infinite = "infinite", e.Speed = "speed", e.Mode = "mode", e.Transition = "transition", e.UseTailwind = "useTailwind", e))(n || {});
+var r = /* @__PURE__ */ ((e) => (e.RootSelector = "rootSelector", e.SlideIndex = "slideIndex", e.NumberOfSlides = "numberOfSlides", e.SliderWidth = "sliderWidth", e.SliderReady = "sliderReady", e.isStopSlider = "isStopSlider", e.isDragging = "isDragging", e.startPos = "startPos", e.prevTranslate = "prevTranslate", e.currentTranslate = "currentTranslate", e.animationID = "animationID", e.Autoplay = "autoplay", e.AutoplaySpeed = "autoplaySpeed", e.Dots = "dots", e.Arrows = "arrows", e.Touch = "touch", e.Infinite = "infinite", e.Speed = "speed", e.Mode = "mode", e.Transition = "transition", e.UseTailwind = "useTailwind", e))(r || {});
 const c = class c {
   constructor(t, s = {}) {
     o(this, "key");
@@ -81,16 +87,16 @@ const c = class c {
   }
   setMultipleState(t) {
     for (const s in t)
-      c.state[this.key].hasOwnProperty(s) && (c.state[this.key][s] = t[s]);
+      t.hasOwnProperty(s) && (c.state[this.key][s] = t[s]);
   }
 };
 o(c, "state", {});
-let d = c;
+let u = c;
 function j(e, t) {
-  const s = new d(e), i = s.get(n.SlideIndex), r = s.get(n.SliderWidth), a = -r * i;
+  const s = new u(e), i = s.get(r.SlideIndex), n = s.get(r.SliderWidth), a = -n * i;
   return !t && s.setMultipleState({
-    [n.prevTranslate]: a,
-    [n.currentTranslate]: a
+    [r.prevTranslate]: a,
+    [r.currentTranslate]: a
   }), t || a;
 }
 function I(e) {
@@ -102,28 +108,28 @@ function y(e, t) {
 }
 function J(e) {
   const t = v(I(e));
-  new d(e).set(n.SliderWidth, t), y(e);
+  new u(e).set(r.SliderWidth, t), y(e);
 }
 function W(e, t) {
   e.innerHTML = t;
 }
-function p(e, t, s) {
+function b(e, t, s) {
   e.setAttribute(t, s);
 }
 function Q(e, t) {
   for (const [s, i] of Object.entries(t))
-    p(e, s, i);
+    b(e, s, i);
 }
 function Y(e, t, s) {
   if (e)
     for (let i = 0; i < e; i++) {
-      const r = t.children[i].cloneNode(
+      const n = t.children[i].cloneNode(
         !0
       );
-      Q(r, {
+      Q(n, {
         "aria-hidden": "true",
         role: "presentation"
-      }), s.push(r);
+      }), s.push(n);
     }
   W(t, "");
 }
@@ -166,15 +172,15 @@ function st(e) {
     element: t,
     touchStart: s,
     touchEnd: i,
-    touchMove: r
+    touchMove: n
   } = e;
-  T(E.TOUCHSTART, t, s), T(E.TOUCHEND, t, i), T(E.TOUCHMOVE, t, r), T(E.MOUSEDOWN, t, s), T(E.MOUSEUP, t, i), T(E.MOUSELEAVE, t, i), T(E.MOUSEMOVE, t, r);
+  T(E.TOUCHSTART, t, s), T(E.TOUCHEND, t, i), T(E.TOUCHMOVE, t, n), T(E.MOUSEDOWN, t, s), T(E.MOUSEUP, t, i), T(E.MOUSELEAVE, t, i), T(E.MOUSEMOVE, t, n);
 }
 function it(e, t, s) {
-  const i = e < -100, r = t < s.length - 1;
-  return i && r;
+  const i = e < -100, n = t < s.length - 1;
+  return i && n;
 }
-function rt(e, t) {
+function nt(e, t) {
   const s = e > 100, i = t > 0;
   return s && i;
 }
@@ -184,7 +190,7 @@ function R(e, t) {
 function H(e, t) {
   e.classList.remove(t);
 }
-function nt(e) {
+function rt(e) {
   const { from: t, currentSlideIndex: s, index: i } = e;
   switch (t) {
     case S.NEXT:
@@ -198,11 +204,11 @@ function nt(e) {
       return s;
   }
 }
-function b(e, t, s) {
+function p(e, t, s) {
   if (t) {
-    new d(e);
-    for (const [i, r] of Object.entries(t))
-      if (d.state[e][i] !== r)
+    new u(e);
+    for (const [i, n] of Object.entries(t))
+      if (u.state[e][i] !== n)
         return !1;
     return s && s(), !0;
   }
@@ -212,35 +218,35 @@ var S = /* @__PURE__ */ ((e) => (e.DOTS = "dots", e.PREV = "prev", e.NEXT = "nex
 function P(e = {
   rootSelector: ""
 }) {
-  const { from: t, index: s, rootSelector: i } = e, r = new d(i), a = I(i), l = Array.from(
+  const { from: t, index: s, rootSelector: i } = e, n = new u(i), a = I(i), l = Array.from(
     w(`${D} > *`, a)
-  ), u = b(i, {
-    [n.Infinite]: !0
+  ), d = p(i, {
+    [r.Infinite]: !0
   });
   if (l.forEach((h, f) => {
     const [m, x] = [
-      !u && t === "prev" && f === 0,
-      !u && t === "next" && f === l.length - 1
+      !d && t === "prev" && f === 0,
+      !d && t === "next" && f === l.length - 1
     ];
     switch (!0) {
       case (R(h, g.ACTIVE) && (m || x)):
-        r.set(n.isStopSlider, !0);
+        n.set(r.isStopSlider, !0);
         break;
-      case (R(h, g.ACTIVE) && !r.get(n.isStopSlider)):
-        H(h, g.ACTIVE), r.set(n.SlideIndex, f);
+      case (R(h, g.ACTIVE) && !n.get(r.isStopSlider)):
+        H(h, g.ACTIVE), n.set(r.SlideIndex, f);
         break;
     }
-  }), !r.get(n.isStopSlider) && t) {
-    const h = r.get(n.SlideIndex), f = nt({
+  }), !n.get(r.isStopSlider) && t) {
+    const h = n.get(r.SlideIndex), f = rt({
       from: t,
       currentSlideIndex: h,
       index: s
     }), m = (f + l.length) % l.length;
-    O([l[m]], g.ACTIVE), r.set(n.SlideIndex, m), y(i);
+    O([l[m]], g.ACTIVE), n.set(r.SlideIndex, m), y(i);
   } else
-    r.setMultipleState({
-      [n.SliderReady]: !0,
-      [n.isStopSlider]: !1
+    n.setMultipleState({
+      [r.SliderReady]: !0,
+      [r.isStopSlider]: !1
     });
 }
 function ot(e) {
@@ -250,9 +256,9 @@ function U(e, t) {
   const s = w(
     C.LI,
     ot(t)
-  ), i = e ?? 0, r = new d(t);
+  ), i = e ?? 0, n = new u(t);
   s.forEach((a, l) => {
-    R(a, g.SELECTED) && (H(a, g.SELECTED), r.set(n.SlideIndex, i)), l === i && O([a], g.SELECTED);
+    R(a, g.SELECTED) && (H(a, g.SELECTED), n.set(r.SlideIndex, i)), l === i && O([a], g.SELECTED);
   });
 }
 function A(e) {
@@ -263,27 +269,27 @@ class at {
     o(this, "state");
     o(this, "rootSelector");
     o(this, "slider");
-    this.state = new d(t), this.rootSelector = t, this.slider = A(this.rootSelector);
+    this.state = new u(t), this.rootSelector = t, this.slider = A(this.rootSelector);
   }
   init() {
-    const { state: t, rootSelector: s, slider: i } = this, [r, a] = [
+    const { state: t, rootSelector: s, slider: i } = this, [n, a] = [
       v(i),
-      t.get(n.SlideIndex)
-    ], l = a * -r;
+      t.get(r.SlideIndex)
+    ], l = a * -n;
     t.setMultipleState({
-      [n.currentTranslate]: l,
-      [n.prevTranslate]: l
+      [r.currentTranslate]: l,
+      [r.prevTranslate]: l
     });
-    const [u, h] = [a, S.TOUCH];
+    const [d, h] = [a, S.TOUCH];
     P({
       from: h,
-      index: u,
+      index: d,
       rootSelector: s
     });
     const f = () => {
-      U(u, s);
+      U(d, s);
     };
-    b(s, { [n.Dots]: !0 }, f);
+    p(s, { [r.Dots]: !0 }, f);
   }
 }
 class lt {
@@ -294,13 +300,15 @@ class lt {
     o(this, "rootSelector");
     o(this, "setPositionByIndex");
     o(this, "init", () => {
-      const { state: t, slides: s, slider: i, setPositionByIndex: r } = this;
-      t.set(n.isDragging, !1), i.oncontextmenu = null, cancelAnimationFrame(t.get(n.animationID));
-      const a = t.get(n.currentTranslate) - t.get(n.prevTranslate);
-      let l = t.get(n.SlideIndex);
-      it(a, l, s) && t.set(n.SlideIndex, l += 1), rt(a, l) && t.set(n.SlideIndex, l -= 1), r.init();
+      const { state: t, slides: s, slider: i, setPositionByIndex: n } = this;
+      t.set(r.isDragging, !1), i.oncontextmenu = null;
+      const a = t.get(r.animationID);
+      typeof a == "number" && cancelAnimationFrame(a);
+      const l = t.get(r.currentTranslate) - t.get(r.prevTranslate);
+      let d = t.get(r.SlideIndex);
+      it(l, d, s) && t.set(r.SlideIndex, d += 1), nt(l, d) && t.set(r.SlideIndex, d -= 1), n.init();
     });
-    this.state = new d(t), this.slider = I(t), this.slides = Array.from(
+    this.state = new u(t), this.slider = I(t), this.slides = Array.from(
       w(`${D} > *`, this.slider)
     ), this.setPositionByIndex = new at(t), this.rootSelector = t;
   }
@@ -313,13 +321,13 @@ class $ {
     o(this, "rootSelector");
     o(this, "state");
     o(this, "init", () => {
-      const { state: t, rootSelector: s, init: i } = this, [r, a] = [
-        t.get(n.currentTranslate),
-        t.get(n.isDragging)
+      const { state: t, rootSelector: s, init: i } = this, [n, a] = [
+        t.get(r.currentTranslate),
+        t.get(r.isDragging)
       ];
-      y(s, r), a && requestAnimationFrame(i);
+      y(s, n), a && requestAnimationFrame(i);
     });
-    this.state = new d(t), this.rootSelector = t;
+    this.state = new u(t), this.rootSelector = t;
   }
 }
 class ct {
@@ -328,20 +336,20 @@ class ct {
     o(this, "rootSelector");
     o(this, "animation");
     o(this, "init", (t) => {
-      const { state: s, rootSelector: i, animation: r } = this, [a, l, u, h] = [
-        s.get(n.isDragging),
+      const { state: s, rootSelector: i, animation: n } = this, [a, l, d, h] = [
+        s.get(r.isDragging),
         X(t),
-        s.get(n.prevTranslate),
-        s.get(n.startPos)
+        s.get(r.prevTranslate),
+        s.get(r.startPos)
       ];
       a && s.set(
-        n.currentTranslate,
-        u + l - h
+        r.currentTranslate,
+        d + l - h
       );
-      const f = s.get(n.currentTranslate);
-      y(i, f), requestAnimationFrame(r.init);
+      const f = s.get(r.currentTranslate);
+      y(i, f), requestAnimationFrame(n.init);
     });
-    this.animation = new $(t), this.state = new d(t), this.rootSelector = t;
+    this.animation = new $(t), this.state = new u(t), this.rootSelector = t;
   }
 }
 class dt {
@@ -350,16 +358,16 @@ class dt {
     o(this, "rootSelector");
     o(this, "animation");
     o(this, "slider");
-    this.state = new d(t), this.animation = new $(t), this.rootSelector = t, this.slider = A(this.rootSelector);
+    this.state = new u(t), this.animation = new $(t), this.rootSelector = t, this.slider = A(this.rootSelector);
   }
   init(t) {
     return (s) => {
-      const { state: i, animation: r, slider: a } = this;
+      const { state: i, animation: n, slider: a } = this;
       a.oncontextmenu = (l) => (l.preventDefault(), l.stopPropagation(), !1), i.setMultipleState({
-        [n.SlideIndex]: t,
-        [n.startPos]: X(s),
-        [n.isDragging]: !0,
-        [n.animationID]: requestAnimationFrame(r.init)
+        [r.SlideIndex]: t,
+        [r.startPos]: X(s),
+        [r.isDragging]: !0,
+        [r.animationID]: requestAnimationFrame(n.init)
       });
     };
   }
@@ -375,19 +383,19 @@ class ut {
     o(this, "touchMove");
     this.rootSelector = t, this.slider = I(t), this.slides = Array.from(
       w(`${D} > *`, this.slider)
-    ), this.state = new d(this.rootSelector), this.touchStart = new dt(this.rootSelector), this.touchEnd = new lt(this.rootSelector), this.touchMove = new ct(this.rootSelector);
+    ), this.state = new u(this.rootSelector), this.touchStart = new dt(this.rootSelector), this.touchEnd = new lt(this.rootSelector), this.touchMove = new ct(this.rootSelector);
   }
   init() {
-    const { slides: t, touchStart: s, touchEnd: i, touchMove: r } = this;
+    const { slides: t, touchStart: s, touchEnd: i, touchMove: n } = this;
     t.forEach((a, l) => {
-      const u = {
+      const d = {
         element: a,
         index: l,
         touchStart: s.init(l),
         touchEnd: i.init.bind(i),
-        touchMove: r.init.bind(r)
+        touchMove: n.init.bind(n)
       };
-      st(u);
+      st(d);
     });
   }
 }
@@ -397,12 +405,12 @@ function V(e) {
 function ht(e) {
   const t = [];
   for (let s = 0; s < e; s++) {
-    const i = V(C.BUTTON), r = s === 0;
-    p(
+    const i = V(C.BUTTON), n = s === 0;
+    b(
       i,
       N.DIRECTION,
-      r ? S.NEXT : S.PREV
-    ), O([i], L.BRICK_ARROWS), W(i, r ? S.NEXT : S.PREV), t.push(i);
+      n ? S.NEXT : S.PREV
+    ), O([i], L.BRICK_ARROWS), W(i, n ? S.NEXT : S.PREV), t.push(i);
   }
   return t;
 }
@@ -420,20 +428,20 @@ function Et(e, t) {
 }
 function Tt(e, t) {
   return () => {
-    const s = new d(t);
-    if (!s.get(n.SliderReady))
+    const s = new u(t);
+    if (!s.get(r.SliderReady))
       return;
-    s.set(n.SliderReady, !1);
-    const i = Et(e, N.DIRECTION), r = I(t), a = i === S.PREV;
+    s.set(r.SliderReady, !1);
+    const i = Et(e, N.DIRECTION), n = I(t), a = i === S.PREV;
     P({
       from: a ? S.PREV : S.NEXT,
       rootSelector: t
     });
-    const l = s.get(n.SlideIndex), u = () => {
+    const l = s.get(r.SlideIndex), d = () => {
       U(l, t);
     };
-    b(t, { [n.Dots]: !0 }, u), T(E.TRANSITIONEND, r, () => {
-      s.set(n.SliderReady, !0);
+    p(t, { [r.Dots]: !0 }, d), T(E.TRANSITIONEND, n, () => {
+      s.set(r.SliderReady, !0);
     });
   };
 }
@@ -444,9 +452,9 @@ class gt {
   }
   init() {
     const { rootSelector: t } = this, s = ht(2);
-    ft(s, t).forEach((r) => {
-      const a = Tt(r, t);
-      T(E.CLICK, r, a);
+    ft(s, t).forEach((n) => {
+      const a = Tt(n, t);
+      T(E.CLICK, n, a);
     });
   }
 }
@@ -457,7 +465,7 @@ function It(e, t) {
   }
 }
 const mt = (e) => {
-  const t = new d(e), s = t.get(n.SlideIndex);
+  const t = new u(e), s = t.get(r.SlideIndex);
   U(s, e), P({
     from: S.DOTS,
     index: s,
@@ -470,24 +478,24 @@ class Ot {
     this.rootSelector = t;
   }
   init() {
-    const t = A(this.rootSelector), s = V(C.UL), i = new d(this.rootSelector), r = i.get(n.NumberOfSlides);
-    p(
+    const t = A(this.rootSelector), s = V(C.UL), i = new u(this.rootSelector), n = i.get(r.NumberOfSlides);
+    b(
       s,
       N.CLASS,
       B.replace(".", "")
-    ), M(t, s), r && It(r, s);
+    ), M(t, s), n && It(n, s);
     const a = w(C.LI, s);
-    Array.from(a).forEach((l, u) => {
+    Array.from(a).forEach((l, d) => {
       const h = () => {
-        i.set(n.SlideIndex, u), mt(this.rootSelector);
+        i.set(r.SlideIndex, d), mt(this.rootSelector);
       };
       T(E.CLICK, l, h);
     });
   }
 }
 function Ct(e, t) {
-  const { dots: s, arrows: i, touch: r } = t || {};
-  s && new Ot(e).init(), i && new gt(e).init(), r && new ut(e).init();
+  const { dots: s, arrows: i, touch: n } = t || {};
+  s && new Ot(e).init(), i && new gt(e).init(), n && new ut(e).init();
 }
 class wt {
   constructor() {
@@ -517,16 +525,16 @@ class Dt extends wt {
     _(tt(s), "Main Selector Not Found"), this.rootSelector = s, this.options = { ...new et(), ...i };
   }
   init() {
-    const { rootSelector: s, options: i, clonedSlides: r } = this, a = new d(s, i), l = I(s), u = F(l);
-    a.set(n.NumberOfSlides, u);
+    const { rootSelector: s, options: i, clonedSlides: n } = this, a = new u(s, i), l = I(s), d = F(l);
+    a.set(r.NumberOfSlides, d);
     const h = G(I(s));
     h && O([h], g.ACTIVE);
     const f = v(l);
-    a.set(n.SliderWidth, f);
+    a.set(r.SliderWidth, f);
     const m = () => J(s);
     T(E.RESIZE, window, m);
-    const x = a.get(n.NumberOfSlides);
-    Y(x, l, r), K(l, r), Ct(s, i);
+    const x = a.get(r.NumberOfSlides);
+    Y(x, l, n), K(l, n), Ct(s, i);
   }
 }
 window.BrickSlider = Dt;

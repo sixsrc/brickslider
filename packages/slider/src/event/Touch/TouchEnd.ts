@@ -30,7 +30,10 @@ export class TouchEnd {
 
     slider.oncontextmenu = null
 
-    cancelAnimationFrame(state.get(State_Keys.animationID))
+    const animationId = state.get(State_Keys.animationID)
+    if (typeof animationId === "number") {
+      cancelAnimationFrame(animationId)
+    }
 
     const moveSlider =
       state.get(State_Keys.currentTranslate) -
