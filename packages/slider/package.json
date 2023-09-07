@@ -34,7 +34,11 @@
     "start": "vite build --watch",
     "test": "vitest",
     "lint": "eslint --ext .ts {src,__tests__}/**.ts",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build  && node transform-cdn.js"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "fs-extra": "^11.1.1",
+    "vite-plugin-minify": "^1.5.2"
   }
- 
 }

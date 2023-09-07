@@ -1,4 +1,4 @@
-import { CLASS_VALUES, /*TAGS,*/ childrenSelector } from "../util/constants"
+import { CLASS_VALUES, /*TAGS s */ childrenSelector } from "../util/constants"
 import { transform as transformSlider } from "../transition/transform"
 import { addClass } from "../dom/methods/addClass"
 import { hasClass } from "../dom/methods/hasClass"
