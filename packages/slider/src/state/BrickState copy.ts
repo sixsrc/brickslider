@@ -1,4 +1,3 @@
-/* eslint-disable no-prototype-builtins */
 import { IOptions } from "../option/IOptions"
 
 export enum State_Keys {
@@ -25,38 +24,14 @@ export enum State_Keys {
   UseTailwind = "useTailwind"
 }
 
-interface StateType {
-  [key: string]: string | number | boolean | null | undefined
-  [State_Keys.RootSelector]: string | null
-  [State_Keys.SlideIndex]: number
-  [State_Keys.NumberOfSlides]: number
-  [State_Keys.SliderWidth]: number
-  [State_Keys.SliderReady]: boolean
-  [State_Keys.isStopSlider]: boolean
-  [State_Keys.isDragging]: boolean
-  [State_Keys.startPos]: number
-  [State_Keys.prevTranslate]: number
-  [State_Keys.currentTranslate]: number
-  [State_Keys.Autoplay]: boolean
-  [State_Keys.AutoplaySpeed]: number
-  [State_Keys.Dots]: boolean
-  [State_Keys.Arrows]: boolean
-  [State_Keys.Touch]: boolean
-  [State_Keys.Infinite]: boolean
-  [State_Keys.Speed]: number
-  [State_Keys.Mode]: string
-  [State_Keys.Transition]: string
-  [State_Keys.UseTailwind]: boolean
-}
-
 class BrickState {
-  static state: { [key: string]: StateType } = {}
+  static state: { [key: string]: any } = {}
   private key: string
 
   constructor(key: string, options: IOptions = {}) {
     this.key = key
     if (!BrickState.state[key]) {
-      BrickState.state[key] = {} as StateType
+      BrickState.state[key] = {}
       this.initializeState(options)
     }
   }
@@ -95,22 +70,22 @@ class BrickState {
     }
   }
 
-  get<K extends keyof StateType>(prop: K): StateType[K] {
+  get<K extends keyof any>(prop: K): any[K] {
     return BrickState.state[this.key][prop] ?? ""
   }
 
-  set<K extends keyof StateType>(prop: K, value: StateType[K]): void {
+  set<K extends keyof any>(prop: K, value: any[K]): any {
     BrickState.state[this.key][prop] = value
   }
 
-  setOptions(options: IOptions): void {
+  setOptions(options: IOptions): any {
     this.initializeState(options)
   }
 
-  setMultipleState(props: { [key in keyof StateType]?: StateType[key] }): void {
+  setMultipleState(props: { [key: string]: any }): void {
     for (const key in props) {
-      if (props.hasOwnProperty(key)) {
-        BrickState.state[this.key][key] = props[key]!
+      if (BrickState.state[this.key].hasOwnProperty(key)) {
+        BrickState.state[this.key][key] = props[key]
       }
     }
   }
