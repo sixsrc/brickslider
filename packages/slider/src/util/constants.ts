@@ -6,6 +6,10 @@ export const DOM_ELEMENTS = {
   BRICK_ARROWS: "brick-arrows"
 }
 
+export const STYLES = {
+  TRANSITION: "transition"
+}
+
 export const TAGS = {
   UL: "ul",
   LI: "li",

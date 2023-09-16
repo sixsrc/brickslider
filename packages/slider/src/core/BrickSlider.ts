@@ -45,9 +45,9 @@ export class BrickSlider extends Methods {
 
     state.set(State_Keys.NumberOfSlides, getCountChildren)
 
-    const firstSlide = getFirstChildren(getChildren(rootSelector))
+    const firstSlide = getFirstChildren(getChildren(rootSelector)) as Element
 
-    if (firstSlide) addClass([firstSlide], CLASS_VALUES.ACTIVE)
+    addClass([firstSlide], CLASS_VALUES.ACTIVE)
 
     const childrenSelectorWidth = getSliderWidth(childrenSelector)
 

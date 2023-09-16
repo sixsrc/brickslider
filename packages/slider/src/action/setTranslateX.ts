@@ -1,9 +1,6 @@
 import { State, State_Keys } from "../state/BrickState"
 
-export function setTranslateX(
-  rootSelector: string,
-  currentTranslateFromTouch?: number
-): number {
+export function setTranslateX(rootSelector: string, currentTranslateFromTouch?: number): number {
   const state = new State(rootSelector),
     currentSlideIndex = state.get(State_Keys.SlideIndex),
     childrenContainerWidth = state.get(State_Keys.SliderWidth),
@@ -15,7 +12,5 @@ export function setTranslateX(
       [State_Keys.currentTranslate]: currentTranslate
     })
 
-  return currentTranslateFromTouch
-    ? currentTranslateFromTouch
-    : currentTranslate
+  return currentTranslateFromTouch ? currentTranslateFromTouch : currentTranslate
 }

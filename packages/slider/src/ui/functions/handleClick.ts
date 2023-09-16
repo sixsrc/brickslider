@@ -6,7 +6,7 @@ import { State, State_Keys } from "../../state/BrickState"
 import { matchStateOptions } from "../../util/matchStateOptions"
 import { listener } from "../../util"
 import { getChildren } from "../../core/functions/getChildren"
-import { slideIndexBypass } from "@/action/slideIndexBypass"
+import { slideIndexBypass } from "@/core/functions/slideIndexBypass"
 
 export function handleClick(button: Element, rootSelector: string): () => void {
   return () => {
@@ -24,16 +24,10 @@ export function handleClick(button: Element, rootSelector: string): () => void {
       rootSelector
     })
 
-    const isInfinite = state.get(State_Keys.Infinite)
-
-    const index = state.get(State_Keys.SlideIndex)
-    const numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2
-
-    const slideIndex = isInfinite
-      ? slideIndexBypass(index, numberOfSlides)
-      : index
-
-    console.log("index é ", slideIndex, " index real é", index)
+    const isInfinite = state.get(State_Keys.Infinite),
+      index = state.get(State_Keys.SlideIndex),
+      numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2,
+      slideIndex = isInfinite ? slideIndexBypass(index, numberOfSlides) : index
 
     const setActiveDot = () => {
       updateDots(slideIndex, rootSelector)

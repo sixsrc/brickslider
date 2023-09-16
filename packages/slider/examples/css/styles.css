@@ -190,5 +190,6 @@
 .slider__dots li.slider__dot--active {
   background:blue;
   opacity:1;
+  cursor: default;
 }
   

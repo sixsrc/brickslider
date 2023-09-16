@@ -19,14 +19,12 @@ export class Dots {
   public init(): void {
     const rootSelector = getRootSelector(this.rootSelector),
       containerDots = createNewElement(TAGS.UL),
-      state = new State(this.rootSelector),
-      numberOfSlides = state.get(State_Keys.NumberOfSlides)
+      state = new State(this.rootSelector)
 
     setAttribute(containerDots, ATTRIBUTES.CLASS, dotsSelector.replace(".", ""))
     appendToParent(rootSelector, containerDots)
 
-    if (numberOfSlides)
-      createDots(this.rootSelector, /*numberOfSlides,*/ containerDots)
+    createDots(this.rootSelector, containerDots)
 
     const dots = getAllElements<HTMLElement>(TAGS.LI, containerDots)
 

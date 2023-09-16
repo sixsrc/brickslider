@@ -1,16 +1,20 @@
-import { FROM, setCurrentSlide } from "../../action/setCurrentSlide";
-import { updateDots } from "../../action/updateDots";
-import { State, State_Keys } from "../../state/BrickState";
+import { FROM, setCurrentSlide } from "../../action/setCurrentSlide"
+import { updateDots } from "../../action/updateDots"
+import { State, State_Keys } from "../../state/BrickState"
 
-export const updateSliderFromDots = (rootSelector: string): void => {
+export function updateSliderFromDots(rootSelector: string): void {
   const state = new State(rootSelector),
-    index = state.get(State_Keys.SlideIndex);
+    from = FROM.DOTS
 
-  updateDots(index, rootSelector);
+  let index = state.get(State_Keys.SlideIndex)
+
+  updateDots(index, rootSelector)
+
+  const isInfinite = state.get(State_Keys.Infinite)
 
   setCurrentSlide({
-    from: FROM.DOTS,
-    index,
-    rootSelector,
-  });
-};
+    from,
+    index: isInfinite ? ++index : index,
+    rootSelector
+  })
+}

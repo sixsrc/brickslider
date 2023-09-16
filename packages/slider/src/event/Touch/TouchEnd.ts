@@ -17,9 +17,7 @@ export class TouchEnd {
   constructor(rootSelector: string) {
     this.state = new State(rootSelector)
     this.slider = getChildren(rootSelector)
-    this.slides = Array.from(
-      getAllElements<HTMLElement>(`${childrenSelector} > *`, this.slider)
-    )
+    this.slides = Array.from(getAllElements<HTMLElement>(`${childrenSelector} > *`, this.slider))
     this.setPositionByIndex = new SetPositionByIndex(rootSelector)
     this.rootSelector = rootSelector
   }
@@ -31,13 +29,10 @@ export class TouchEnd {
     slider.oncontextmenu = null
 
     const animationId = state.get(State_Keys.animationID)
-    if (typeof animationId === "number") {
-      cancelAnimationFrame(animationId)
-    }
 
-    const moveSlider =
-      state.get(State_Keys.currentTranslate) -
-      state.get(State_Keys.prevTranslate)
+    if (typeof animationId === "number") cancelAnimationFrame(animationId)
+
+    const moveSlider = state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
 
     let currentIndex = state.get(State_Keys.SlideIndex)
 
