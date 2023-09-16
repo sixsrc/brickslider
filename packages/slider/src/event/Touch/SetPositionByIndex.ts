@@ -1,3 +1,4 @@
+import { slideIndexBypass } from "@/action/slideIndexBypass"
 import { FROM, setCurrentSlide /** */ } from "../../action/setCurrentSlide"
 import { updateDots } from "../../action/updateDots"
 import { getRootSelector } from "../../core/functions/getRootSelector"
@@ -39,8 +40,14 @@ export class SetPositionByIndex {
       rootSelector
     })
 
+    const isInfinite = state.get(State_Keys.Infinite)
+    const numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2
+    const slideIndex = isInfinite
+      ? slideIndexBypass(index, numberOfSlides)
+      : index
+
     const setActiveDot = () => {
-      updateDots(index, rootSelector)
+      updateDots(slideIndex, rootSelector)
     }
 
     matchStateOptions(rootSelector, { [State_Keys.Dots]: true }, setActiveDot)

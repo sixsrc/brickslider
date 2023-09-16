@@ -14,6 +14,9 @@ import { isValidSelector } from "./functions/isValidSelector"
 import { Options } from "../option/Options"
 import { initSliderControls } from "./functions/initSliderControls"
 import { Methods } from "./Methods"
+import { cloneSlides } from "./functions/cloneSlides"
+import { matchStateOptions } from "@/util/matchStateOptions"
+//import { transform } from "@/transition/transform"
 
 export class BrickSlider extends Methods {
   private clonedSlides: HTMLElement[] = []
@@ -28,10 +31,17 @@ export class BrickSlider extends Methods {
   }
 
   init(): void {
-    const { rootSelector, options, clonedSlides } = this,
-      state = new State(rootSelector, options),
-      childrenSelector = getChildren(rootSelector),
-      getCountChildren = getChildrenCount(childrenSelector)
+    const { rootSelector, options, clonedSlides } = this
+
+    const childrenSelector = getChildren(rootSelector)
+
+    const state = new State(rootSelector, options)
+
+    matchStateOptions(rootSelector, { [State_Keys.Infinite]: true }, () => {
+      cloneSlides(childrenSelector)
+    })
+
+    const getCountChildren = getChildrenCount(childrenSelector)
 
     state.set(State_Keys.NumberOfSlides, getCountChildren)
 
@@ -52,6 +62,8 @@ export class BrickSlider extends Methods {
     setAcessibilitySlider(numberOfSlides, childrenSelector, clonedSlides)
 
     appendSlider(childrenSelector, clonedSlides)
+
+    state.set(State_Keys.LoadPage, false)
 
     initSliderControls(rootSelector, options)
   }

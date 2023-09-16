@@ -1,8 +1,4 @@
-import {
-  CLASS_VALUES,
-  EVENTS,
-  /*TAGS s */ childrenSelector
-} from "../util/constants"
+import { CLASS_VALUES, /*TAGS s */ childrenSelector } from "../util/constants"
 import { transform as transformSlider } from "../transition/transform"
 import { addClass } from "../dom/methods/addClass"
 import { hasClass } from "../dom/methods/hasClass"
@@ -12,7 +8,6 @@ import { setSlideIndex } from "./setSlideIndex"
 import { State, State_Keys } from "../state/BrickState"
 import { getChildren } from "../core/functions/getChildren"
 import { matchStateOptions } from "../util/matchStateOptions"
-import { listener } from "@/util"
 
 export enum FROM {
   DOTS = "dots",
@@ -42,18 +37,19 @@ export function setCurrentSlide(
   })
 
   slides.forEach((slide, index) => {
-    const [isFirst, isLast, isStopSlider] = [
-      from === FROM.PREV && index === 0,
-      from === FROM.NEXT && index === slides.length - 1,
-      state.get(State_Keys.isStopSlider)
+    const [isFirstSlide, isLastSlide] = [
+      !isInfinite && from === FROM.PREV && index === 0,
+      !isInfinite && from === FROM.NEXT && index === slides.length - 1
     ]
 
     switch (true) {
-      case hasClass(slide, CLASS_VALUES.ACTIVE) && (isFirst || isLast):
+      case hasClass(slide, CLASS_VALUES.ACTIVE) &&
+        (isFirstSlide || isLastSlide):
         state.set(State_Keys.isStopSlider, true)
         break
 
-      case hasClass(slide, CLASS_VALUES.ACTIVE) && !isStopSlider:
+      case hasClass(slide, CLASS_VALUES.ACTIVE) &&
+        !state.get(State_Keys.isStopSlider):
         removeClass(slide, CLASS_VALUES.ACTIVE)
         state.set(State_Keys.SlideIndex, index)
         break
@@ -63,27 +59,20 @@ export function setCurrentSlide(
     }
   })
 
-  if (from && !state.get(State_Keys.isStopSlider)) {
-    const currentSlideIndex = state.get(State_Keys.SlideIndex)
+  if (!state.get(State_Keys.isStopSlider) && from) {
+    const currentSlideIndex = state.get(State_Keys.SlideIndex),
+      slideIndex = setSlideIndex({
+        from,
+        currentSlideIndex,
+        index
+      }),
+      getSlidePosition = (slideIndex + slides.length) % slides.length
 
-    const slideIndex = setSlideIndex({
-      from,
-      currentSlideIndex,
-      index
-    })
-    //getSlidePosition = (slideIndex + slides.length) % slides.length
+    addClass([slides[getSlidePosition]], CLASS_VALUES.ACTIVE)
 
-    addClass([slides[slideIndex]], CLASS_VALUES.ACTIVE)
-
-    state.set(State_Keys.SlideIndex, slideIndex)
+    state.set(State_Keys.SlideIndex, getSlidePosition)
 
     transformSlider(rootSelector)
-
-    listener(EVENTS.TRANSITIONEND, slider, () => {
-      if (isInfinite && state.get(State_Keys.SlideIndex) === 0) {
-        console.log("vc me deve um translateX")
-      }
-    })
   } else {
     state.setMultipleState({
       [State_Keys.SliderReady]: true,

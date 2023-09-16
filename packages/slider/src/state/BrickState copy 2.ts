@@ -5,7 +5,6 @@ export enum State_Keys {
   RootSelector = "rootSelector",
   LoadPage = "loadPage",
   SlideIndex = "slideIndex",
-  SlideInfiniteIndex = "slideInfiniteIndex",
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   SliderReady = "sliderReady",
@@ -32,7 +31,6 @@ interface StateType {
   [State_Keys.RootSelector]: string | null
   [State_Keys.LoadPage]: boolean
   [State_Keys.SlideIndex]: number
-  [State_Keys.SlideInfiniteIndex]: number
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
   [State_Keys.SliderReady]: boolean
@@ -69,7 +67,6 @@ class BrickState {
     BrickState.state[this.key][State_Keys.RootSelector] = null
     BrickState.state[this.key][State_Keys.LoadPage] = true
     BrickState.state[this.key][State_Keys.SlideIndex] = 0
-    BrickState.state[this.key][State_Keys.SlideInfiniteIndex] = 0
     BrickState.state[this.key][State_Keys.NumberOfSlides] = 0
     BrickState.state[this.key][State_Keys.SliderWidth] = 0
     BrickState.state[this.key][State_Keys.SliderReady] = true
@@ -84,7 +81,7 @@ class BrickState {
     BrickState.state[this.key][State_Keys.Dots] = options.dots ?? true
     BrickState.state[this.key][State_Keys.Arrows] = options.arrows ?? true
     BrickState.state[this.key][State_Keys.Touch] = options.touch ?? true
-    BrickState.state[this.key][State_Keys.Infinite] = options.infinite ?? false
+    BrickState.state[this.key][State_Keys.Infinite] = options.infinite ?? true
     BrickState.state[this.key][State_Keys.Speed] = options.speed ?? 300
     BrickState.state[this.key][State_Keys.Mode] = options.mode ?? "vertical"
     BrickState.state[this.key][State_Keys.Transition] =

@@ -21,7 +21,8 @@ export const PROPERTYS_VALUES = {
 export const CLASS_VALUES = {
   ACTIVE: "active",
   SLIDER_DOT: "slider__dot",
-  SELECTED: "slider__dot--active"
+  SELECTED: "slider__dot--active",
+  CLONED: "cloned"
 }
 
 export const ATTRIBUTES = {

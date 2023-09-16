@@ -7,7 +7,7 @@ export function appendChildren(
   /*forEach(children, (element) => {
     container.appendChild(element);
   });*/
-  children.forEach((element) => {
-    container.appendChild(element);
-  });
+  children.forEach(element => {
+    container.appendChild(element)
+  })
 }

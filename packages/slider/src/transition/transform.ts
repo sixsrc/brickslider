@@ -1,14 +1,19 @@
-import { setTransform } from "../dom/methods/setTransform";
-import { setTranslateX } from "../action/setTranslateX";
-import { getChildren } from "../core/functions/getChildren";
+import { setTransform } from "../dom/methods/setTransform"
+import { setTranslateX } from "../action/setTranslateX"
+import { getChildren } from "../core/functions/getChildren"
+import { setStyle } from "@/dom/methods/setStyle"
+import { State, State_Keys } from "@/state/BrickState"
 
 export function transform(
   rootSelector: string,
   currentTranslateFromTouch?: number
 ) {
-  const slider = getChildren(rootSelector);
-  const setTranslateXCallback = () =>
-    setTranslateX(rootSelector, currentTranslateFromTouch);
+  const slider = getChildren(rootSelector),
+    state = new State(rootSelector),
+    setTranslateXCallback = () =>
+      setTranslateX(rootSelector, currentTranslateFromTouch),
+    isLoadPage = state.get(State_Keys.LoadPage)
 
-  setTransform(slider, setTranslateXCallback);
+  !isLoadPage && setStyle(slider, "transition", "transform 0.5s ease")
+  setTransform(slider, setTranslateXCallback)
 }

@@ -1,7 +1,7 @@
-import { getRootSelector } from '../../core/functions/getRootSelector'
-import { State, State_Keys } from '../../state/BrickState'
-import { getPositionX } from './functions/getPositionX'
-import { RequestAnimationFrame } from './RequestAnimationFrame'
+import { getRootSelector } from "../../core/functions/getRootSelector"
+import { State, State_Keys } from "../../state/BrickState"
+import { getPositionX } from "./functions/getPositionX"
+import { RequestAnimationFrame } from "./RequestAnimationFrame"
 
 export class TouchStart {
   state: State
