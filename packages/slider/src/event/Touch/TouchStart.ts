@@ -26,11 +26,13 @@ export class TouchStart {
         return false
       }
 
-      state.setMultipleState({
-        [State_Keys.SlideIndex]: index,
-        [State_Keys.startPos]: getPositionX(event),
-        [State_Keys.isDragging]: true,
-        [State_Keys.animationID]: requestAnimationFrame(animation.init)
+      setTimeout(() => {
+        state.setMultipleState({
+          [State_Keys.SlideIndex]: index,
+          [State_Keys.startPos]: getPositionX(event),
+          [State_Keys.isDragging]: true,
+          [State_Keys.animationID]: requestAnimationFrame(animation.init)
+        })
       })
     }
   }

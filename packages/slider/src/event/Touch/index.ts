@@ -21,9 +21,7 @@ export class Touch {
   constructor(rootSelector: string) {
     this.rootSelector = rootSelector
     this.slider = getChildren(rootSelector)
-    this.slides = Array.from(
-      getAllElements<HTMLElement>(`${childrenSelector} > *`, this.slider)
-    )
+    this.slides = Array.from(getAllElements<HTMLElement>(`${childrenSelector} > *`, this.slider))
     this.state = new State(this.rootSelector)
     this.touchStart = new TouchStart(this.rootSelector)
     this.touchEnd = new TouchEnd(this.rootSelector)

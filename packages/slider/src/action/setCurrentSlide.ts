@@ -6,6 +6,8 @@ import { setSlideIndex } from "./setSlideIndex"
 import { State, State_Keys } from "../state/BrickState"
 import { getChildren } from "../core/functions/getChildren"
 import { isFirstOrLast } from "@/core/functions/isFirstOrLast"
+import { setSliderTransition } from "./setSliderTransition"
+//import { updateSliderTransition } from "./updateSliderTransition"
 
 export enum FROM {
   DOTS = "dots",
@@ -44,6 +46,8 @@ export function setCurrentSlide(
     addClass([slides[slideIndex]], CLASS_VALUES.ACTIVE)
 
     state.set(State_Keys.SlideIndex, slideIndex)
+
+    setSliderTransition(rootSelector)
 
     transformSlider(rootSelector)
 

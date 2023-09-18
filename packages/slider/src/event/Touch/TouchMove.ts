@@ -5,6 +5,7 @@ import { getPositionX } from "./functions/getPositionX"
 //import { getFirstChildren } from "@/dom/methods/getFirstChildren"
 //import { getLastChildren } from "@/dom/methods/getLastChildren"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
+import { setSliderTransition } from "@/action/setSliderTransition"
 
 export class TouchMove {
   state: State
@@ -36,7 +37,6 @@ export class TouchMove {
       if (deltaX > 0) {
         // Movimento da esquerda para a direita
         // Execute ação desejada aqui.
-        console.log("esquerda")
       } else if (deltaX < 0) {
         // Movimento da direita para a esquerda
         // Execute outra ação desejada aqui.
@@ -49,15 +49,11 @@ export class TouchMove {
           this.slider.appendChild(firstSlide)
         }*/
       }
-      state.set(
-        State_Keys.currentTranslate,
-        prevTranslate + currentPosition - startPos
-      )
+      state.set(State_Keys.currentTranslate, prevTranslate + currentPosition - startPos)
 
       const setCurrentTranslate = state.get(State_Keys.currentTranslate)
 
       transform(rootSelector, setCurrentTranslate)
-
       requestAnimationFrame(animation.init)
     }
   }

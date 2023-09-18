@@ -7,6 +7,7 @@ import { matchStateOptions } from "../../util/matchStateOptions"
 import { listener } from "../../util"
 import { getChildren } from "../../core/functions/getChildren"
 import { slideIndexBypass } from "@/core/functions/slideIndexBypass"
+import { updateSliderTransition } from "@/action/updateSliderTransition"
 
 export function handleClick(button: Element, rootSelector: string): () => void {
   return () => {
@@ -39,6 +40,7 @@ export function handleClick(button: Element, rootSelector: string): () => void {
 
     listener(EVENTS.TRANSITIONEND, childrenSelector, () => {
       state.set(State_Keys.SliderReady, true)
+      updateSliderTransition(rootSelector, "none")
     })
   }
 }

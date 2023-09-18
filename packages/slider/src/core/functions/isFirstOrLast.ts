@@ -16,6 +16,7 @@ export function isFirstOrLast(
     slides = Array.from(
       getAllElements<HTMLElement>(`${childrenSelector} > *`, getChildren(rootSelector))
     )
+
   const [isFirst, isLast] = [
     from === FROM.PREV && index === 0,
     from === FROM.NEXT && index === slides.length - 1

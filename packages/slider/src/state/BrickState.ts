@@ -9,6 +9,7 @@ export enum State_Keys {
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   SliderReady = "sliderReady",
+  TransitionBypass = "transitionBypass",
   isStopSlider = "isStopSlider",
   isDragging = "isDragging",
   startPos = "startPos",
@@ -36,6 +37,7 @@ interface StateType {
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
   [State_Keys.SliderReady]: boolean
+  [State_Keys.TransitionBypass]: boolean
   [State_Keys.isStopSlider]: boolean
   [State_Keys.isDragging]: boolean
   [State_Keys.startPos]: number
@@ -73,24 +75,22 @@ class BrickState {
     BrickState.state[this.key][State_Keys.NumberOfSlides] = 0
     BrickState.state[this.key][State_Keys.SliderWidth] = 0
     BrickState.state[this.key][State_Keys.SliderReady] = true
+    BrickState.state[this.key][State_Keys.TransitionBypass] = false
     BrickState.state[this.key][State_Keys.isStopSlider] = false
     BrickState.state[this.key][State_Keys.isDragging] = false
     BrickState.state[this.key][State_Keys.startPos] = 0
     BrickState.state[this.key][State_Keys.prevTranslate] = 0
     BrickState.state[this.key][State_Keys.currentTranslate] = 0
     BrickState.state[this.key][State_Keys.Autoplay] = options.autoplay ?? false
-    BrickState.state[this.key][State_Keys.AutoplaySpeed] =
-      options.autoplaySpeed ?? 3000
+    BrickState.state[this.key][State_Keys.AutoplaySpeed] = options.autoplaySpeed ?? 3000
     BrickState.state[this.key][State_Keys.Dots] = options.dots ?? true
     BrickState.state[this.key][State_Keys.Arrows] = options.arrows ?? true
     BrickState.state[this.key][State_Keys.Touch] = options.touch ?? true
     BrickState.state[this.key][State_Keys.Infinite] = options.infinite ?? false
     BrickState.state[this.key][State_Keys.Speed] = options.speed ?? 300
     BrickState.state[this.key][State_Keys.Mode] = options.mode ?? "vertical"
-    BrickState.state[this.key][State_Keys.Transition] =
-      options.transition ?? "slide"
-    BrickState.state[this.key][State_Keys.UseTailwind] =
-      options.useTailwind ?? true
+    BrickState.state[this.key][State_Keys.Transition] = options.transition ?? "slide"
+    BrickState.state[this.key][State_Keys.UseTailwind] = options.useTailwind ?? true
 
     if (options.sliderOptions) {
       for (const key in options.sliderOptions) {
