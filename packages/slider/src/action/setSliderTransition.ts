@@ -8,6 +8,8 @@ import { transform } from "@/transition/transform"
 import { hasClass } from "@/dom/methods/hasClass"
 import { updateSliderTransition } from "./updateSliderTransition"
 import { removeClass } from "@/dom/methods/removeClass"
+import { setStyle } from "@/dom/methods/setStyle"
+import { FROM } from "./setCurrentSlide"
 
 export function setSliderTransition(rootSelector: string) {
   const slider = getChildren(rootSelector),
@@ -17,7 +19,7 @@ export function setSliderTransition(rootSelector: string) {
     state = new State(rootSelector)
 
   listener(EVENTS.TRANSITIONEND, slider, () => {
-    updateSliderTransition(rootSelector, "none")
+    //updateSliderTransition(rootSelector, "none")
     //updateSliderTransition(rootSelector, "transform 400ms  ease-in-out")
   })
   ///cubic-bezier(0.25, 1, 0.5,1)
@@ -28,10 +30,10 @@ export function setSliderTransition(rootSelector: string) {
 
       listener(EVENTS.TRANSITIONEND, slider, () => {
         if (hasClass(slide, CLASS_VALUES.ACTIVE) && index === 0) {
-          removeClass(slide, CLASS_VALUES.ACTIVE)
-          //updateSliderTransition(rootSelector, "none")
           state.set(State_Keys.SlideIndex, numberOfSlides)
           transform(rootSelector)
+          removeClass(slide, CLASS_VALUES.ACTIVE)
+          updateSliderTransition(rootSelector, "none")
         }
       })
     })

@@ -15,6 +15,7 @@ export function transform(rootSelector: string, currentTranslateFromTouch?: numb
     setTranslateXCallback = () => setTranslateX(rootSelector, currentTranslateFromTouch)
   // isLoadPage = state.get(State_Keys.LoadPage)
 
+  ///updateSliderTransition(rootSelector, "transform cubic-bezier(0.25, 1, 0.5,1)")
+
   setTransform(slider, setTranslateXCallback)
-  updateSliderTransition(rootSelector, "transform 400ms  ease-in-out")
 }

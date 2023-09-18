@@ -1,4 +1,4 @@
-import { childrenSelector /*TAGS*/ } from "@/util/constants"
+import { childrenSelector /*TAGS*/, EVENTS } from "@/util/constants"
 //import { getRootSelector } from "../../core/functions/getRootSelector"
 import { getAllElements } from "../../dom/methods/getAllElements"
 import { State, State_Keys } from "../../state/BrickState"
@@ -6,6 +6,8 @@ import { shouldGoToNextSlide } from "./functions/shouldGoToNextSlide"
 import { shouldGoToPrevSlide } from "./functions/shouldGoToPrevSlide"
 import { SetPositionByIndex } from "./SetPositionByIndex"
 import { getChildren } from "@/core/functions/getChildren"
+import { listener } from "@/util"
+import { updateSliderTransition } from "@/action/updateSliderTransition"
 
 export class TouchEnd {
   state: State
@@ -24,7 +26,12 @@ export class TouchEnd {
   public init = (): void => {
     const { state, slides, slider, setPositionByIndex } = this
 
+    //state.get(State_Keys.isDragging) &&
+    // updateSliderTransition(this.rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")
+
     state.set(State_Keys.isDragging, false)
+
+    updateSliderTransition(this.rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")
 
     slider.oncontextmenu = null
 

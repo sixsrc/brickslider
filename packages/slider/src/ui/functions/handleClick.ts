@@ -40,7 +40,7 @@ export function handleClick(button: Element, rootSelector: string): () => void {
 
     listener(EVENTS.TRANSITIONEND, childrenSelector, () => {
       state.set(State_Keys.SliderReady, true)
-      updateSliderTransition(rootSelector, "none")
+      // updateSliderTransition(rootSelector, "")
     })
   }
 }

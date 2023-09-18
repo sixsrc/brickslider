@@ -7,6 +7,7 @@ import { State, State_Keys } from "../state/BrickState"
 import { getChildren } from "../core/functions/getChildren"
 import { isFirstOrLast } from "@/core/functions/isFirstOrLast"
 import { setSliderTransition } from "./setSliderTransition"
+import { updateSliderTransition } from "./updateSliderTransition"
 //import { updateSliderTransition } from "./updateSliderTransition"
 
 export enum FROM {
@@ -47,9 +48,17 @@ export function setCurrentSlide(
 
     state.set(State_Keys.SlideIndex, slideIndex)
 
-    setSliderTransition(rootSelector)
+    /* if (from == FROM.PREV || from === FROM.NEXT) {
+      setSliderTransition(rootSelector)
+      updateSliderTransition(rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")
+    }*/
 
     transformSlider(rootSelector)
+
+    //FROM.PREV &&
+    // FROM.NEXT &&
+    // updateSliderTransition(rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")
+    // transformSlider(rootSelector)
 
     return
   }

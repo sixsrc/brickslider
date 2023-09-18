@@ -6,6 +6,7 @@ import { getPositionX } from "./functions/getPositionX"
 //import { getLastChildren } from "@/dom/methods/getLastChildren"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
 import { setSliderTransition } from "@/action/setSliderTransition"
+import { updateSliderTransition } from "@/action/updateSliderTransition"
 
 export class TouchMove {
   state: State
@@ -30,13 +31,22 @@ export class TouchMove {
       state.get(State_Keys.startPos)
     ]
 
+    updateSliderTransition(rootSelector, "")
+
     if (isDragging) {
       const deltaX = currentPosition - startPos
       //const firstSlide = getFirstChildren(this.slider) as HTMLElement
       // const lastSlide = getLastChildren(this.slider)
+
       if (deltaX > 0) {
         // Movimento da esquerda para a direita
         // Execute ação desejada aqui.
+        const sliderWidth = state.get(State_Keys.SliderWidth)
+        const deltaPercentage = (deltaX / sliderWidth) * 100
+
+        if (deltaPercentage >= 50) {
+          console.log("Movimento atingiu 50% da largura do contêiner.", deltaPercentage)
+        }
       } else if (deltaX < 0) {
         // Movimento da direita para a esquerda
         // Execute outra ação desejada aqui.
