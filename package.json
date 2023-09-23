@@ -1,0 +1,40 @@
+{
+  "author": "@malopestorres",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "lerna run build",
+    "format": "prettier . --write --parser typescript \"**/*.[tj]s?(x)\"",
+    "lint": "eslint --ext .ts {src,__tests__}/**.ts",
+    "commit": "git-cz",
+    "changelog": "standard-changelog",
+    "prepare": "husky install",
+    "release": "lerna publish "
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
+    "lerna": "^7.1.5",
+    "prettier": "^3.0.1",
+    "standard-changelog": "^3.0.0",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.5.2",
+    "vitest": "^0.34.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+    "vite-plugin-minify": "^1.5.2"
+  }
+}
