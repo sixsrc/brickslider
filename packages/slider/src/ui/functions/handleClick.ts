@@ -20,6 +20,11 @@ export function handleClick(button: Element, rootSelector: string): () => void {
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
     const isPrevDirection = getAttribute === FROM.PREV
 
+<<<<<<< HEAD
+=======
+    updateSliderTransition(rootSelector, "transform 0.2s ease")
+
+>>>>>>> master
     setCurrentSlide({
       from: isPrevDirection ? FROM.PREV : FROM.NEXT,
       rootSelector
@@ -40,7 +45,11 @@ export function handleClick(button: Element, rootSelector: string): () => void {
 
     listener(EVENTS.TRANSITIONEND, childrenSelector, () => {
       state.set(State_Keys.SliderReady, true)
+<<<<<<< HEAD
       // updateSliderTransition(rootSelector, "")
+=======
+      updateSliderTransition(rootSelector, "")
+>>>>>>> master
     })
   }
 }

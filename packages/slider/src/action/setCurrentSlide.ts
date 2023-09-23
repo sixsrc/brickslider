@@ -6,9 +6,12 @@ import { setSlideIndex } from "./setSlideIndex"
 import { State, State_Keys } from "../state/BrickState"
 import { getChildren } from "../core/functions/getChildren"
 import { isFirstOrLast } from "@/core/functions/isFirstOrLast"
+<<<<<<< HEAD
 import { setSliderTransition } from "./setSliderTransition"
 import { updateSliderTransition } from "./updateSliderTransition"
 //import { updateSliderTransition } from "./updateSliderTransition"
+=======
+>>>>>>> master
 
 export enum FROM {
   DOTS = "dots",
@@ -48,6 +51,7 @@ export function setCurrentSlide(
 
     state.set(State_Keys.SlideIndex, slideIndex)
 
+<<<<<<< HEAD
     /* if (from == FROM.PREV || from === FROM.NEXT) {
       setSliderTransition(rootSelector)
       updateSliderTransition(rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")
@@ -60,6 +64,10 @@ export function setCurrentSlide(
     // updateSliderTransition(rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")
     // transformSlider(rootSelector)
 
+=======
+    transformSlider(rootSelector)
+
+>>>>>>> master
     return
   }
 

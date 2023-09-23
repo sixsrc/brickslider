@@ -2,14 +2,10 @@ import { getChildren } from "@/core/functions/getChildren"
 import { State, State_Keys } from "../../state/BrickState"
 import { transform } from "../../transition/transform"
 import { getPositionX } from "./functions/getPositionX"
-<<<<<<< HEAD
 //import { getFirstChildren } from "@/dom/methods/getFirstChildren"
 //import { getLastChildren } from "@/dom/methods/getLastChildren"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
 import { setSliderTransition } from "@/action/setSliderTransition"
-=======
-import { RequestAnimationFrame } from "./RequestAnimationFrame"
->>>>>>> master
 import { updateSliderTransition } from "@/action/updateSliderTransition"
 
 export class TouchMove {
@@ -17,6 +13,7 @@ export class TouchMove {
   rootSelector: string
   slider: HTMLElement
   animation: RequestAnimationFrame
+  intervalId: NodeJS.Timeout | null = null
 
   constructor(rootSelector: string) {
     this.animation = new RequestAnimationFrame(rootSelector)
@@ -37,7 +34,6 @@ export class TouchMove {
 
     updateSliderTransition(rootSelector, "")
 
-<<<<<<< HEAD
     if (isDragging) {
       const deltaX = currentPosition - startPos
       //const firstSlide = getFirstChildren(this.slider) as HTMLElement
@@ -50,7 +46,7 @@ export class TouchMove {
         const deltaPercentage = (deltaX / sliderWidth) * 100
 
         if (deltaPercentage >= 50) {
-          console.log("Movimento atingiu 50% da largura do contêiner.", deltaPercentage)
+          // console.log("Movimento atingiu 50% da largura do contêiner.", deltaPercentage)
         }
       } else if (deltaX < 0) {
         // Movimento da direita para a esquerda
@@ -64,22 +60,17 @@ export class TouchMove {
           this.slider.appendChild(firstSlide)
         }*/
       }
+
+      this.intervalId = setInterval(() => {}, 10)
+
       state.set(State_Keys.currentTranslate, prevTranslate + currentPosition - startPos)
 
       const setCurrentTranslate = state.get(State_Keys.currentTranslate)
 
-      transform(rootSelector, setCurrentTranslate)
-      requestAnimationFrame(animation.init)
-=======
-    if (isDragging && !state.get(State_Keys.SliderReady)) {
-      state.set(State_Keys.currentTranslate, prevTranslate + currentPosition - startPos)
-
       if (state.get(State_Keys.SliderReady)) {
-        const setCurrentTranslate = state.get(State_Keys.currentTranslate)
         transform(rootSelector, setCurrentTranslate)
         requestAnimationFrame(animation.init)
       }
->>>>>>> master
     }
   }
 }

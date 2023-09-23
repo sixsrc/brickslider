@@ -58,6 +58,10 @@
   .slider__slide {
     width: 100%;
       flex-shrink: 0;
+<<<<<<< HEAD
+=======
+    
+>>>>>>> master
     /*flex-shrink: 0;*/
     /*display: flex;
     flex-wrap: nowrap;
@@ -111,11 +115,19 @@
   flex-wrap: nowrap;
 	flex-direction: row;
   will-change: transform;
+<<<<<<< HEAD
+=======
+  
+>>>>>>> master
  /* transition: transform 0.5s ease;
   -webkit-transition: 0.5s ease;
   -moz-transition: 0.5s ease;
   -o-transition: 0.5s ease;*/
+<<<<<<< HEAD
   /*transition: transform 0.5s ease;*/
+=======
+  /*transition:  0.5s ease;*/
+>>>>>>> master
   padding: 0;
   margin: 0;
   position: relative;

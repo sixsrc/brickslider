@@ -33,5 +33,11 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+<<<<<<< HEAD
+=======
+  },
+  "dependencies": {
+    "vite-plugin-minify": "^1.5.2"
+>>>>>>> master
   }
 }
