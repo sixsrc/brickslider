@@ -10,10 +10,7 @@ import { updateSliderTransition } from "./updateSliderTransition"
 import { removeClass } from "@/dom/methods/removeClass"
 import { setStyle } from "@/dom/methods/setStyle"
 import { FROM } from "./setCurrentSlide"
-<<<<<<< HEAD
-=======
 import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
->>>>>>> master
 
 export function setSliderTransition(rootSelector: string) {
   const slider = getChildren(rootSelector),
@@ -34,12 +31,6 @@ export function setSliderTransition(rootSelector: string) {
 
       listener(EVENTS.TRANSITIONEND, slider, () => {
         if (hasClass(slide, CLASS_VALUES.ACTIVE) && index === 0) {
-<<<<<<< HEAD
-          state.set(State_Keys.SlideIndex, numberOfSlides)
-          transform(rootSelector)
-          removeClass(slide, CLASS_VALUES.ACTIVE)
-          updateSliderTransition(rootSelector, "none")
-=======
           // state.set(State_Keys.SlideIndex, numberOfSlides)
           //const animation = new RequestAnimationFrame(rootSelector)
           // requestAnimationFrame(animation.init)
@@ -49,7 +40,6 @@ export function setSliderTransition(rootSelector: string) {
           updateSliderTransition(rootSelector, "")
         } else if (hasClass(slide, CLASS_VALUES.ACTIVE) && index !== 0) {
           // state.set(State_Keys.SliderReady, true)
->>>>>>> master
         }
       })
     })

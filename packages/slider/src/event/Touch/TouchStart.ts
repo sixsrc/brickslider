@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import { updateSliderTransition } from "@/action/updateSliderTransition"
-=======
->>>>>>> master
 import { getRootSelector } from "../../core/functions/getRootSelector"
 import { State, State_Keys } from "../../state/BrickState"
 import { getPositionX } from "./functions/getPositionX"
@@ -22,26 +18,11 @@ export class TouchStart {
 
   public init(index: number): (event: Event) => void {
     return (event: Event) => {
-<<<<<<< HEAD
-      const { state, animation, slider } = this
-
-      //updateSliderTransition(this.rootSelector, "")
-
-      slider.oncontextmenu = event => {
-        event.preventDefault()
-        event.stopPropagation()
-        return false
-      }
-
-      state.setMultipleState({
-        [State_Keys.SlideIndex]: index,
-=======
       const { state, animation } = this
 
       state.setMultipleState({
         [State_Keys.SlideIndex]: index,
         [State_Keys.SliderReady]: false,
->>>>>>> master
         [State_Keys.startPos]: getPositionX(event),
         [State_Keys.isDragging]: true,
         [State_Keys.animationID]: requestAnimationFrame(animation.init)

@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import { childrenSelector /*TAGS*/, EVENTS } from "@/util/constants"
-//import { getRootSelector } from "../../core/functions/getRootSelector"
-=======
 import { childrenSelector, EVENTS } from "@/util/constants"
->>>>>>> master
 import { getAllElements } from "../../dom/methods/getAllElements"
 import { State, State_Keys } from "../../state/BrickState"
 import { shouldGoToNextSlide } from "./functions/shouldGoToNextSlide"
@@ -12,13 +7,10 @@ import { SetPositionByIndex } from "./SetPositionByIndex"
 import { getChildren } from "@/core/functions/getChildren"
 import { listener } from "@/util"
 import { updateSliderTransition } from "@/action/updateSliderTransition"
-<<<<<<< HEAD
-=======
 import { setSliderTransition } from "@/action/setSliderTransition"
 import { getPositionX } from "./functions/getPositionX"
 import { matchStateOptions } from "@/util/matchStateOptions"
 import { firstSlideCallback } from "./functions/firstSlideCallback"
->>>>>>> master
 
 export class TouchEnd {
   state: State
@@ -35,22 +27,6 @@ export class TouchEnd {
     this.rootSelector = rootSelector
   }
   public init = (): void => {
-<<<<<<< HEAD
-    const { state, slides, slider, setPositionByIndex } = this
-
-    //state.get(State_Keys.isDragging) &&
-    // updateSliderTransition(this.rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")
-
-    state.set(State_Keys.isDragging, false)
-
-    updateSliderTransition(this.rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")
-
-    slider.oncontextmenu = null
-
-    const animationId = state.get(State_Keys.animationID)
-
-    if (typeof animationId === "number") cancelAnimationFrame(animationId)
-=======
     const { rootSelector, slider: childrenSelector, state, slides, setPositionByIndex } = this
 
     setSliderTransition(rootSelector)
@@ -65,21 +41,11 @@ export class TouchEnd {
     } else {
       updateSliderTransition(rootSelector, "")
     }
->>>>>>> master
 
     const moveSlider = state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
 
     let currentIndex = state.get(State_Keys.SlideIndex)
 
-<<<<<<< HEAD
-    if (shouldGoToNextSlide(moveSlider, currentIndex, slides))
-      state.set(State_Keys.SlideIndex, (currentIndex += 1))
-
-    if (shouldGoToPrevSlide(moveSlider, currentIndex))
-      state.set(State_Keys.SlideIndex, (currentIndex -= 1))
-
-    setPositionByIndex.init()
-=======
     shouldGoToNextSlide(moveSlider, currentIndex, slides) &&
       state.set(State_Keys.SlideIndex, (currentIndex += 1))
 
@@ -99,6 +65,5 @@ export class TouchEnd {
       )
 
     state.set(State_Keys.SliderReady, true)
->>>>>>> master
   }
 }
