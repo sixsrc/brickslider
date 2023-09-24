@@ -1,44 +1,20 @@
-/*import { State as BrickState } from "../state/BrickState";
+import { State as BrickState } from "../state/BrickState"
 
-type OptionsToCheck = Record<string, any>;
-type Callback = () => void;
-
-export function matchStateOptions(
-  rootSelector: string,
-  optionsToCheck: OptionsToCheck,
-  callback: Callback
-): void {
-  if (optionsToCheck) {
-    new BrickState(rootSelector);
-    for (const [key, value] of Object.entries(optionsToCheck)) {
-      if (BrickState.state[rootSelector][key] === value) {
-        callback();
-      }
-    }
-  }
-}*/
-
-import { State as BrickState } from "../state/BrickState";
-
-type OptionsToCheck = Record<string, any>;
-type Callback = () => void;
+type OptionsToCheck = Record<string, unknown>
+type Callback = () => void
 
 export function matchStateOptions(
-  rootSelector: string,
+  $root: string,
   optionsToCheck: OptionsToCheck,
   callback?: Callback
 ): boolean {
   if (optionsToCheck) {
-    new BrickState(rootSelector);
+    new BrickState($root)
     for (const [key, value] of Object.entries(optionsToCheck)) {
-      if (BrickState.state[rootSelector][key] !== value) {
-        return false;
-      }
+      if (BrickState.state[$root][key] !== value) return false
     }
-    if (callback) {
-      callback();
-    }
-    return true;
+    if (callback) callback()
+    return true
   }
-  return false;
+  return false
 }

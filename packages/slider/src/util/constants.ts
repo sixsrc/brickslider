@@ -1,3 +1,6 @@
+import { getChildren } from "@/core/functions/getChildren"
+import { getAllElements } from "@/dom/methods/getAllElements"
+
 export const DOM_ELEMENTS = {
   CHILDREN_SELECTOR: ".slider__container",
   DOTS_SELECTOR: ".slider__dots ",
@@ -40,6 +43,12 @@ export const PROPERTYS = {
   VISIBILITY: "visibility"
 }
 
+export const TRANSITIONS = {
+  TRANSFORM_EASE: "transform 400ms cubic-bezier(0.25,1,0.5,1)"
+}
+//"transform 0.2s ease"
+//cubic-bezier(0.25,1,0.5,1)
+
 export const EVENTS = {
   RESIZE: "resize",
   CLICK: "click",
@@ -53,6 +62,12 @@ export const EVENTS = {
   TRANSITIONEND: "transitionend"
 }
 
+export const eventX = (event: MouseEvent | TouchEvent) =>
+  event.type.includes("mouse") ? (event as MouseEvent) : (event as TouchEvent)
+
 export const dotsSelector = DOM_ELEMENTS.DOTS_SELECTOR
 
 export const childrenSelector = DOM_ELEMENTS.CHILDREN_SELECTOR
+
+export const slideNodeList = ($root: string) =>
+  Array.from(getAllElements<HTMLElement>(`${childrenSelector} > *`, getChildren($root)))

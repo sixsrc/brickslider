@@ -1,6 +1,6 @@
-import { $ } from "../../util";
-import { dotsSelector } from "../../util/constants";
+import { $ } from "../../util"
+import { dotsSelector } from "../../util/constants"
 
-export function getDotsSelector(rootSelector: string): HTMLElement {
-  return $(`${rootSelector} ${dotsSelector}`);
+export function getDotsSelector($root: string): HTMLElement {
+  return $(`${$root} ${dotsSelector}`)
 }

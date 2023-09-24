@@ -1,4 +1,18 @@
-import { IOptions } from "./IOptions"
+type typeTransition = "fade" | "slide" | "thorn" | "lines" | "halftone" | "brush"
+
+export type TypeOptions = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sliderOptions?: any
+  autoplay?: boolean
+  autoplaySpeed?: number
+  dots?: boolean
+  arrows?: boolean
+  touch?: boolean
+  infinite?: boolean
+  speed?: number
+  transition?: typeTransition
+  useTailwind?: boolean
+}
 
 export class Options {
   autoplay?: boolean
@@ -8,18 +22,16 @@ export class Options {
   touch?: boolean
   infinite?: boolean
   speed?: number
-  mode?: "horizontal" | "vertical"
-  transition?: "fade" | "slide" | "thorn" | "lines" | "halftone" | "brush"
+  transition?: typeTransition
   useTailwind?: boolean
 
-  constructor(options?: IOptions) {
+  constructor(options?: TypeOptions) {
     this.autoplay = options?.autoplay ?? false
     this.autoplaySpeed = options?.autoplaySpeed ?? 500
     this.dots = options?.dots ?? true
     this.arrows = options?.arrows ?? true
     this.infinite = options?.infinite ?? false
     this.speed = options?.speed ?? 500
-    this.mode = options?.mode ?? "horizontal"
     this.transition = options?.transition ?? "slide"
     this.touch = options?.touch ?? true
     this.useTailwind = options?.useTailwind ?? true

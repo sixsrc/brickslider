@@ -1,18 +1,15 @@
 import { listener } from "../../../util"
 import { EVENTS } from "../../../util/constants"
-import { TouchListenersParams } from "../TouchListenersParams"
 
+type TouchListenersParams = {
+  element: HTMLElement
+  index: number
+  touchStart: EventListener
+  touchEnd: EventListener
+  touchMove: EventListener
+}
 export function initTouchListeners(params: TouchListenersParams): void {
-  const { /* slideImage,*/ element, touchStart, touchEnd, touchMove } = params
-
-  /* element.addEventListener("touchstart", touchStart);
-  element.addEventListener("touchend", touchEnd);
-  element.addEventListener("touchmove", touchMove);
-  element.addEventListener("mousedown", touchStart);
-  element.addEventListener("mouseup", touchEnd);
-  element.addEventListener("mouseleave", touchEnd);
-  element.addEventListener("mousemove", touchMove);*/
-
+  const { element, touchStart, touchEnd, touchMove } = params
   listener(EVENTS.TOUCHSTART, element, touchStart)
   listener(EVENTS.TOUCHEND, element, touchEnd)
   listener(EVENTS.TOUCHMOVE, element, touchMove)

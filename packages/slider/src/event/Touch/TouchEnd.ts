@@ -1,50 +1,50 @@
-import { childrenSelector, EVENTS } from "@/util/constants"
-import { getAllElements } from "../../dom/methods/getAllElements"
+import { setStyle } from "@/dom/methods/setStyle"
 import { State, State_Keys } from "../../state/BrickState"
 import { shouldGoToNextSlide } from "./functions/shouldGoToNextSlide"
 import { shouldGoToPrevSlide } from "./functions/shouldGoToPrevSlide"
 import { SetPositionByIndex } from "./SetPositionByIndex"
+import { slideNodeList, STYLES, TRANSITIONS } from "@/util/constants"
 import { getChildren } from "@/core/functions/getChildren"
-import { listener } from "@/util"
-import { updateSliderTransition } from "@/action/updateSliderTransition"
-import { setSliderTransition } from "@/action/setSliderTransition"
-import { getPositionX } from "./functions/getPositionX"
-import { matchStateOptions } from "@/util/matchStateOptions"
-import { firstSlideCallback } from "./functions/firstSlideCallback"
+import { transform } from "@/transition/transform"
 
 export class TouchEnd {
+  $root: string
   state: State
-  slides: HTMLElement[]
-  slider: HTMLElement
-  rootSelector: string
   setPositionByIndex: SetPositionByIndex
 
-  constructor(rootSelector: string) {
-    this.state = new State(rootSelector)
-    this.slider = getChildren(rootSelector)
-    this.slides = Array.from(getAllElements<HTMLElement>(`${childrenSelector} > *`, this.slider))
-    this.setPositionByIndex = new SetPositionByIndex(rootSelector)
-    this.rootSelector = rootSelector
+  constructor($root: string) {
+    this.$root = $root
+    this.state = new State($root)
+    this.setPositionByIndex = new SetPositionByIndex($root)
   }
   public init = (): void => {
-    const { rootSelector, slider: childrenSelector, state, slides, setPositionByIndex } = this
+    const { $root, state, setPositionByIndex } = this
 
-    setSliderTransition(rootSelector)
+    const $children = getChildren($root)
+
+    //if (!state.get(State_Keys.SliderReady)) return
 
     state.set(State_Keys.isDragging, false)
+
+    const touchStartTime = state.get(State_Keys.TouchStartTime)
+    const touchEndtTime = state.get(State_Keys.TouchEndTime)
+    const diferenceInMs = Math.abs(touchEndtTime - touchStartTime)
 
     const animationId = state.get(State_Keys.animationID)
 
     if (typeof animationId === "number") {
       cancelAnimationFrame(animationId)
-      updateSliderTransition(rootSelector, "transform 0.2s")
-    } else {
-      updateSliderTransition(rootSelector, "")
+    }
+
+    if (diferenceInMs < 150) {
+      transform($root, state.get(State_Keys.prevTranslate))
+      console.log("minhapica!!!")
     }
 
     const moveSlider = state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
 
     let currentIndex = state.get(State_Keys.SlideIndex)
+    const slides = slideNodeList($root)
 
     shouldGoToNextSlide(moveSlider, currentIndex, slides) &&
       state.set(State_Keys.SlideIndex, (currentIndex += 1))
@@ -54,16 +54,7 @@ export class TouchEnd {
 
     setPositionByIndex.init()
 
-    const [currentPosition, startPos] = [getPositionX(event), state.get(State_Keys.startPos)]
-    const deltaX = currentPosition - startPos
-
-    if (deltaX > 0)
-      listener(EVENTS.TRANSITIONEND, childrenSelector, () =>
-        matchStateOptions(rootSelector, { [State_Keys.Infinite]: true }, () =>
-          firstSlideCallback(rootSelector, slides)
-        )
-      )
-
-    state.set(State_Keys.SliderReady, true)
+    state.set(State_Keys.TouchEndTime, Date.now())
+    //console.log(diferenceInMs)
   }
 }

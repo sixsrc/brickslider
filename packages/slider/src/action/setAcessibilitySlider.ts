@@ -3,14 +3,12 @@ import { setSliderAttributes } from "./setSliderAttributes"
 
 export function setAcessibilitySlider(
   numberOfSlides: number | undefined,
-  containerSlider: HTMLElement,
+  $root: HTMLElement,
   clonedSlider: HTMLElement[]
 ): void {
   if (numberOfSlides) {
     for (let i = 0; i < numberOfSlides; i++) {
-      const clonedSlide = containerSlider.children[i].cloneNode(
-        true
-      ) as HTMLElement
+      const clonedSlide = $root.children[i].cloneNode(true) as HTMLElement
 
       setSliderAttributes(clonedSlide, {
         "aria-hidden": "true",
@@ -19,5 +17,5 @@ export function setAcessibilitySlider(
       clonedSlider.push(clonedSlide)
     }
   }
-  setInnerHTML(containerSlider, "")
+  setInnerHTML($root, "")
 }

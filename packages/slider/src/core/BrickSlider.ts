@@ -16,28 +16,27 @@ import { initSliderControls } from "./functions/initSliderControls"
 import { Methods } from "./Methods"
 import { cloneSlides } from "./functions/cloneSlides"
 import { matchStateOptions } from "@/util/matchStateOptions"
-//import { transform } from "@/transition/transform"
 
 export class BrickSlider extends Methods {
-  private clonedSlides: HTMLElement[] = []
-  public rootSelector: string
-  public options?: Options
+  clonedSlides: HTMLElement[] = []
+  $root: string
+  options?: Options
 
-  constructor(rootSelector: string, options?: Options) {
+  constructor($root: string, options?: Options) {
     super()
-    assert(isValidSelector(rootSelector), "Main Selector Not Found")
-    this.rootSelector = rootSelector
+    assert(isValidSelector($root), "Main Selector Not Found")
+    this.$root = $root
     this.options = { ...new Options(), ...options }
   }
 
   init(): void {
-    const { rootSelector, options, clonedSlides } = this
+    const { $root, options, clonedSlides } = this
 
-    const childrenSelector = getChildren(rootSelector)
+    const childrenSelector = getChildren($root)
 
-    const state = new State(rootSelector, options)
+    const state = new State($root, options)
 
-    matchStateOptions(rootSelector, { [State_Keys.Infinite]: true }, () => {
+    matchStateOptions($root, { [State_Keys.Infinite]: true }, () => {
       cloneSlides(childrenSelector)
     })
 
@@ -45,7 +44,7 @@ export class BrickSlider extends Methods {
 
     state.set(State_Keys.NumberOfSlides, getCountChildren)
 
-    const firstSlide = getFirstChildren(getChildren(rootSelector)) as Element
+    const firstSlide = getFirstChildren(getChildren($root)) as Element
 
     addClass([firstSlide], CLASS_VALUES.ACTIVE)
 
@@ -53,7 +52,7 @@ export class BrickSlider extends Methods {
 
     state.set(State_Keys.SliderWidth, childrenSelectorWidth)
 
-    const handleResize = () => resize(rootSelector)
+    const handleResize = () => resize($root)
 
     listener(EVENTS.RESIZE, window, handleResize)
 
@@ -65,6 +64,6 @@ export class BrickSlider extends Methods {
 
     state.set(State_Keys.LoadPage, false)
 
-    initSliderControls(rootSelector, options)
+    initSliderControls($root, options)
   }
 }

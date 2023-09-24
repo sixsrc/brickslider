@@ -1,23 +1,23 @@
-import { EVENTS } from '../util/constants'
-import { listener } from '../util'
-import { createArrowButtons } from './functions/createArrowButtons'
-import { appendArrowButtons } from './functions/appendArrowButtons'
-import { handleClick } from './functions/handleClick'
+import { EVENTS } from "../util/constants"
+import { listener } from "../util"
+import { createArrowButtons } from "./functions/createArrowButtons"
+import { appendArrowButtons } from "./functions/appendArrowButtons"
+import { handleClick } from "./functions/handleClick"
 
 export class Arrows {
-  public rootSelector: string
+  $root: string
 
-  constructor(rootSelector: string) {
-    this.rootSelector = rootSelector
+  constructor($root: string) {
+    this.$root = $root
   }
 
   public init(): void {
-    const { rootSelector } = this,
-      createButtons = createArrowButtons(2),
-      buttons = appendArrowButtons(createButtons, rootSelector)
+    const { $root } = this
+    const createButtons = createArrowButtons(2)
+    const buttons = appendArrowButtons(createButtons, $root)
 
     buttons.forEach(button => {
-      const setCurrentSlide = handleClick(button, rootSelector)
+      const setCurrentSlide = handleClick(button, $root)
       listener(EVENTS.CLICK, button, setCurrentSlide)
     })
   }

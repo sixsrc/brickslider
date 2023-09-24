@@ -3,7 +3,7 @@ export function shouldGoToNextSlide(
   currentIndex: number,
   element: HTMLElement[]
 ): boolean {
-  const isMovedByThreshold = moveSlider < -100
+  const isMovedByThreshold = moveSlider < -200
   const isNotLastSlide = currentIndex < element.length - 1
   return isMovedByThreshold && isNotLastSlide
 }

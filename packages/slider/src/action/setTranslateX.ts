@@ -1,10 +1,10 @@
 import { State, State_Keys } from "../state/BrickState"
 
-export function setTranslateX(rootSelector: string, currentTranslateFromTouch?: number): number {
-  const state = new State(rootSelector),
-    currentSlideIndex = state.get(State_Keys.SlideIndex),
-    childrenContainerWidth = state.get(State_Keys.SliderWidth),
-    currentTranslate = -childrenContainerWidth * currentSlideIndex
+export function setTranslateX($root: string, currentTranslateFromTouch?: number): number {
+  const state = new State($root)
+  const currentSlideIndex = state.get(State_Keys.SlideIndex)
+  const childrenContainerWidth = state.get(State_Keys.SliderWidth)
+  const currentTranslate = -childrenContainerWidth * currentSlideIndex
 
   !currentTranslateFromTouch &&
     state.setMultipleState({

@@ -1,5 +1,5 @@
-import { $ } from "../../util";
+import { $ } from "../../util"
 
-export function getRootSelector(rootSelector: string): HTMLElement {
-  return $(`${rootSelector}`);
+export function getRootSelector($root: string): HTMLElement {
+  return $(`${$root}`)
 }

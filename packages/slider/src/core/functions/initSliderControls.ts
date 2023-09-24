@@ -1,29 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/*export function initSliderControls(...classes: { init: () => void }[]): void {
-  for (let i = 0; i < classes.length; i++) {
-    classes[i].init();
-  }
-}*/
 
 import { Touch } from "../../event/Touch"
 import { Arrows } from "../../ui/Arrows"
 import { Dots } from "../../ui/Dots"
 
-export function initSliderControls(
-  this: any,
-  rootSelector: string,
-  options: any
-): void {
+export function initSliderControls(this: any, $root: string, options: any): void {
   const { dots, arrows, touch } = options || {}
   if (dots) {
-    new Dots(rootSelector).init()
+    new Dots($root).init()
   }
 
   if (arrows) {
-    new Arrows(rootSelector).init()
+    new Arrows($root).init()
   }
 
   if (touch) {
-    new Touch(rootSelector).init()
+    new Touch($root).init()
   }
 }

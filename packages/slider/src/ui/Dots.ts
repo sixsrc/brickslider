@@ -10,28 +10,28 @@ import { State, State_Keys } from "../state/BrickState"
 import { getRootSelector } from "../core/functions/getRootSelector"
 
 export class Dots {
-  rootSelector: string
+  $root: string
 
-  constructor(rootSelector: string) {
-    this.rootSelector = rootSelector
+  constructor($root: string) {
+    this.$root = $root
   }
 
   public init(): void {
-    const rootSelector = getRootSelector(this.rootSelector),
-      containerDots = createNewElement(TAGS.UL),
-      state = new State(this.rootSelector)
+    const $root = getRootSelector(this.$root)
+    const containerDots = createNewElement(TAGS.UL)
+    const state = new State(this.$root)
 
     setAttribute(containerDots, ATTRIBUTES.CLASS, dotsSelector.replace(".", ""))
-    appendToParent(rootSelector, containerDots)
+    appendToParent($root, containerDots)
 
-    createDots(this.rootSelector, containerDots)
+    createDots(this.$root, containerDots)
 
     const dots = getAllElements<HTMLElement>(TAGS.LI, containerDots)
 
     Array.from(dots).forEach((dot, index) => {
       const updateSliderCallback = () => {
         state.set(State_Keys.SlideIndex, index)
-        updateSliderFromDots(this.rootSelector)
+        updateSliderFromDots(this.$root)
       }
 
       listener(EVENTS.CLICK, dot, updateSliderCallback)

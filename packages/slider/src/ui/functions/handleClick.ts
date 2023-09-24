@@ -1,5 +1,5 @@
 import { getElementAttribute } from "../../dom/methods/getElementAttribute"
-import { ATTRIBUTES /*TIMES */, EVENTS } from "../../util/constants"
+import { ATTRIBUTES, EVENTS, STYLES, TRANSITIONS, slideNodeList } from "../../util/constants"
 import { FROM, setCurrentSlide } from "../../action/setCurrentSlide"
 import { updateDots } from "../../action/updateDots"
 import { State, State_Keys } from "../../state/BrickState"
@@ -7,42 +7,51 @@ import { matchStateOptions } from "../../util/matchStateOptions"
 import { listener } from "../../util"
 import { getChildren } from "../../core/functions/getChildren"
 import { slideIndexBypass } from "@/core/functions/slideIndexBypass"
-import { updateSliderTransition } from "@/action/updateSliderTransition"
+import { setStyle } from "@/dom/methods/setStyle"
+import { checkFirstSlideCloned } from "@/event/Touch/functions/checkFirstSlideCloned"
 
-export function handleClick(button: Element, rootSelector: string): () => void {
+export function handleClick(button: Element, $root: string): () => void {
   return () => {
-    const state = new State(rootSelector)
-
-    if (!state.get(State_Keys.SliderReady)) return
-
-    state.set(State_Keys.SliderReady, false)
-
+    const state = new State($root)
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
     const isPrevDirection = getAttribute === FROM.PREV
 
-    updateSliderTransition(rootSelector, "transform 0.2s ease")
+    if (state.get(State_Keys.SliderReady)) {
+      state.set(State_Keys.SliderReady, false)
 
-    setCurrentSlide({
-      from: isPrevDirection ? FROM.PREV : FROM.NEXT,
-      rootSelector
-    })
+      const $children = getChildren($root)
 
-    const isInfinite = state.get(State_Keys.Infinite),
-      index = state.get(State_Keys.SlideIndex),
-      numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2,
-      slideIndex = isInfinite ? slideIndexBypass(index, numberOfSlides) : index
+      setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
-    const setActiveDot = () => {
-      updateDots(slideIndex, rootSelector)
+      setCurrentSlide({
+        from: isPrevDirection ? FROM.PREV : FROM.NEXT,
+        rootSelector: $root
+      })
+
+      const isInfinite = state.get(State_Keys.Infinite)
+      const index = state.get(State_Keys.SlideIndex)
+      const numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2
+      const slideIndex = isInfinite ? slideIndexBypass(index, numberOfSlides) : index
+
+      const setActiveDot = () => {
+        updateDots(slideIndex, $root)
+      }
+
+      matchStateOptions($root, { [State_Keys.Dots]: true }, setActiveDot)
+
+      listener(EVENTS.TRANSITIONEND, $children, () => {
+        state.set(State_Keys.SliderReady, true)
+      })
+
+      /*listener(EVENTS.TRANSITIONEND, $children, () => {
+        matchStateOptions($root, { [State_Keys.Infinite]: true }, () => {
+          checkFirstSlideCloned($root, slideNodeList($root))
+        })
+
+        state.set(State_Keys.SliderReady, true)
+
+        setStyle($children, STYLES.TRANSITION, "")
+      })*/
     }
-
-    matchStateOptions(rootSelector, { [State_Keys.Dots]: true }, setActiveDot)
-
-    const childrenSelector = getChildren(rootSelector)
-
-    listener(EVENTS.TRANSITIONEND, childrenSelector, () => {
-      state.set(State_Keys.SliderReady, true)
-      updateSliderTransition(rootSelector, "")
-    })
   }
 }

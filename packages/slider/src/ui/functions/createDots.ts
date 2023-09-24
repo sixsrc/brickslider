@@ -5,24 +5,21 @@ import { createNewElement } from "../../dom/methods/createNewElement"
 import { CLASS_VALUES, TAGS } from "../../util/constants"
 import { State, State_Keys } from "@/state/BrickState"
 
-export function createDots(
-  rootSelector: string,
-  //numberOfSlides: number,
-  containerDots: HTMLElement
-): void {
-  const state = new State(rootSelector)
+export function createDots($root: string, containerDots: HTMLElement): void {
+  const state = new State($root)
 
-  matchStateOptions(rootSelector, { [State_Keys.Infinite]: true }, () => {
-    state.set(
-      State_Keys.NumberOfSlides,
-      state.get(State_Keys.NumberOfSlides) - 2
-    )
+  matchStateOptions($root, { [State_Keys.Infinite]: true }, () => {
+    state.set(State_Keys.NumberOfSlides, state.get(State_Keys.NumberOfSlides) - 2)
   })
   const numberOfSlides = state.get(State_Keys.NumberOfSlides)
+
   for (let i = 0; i < numberOfSlides; i++) {
     const liDots = createNewElement(TAGS.LI)
+
     appendToParent(containerDots, liDots)
+
     addClass([liDots], CLASS_VALUES.SLIDER_DOT)
+
     if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
   }
 }

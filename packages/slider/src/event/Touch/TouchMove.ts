@@ -1,43 +1,75 @@
-import { getChildren } from "@/core/functions/getChildren"
 import { State, State_Keys } from "../../state/BrickState"
 import { transform } from "../../transition/transform"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
-import { updateSliderTransition } from "@/action/updateSliderTransition"
+import { checkFirstSlideCloned } from "./functions/checkFirstSlideCloned"
+import { matchStateOptions } from "@/util/matchStateOptions"
+import { CLASS_VALUES, STYLES, TRANSITIONS, eventX, slideNodeList } from "@/util/constants"
+import { hasClass } from "@/dom/methods/hasClass"
+import { setStyle } from "@/dom/methods/setStyle"
+import { getChildren } from "@/core/functions/getChildren"
 
 export class TouchMove {
+  $root: string
   state: State
-  rootSelector: string
-  slider: HTMLElement
+  //slider: HTMLElement
   animation: RequestAnimationFrame
 
-  constructor(rootSelector: string) {
-    this.animation = new RequestAnimationFrame(rootSelector)
-    this.state = new State(rootSelector)
-    this.rootSelector = rootSelector
-    this.slider = getChildren(this.rootSelector)
+  constructor($root: string) {
+    this.$root = $root
+    this.state = new State($root)
+    //this.slider = getChildren(this.$root)
+    this.animation = new RequestAnimationFrame($root)
   }
 
   public init = (event: Event): void => {
-    const { state, rootSelector, animation } = this
+    const { state, $root, animation } = this
 
-    const [isDragging, currentPosition, prevTranslate, startPos] = [
-      state.get(State_Keys.isDragging),
-      getPositionX(event),
-      state.get(State_Keys.prevTranslate),
-      state.get(State_Keys.startPos)
-    ]
+    //const $children = getChildren(this.$root)
 
-    updateSliderTransition(rootSelector, "")
+    //if (!state.get(State_Keys.SliderReady)) return
 
-    if (isDragging && !state.get(State_Keys.SliderReady)) {
-      state.set(State_Keys.currentTranslate, prevTranslate + currentPosition - startPos)
+    /*if (state.get(State_Keys.SlideIndex) !== 0)
+      setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)*/
 
-      if (state.get(State_Keys.SliderReady)) {
-        const setCurrentTranslate = state.get(State_Keys.currentTranslate)
-        transform(rootSelector, setCurrentTranslate)
-        requestAnimationFrame(animation.init)
-      }
+    const setEvent = eventX(event as MouseEvent | TouchEvent)
+
+    const isDragging = state.get(State_Keys.isDragging)
+    const currentPosition = getPositionX(setEvent)
+    const prevTranslate = state.get(State_Keys.prevTranslate)
+    const startPos = state.get(State_Keys.startPos)
+    const deltaX = currentPosition - startPos
+
+    const firstSlide = slideNodeList($root)[0]
+    const hasActiveClass = hasClass(firstSlide, CLASS_VALUES.ACTIVE)
+
+    //setStyle($children, STYLES.TRANSITION, "")
+
+    const currentTranslate = state.get(State_Keys.currentTranslate)
+    const isFirstAndActive = currentTranslate <= 0 && hasActiveClass
+
+    const inicio = Date.now()
+    for (let i = 0; i < 1000000; i++) {}
+
+    if (isDragging) {
+      /* if (deltaX > 0 && isFirstAndActive) {
+        matchStateOptions($root, { [State_Keys.Infinite]: true }, () => {
+          checkFirstSlideCloned($root, slideNodeList($root))
+          ///state.set(State_Keys.SliderReady, false)
+          //setStyle($children, STYLES.TRANSITION, "")
+        })
+      }*/
+
+      state.setMultipleState({
+        [State_Keys.SliderReady]: true,
+        [State_Keys.currentTranslate]: prevTranslate + currentPosition - startPos
+      })
+
+      const setCurrentTranslate = state.get(State_Keys.currentTranslate)
+
+      transform($root, setCurrentTranslate)
+
+      requestAnimationFrame(animation.init)
     }
   }
 }
