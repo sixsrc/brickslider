@@ -1,13 +1,13 @@
-export function slideIndexBypass(displayedIndex: number, totalSlides: number) {
+export function slideIndexBypass(displayedIndex: number, numberOfSlides: number) {
   const indexBypass =
     displayedIndex < 0
-      ? totalSlides - 1
-      : displayedIndex >= totalSlides
+      ? numberOfSlides - 1
+      : displayedIndex >= numberOfSlides
       ? displayedIndex
-      : displayedIndex === totalSlides - 1
+      : displayedIndex === numberOfSlides - 1
       ? 0
       : displayedIndex === 0
-      ? totalSlides - 3
+      ? numberOfSlides - 3
       : displayedIndex - 1
 
   return indexBypass

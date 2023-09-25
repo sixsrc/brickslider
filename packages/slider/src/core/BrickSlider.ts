@@ -4,7 +4,6 @@ import { CLASS_VALUES, EVENTS } from "../util/constants"
 import { addClass } from "../dom/methods/addClass"
 import { getSliderWidth } from "../dom/methods/getSliderWidth"
 import { listener } from "../util"
-import { resize } from "../event/resize"
 import { setAcessibilitySlider } from "../action/setAcessibilitySlider"
 import { appendSlider } from "./functions/appendSlider"
 import { assert } from "../error/assert"
@@ -16,21 +15,24 @@ import { initSliderControls } from "./functions/initSliderControls"
 import { Methods } from "./Methods"
 import { cloneSlides } from "./functions/cloneSlides"
 import { matchStateOptions } from "@/util/matchStateOptions"
+import { Resize } from "@/event/Resize"
 
 export class BrickSlider extends Methods {
   clonedSlides: HTMLElement[] = []
   $root: string
   options?: Options
+  resize: Resize
 
   constructor($root: string, options?: Options) {
     super()
     assert(isValidSelector($root), "Main Selector Not Found")
     this.$root = $root
     this.options = { ...new Options(), ...options }
+    this.resize = new Resize($root)
   }
 
   init(): void {
-    const { $root, options, clonedSlides } = this
+    const { $root, options, clonedSlides, resize } = this
 
     const childrenSelector = getChildren($root)
 
@@ -52,7 +54,7 @@ export class BrickSlider extends Methods {
 
     state.set(State_Keys.SliderWidth, childrenSelectorWidth)
 
-    const handleResize = () => resize($root)
+    const handleResize = () => resize.init()
 
     listener(EVENTS.RESIZE, window, handleResize)
 

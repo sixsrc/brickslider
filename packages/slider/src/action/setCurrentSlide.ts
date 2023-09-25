@@ -1,15 +1,13 @@
-import { CLASS_VALUES, EVENTS, STYLES, childrenSelector, slideNodeList } from "../util/constants"
+import { CLASS_VALUES, EVENTS, slideNodeList } from "../util/constants"
 import { transform as transformSlider } from "../transition/transform"
 import { addClass } from "../dom/methods/addClass"
-import { getAllElements } from "../dom/methods/getAllElements"
 import { setSlideIndex } from "./setSlideIndex"
 import { State, State_Keys } from "../state/BrickState"
 import { getChildren } from "../core/functions/getChildren"
 import { isFirstOrLast } from "@/core/functions/isFirstOrLast"
-import { checkFirstSlideCloned } from "@/event/Touch/functions/checkFirstSlideCloned"
 import { listener } from "@/util"
 import { matchStateOptions } from "@/util/matchStateOptions"
-import { setStyle } from "@/dom/methods/setStyle"
+import { checkFirstSlide } from "./checkFirstSlide"
 
 export enum FROM {
   DOTS = "dots",
@@ -27,18 +25,19 @@ export function setCurrentSlide(
     rootSelector: ""
   }
 ): void {
-  const { from, index, rootSelector } = params,
-    state = new State(rootSelector),
-    slides = Array.from(
-      getAllElements<HTMLElement>(`${childrenSelector} > *`, getChildren(rootSelector))
-    )
+  const { from, index, rootSelector } = params
+  const state = new State(rootSelector)
+  const slides = slideNodeList(rootSelector)
 
   slides.forEach((slide, index) => {
     isFirstOrLast(rootSelector, from!, slide, index)
   })
 
-  if (from && !state.get(State_Keys.isStopSlider)) {
+  const isStopSlider = state.get(State_Keys.isStopSlider)
+
+  if (from && !isStopSlider) {
     const currentSlideIndex = state.get(State_Keys.SlideIndex)
+
     const slideIndex = setSlideIndex({
       from,
       currentSlideIndex,
@@ -53,11 +52,12 @@ export function setCurrentSlide(
 
     const $children = getChildren(rootSelector)
 
+    const isFirstSlide = () => {
+      checkFirstSlide(rootSelector, $children)
+    }
+
     listener(EVENTS.TRANSITIONEND, $children, () => {
-      matchStateOptions(rootSelector, { [State_Keys.Infinite]: true }, () => {
-        checkFirstSlideCloned(rootSelector, slideNodeList(rootSelector))
-        setStyle($children, STYLES.TRANSITION, "")
-      })
+      matchStateOptions(rootSelector, { [State_Keys.Infinite]: true }, isFirstSlide)
     })
 
     return

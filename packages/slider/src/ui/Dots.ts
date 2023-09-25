@@ -22,6 +22,7 @@ export class Dots {
     const state = new State(this.$root)
 
     setAttribute(containerDots, ATTRIBUTES.CLASS, dotsSelector.replace(".", ""))
+
     appendToParent($root, containerDots)
 
     createDots(this.$root, containerDots)

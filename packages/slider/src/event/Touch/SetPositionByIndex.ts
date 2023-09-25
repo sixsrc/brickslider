@@ -18,16 +18,19 @@ export class SetPositionByIndex {
   }
 
   init(): void {
-    const { state, rootSelector, slider } = this,
-      [sliderWidth, currentIndex] = [getSliderWidth(slider), state.get(State_Keys.SlideIndex)],
-      currentTranslate = currentIndex * -sliderWidth
+    const { state, rootSelector, slider } = this
+
+    const sliderWidth = getSliderWidth(slider)
+    const currentIndex = state.get(State_Keys.SlideIndex)
+    const currentTranslate = currentIndex * -sliderWidth
 
     state.setMultipleState({
       [State_Keys.currentTranslate]: currentTranslate,
       [State_Keys.prevTranslate]: currentTranslate
     })
 
-    const [index, from] = [currentIndex, FROM.TOUCH]
+    const index = currentIndex
+    const from = FROM.TOUCH
 
     setCurrentSlide({
       from,
@@ -35,9 +38,9 @@ export class SetPositionByIndex {
       rootSelector
     })
 
-    const isInfinite = state.get(State_Keys.Infinite),
-      numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2,
-      slideIndex = isInfinite ? slideIndexBypass(index, numberOfSlides) : index
+    const isInfinite = state.get(State_Keys.Infinite)
+    const numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2
+    const slideIndex = isInfinite ? slideIndexBypass(index, numberOfSlides) : index
 
     const setActiveDot = () => {
       updateDots(slideIndex, rootSelector)

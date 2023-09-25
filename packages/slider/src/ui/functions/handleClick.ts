@@ -1,5 +1,5 @@
 import { getElementAttribute } from "../../dom/methods/getElementAttribute"
-import { ATTRIBUTES, EVENTS, STYLES, TRANSITIONS, slideNodeList } from "../../util/constants"
+import { ATTRIBUTES, EVENTS, STYLES, TRANSITIONS } from "../../util/constants"
 import { FROM, setCurrentSlide } from "../../action/setCurrentSlide"
 import { updateDots } from "../../action/updateDots"
 import { State, State_Keys } from "../../state/BrickState"
@@ -8,7 +8,6 @@ import { listener } from "../../util"
 import { getChildren } from "../../core/functions/getChildren"
 import { slideIndexBypass } from "@/core/functions/slideIndexBypass"
 import { setStyle } from "@/dom/methods/setStyle"
-import { checkFirstSlideCloned } from "@/event/Touch/functions/checkFirstSlideCloned"
 
 export function handleClick(button: Element, $root: string): () => void {
   return () => {
@@ -33,25 +32,13 @@ export function handleClick(button: Element, $root: string): () => void {
       const numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2
       const slideIndex = isInfinite ? slideIndexBypass(index, numberOfSlides) : index
 
-      const setActiveDot = () => {
+      matchStateOptions($root, { [State_Keys.Dots]: true }, () => {
         updateDots(slideIndex, $root)
-      }
-
-      matchStateOptions($root, { [State_Keys.Dots]: true }, setActiveDot)
+      })
 
       listener(EVENTS.TRANSITIONEND, $children, () => {
         state.set(State_Keys.SliderReady, true)
       })
-
-      /*listener(EVENTS.TRANSITIONEND, $children, () => {
-        matchStateOptions($root, { [State_Keys.Infinite]: true }, () => {
-          checkFirstSlideCloned($root, slideNodeList($root))
-        })
-
-        state.set(State_Keys.SliderReady, true)
-
-        setStyle($children, STYLES.TRANSITION, "")
-      })*/
     }
   }
 }

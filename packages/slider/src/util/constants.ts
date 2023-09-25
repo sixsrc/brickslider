@@ -62,6 +62,8 @@ export const EVENTS = {
   TRANSITIONEND: "transitionend"
 }
 
+export const TOUCH_LIMIT = 150
+
 export const eventX = (event: MouseEvent | TouchEvent) =>
   event.type.includes("mouse") ? (event as MouseEvent) : (event as TouchEvent)
 

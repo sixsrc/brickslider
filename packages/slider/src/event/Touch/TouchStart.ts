@@ -1,11 +1,10 @@
-import { EVENTS, eventX, slideNodeList, STYLES, TRANSITIONS } from "@/util/constants"
+import { eventX, slideNodeList, STYLES, TRANSITIONS } from "@/util/constants"
 //import { getRootSelector } from "../../core/functions/getRootSelector"
 import { State, State_Keys } from "../../state/BrickState"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
 import { setStyle } from "@/dom/methods/setStyle"
 import { getChildren } from "@/core/functions/getChildren"
-import { captureInitialTime, listener } from "@/util"
 import { matchStateOptions } from "@/util/matchStateOptions"
 import { checkFirstSlideCloned } from "./functions/checkFirstSlideCloned"
 
@@ -26,19 +25,13 @@ export class TouchStart {
       const setEvent = eventX(event as MouseEvent | TouchEvent)
       const $children = getChildren(this.$root)
 
+      setStyle($children, STYLES.TRANSITION, "")
+
       state.set(State_Keys.TouchStartTime, Date.now())
 
-      // state.set(State_Keys.SliderReady, true)
+      const currentTranslate = state.get(State_Keys.currentTranslate)
 
-      if (state.get(State_Keys.currentTranslate) < 0)
-        setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
-      else {
-        setStyle($children, STYLES.TRANSITION, "")
-      }
-
-      //const $children = getChildren($root)
-
-      listener(EVENTS.TRANSITIONEND, $children, () => {})
+      if (currentTranslate < 0) setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
       state.setMultipleState({
         [State_Keys.SlideIndex]: index,
@@ -47,10 +40,16 @@ export class TouchStart {
         [State_Keys.animationID]: requestAnimationFrame(animation.init)
       })
 
-      matchStateOptions(this.$root, { [State_Keys.Infinite]: true }, () => {
+      const isFirstSlide = () => {
         checkFirstSlideCloned(this.$root, slideNodeList(this.$root))
         //setStyle($children, STYLES.TRANSITION, "")
-      })
+      }
+
+      matchStateOptions(this.$root, { [State_Keys.Infinite]: true }, isFirstSlide)
+
+      /*state.get(State_Keys.currentTranslate) < 0
+        ? setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+        : setStyle($children, STYLES.TRANSITION, "")*/
     }
   }
 }

@@ -1,7 +1,7 @@
 import { listener } from "../../../util"
 import { EVENTS } from "../../../util/constants"
 
-type TouchListenersParams = {
+export type TouchListenersParams = {
   element: HTMLElement
   index: number
   touchStart: EventListener

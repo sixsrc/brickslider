@@ -10,6 +10,7 @@ export function createArrowButtons(numOfButtons: number): HTMLElement[] {
 
   for (let i = 0; i < numOfButtons; i++) {
     const button = createNewElement(TAGS.BUTTON)
+
     const isGreaterThanZero = i === 0
 
     setAttribute(button, ATTRIBUTES.DIRECTION, isGreaterThanZero ? FROM.NEXT : FROM.PREV)
