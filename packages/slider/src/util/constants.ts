@@ -43,11 +43,16 @@ export const PROPERTYS = {
   VISIBILITY: "visibility"
 }
 
-export const TRANSITIONS = {
-  TRANSFORM_EASE: "transform 400ms cubic-bezier(0.25,1,0.5,1)"
-}
 //"transform 0.2s ease"
 //cubic-bezier(0.25,1,0.5,1)
+
+export const TIMES = {
+  DEFAULT_TRANSITION_TIME: 400
+}
+//`transform ${TIMES.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
+export const TRANSITIONS = {
+  TRANSFORM_EASE: `transform 0.3s ease-out`
+}
 
 export const EVENTS = {
   RESIZE: "resize",

@@ -34,6 +34,7 @@ export class Touch {
         element: slide,
         index,
         touchStart: touchStart.init(index),
+        // touchEnd: (event: Event) => touchEnd.init(event, true),
         touchEnd: touchEnd.init.bind(touchEnd),
         touchMove: touchMove.init.bind(touchMove)
       }

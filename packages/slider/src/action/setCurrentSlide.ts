@@ -8,6 +8,7 @@ import { isFirstOrLast } from "@/core/functions/isFirstOrLast"
 import { listener } from "@/util"
 import { matchStateOptions } from "@/util/matchStateOptions"
 import { checkFirstSlide } from "./checkFirstSlide"
+import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
 
 export enum FROM {
   DOTS = "dots",
@@ -26,7 +27,9 @@ export function setCurrentSlide(
   }
 ): void {
   const { from, index, rootSelector } = params
+
   const state = new State(rootSelector)
+
   const slides = slideNodeList(rootSelector)
 
   slides.forEach((slide, index) => {
@@ -48,7 +51,11 @@ export function setCurrentSlide(
 
     state.set(State_Keys.SlideIndex, slideIndex)
 
+    //const animation = new RequestAnimationFrame(rootSelector)
+
     transformSlider(rootSelector)
+
+    //requestAnimationFrame(animation.init)
 
     const $children = getChildren(rootSelector)
 

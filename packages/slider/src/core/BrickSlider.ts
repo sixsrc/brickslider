@@ -1,9 +1,9 @@
 import { getChildrenCount } from "../dom/methods/getChildrenCount"
 import { getFirstChildren } from "../dom/methods/getFirstChildren"
-import { CLASS_VALUES, EVENTS } from "../util/constants"
+import { CLASS_VALUES, EVENTS, slideNodeList } from "../util/constants"
 import { addClass } from "../dom/methods/addClass"
 import { getSliderWidth } from "../dom/methods/getSliderWidth"
-import { listener } from "../util"
+import { calcTranslate, listener } from "../util"
 import { setAcessibilitySlider } from "../action/setAcessibilitySlider"
 import { appendSlider } from "./functions/appendSlider"
 import { assert } from "../error/assert"
@@ -14,8 +14,8 @@ import { Options } from "../option/Options"
 import { initSliderControls } from "./functions/initSliderControls"
 import { Methods } from "./Methods"
 import { cloneSlides } from "./functions/cloneSlides"
-import { matchStateOptions } from "@/util/matchStateOptions"
 import { Resize } from "@/event/Resize"
+import { transform as transformSlider } from "@/transition/transform"
 
 export class BrickSlider extends Methods {
   clonedSlides: HTMLElement[] = []
@@ -34,25 +34,52 @@ export class BrickSlider extends Methods {
   init(): void {
     const { $root, options, clonedSlides, resize } = this
 
-    const childrenSelector = getChildren($root)
+    const $children = getChildren($root)
 
     const state = new State($root, options)
 
-    matchStateOptions($root, { [State_Keys.Infinite]: true }, () => {
-      cloneSlides(childrenSelector)
-    })
+    const currentTranslate = state.get(State_Keys.currentTranslate)
 
-    const getCountChildren = getChildrenCount(childrenSelector)
+    const newSlideIndex = currentTranslate + 1
+
+    const slideMargin = state.get(State_Keys.SlideMargin)
+    // const marginDiference = newPosition * slideMargin
+    //const sliderWidth = getSliderWidth(childrenSelector)
+    //const translate = -(sliderWidth * newPosition + marginDiference)
+
+    const translate = calcTranslate($children, slideMargin, newSlideIndex)
+
+    const isInFinite = state.get(State_Keys.Infinite)
+
+    const slide = slideNodeList($root)[currentTranslate]
+
+    if (isInFinite) {
+      console.log(newSlideIndex)
+      cloneSlides($children)
+
+      state.set(State_Keys.SlideIndex, newSlideIndex)
+
+      addClass([slide], CLASS_VALUES.ACTIVE)
+
+      transformSlider($root, translate)
+
+      state.setMultipleState({
+        [State_Keys.currentTranslate]: translate,
+        [State_Keys.prevTranslate]: translate
+      })
+    }
+
+    const sliderWidth = getSliderWidth($children)
+
+    state.set(State_Keys.SliderWidth, sliderWidth)
+
+    const getCountChildren = getChildrenCount($children)
 
     state.set(State_Keys.NumberOfSlides, getCountChildren)
 
     const firstSlide = getFirstChildren(getChildren($root)) as Element
 
-    addClass([firstSlide], CLASS_VALUES.ACTIVE)
-
-    const childrenSelectorWidth = getSliderWidth(childrenSelector)
-
-    state.set(State_Keys.SliderWidth, childrenSelectorWidth)
+    if (!isInFinite) addClass([firstSlide], CLASS_VALUES.ACTIVE)
 
     const handleResize = () => resize.init()
 
@@ -60,11 +87,9 @@ export class BrickSlider extends Methods {
 
     const numberOfSlides = state.get(State_Keys.NumberOfSlides)
 
-    setAcessibilitySlider(numberOfSlides, childrenSelector, clonedSlides)
+    setAcessibilitySlider($root, $children, numberOfSlides, clonedSlides)
 
-    appendSlider(childrenSelector, clonedSlides)
-
-    state.set(State_Keys.LoadPage, false)
+    appendSlider($children, clonedSlides)
 
     initSliderControls($root, options)
   }

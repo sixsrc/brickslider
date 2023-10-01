@@ -1,5 +1,5 @@
 import { State, State_Keys } from "../../state/BrickState"
-import { transform } from "../../transition/transform"
+import { transform as transformSlider } from "../../transition/transform"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
 import { eventX } from "@/util/constants"
@@ -33,7 +33,7 @@ export class TouchMove {
 
       const setCurrentTranslate = state.get(State_Keys.currentTranslate)
 
-      transform($root, setCurrentTranslate)
+      transformSlider($root, setCurrentTranslate)
 
       requestAnimationFrame(animation.init)
     }

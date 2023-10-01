@@ -1,3 +1,5 @@
+import { getSliderWidth } from "@/dom/methods/getSliderWidth"
+
 export function $(element: string): HTMLElement {
   const selectedElement: HTMLElement | null = document.querySelector(element)
   if (!selectedElement) {
@@ -14,14 +16,27 @@ export function listener(
   target.addEventListener(event, callback)
 }
 
-let initialTime: number
-
-export function captureInitialTime() {
-  initialTime = Date.now()
+export function calcTranslate(
+  $children: HTMLElement,
+  slideMargin: number,
+  slidePosition: number
+): number {
+  const marginDiference = slidePosition * slideMargin
+  const sliderWidth = getSliderWidth($children)
+  const translate = -(sliderWidth * slidePosition + marginDiference)
+  return translate
 }
 
-export function printFinalTime() {
-  const finalTime = Date.now()
-  const diferenceInMs = finalTime - initialTime
-  console.log("Tempo final:", diferenceInMs, "milissegundos")
+/*export function waitFor(time: number, callback: () => void): void {
+  setTimeout(callback, time)
+}*/
+
+export function waitFor(time: number, callback: () => void): NodeJS.Timeout {
+  return setTimeout(() => {
+    callback()
+  }, time)
+}
+
+export function cancelWait(waitId: NodeJS.Timeout): void {
+  clearTimeout(waitId)
 }

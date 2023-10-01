@@ -3,9 +3,12 @@ import { State, State_Keys } from "../../state/BrickState"
 import { shouldGoToNextSlide } from "./functions/shouldGoToNextSlide"
 import { shouldGoToPrevSlide } from "./functions/shouldGoToPrevSlide"
 import { SetPositionByIndex } from "./SetPositionByIndex"
-import { slideNodeList, STYLES, TOUCH_LIMIT, TRANSITIONS } from "@/util/constants"
+import { slideNodeList, STYLES, TIMES, TOUCH_LIMIT, TRANSITIONS } from "@/util/constants"
 import { getChildren } from "@/core/functions/getChildren"
 import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
+import { waitFor } from "@/util"
+import { matchStateOptions } from "@/util/matchStateOptions"
+import { checkFirstSlideCloned } from "./functions/checkFirstSlideCloned"
 
 export class TouchEnd {
   $root: string
@@ -22,36 +25,66 @@ export class TouchEnd {
   public init = (): void => {
     const { $root, state, setPositionByIndex, animation } = this
 
-    const $children = getChildren($root)
+    const isSliderReady = state.get(State_Keys.SliderReady)
 
-    setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+    if (isSliderReady) {
+      matchStateOptions(this.$root, { [State_Keys.Infinite]: true }, () => {
+        checkFirstSlideCloned(this.$root, slideNodeList(this.$root))
+      })
 
-    state.set(State_Keys.isDragging, false)
+      const $children = getChildren($root)
 
-    const touchStartTime = state.get(State_Keys.TouchStartTime)
-    const touchEndtTime = state.get(State_Keys.TouchEndTime)
-    const diferenceInMs = Math.abs(touchEndtTime - touchStartTime)
+      const updateSliderTransition = setStyle($children, STYLES.TRANSITION, "")
 
-    const animationId = state.get(State_Keys.animationID)
+      state.set(State_Keys.isDragging, false)
 
-    if (typeof animationId === "number") cancelAnimationFrame(animationId)
+      const touchStartTime = state.get(State_Keys.TouchStartTime)
 
-    if (diferenceInMs < TOUCH_LIMIT) requestAnimationFrame(animation.init)
+      const touchEndtTime = state.get(State_Keys.TouchEndTime)
 
-    const moveSlider = state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
+      const diferenceInMs = Math.abs(touchEndtTime - touchStartTime)
 
-    let currentIndex = state.get(State_Keys.SlideIndex)
+      const animationId = state.get(State_Keys.animationID)
 
-    const slides = slideNodeList($root)
+      const isMouseLeave = state.get(State_Keys.IsMouseLeave)
 
-    shouldGoToNextSlide(moveSlider, currentIndex, slides) &&
-      state.set(State_Keys.SlideIndex, (currentIndex += 1))
+      const currentTranslate = state.get(State_Keys.currentTranslate)
+      const prevTranslate = state.get(State_Keys.prevTranslate)
 
-    shouldGoToPrevSlide(moveSlider, currentIndex) &&
-      state.set(State_Keys.SlideIndex, (currentIndex -= 1))
+      ///&& currentTranslate !== prevTranslate
 
-    setPositionByIndex.init()
+      if (!isMouseLeave) {
+        setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+      }
 
-    state.set(State_Keys.TouchEndTime, Date.now())
+      if (typeof animationId === "number") cancelAnimationFrame(animationId)
+
+      if (diferenceInMs < TOUCH_LIMIT) requestAnimationFrame(animation.init)
+
+      const moveSlider =
+        state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
+
+      let currentIndex = state.get(State_Keys.SlideIndex)
+
+      const slides = slideNodeList($root)
+
+      shouldGoToNextSlide(moveSlider, currentIndex, slides) &&
+        state.set(State_Keys.SlideIndex, (currentIndex += 1))
+
+      shouldGoToPrevSlide(moveSlider, currentIndex) &&
+        state.set(State_Keys.SlideIndex, (currentIndex -= 1))
+
+      setPositionByIndex.init()
+
+      state.setMultipleState({
+        [State_Keys.TouchEndTime]: Date.now(),
+        [State_Keys.IsMouseLeave]: true
+      })
+
+      /* waitFor(100, () => {
+        console.log("400ms")
+        updateSliderTransition
+      })*/
+    }
   }
 }

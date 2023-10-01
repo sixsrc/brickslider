@@ -3,9 +3,10 @@
 import { TypeOptions } from "@/option/Options"
 
 export enum State_Keys {
-  LoadPage = "loadPage",
+  isLoadPage = "isLoadPage",
   SlideIndex = "slideIndex",
   SlideInfiniteIndex = "slideInfiniteIndex",
+  SlideMargin = "slideMargin",
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   SliderReady = "sliderReady",
@@ -16,6 +17,7 @@ export enum State_Keys {
   currentTranslate = "currentTranslate",
   TouchStartTime = "touchStartTime",
   TouchEndTime = "touchEndTime",
+  IsMouseLeave = "isMouseLeave",
   animationID = "animationID",
   Autoplay = "autoplay",
   AutoplaySpeed = "autoplaySpeed",
@@ -30,8 +32,9 @@ export enum State_Keys {
 
 type StateType = {
   [key: string]: string | number | boolean | null | undefined
-  [State_Keys.LoadPage]: boolean
+  [State_Keys.isLoadPage]: boolean
   [State_Keys.SlideIndex]: number
+  [State_Keys.SlideMargin]: number
   [State_Keys.SlideInfiniteIndex]: number
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
@@ -43,6 +46,7 @@ type StateType = {
   [State_Keys.currentTranslate]: number
   [State_Keys.TouchStartTime]: number
   [State_Keys.TouchEndTime]: number
+  [State_Keys.IsMouseLeave]: boolean
   [State_Keys.animationID]: number
   [State_Keys.Autoplay]: boolean
   [State_Keys.AutoplaySpeed]: number
@@ -68,8 +72,9 @@ class BrickState {
   }
 
   private initializeState(options: TypeOptions) {
-    BrickState.state[this.key][State_Keys.LoadPage] = true
+    BrickState.state[this.key][State_Keys.isLoadPage] = false
     BrickState.state[this.key][State_Keys.SlideIndex] = 0
+    BrickState.state[this.key][State_Keys.SlideMargin] = options.margin ?? 0
     BrickState.state[this.key][State_Keys.SlideInfiniteIndex] = 0
     BrickState.state[this.key][State_Keys.NumberOfSlides] = 0
     BrickState.state[this.key][State_Keys.SliderWidth] = 0
@@ -81,6 +86,7 @@ class BrickState {
     BrickState.state[this.key][State_Keys.currentTranslate] = 0
     BrickState.state[this.key][State_Keys.TouchStartTime] = 0
     BrickState.state[this.key][State_Keys.TouchEndTime] = 0
+    BrickState.state[this.key][State_Keys.IsMouseLeave] = true
     BrickState.state[this.key][State_Keys.animationID] = 0
     BrickState.state[this.key][State_Keys.Autoplay] = options.autoplay ?? false
     BrickState.state[this.key][State_Keys.AutoplaySpeed] = options.autoplaySpeed ?? 3000

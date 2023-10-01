@@ -6,8 +6,11 @@ import { hasClass } from "@/dom/methods/hasClass"
 
 export function checkFirstSlideCloned($root: string, slide: HTMLElement[]): void {
   const $children = [getChildren($root)]
+
   const isSlideCloned = [getChildren($root)].length > 0 ? isFirstSlideCloned($children[0]) : false
+
   const isActiveClass = hasClass(slide[0], CLASS_VALUES.ACTIVE)
+
   const firstSlide = slide[0]
 
   isSlideCloned && isActiveClass && setRealFirstSlide($root, firstSlide)

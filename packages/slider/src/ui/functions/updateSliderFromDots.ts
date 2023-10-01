@@ -7,6 +7,7 @@ import { STYLES, TRANSITIONS } from "@/util/constants"
 
 export function updateSliderFromDots($root: string): void {
   const state = new State($root)
+
   const from = FROM.DOTS
 
   let index = state.get(State_Keys.SlideIndex)
@@ -14,9 +15,10 @@ export function updateSliderFromDots($root: string): void {
   updateDots(index, $root)
 
   const isInfinite = state.get(State_Keys.Infinite)
+
   const $children = getChildren($root)
 
-  if (isInfinite) setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+  setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
   setCurrentSlide({
     from,

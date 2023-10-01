@@ -5,7 +5,7 @@ export function shouldGoToNextSlide(
   currentIndex: number,
   element: HTMLElement[]
 ): boolean {
-  const isMovedByThreshold = moveSlider < -TOUCH_LIMIT
+  const isMovedByThreshold = moveSlider < -180
   const isNotLastSlide = currentIndex < element.length - 1
   return isMovedByThreshold && isNotLastSlide
 }

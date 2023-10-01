@@ -5,8 +5,8 @@ import { getLastChildren } from "@/dom/methods/getLastChildren"
 import { CLASS_VALUES } from "@/util/constants"
 
 export function cloneSlides(selector: HTMLElement) {
-  const firstSlide = getFirstChildren(selector),
-    lastSlide = getLastChildren(selector)
+  const firstSlide = getFirstChildren(selector)
+  const lastSlide = getLastChildren(selector)
 
   selector.insertBefore(lastSlide!.cloneNode(true), firstSlide)
 

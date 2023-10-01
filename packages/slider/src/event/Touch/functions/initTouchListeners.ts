@@ -10,6 +10,7 @@ export type TouchListenersParams = {
 }
 export function initTouchListeners(params: TouchListenersParams): void {
   const { element, touchStart, touchEnd, touchMove } = params
+
   listener(EVENTS.TOUCHSTART, element, touchStart)
   listener(EVENTS.TOUCHEND, element, touchEnd)
   listener(EVENTS.TOUCHMOVE, element, touchMove)

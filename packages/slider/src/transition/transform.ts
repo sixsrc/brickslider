@@ -2,9 +2,10 @@ import { setTransform } from "../dom/methods/setTransform"
 import { setTranslateX } from "../action/setTranslateX"
 import { getChildren } from "../core/functions/getChildren"
 
-export function transform(rootSelector: string, currentTranslateFromTouch?: number) {
-  const slider = getChildren(rootSelector)
-  const setTranslateXCallback = () => setTranslateX(rootSelector, currentTranslateFromTouch)
+export function transform($root: string, currentTranslateFixedValue?: number) {
+  const slider = getChildren($root)
+
+  const setTranslateXCallback = () => setTranslateX($root, currentTranslateFixedValue!)
 
   setTransform(slider, setTranslateXCallback)
 }

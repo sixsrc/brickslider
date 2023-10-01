@@ -1,11 +1,9 @@
-import { eventX, slideNodeList, STYLES, TRANSITIONS } from "@/util/constants"
-//import { getRootSelector } from "../../core/functions/getRootSelector"
+import { eventX, slideNodeList, STYLES } from "@/util/constants"
 import { State, State_Keys } from "../../state/BrickState"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
 import { setStyle } from "@/dom/methods/setStyle"
 import { getChildren } from "@/core/functions/getChildren"
-import { matchStateOptions } from "@/util/matchStateOptions"
 import { checkFirstSlideCloned } from "./functions/checkFirstSlideCloned"
 
 export class TouchStart {
@@ -21,7 +19,7 @@ export class TouchStart {
 
   public init(index: number): (event: Event) => void {
     return (event: Event) => {
-      const { state, animation } = this
+      const { $root, state, animation } = this
       const setEvent = eventX(event as MouseEvent | TouchEvent)
       const $children = getChildren(this.$root)
 
@@ -29,27 +27,18 @@ export class TouchStart {
 
       state.set(State_Keys.TouchStartTime, Date.now())
 
-      const currentTranslate = state.get(State_Keys.currentTranslate)
-
-      if (currentTranslate < 0) setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
-
       state.setMultipleState({
+        [State_Keys.SliderReady]: true,
         [State_Keys.SlideIndex]: index,
         [State_Keys.startPos]: getPositionX(setEvent),
         [State_Keys.isDragging]: true,
+        [State_Keys.IsMouseLeave]: false,
         [State_Keys.animationID]: requestAnimationFrame(animation.init)
       })
 
-      const isFirstSlide = () => {
-        checkFirstSlideCloned(this.$root, slideNodeList(this.$root))
-        //setStyle($children, STYLES.TRANSITION, "")
-      }
+      const isInFinite = state.get(State_Keys.Infinite)
 
-      matchStateOptions(this.$root, { [State_Keys.Infinite]: true }, isFirstSlide)
-
-      /*state.get(State_Keys.currentTranslate) < 0
-        ? setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
-        : setStyle($children, STYLES.TRANSITION, "")*/
+      if (isInFinite) checkFirstSlideCloned($root, slideNodeList($root))
     }
   }
 }
