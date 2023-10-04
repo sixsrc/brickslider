@@ -1,8 +1,10 @@
+import { setStyle } from "@/dom/methods/setStyle"
 import { State, State_Keys } from "../../state/BrickState"
 import { transform as transformSlider } from "../../transition/transform"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
-import { eventX } from "@/util/constants"
+import { STYLES, eventX } from "@/util/constants"
+import { getChildren } from "@/core/functions/getChildren"
 
 export class TouchMove {
   $root: string
@@ -21,9 +23,18 @@ export class TouchMove {
     const setEvent = eventX(event as MouseEvent | TouchEvent)
 
     const isDragging = state.get(State_Keys.isDragging)
+
     const currentPosition = getPositionX(setEvent)
+
     const prevTranslate = state.get(State_Keys.prevTranslate)
+
     const startPos = state.get(State_Keys.startPos)
+
+    const $children = getChildren($root)
+
+    const isMouseLeave = state.get(State_Keys.IsMouseLeave)
+
+    if (!isMouseLeave) setStyle($children, STYLES.TRANSITION, "")
 
     if (isDragging) {
       state.setMultipleState({

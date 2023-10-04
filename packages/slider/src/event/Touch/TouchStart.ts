@@ -1,10 +1,7 @@
-import { eventX, slideNodeList, STYLES } from "@/util/constants"
+import { eventX } from "@/util/constants"
 import { State, State_Keys } from "../../state/BrickState"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
-import { setStyle } from "@/dom/methods/setStyle"
-import { getChildren } from "@/core/functions/getChildren"
-import { checkFirstSlideCloned } from "./functions/checkFirstSlideCloned"
 
 export class TouchStart {
   $root: string
@@ -19,11 +16,13 @@ export class TouchStart {
 
   public init(index: number): (event: Event) => void {
     return (event: Event) => {
-      const { $root, state, animation } = this
-      const setEvent = eventX(event as MouseEvent | TouchEvent)
-      const $children = getChildren(this.$root)
+      const { state, animation } = this
 
-      setStyle($children, STYLES.TRANSITION, "")
+      const setEvent = eventX(event as MouseEvent | TouchEvent)
+
+      if (!state.get(State_Keys.SliderReady)) return
+
+      //if (state.get(State_Keys.SliderReady))
 
       state.set(State_Keys.TouchStartTime, Date.now())
 
@@ -35,10 +34,6 @@ export class TouchStart {
         [State_Keys.IsMouseLeave]: false,
         [State_Keys.animationID]: requestAnimationFrame(animation.init)
       })
-
-      const isInFinite = state.get(State_Keys.Infinite)
-
-      if (isInFinite) checkFirstSlideCloned($root, slideNodeList($root))
     }
   }
 }

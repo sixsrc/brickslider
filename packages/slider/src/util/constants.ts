@@ -46,12 +46,14 @@ export const PROPERTYS = {
 //"transform 0.2s ease"
 //cubic-bezier(0.25,1,0.5,1)
 
+// `transform 0.3s`
+
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 400
+  DEFAULT_TRANSITION_TIME: 200
 }
 //`transform ${TIMES.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
 export const TRANSITIONS = {
-  TRANSFORM_EASE: `transform 0.3s ease-out`
+  TRANSFORM_EASE: `transform ${TIMES.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
 }
 
 export const EVENTS = {
@@ -67,7 +69,9 @@ export const EVENTS = {
   TRANSITIONEND: "transitionend"
 }
 
-export const TOUCH_LIMIT = 150
+export const TOUCH_LIMIT_SPEED = 150
+
+export const THRESHOLD_LIMIT = 150
 
 export const eventX = (event: MouseEvent | TouchEvent) =>
   event.type.includes("mouse") ? (event as MouseEvent) : (event as TouchEvent)

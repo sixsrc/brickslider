@@ -1,14 +1,11 @@
-import { setStyle } from "@/dom/methods/setStyle"
 import { State, State_Keys } from "../../state/BrickState"
 import { shouldGoToNextSlide } from "./functions/shouldGoToNextSlide"
 import { shouldGoToPrevSlide } from "./functions/shouldGoToPrevSlide"
 import { SetPositionByIndex } from "./SetPositionByIndex"
-import { slideNodeList, STYLES, TIMES, TOUCH_LIMIT, TRANSITIONS } from "@/util/constants"
-import { getChildren } from "@/core/functions/getChildren"
+import { slideNodeList, STYLES, TOUCH_LIMIT_SPEED } from "@/util/constants"
 import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
-import { waitFor } from "@/util"
-import { matchStateOptions } from "@/util/matchStateOptions"
-import { checkFirstSlideCloned } from "./functions/checkFirstSlideCloned"
+import { setStyle } from "@/dom/methods/setStyle"
+import { getChildren } from "@/core/functions/getChildren"
 
 export class TouchEnd {
   $root: string
@@ -28,14 +25,6 @@ export class TouchEnd {
     const isSliderReady = state.get(State_Keys.SliderReady)
 
     if (isSliderReady) {
-      matchStateOptions(this.$root, { [State_Keys.Infinite]: true }, () => {
-        checkFirstSlideCloned(this.$root, slideNodeList(this.$root))
-      })
-
-      const $children = getChildren($root)
-
-      const updateSliderTransition = setStyle($children, STYLES.TRANSITION, "")
-
       state.set(State_Keys.isDragging, false)
 
       const touchStartTime = state.get(State_Keys.TouchStartTime)
@@ -48,18 +37,18 @@ export class TouchEnd {
 
       const isMouseLeave = state.get(State_Keys.IsMouseLeave)
 
-      const currentTranslate = state.get(State_Keys.currentTranslate)
-      const prevTranslate = state.get(State_Keys.prevTranslate)
-
-      ///&& currentTranslate !== prevTranslate
+      const $children = getChildren($root)
 
       if (!isMouseLeave) {
-        setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+        setStyle($children, STYLES.TRANSITION, "")
       }
 
-      if (typeof animationId === "number") cancelAnimationFrame(animationId)
-
-      if (diferenceInMs < TOUCH_LIMIT) requestAnimationFrame(animation.init)
+      if (typeof animationId === "number") {
+        requestAnimationFrame(animation.init)
+      }
+      if (diferenceInMs < TOUCH_LIMIT_SPEED) {
+        cancelAnimationFrame(animationId)
+      }
 
       const moveSlider =
         state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
@@ -80,11 +69,6 @@ export class TouchEnd {
         [State_Keys.TouchEndTime]: Date.now(),
         [State_Keys.IsMouseLeave]: true
       })
-
-      /* waitFor(100, () => {
-        console.log("400ms")
-        updateSliderTransition
-      })*/
     }
   }
 }
