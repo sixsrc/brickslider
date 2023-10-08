@@ -12,33 +12,37 @@ import { setStyle } from "@/dom/methods/setStyle"
 export function handleClick(button: Element, $root: string): () => void {
   return () => {
     const state = new State($root)
+
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
+
     const isPrevDirection = getAttribute === FROM.PREV
 
-    if (state.get(State_Keys.SliderReady)) {
-      state.set(State_Keys.SliderReady, false)
+    const $children = getChildren($root)
 
-      const $children = getChildren($root)
+    const isSliderReady = state.get(State_Keys.SliderReady)
 
-      setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+    if (!isSliderReady) return
 
-      setCurrentSlide({
-        from: isPrevDirection ? FROM.PREV : FROM.NEXT,
-        rootSelector: $root
-      })
+    setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
-      const isInfinite = state.get(State_Keys.Infinite)
-      const index = state.get(State_Keys.SlideIndex)
-      const numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2
-      const slideIndex = isInfinite ? slideIndexBypass(index, numberOfSlides) : index
+    setCurrentSlide({
+      from: isPrevDirection ? FROM.PREV : FROM.NEXT,
+      rootSelector: $root
+    })
 
-      matchStateOptions($root, { [State_Keys.Dots]: true }, () => {
-        updateDots(slideIndex, $root)
-      })
+    ///state.set(State_Keys.SliderReady, false)
 
-      listener(EVENTS.TRANSITIONEND, $children, () => {
-        state.set(State_Keys.SliderReady, true)
-      })
-    }
+    const isInfinite = state.get(State_Keys.Infinite)
+    const index = state.get(State_Keys.SlideIndex)
+    const numberOfSlides = state.get(State_Keys.NumberOfSlides) + 2
+    const slideIndex = isInfinite ? slideIndexBypass(index, numberOfSlides) : index
+
+    matchStateOptions($root, { [State_Keys.Dots]: true }, () => {
+      updateDots(slideIndex, $root)
+    })
+
+    listener(EVENTS.TRANSITIONEND, $children, () => {
+      state.set(State_Keys.SliderReady, true)
+    })
   }
 }

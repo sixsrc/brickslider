@@ -12,10 +12,14 @@ export function isFirstOrLast(
   slide: HTMLElement,
   index: number
 ): void {
-  const state = new State($root),
-    slides = Array.from(getAllElements<HTMLElement>(`${childrenSelector} > *`, getChildren($root)))
+  const state = new State($root)
+
+  const slides = Array.from(
+    getAllElements<HTMLElement>(`${childrenSelector} > *`, getChildren($root))
+  )
 
   const isFirst = from === FROM.PREV && index === 0
+
   const isLast = from === FROM.NEXT && index === slides.length - 1
 
   if (hasClass(slide, CLASS_VALUES.ACTIVE)) {

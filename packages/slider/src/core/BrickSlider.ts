@@ -43,18 +43,14 @@ export class BrickSlider extends Methods {
     const newSlideIndex = currentTranslate + 1
 
     const slideMargin = state.get(State_Keys.SlideMargin)
-    // const marginDiference = newPosition * slideMargin
-    //const sliderWidth = getSliderWidth(childrenSelector)
-    //const translate = -(sliderWidth * newPosition + marginDiference)
 
     const translate = calcTranslate($children, slideMargin, newSlideIndex)
 
-    const isInFinite = state.get(State_Keys.Infinite)
+    const isInfinite = state.get(State_Keys.Infinite)
 
     const slide = slideNodeList($root)[currentTranslate]
 
-    if (isInFinite) {
-      console.log(newSlideIndex)
+    if (isInfinite) {
       cloneSlides($children)
 
       state.set(State_Keys.SlideIndex, newSlideIndex)
@@ -79,7 +75,7 @@ export class BrickSlider extends Methods {
 
     const firstSlide = getFirstChildren(getChildren($root)) as Element
 
-    if (!isInFinite) addClass([firstSlide], CLASS_VALUES.ACTIVE)
+    if (!isInfinite) addClass([firstSlide], CLASS_VALUES.ACTIVE)
 
     const handleResize = () => resize.init()
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getSliderWidth } from "@/dom/methods/getSliderWidth"
 
 export function $(element: string): HTMLElement {
@@ -39,4 +40,20 @@ export function waitFor(time: number, callback: () => void): NodeJS.Timeout {
 
 export function cancelWait(waitId: NodeJS.Timeout): void {
   clearTimeout(waitId)
+}
+
+type DebounceFunction = (...args: unknown[]) => void
+
+export function debounce(func: any, delay: number): DebounceFunction {
+  let timeoutId: NodeJS.Timeout
+
+  return function (...args: unknown[]) {
+    if (timeoutId) {
+      cancelWait(timeoutId)
+    }
+
+    timeoutId = waitFor(delay, () => {
+      func(...args)
+    })
+  }
 }

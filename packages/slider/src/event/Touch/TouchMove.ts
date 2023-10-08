@@ -1,10 +1,8 @@
-import { setStyle } from "@/dom/methods/setStyle"
 import { State, State_Keys } from "../../state/BrickState"
 import { transform as transformSlider } from "../../transition/transform"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
-import { STYLES, eventX } from "@/util/constants"
-import { getChildren } from "@/core/functions/getChildren"
+import { eventX } from "@/util/constants"
 
 export class TouchMove {
   $root: string
@@ -13,8 +11,8 @@ export class TouchMove {
 
   constructor($root: string) {
     this.$root = $root
-    this.state = new State($root)
-    this.animation = new RequestAnimationFrame($root)
+    this.state = new State(this.$root)
+    this.animation = new RequestAnimationFrame(this.$root)
   }
 
   public init = (event: Event): void => {
@@ -30,15 +28,18 @@ export class TouchMove {
 
     const startPos = state.get(State_Keys.startPos)
 
-    const $children = getChildren($root)
+    const slideIndex = state.get(State_Keys.SlideIndex)
 
-    const isMouseLeave = state.get(State_Keys.IsMouseLeave)
+    const isInfinite = state.get(State_Keys.Infinite)
 
-    if (!isMouseLeave) setStyle($children, STYLES.TRANSITION, "")
+    const isSliderReady = state.get(State_Keys.SliderReady)
+
+    if (isInfinite && slideIndex <= 0) state.set(State_Keys.SliderReady, false)
+
+    if (!isSliderReady) return
 
     if (isDragging) {
       state.setMultipleState({
-        [State_Keys.SliderReady]: true,
         [State_Keys.currentTranslate]: prevTranslate + currentPosition - startPos
       })
 

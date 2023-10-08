@@ -1,11 +1,11 @@
+import { setStyle } from "@/dom/methods/setStyle"
 import { State, State_Keys } from "../../state/BrickState"
 import { shouldGoToNextSlide } from "./functions/shouldGoToNextSlide"
 import { shouldGoToPrevSlide } from "./functions/shouldGoToPrevSlide"
 import { SetPositionByIndex } from "./SetPositionByIndex"
-import { slideNodeList, STYLES, TOUCH_LIMIT_SPEED } from "@/util/constants"
-import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
-import { setStyle } from "@/dom/methods/setStyle"
+import { slideNodeList, STYLES, /*TOUCH_LIMIT,*/ TRANSITIONS } from "@/util/constants"
 import { getChildren } from "@/core/functions/getChildren"
+import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
 
 export class TouchEnd {
   $root: string
@@ -15,60 +15,53 @@ export class TouchEnd {
 
   constructor($root: string) {
     this.$root = $root
-    this.state = new State($root)
-    this.setPositionByIndex = new SetPositionByIndex($root)
-    this.animation = new RequestAnimationFrame($root)
+    this.state = new State(this.$root)
+    this.setPositionByIndex = new SetPositionByIndex(this.$root)
+    this.animation = new RequestAnimationFrame(this.$root)
   }
+
   public init = (): void => {
-    const { $root, state, setPositionByIndex, animation } = this
+    const { $root, state, setPositionByIndex } = this
+
+    const $children = getChildren($root)
+
+    state.set(State_Keys.isDragging, false)
+
+    const animationId = state.get(State_Keys.animationID)
+
+    const isMouseLeave = state.get(State_Keys.IsMouseLeave)
+
+    const isInfinite = state.get(State_Keys.Infinite)
+
+    const slideIndex = state.get(State_Keys.SlideIndex)
 
     const isSliderReady = state.get(State_Keys.SliderReady)
 
-    if (isSliderReady) {
-      state.set(State_Keys.isDragging, false)
+    if (isInfinite && slideIndex <= 0) state.set(State_Keys.SliderReady, false)
 
-      const touchStartTime = state.get(State_Keys.TouchStartTime)
+    if (!isSliderReady) return
 
-      const touchEndtTime = state.get(State_Keys.TouchEndTime)
+    if (!isMouseLeave) setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
-      const diferenceInMs = Math.abs(touchEndtTime - touchStartTime)
+    if (typeof animationId === "number") cancelAnimationFrame(animationId)
 
-      const animationId = state.get(State_Keys.animationID)
+    const moveSlider = state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
 
-      const isMouseLeave = state.get(State_Keys.IsMouseLeave)
+    let currentIndex = state.get(State_Keys.SlideIndex)
 
-      const $children = getChildren($root)
+    const slides = slideNodeList($root)
 
-      if (!isMouseLeave) {
-        setStyle($children, STYLES.TRANSITION, "")
-      }
+    shouldGoToNextSlide(moveSlider, currentIndex, slides) &&
+      state.set(State_Keys.SlideIndex, (currentIndex += 1))
 
-      if (typeof animationId === "number") {
-        requestAnimationFrame(animation.init)
-      }
-      if (diferenceInMs < TOUCH_LIMIT_SPEED) {
-        cancelAnimationFrame(animationId)
-      }
+    shouldGoToPrevSlide(moveSlider, currentIndex) &&
+      state.set(State_Keys.SlideIndex, (currentIndex -= 1))
 
-      const moveSlider =
-        state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
+    setPositionByIndex.init()
 
-      let currentIndex = state.get(State_Keys.SlideIndex)
-
-      const slides = slideNodeList($root)
-
-      shouldGoToNextSlide(moveSlider, currentIndex, slides) &&
-        state.set(State_Keys.SlideIndex, (currentIndex += 1))
-
-      shouldGoToPrevSlide(moveSlider, currentIndex) &&
-        state.set(State_Keys.SlideIndex, (currentIndex -= 1))
-
-      setPositionByIndex.init()
-
-      state.setMultipleState({
-        [State_Keys.TouchEndTime]: Date.now(),
-        [State_Keys.IsMouseLeave]: true
-      })
-    }
+    state.setMultipleState({
+      [State_Keys.TouchEndTime]: Date.now(),
+      [State_Keys.IsMouseLeave]: true
+    })
   }
 }

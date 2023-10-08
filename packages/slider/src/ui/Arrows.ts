@@ -13,11 +13,14 @@ export class Arrows {
 
   public init(): void {
     const { $root } = this
+
     const createButtons = createArrowButtons(2)
+
     const buttons = appendArrowButtons(createButtons, $root)
 
     buttons.forEach(button => {
       const setCurrentSlide = handleClick(button, $root)
+
       listener(EVENTS.CLICK, button, setCurrentSlide)
     })
   }

@@ -1,7 +1,9 @@
-import { eventX } from "@/util/constants"
+import { eventX, STYLES } from "@/util/constants"
 import { State, State_Keys } from "../../state/BrickState"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
+import { setStyle } from "@/dom/methods/setStyle"
+import { getChildren } from "@/core/functions/getChildren"
 
 export class TouchStart {
   $root: string
@@ -20,14 +22,24 @@ export class TouchStart {
 
       const setEvent = eventX(event as MouseEvent | TouchEvent)
 
-      if (!state.get(State_Keys.SliderReady)) return
+      const $children = getChildren(this.$root)
 
-      //if (state.get(State_Keys.SliderReady))
+      const isSliderReady = state.get(State_Keys.SliderReady)
 
-      state.set(State_Keys.TouchStartTime, Date.now())
+      const isInfinite = state.get(State_Keys.Infinite)
+
+      const slideIndex = state.get(State_Keys.SlideIndex)
+
+      if (isInfinite && slideIndex <= 0) state.set(State_Keys.SliderReady, false)
+
+      if (!isSliderReady) return
+
+      state.set(State_Keys.SliderReady, true)
+
+      setStyle($children, STYLES.TRANSITION, "")
 
       state.setMultipleState({
-        [State_Keys.SliderReady]: true,
+        [State_Keys.TouchStartTime]: Date.now(),
         [State_Keys.SlideIndex]: index,
         [State_Keys.startPos]: getPositionX(setEvent),
         [State_Keys.isDragging]: true,

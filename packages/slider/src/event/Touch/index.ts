@@ -34,8 +34,9 @@ export class Touch {
         element: slide,
         index,
         touchStart: touchStart.init(index),
-        // touchEnd: (event: Event) => touchEnd.init(event, true),
+        // touchEnd: (event: Event) => touchEnd.init(event),
         touchEnd: touchEnd.init.bind(touchEnd),
+        //touchEnd: touchEnd.init(index),
         touchMove: touchMove.init.bind(touchMove)
       }
       initTouchListeners(params)
