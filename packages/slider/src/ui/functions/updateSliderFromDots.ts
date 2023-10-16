@@ -16,13 +16,15 @@ export function updateSliderFromDots($root: string): void {
 
   const isInfinite = state.get(State_Keys.Infinite)
 
+  const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+
   const $children = getChildren($root)
 
   setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
   setCurrentSlide({
     from,
-    index: isInfinite ? ++index : index,
+    index: isInfinite && slidesPerPage <= 1 ? ++index : index,
     rootSelector: $root
   })
 }

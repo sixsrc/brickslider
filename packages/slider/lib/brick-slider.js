@@ -4,68 +4,73 @@
  * License  : MIT
  * Copyright: 2023 @malopestorres
  */
-<<<<<<< HEAD
-var z = Object.defineProperty;
-var q = (e, t, s) => t in e ? z(e, t, { enumerable: !0, configurable: !0, writable: !0, value: s }) : e[t] = s;
-var o = (e, t, s) => (q(e, typeof t != "symbol" ? t + "" : t, s), s);
-function F(e) {
-  return e.children.length;
-}
-function G(e) {
-  return (e == null ? void 0 : e.children.item(0)) ?? null;
-}
-const L = {
-=======
-var Y = Object.defineProperty;
-var J = (e, t, i) => t in e ? Y(e, t, { enumerable: !0, configurable: !0, writable: !0, value: i }) : e[t] = i;
-var a = (e, t, i) => (J(e, typeof t != "symbol" ? t + "" : t, i), i);
-function Q(e) {
+var at = Object.defineProperty;
+var ct = (e, t, n) => t in e ? at(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
+var o = (e, t, n) => (ct(e, typeof t != "symbol" ? t + "" : t, n), n);
+function w(e) {
   return e.children.length;
 }
 function b(e) {
   return (e == null ? void 0 : e.children.item(0)) ?? null;
 }
-const v = {
->>>>>>> master
+function L(e) {
+  return e.offsetWidth;
+}
+function $(e) {
+  const t = document.querySelector(e);
+  if (!t)
+    throw new Error(`Element not found: ${e}`);
+  return t;
+}
+function m(e, t, n) {
+  t.addEventListener(e, n);
+}
+function M(e, t, n) {
+  const i = n * t;
+  return -(L(e) * n + i);
+}
+function lt(e, t) {
+  return setTimeout(() => {
+    t();
+  }, e);
+}
+function dt(e) {
+  clearTimeout(e);
+}
+function g(e) {
+  return $(`${e} ${W}`);
+}
+function v(e, t = document) {
+  return t.querySelectorAll(e);
+}
+const U = {
   CHILDREN_SELECTOR: ".slider__container",
   DOTS_SELECTOR: ".slider__dots ",
   NEXT_BUTTON: "next-button",
   PREV_BUTTON: "prev-button",
   BRICK_ARROWS: "brick-arrows"
-<<<<<<< HEAD
-}, C = {
-=======
-}, K = {
+}, D = {
   TRANSITION: "transition"
-}, A = {
->>>>>>> master
+}, x = {
   UL: "ul",
   LI: "li",
   BUTTON: "button",
   DIV: "div"
-<<<<<<< HEAD
-}, g = {
-  ACTIVE: "active",
-  SLIDER_DOT: "slider__dot",
-  SELECTED: "slider__dot--active"
 }, N = {
-=======
-}, T = {
   ACTIVE: "active",
   SLIDER_DOT: "slider__dot",
   SELECTED: "slider__dot--active",
   CLONED: "cloned"
-}, k = {
->>>>>>> master
+}, V = {
   CLASS: "class",
   ARIA_HIDDEN: "aria-hidden",
   ROLE: "role",
   DIRECTION: "data-direction"
-<<<<<<< HEAD
-}, E = {
-=======
-}, f = {
->>>>>>> master
+}, G = {
+  DEFAULT_TRANSITION_TIME: 300
+}, B = {
+  TRANSFORM_EASE: `transform ${G.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
+}, O = {
   RESIZE: "resize",
   CLICK: "click",
   TOUCHSTART: "touchstart",
@@ -75,152 +80,60 @@ const v = {
   MOUSEUP: "mouseup",
   MOUSELEAVE: "mouseleave",
   MOUSEMOVE: "mousemove",
+  TRANSITIONSTART: "transitionstart",
   TRANSITIONEND: "transitionend"
-<<<<<<< HEAD
-}, B = L.DOTS_SELECTOR, D = L.CHILDREN_SELECTOR;
-function O(e, t) {
-  e.forEach((s) => {
-    s.classList.add(t);
+}, Z = (e) => (e.type.includes("mouse"), e), Y = U.DOTS_SELECTOR, W = U.CHILDREN_SELECTOR, R = (e) => Array.from(v(`${W} > *`, g(e)));
+function A(e, t) {
+  e.forEach((n) => {
+    n.classList.add(t);
   });
 }
-function v(e) {
-  return e.offsetWidth;
+function F(e, t) {
+  return e && e.appendChild(t), t;
 }
-function k(e) {
-=======
-}, z = v.DOTS_SELECTOR, D = v.CHILDREN_SELECTOR;
-function m(e, t) {
-  e.forEach((i) => {
-    i.classList.add(t);
+function ut(e, t) {
+  t.forEach((n) => {
+    F(e, n);
   });
 }
-function P(e) {
-  return e.offsetWidth;
+function St(e, t) {
+  if (!e)
+    throw new Error(` ${t || ""}`);
 }
-function p(e) {
->>>>>>> master
-  const t = document.querySelector(e);
-  if (!t)
-    throw new Error(`Element not found: ${e}`);
-  return t;
-}
-<<<<<<< HEAD
-function T(e, t, s) {
-  t.addEventListener(e, s);
-}
-function Z(e, t) {
-  e.style.transform = `translateX(${t()}px)`;
-}
-var r = /* @__PURE__ */ ((e) => (e.RootSelector = "rootSelector", e.SlideIndex = "slideIndex", e.NumberOfSlides = "numberOfSlides", e.SliderWidth = "sliderWidth", e.SliderReady = "sliderReady", e.isStopSlider = "isStopSlider", e.isDragging = "isDragging", e.startPos = "startPos", e.prevTranslate = "prevTranslate", e.currentTranslate = "currentTranslate", e.animationID = "animationID", e.Autoplay = "autoplay", e.AutoplaySpeed = "autoplaySpeed", e.Dots = "dots", e.Arrows = "arrows", e.Touch = "touch", e.Infinite = "infinite", e.Speed = "speed", e.Mode = "mode", e.Transition = "transition", e.UseTailwind = "useTailwind", e))(r || {});
-const c = class c {
-  constructor(t, s = {}) {
+var s = /* @__PURE__ */ ((e) => (e.isLoadPage = "isLoadPage", e.SlideIndex = "slideIndex", e.SlideSpacing = "slideSpacing", e.SlidesPerPage = "slidesPerPage", e.NumberOfSlides = "numberOfSlides", e.SliderWidth = "sliderWidth", e.SliderReady = "sliderReady", e.isStopSlider = "isStopSlider", e.isDragging = "isDragging", e.startPos = "startPos", e.prevTranslate = "prevTranslate", e.currentTranslate = "currentTranslate", e.TouchStartTime = "touchStartTime", e.TouchEndTime = "touchEndTime", e.IsMouseLeave = "isMouseLeave", e.animationID = "animationID", e.Autoplay = "autoplay", e.AutoplaySpeed = "autoplaySpeed", e.Dots = "dots", e.Arrows = "arrows", e.Touch = "touch", e.Infinite = "infinite", e.Speed = "speed", e.Transition = "transition", e.UseTailwind = "useTailwind", e))(s || {});
+const d = class d {
+  constructor(t, n = {}) {
     o(this, "key");
-    this.key = t, c.state[t] || (c.state[t] = {}, this.initializeState(s));
+    this.key = t, d.state[t] || (d.state[t] = {}, this.initializeState(n));
   }
   initializeState(t) {
-    if (c.state[this.key].rootSelector = null, c.state[this.key].slideIndex = 0, c.state[this.key].numberOfSlides = 0, c.state[this.key].sliderWidth = 0, c.state[this.key].sliderReady = !0, c.state[this.key].isStopSlider = !1, c.state[this.key].isDragging = !1, c.state[this.key].startPos = 0, c.state[this.key].prevTranslate = 0, c.state[this.key].currentTranslate = 0, c.state[this.key].autoplay = t.autoplay ?? !1, c.state[this.key].autoplaySpeed = t.autoplaySpeed ?? 3e3, c.state[this.key].dots = t.dots ?? !0, c.state[this.key].arrows = t.arrows ?? !0, c.state[this.key].touch = t.touch ?? !0, c.state[this.key].infinite = t.infinite ?? !0, c.state[this.key].speed = t.speed ?? 300, c.state[this.key].mode = t.mode ?? "vertical", c.state[this.key].transition = t.transition ?? "slide", c.state[this.key].useTailwind = t.useTailwind ?? !0, t.sliderOptions)
-      for (const s in t.sliderOptions)
-        t.sliderOptions.hasOwnProperty(s) && (c.state[this.key][s] = t.sliderOptions[s]);
+    if (d.state[this.key].isLoadPage = !1, d.state[this.key].slideIndex = 0, d.state[this.key].slideSpacing = t.spacing ?? 10, d.state[this.key].slidesPerPage = t.slidesPerPage ?? 1, d.state[this.key].numberOfSlides = 0, d.state[this.key].sliderWidth = 0, d.state[this.key].sliderReady = !0, d.state[this.key].isStopSlider = !1, d.state[this.key].isDragging = !1, d.state[this.key].startPos = 0, d.state[this.key].prevTranslate = 0, d.state[this.key].currentTranslate = 0, d.state[this.key].touchStartTime = 0, d.state[this.key].touchEndTime = 0, d.state[this.key].isMouseLeave = !0, d.state[this.key].animationID = 0, d.state[this.key].autoplay = t.autoplay ?? !1, d.state[this.key].autoplaySpeed = t.autoplaySpeed ?? 3e3, d.state[this.key].dots = t.dots ?? !0, d.state[this.key].arrows = t.arrows ?? !0, d.state[this.key].touch = t.touch ?? !0, d.state[this.key].infinite = t.infinite ?? !1, d.state[this.key].speed = t.speed ?? 300, d.state[this.key].transition = t.transition ?? "slide", d.state[this.key].useTailwind = t.useTailwind ?? !0, t.sliderOptions)
+      for (const n in t.sliderOptions)
+        t.sliderOptions.hasOwnProperty(n) && (d.state[this.key][n] = t.sliderOptions[n]);
   }
   get(t) {
-    return c.state[this.key][t] ?? "";
+    return d.state[this.key][t] ?? "";
   }
-  set(t, s) {
-    c.state[this.key][t] = s;
-=======
-function S(e, t, i) {
-  t.addEventListener(e, i);
-}
-function _(e, t) {
-  e.style.transform = `translate3d(${t()}px, 0, 0)`;
-}
-var n = /* @__PURE__ */ ((e) => (e.RootSelector = "rootSelector", e.LoadPage = "loadPage", e.SlideIndex = "slideIndex", e.SlideInfiniteIndex = "slideInfiniteIndex", e.NumberOfSlides = "numberOfSlides", e.SliderWidth = "sliderWidth", e.SliderReady = "sliderReady", e.TransitionBypass = "transitionBypass", e.isStopSlider = "isStopSlider", e.isDragging = "isDragging", e.startPos = "startPos", e.prevTranslate = "prevTranslate", e.currentTranslate = "currentTranslate", e.animationID = "animationID", e.Autoplay = "autoplay", e.AutoplaySpeed = "autoplaySpeed", e.Dots = "dots", e.Arrows = "arrows", e.Touch = "touch", e.Infinite = "infinite", e.Speed = "speed", e.Mode = "mode", e.Transition = "transition", e.UseTailwind = "useTailwind", e))(n || {});
-const l = class l {
-  constructor(t, i = {}) {
-    a(this, "key");
-    this.key = t, l.state[t] || (l.state[t] = {}, this.initializeState(i));
-  }
-  initializeState(t) {
-    if (l.state[this.key].rootSelector = null, l.state[this.key].loadPage = !0, l.state[this.key].slideIndex = 0, l.state[this.key].slideInfiniteIndex = 0, l.state[this.key].numberOfSlides = 0, l.state[this.key].sliderWidth = 0, l.state[this.key].sliderReady = !0, l.state[this.key].transitionBypass = !1, l.state[this.key].isStopSlider = !1, l.state[this.key].isDragging = !1, l.state[this.key].startPos = 0, l.state[this.key].prevTranslate = 0, l.state[this.key].currentTranslate = 0, l.state[this.key].autoplay = t.autoplay ?? !1, l.state[this.key].autoplaySpeed = t.autoplaySpeed ?? 3e3, l.state[this.key].dots = t.dots ?? !0, l.state[this.key].arrows = t.arrows ?? !0, l.state[this.key].touch = t.touch ?? !0, l.state[this.key].infinite = t.infinite ?? !1, l.state[this.key].speed = t.speed ?? 300, l.state[this.key].mode = t.mode ?? "vertical", l.state[this.key].transition = t.transition ?? "slide", l.state[this.key].useTailwind = t.useTailwind ?? !0, t.sliderOptions)
-      for (const i in t.sliderOptions)
-        t.sliderOptions.hasOwnProperty(i) && (l.state[this.key][i] = t.sliderOptions[i]);
-  }
-  get(t) {
-    return l.state[this.key][t] ?? "";
-  }
-  set(t, i) {
-    l.state[this.key][t] = i;
->>>>>>> master
+  set(t, n) {
+    d.state[this.key][t] = n;
   }
   setOptions(t) {
     this.initializeState(t);
   }
   setMultipleState(t) {
-<<<<<<< HEAD
-    for (const s in t)
-      t.hasOwnProperty(s) && (c.state[this.key][s] = t[s]);
+    for (const n in t)
+      t.hasOwnProperty(n) && (d.state[this.key][n] = t[n]);
   }
 };
-o(c, "state", {});
-let u = c;
-function j(e, t) {
-  const s = new u(e), i = s.get(r.SlideIndex), n = s.get(r.SliderWidth), a = -n * i;
-  return !t && s.setMultipleState({
-    [r.prevTranslate]: a,
-    [r.currentTranslate]: a
-  }), t || a;
-}
-function I(e) {
-  return k(`${e} ${D}`);
-}
-function y(e, t) {
-  const s = I(e);
-  Z(s, () => j(e, t));
-}
-function J(e) {
-  const t = v(I(e));
-  new u(e).set(r.SliderWidth, t), y(e);
-}
-function W(e, t) {
-  e.innerHTML = t;
-}
-function b(e, t, s) {
-  e.setAttribute(t, s);
-}
-function Q(e, t) {
-  for (const [s, i] of Object.entries(t))
-    b(e, s, i);
-}
-function Y(e, t, s) {
-  if (e)
-    for (let i = 0; i < e; i++) {
-      const n = t.children[i].cloneNode(
-        !0
-      );
-      Q(n, {
-        "aria-hidden": "true",
-        role: "presentation"
-      }), s.push(n);
-    }
-  W(t, "");
-}
-function M(e, t) {
-  return e && e.appendChild(t), t;
-}
-function K(e, t) {
-  t.forEach((s) => {
-    M(e, s);
-  });
-}
-function _(e, t) {
-  if (!e)
-    throw new Error(` ${t || ""}`);
-}
-function tt(e) {
+o(d, "state", {});
+let h = d;
+function ht(e) {
   return /^[.#].*/.test(e);
 }
-class et {
+class ft {
   constructor(t) {
+    o(this, "spacing");
+    o(this, "slidesPerPage");
     o(this, "autoplay");
     o(this, "autoplaySpeed");
     o(this, "dots");
@@ -228,785 +141,385 @@ class et {
     o(this, "touch");
     o(this, "infinite");
     o(this, "speed");
-    o(this, "mode");
     o(this, "transition");
     o(this, "useTailwind");
-    this.autoplay = (t == null ? void 0 : t.autoplay) ?? !1, this.autoplaySpeed = (t == null ? void 0 : t.autoplaySpeed) ?? 500, this.dots = (t == null ? void 0 : t.dots) ?? !0, this.arrows = (t == null ? void 0 : t.arrows) ?? !0, this.infinite = (t == null ? void 0 : t.infinite) ?? !1, this.speed = (t == null ? void 0 : t.speed) ?? 500, this.mode = (t == null ? void 0 : t.mode) ?? "horizontal", this.transition = (t == null ? void 0 : t.transition) ?? "slide", this.touch = (t == null ? void 0 : t.touch) ?? !0, this.useTailwind = (t == null ? void 0 : t.useTailwind) ?? !0;
+    this.autoplay = (t == null ? void 0 : t.autoplay) ?? !1, this.spacing = (t == null ? void 0 : t.spacing) ?? 10, this.slidesPerPage = (t == null ? void 0 : t.slidesPerPage) ?? 1, this.autoplaySpeed = (t == null ? void 0 : t.autoplaySpeed) ?? 500, this.dots = (t == null ? void 0 : t.dots) ?? !0, this.arrows = (t == null ? void 0 : t.arrows) ?? !0, this.infinite = (t == null ? void 0 : t.infinite) ?? !1, this.speed = (t == null ? void 0 : t.speed) ?? 500, this.transition = (t == null ? void 0 : t.transition) ?? "slide", this.touch = (t == null ? void 0 : t.touch) ?? !0, this.useTailwind = (t == null ? void 0 : t.useTailwind) ?? !0;
   }
 }
-function w(e, t = document) {
-  return t.querySelectorAll(e);
+function Tt(e) {
+  const { element: t, touchStart: n, touchEnd: i, touchMove: r } = e;
+  m(O.TOUCHSTART, t, n), m(O.TOUCHEND, t, i), m(O.TOUCHMOVE, t, r), m(O.MOUSEDOWN, t, n), m(O.MOUSEUP, t, i), m(O.MOUSELEAVE, t, i), m(O.MOUSEMOVE, t, r);
 }
-function st(e) {
-  const {
-    /* slideImage,*/
-    element: t,
-    touchStart: s,
-    touchEnd: i,
-    touchMove: n
-  } = e;
-  T(E.TOUCHSTART, t, s), T(E.TOUCHEND, t, i), T(E.TOUCHMOVE, t, n), T(E.MOUSEDOWN, t, s), T(E.MOUSEUP, t, i), T(E.MOUSELEAVE, t, i), T(E.MOUSEMOVE, t, n);
+function y(e, t, n) {
+  e.style[t] = n;
 }
-function it(e, t, s) {
-  const i = e < -100, n = t < s.length - 1;
-  return i && n;
+function gt(e, t, n) {
+  const i = e < -180, r = t < n.length - 1;
+  return i && r;
 }
-function nt(e, t) {
-  const s = e > 100, i = t > 0;
-  return s && i;
-=======
-    for (const i in t)
-      t.hasOwnProperty(i) && (l.state[this.key][i] = t[i]);
-  }
-};
-a(l, "state", {});
-let u = l;
-function tt(e, t) {
-  const i = new u(e), s = i.get(n.SlideIndex), r = i.get(n.SliderWidth), o = -r * s;
-  return !t && i.setMultipleState({
-    [n.prevTranslate]: o,
-    [n.currentTranslate]: o
-  }), t || o;
+function It(e, t) {
+  const n = e > 180, i = t > 0;
+  return n && i;
 }
-function E(e) {
-  return p(`${e} ${D}`);
-}
-function N(e, t) {
-  const i = E(e);
-  _(i, () => tt(e, t));
-}
-function et(e) {
-  const t = P(E(e));
-  new u(e).set(n.SliderWidth, t), N(e);
-}
-function q(e, t) {
-  e.innerHTML = t;
-}
-function M(e, t, i) {
-  e.setAttribute(t, i);
-}
-function it(e, t) {
-  for (const [i, s] of Object.entries(t))
-    M(e, i, s);
-}
-function st(e, t, i) {
-  if (e)
-    for (let s = 0; s < e; s++) {
-      const r = t.children[s].cloneNode(
-        !0
-      );
-      it(r, {
-        "aria-hidden": "true",
-        role: "presentation"
-      }), i.push(r);
-    }
-  q(t, "");
-}
-function U(e, t) {
-  return e && e.appendChild(t), t;
-}
-function nt(e, t) {
-  t.forEach((i) => {
-    U(e, i);
-  });
-}
-function rt(e, t) {
-  if (!e)
-    throw new Error(` ${t || ""}`);
-}
-function at(e) {
-  return /^[.#].*/.test(e);
-}
-class ot {
-  constructor(t) {
-    a(this, "autoplay");
-    a(this, "autoplaySpeed");
-    a(this, "dots");
-    a(this, "arrows");
-    a(this, "touch");
-    a(this, "infinite");
-    a(this, "speed");
-    a(this, "mode");
-    a(this, "transition");
-    a(this, "useTailwind");
-    this.autoplay = (t == null ? void 0 : t.autoplay) ?? !1, this.autoplaySpeed = (t == null ? void 0 : t.autoplaySpeed) ?? 500, this.dots = (t == null ? void 0 : t.dots) ?? !0, this.arrows = (t == null ? void 0 : t.arrows) ?? !0, this.infinite = (t == null ? void 0 : t.infinite) ?? !1, this.speed = (t == null ? void 0 : t.speed) ?? 500, this.mode = (t == null ? void 0 : t.mode) ?? "horizontal", this.transition = (t == null ? void 0 : t.transition) ?? "slide", this.touch = (t == null ? void 0 : t.touch) ?? !0, this.useTailwind = (t == null ? void 0 : t.useTailwind) ?? !0;
-  }
-}
-function O(e, t = document) {
-  return t.querySelectorAll(e);
-}
-function lt(e) {
-  const {
-    /* slideImage,*/
-    element: t,
-    touchStart: i,
-    touchEnd: s,
-    touchMove: r
-  } = e;
-  S(f.TOUCHSTART, t, i), S(f.TOUCHEND, t, s), S(f.TOUCHMOVE, t, r), S(f.MOUSEDOWN, t, i), S(f.MOUSEUP, t, s), S(f.MOUSELEAVE, t, s), S(f.MOUSEMOVE, t, r);
-}
-function dt(e, t, i) {
-  const s = e < -100, r = t < i.length - 1;
-  return s && r;
-}
-function ct(e, t) {
-  const i = e > 100, s = t > 0;
-  return i && s;
-}
-function F(e, t) {
+function J(e, t) {
   return e < 0 ? t - 1 : e >= t ? e : e === t - 1 ? 0 : e === 0 ? t - 3 : e - 1;
 }
-function ut(e) {
-  const { from: t, currentSlideIndex: i, index: s } = e;
-  switch (t) {
-    case h.NEXT:
-      return i + 1;
-    case h.PREV:
-      return i - 1;
-    case h.DOTS:
-    case h.TOUCH:
-      return s ?? i;
-    default:
-      return i;
-  }
->>>>>>> master
+function Et(e, t) {
+  e.style.transform = `translate3d(${t()}px, 0, 0)`;
 }
-function R(e, t) {
+function mt(e, t) {
+  const n = new h(e), i = g(e), r = n.get(s.SlideIndex), a = n.get(s.SlideSpacing), l = M(i, a, r), c = t;
+  return !t && n.setMultipleState({
+    [s.prevTranslate]: l,
+    [s.currentTranslate]: l
+  }), c || l;
+}
+function C(e, t) {
+  const n = g(e);
+  Et(n, () => mt(e, t));
+}
+function Ot(e) {
+  const { from: t, currentSlideIndex: n, index: i } = e;
+  switch (t) {
+    case I.NEXT:
+      return n + 1;
+    case I.PREV:
+      return n - 1;
+    case I.DOTS:
+    case I.TOUCH:
+      return i ?? n;
+    default:
+      return n;
+  }
+}
+class p {
+  constructor(t) {
+    o(this, "rootSelector");
+    o(this, "state");
+    o(this, "init", () => {
+      const { state: t, rootSelector: n, init: i } = this, [r, a] = [
+        t.get(s.currentTranslate),
+        t.get(s.isDragging)
+      ];
+      C(n, r), a && requestAnimationFrame(i);
+    });
+    this.state = new h(t), this.rootSelector = t;
+  }
+}
+function Q(e, t) {
+  e.classList.remove(t);
+}
+function Pt(e, t, n) {
+  new h(e).set(s.SlideIndex, n), C(e), Q(t, N.ACTIVE);
+}
+function K(e, t) {
   return e.classList.contains(t);
 }
-<<<<<<< HEAD
-function H(e, t) {
-  e.classList.remove(t);
+function Nt(e, t) {
+  const n = new h(e), i = t.style.transform, r = n.get(s.SlideSpacing), a = w(t);
+  n.get(s.SlidesPerPage);
+  const c = `translate3d(${M(t, r, a - a)}px, 0px, 0px)`;
+  return i.includes(c);
 }
-function rt(e) {
-  const { from: t, currentSlideIndex: s, index: i } = e;
-  switch (t) {
-    case S.NEXT:
-      return s + 1;
-    case S.PREV:
-      return s - 1;
-    case S.DOTS:
-    case S.TOUCH:
-      return i ?? s;
-    default:
-      return s;
-  }
+function At(e, t) {
+  const n = new h(e), i = t.style.transform, r = n.get(s.SlideSpacing), a = w(t);
+  n.get(s.SlidesPerPage);
+  const c = `translate3d(${M(t, r, a - 1)}px, 0px, 0px)`;
+  return i.includes(c);
 }
-function p(e, t, s) {
-  if (t) {
-    new u(e);
-    for (const [i, n] of Object.entries(t))
-      if (u.state[e][i] !== n)
-        return !1;
-    return s && s(), !0;
-  }
-  return !1;
-}
-var S = /* @__PURE__ */ ((e) => (e.DOTS = "dots", e.PREV = "prev", e.NEXT = "next", e.TOUCH = "touch", e))(S || {});
-function P(e = {
-  rootSelector: ""
-}) {
-  const { from: t, index: s, rootSelector: i } = e, n = new u(i), a = I(i), l = Array.from(
-    w(`${D} > *`, a)
-  ), d = p(i, {
-    [r.Infinite]: !0
-  });
-  if (l.forEach((h, f) => {
-    const [m, x] = [
-      !d && t === "prev" && f === 0,
-      !d && t === "next" && f === l.length - 1
-    ];
-    switch (!0) {
-      case (R(h, g.ACTIVE) && (m || x)):
-        n.set(r.isStopSlider, !0);
-        break;
-      case (R(h, g.ACTIVE) && !n.get(r.isStopSlider)):
-        H(h, g.ACTIVE), n.set(r.SlideIndex, f);
-        break;
-    }
-  }), !n.get(r.isStopSlider) && t) {
-    const h = n.get(r.SlideIndex), f = rt({
-      from: t,
-      currentSlideIndex: h,
-      index: s
-    }), m = (f + l.length) % l.length;
-    O([l[m]], g.ACTIVE), n.set(r.SlideIndex, m), y(i);
-  } else
-    n.setMultipleState({
-      [r.SliderReady]: !0,
-      [r.isStopSlider]: !1
-    });
-}
-function ot(e) {
-  return k(`${e} ${B}`);
-}
-function U(e, t) {
-  const s = w(
-    C.LI,
-    ot(t)
-  ), i = e ?? 0, n = new u(t);
-  s.forEach((a, l) => {
-    R(a, g.SELECTED) && (H(a, g.SELECTED), n.set(r.SlideIndex, i)), l === i && O([a], g.SELECTED);
-  });
-}
-function A(e) {
-  return k(`${e}`);
-}
-class at {
-  constructor(t) {
-    o(this, "state");
-    o(this, "rootSelector");
-    o(this, "slider");
-    this.state = new u(t), this.rootSelector = t, this.slider = A(this.rootSelector);
-  }
-  init() {
-    const { state: t, rootSelector: s, slider: i } = this, [n, a] = [
-      v(i),
-      t.get(r.SlideIndex)
-    ], l = a * -n;
-    t.setMultipleState({
-      [r.currentTranslate]: l,
-      [r.prevTranslate]: l
-    });
-    const [d, h] = [a, S.TOUCH];
-    P({
-      from: h,
-      index: d,
-      rootSelector: s
-    });
-    const f = () => {
-      U(d, s);
-    };
-    p(s, { [r.Dots]: !0 }, f);
-  }
-}
-class lt {
-  constructor(t) {
-    o(this, "state");
-    o(this, "slides");
-    o(this, "slider");
-    o(this, "rootSelector");
-    o(this, "setPositionByIndex");
-    o(this, "init", () => {
-      const { state: t, slides: s, slider: i, setPositionByIndex: n } = this;
-      t.set(r.isDragging, !1), i.oncontextmenu = null;
-      const a = t.get(r.animationID);
-      typeof a == "number" && cancelAnimationFrame(a);
-      const l = t.get(r.currentTranslate) - t.get(r.prevTranslate);
-      let d = t.get(r.SlideIndex);
-      it(l, d, s) && t.set(r.SlideIndex, d += 1), nt(l, d) && t.set(r.SlideIndex, d -= 1), n.init();
-    });
-    this.state = new u(t), this.slider = I(t), this.slides = Array.from(
-      w(`${D} > *`, this.slider)
-    ), this.setPositionByIndex = new at(t), this.rootSelector = t;
-  }
-}
-function X(e) {
-  return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
-}
-class $ {
-  constructor(t) {
-    o(this, "rootSelector");
-    o(this, "state");
-    o(this, "init", () => {
-      const { state: t, rootSelector: s, init: i } = this, [n, a] = [
-        t.get(r.currentTranslate),
-        t.get(r.isDragging)
-      ];
-      y(s, n), a && requestAnimationFrame(i);
-=======
-function V(e, t) {
-  e.classList.remove(t);
-}
-function ht(e, t, i, s) {
-  const r = new u(e), o = Array.from(
-    O(`${D} > *`, E(e))
-  ), [d, c] = [
-    t === h.PREV && s === 0,
-    t === h.NEXT && s === o.length - 1
-  ];
-  R(i, T.ACTIVE) && (d || c ? r.set(n.isStopSlider, !0) : r.get(n.isStopSlider) || V(i, T.ACTIVE), r.set(n.SlideIndex, s));
-}
-function y(e, t, i) {
-  if (t) {
-    new u(e);
-    for (const [s, r] of Object.entries(t))
-      if (u.state[e][s] !== r)
-        return !1;
-    return i && i(), !0;
-  }
-  return !1;
-}
-function ft(e, t, i) {
-  e.style[t] = i;
-}
-function w(e, t) {
-  const i = E(e);
-  ft(i, K.TRANSITION, t);
-}
-class B {
-  constructor(t) {
-    a(this, "rootSelector");
-    a(this, "state");
-    a(this, "init", () => {
-      const { state: t, rootSelector: i, init: s } = this, [r, o] = [
-        t.get(n.currentTranslate),
-        t.get(n.isDragging)
-      ];
-      N(i, r), o && requestAnimationFrame(s);
->>>>>>> master
-    });
-    this.state = new u(t), this.rootSelector = t;
-  }
-}
-<<<<<<< HEAD
-class ct {
-  constructor(t) {
-    o(this, "state");
-    o(this, "rootSelector");
-    o(this, "animation");
-    o(this, "init", (t) => {
-      const { state: s, rootSelector: i, animation: n } = this, [a, l, d, h] = [
-        s.get(r.isDragging),
-        X(t),
-        s.get(r.prevTranslate),
-        s.get(r.startPos)
-      ];
-      a && s.set(
-        r.currentTranslate,
-        d + l - h
-      );
-      const f = s.get(r.currentTranslate);
-      y(i, f), requestAnimationFrame(n.init);
-    });
-    this.animation = new $(t), this.state = new u(t), this.rootSelector = t;
-  }
-}
-class dt {
-  constructor(t) {
-    o(this, "state");
-    o(this, "rootSelector");
-    o(this, "animation");
-    o(this, "slider");
-    this.state = new u(t), this.animation = new $(t), this.rootSelector = t, this.slider = A(this.rootSelector);
-  }
-  init(t) {
-    return (s) => {
-      const { state: i, animation: n, slider: a } = this;
-      a.oncontextmenu = (l) => (l.preventDefault(), l.stopPropagation(), !1), i.setMultipleState({
-        [r.SlideIndex]: t,
-        [r.startPos]: X(s),
-        [r.isDragging]: !0,
-        [r.animationID]: requestAnimationFrame(n.init)
-=======
-function G(e) {
-  const t = E(e), i = Array.from(
-    O(`${D} > *`, E(e))
-  ), s = new u(e);
-  S(f.TRANSITIONEND, t, () => {
-  }), y(e, { [n.Infinite]: !0 }, () => {
-    i.forEach((r, o) => {
-      const d = s.get(n.NumberOfSlides);
-      S(f.TRANSITIONEND, t, () => {
-        if (R(r, T.ACTIVE) && o === 0) {
-          s.set(n.SliderReady, !1), s.set(n.SlideIndex, d);
-          const c = new B(e);
-          requestAnimationFrame(c.init), N(e), V(r, T.ACTIVE), w(e, "");
-        } else
-          R(r, T.ACTIVE) && o !== 0 && s.set(n.SliderReady, !0);
-      });
-    });
-  });
-}
-var h = /* @__PURE__ */ ((e) => (e.DOTS = "dots", e.PREV = "prev", e.NEXT = "next", e.TOUCH = "touch", e))(h || {});
-function W(e = {
-  rootSelector: ""
-}) {
-  const { from: t, index: i, rootSelector: s } = e, r = new u(s), o = Array.from(
-    O(`${D} > *`, E(s))
+function Ct(e, t) {
+  const n = g(e), i = w(n), [r, a] = [Nt(e, n), At(e, n)], l = [
+    { first: r, index: i - i, jumpToIndex: i - 2 },
+    { last: a, index: i - 1, jumpToIndex: i - i + 1 }
+  ], c = l.findIndex(
+    (u) => u.first || u.last
   );
-  if (o.forEach((d, c) => {
-    ht(s, t, d, c);
-  }), t && !r.get(n.isStopSlider)) {
-    const d = r.get(n.SlideIndex), c = ut({
-      from: t,
-      currentSlideIndex: d,
-      index: i
-    });
-    m([o[c]], T.ACTIVE), r.set(n.SlideIndex, c), G(s), N(s);
-    return;
+  if (c !== -1) {
+    const { index: u, jumpToIndex: S } = l[c], f = K(t[u], N.ACTIVE), T = t[u];
+    f && Pt(e, T, S);
   }
-  r.setMultipleState({
-    [n.SliderReady]: !0,
-    [n.isStopSlider]: !1
-  });
 }
-function St(e) {
-  return p(`${e} ${z}`);
+const xt = (e, t) => {
+  const n = g(e), i = G.DEFAULT_TRANSITION_TIME - 100, r = R(e), a = lt(i, () => {
+    y(n, D.TRANSITION, ""), t && Ct(e, r), dt(a);
+  });
+};
+function _(e, t, n, i) {
+  for (let r = 0; r < n; r++) {
+    const a = t * n + r;
+    A([e[a]], N.ACTIVE);
+  }
+}
+var I = /* @__PURE__ */ ((e) => (e.DOTS = "dots", e.PREV = "prev", e.NEXT = "next", e.TOUCH = "touch", e))(I || {});
+function H(e = {
+  rootSelector: ""
+}) {
+  const { index: t, rootSelector: n } = e, i = new h(n), r = i.get(s.NumberOfSlides), a = e.from, l = g(n), c = R(n), u = i.get(s.SlideIndex), S = Ot({
+    from: a,
+    currentSlideIndex: u,
+    index: t
+  }), f = i.get(s.Infinite);
+  if (!f && S > r - 1 || !f && S < 0)
+    return;
+  i.get(s.isStopSlider);
+  const T = i.get(s.SlidesPerPage);
+  i.get(s.SlideSpacing), i.get(s.SliderWidth), _(c, S, T), i.set(s.SlideIndex, S);
+  const E = new p(n);
+  C(n), requestAnimationFrame(E.init);
+  const P = () => xt(n, f);
+  T <= 1 && m(O.TRANSITIONSTART, l, P);
+}
+function Rt(e) {
+  return $(`${e} ${Y}`);
 }
 function X(e, t) {
-  const i = O(A.LI, St(t)), s = e ?? 0;
-  i.forEach((r, o) => {
-    R(r, T.SELECTED) && V(r, T.SELECTED), o === s && m([r], T.SELECTED);
+  const n = v(x.LI, Rt(t)), i = e ?? 0;
+  n.forEach((r, a) => {
+    K(r, N.SELECTED) && Q(r, N.SELECTED), a === i && A([r], N.SELECTED);
   });
 }
-function L(e) {
-  return p(`${e}`);
+function z(e) {
+  return $(`${e}`);
 }
-class Tt {
+function tt(e, t, n) {
+  if (t) {
+    new h(e);
+    for (const [i, r] of Object.entries(t))
+      if (h.state[e][i] !== r)
+        return !1;
+    return n && n(), !0;
+  }
+  return !1;
+}
+class wt {
   constructor(t) {
-    a(this, "state");
-    a(this, "rootSelector");
-    a(this, "slider");
-    this.state = new u(t), this.rootSelector = t, this.slider = L(this.rootSelector);
+    o(this, "state");
+    o(this, "rootSelector");
+    o(this, "slider");
+    this.state = new h(t), this.rootSelector = t, this.slider = z(this.rootSelector);
   }
   init() {
-    const { state: t, rootSelector: i, slider: s } = this, [r, o] = [P(s), t.get(n.SlideIndex)], d = o * -r;
+    const { state: t, rootSelector: n, slider: i } = this, r = t.get(s.SlideIndex), a = L(i), l = r * -a;
     t.setMultipleState({
-      [n.currentTranslate]: d,
-      [n.prevTranslate]: d
+      [s.currentTranslate]: l,
+      [s.prevTranslate]: l
     });
-    const [c, I] = [o, h.TOUCH];
-    W({
-      from: I,
+    const c = r, u = I.TOUCH;
+    H({
+      from: u,
       index: c,
-      rootSelector: i
+      rootSelector: n
     });
-    const C = t.get(n.Infinite), g = t.get(n.NumberOfSlides) + 2, x = C ? F(c, g) : c, j = () => {
-      X(x, i);
+    const S = t.get(s.NumberOfSlides) + 2, f = t.get(s.Infinite), T = t.get(s.SlidesPerPage), E = f && T <= 1 ? J(c, S) : c, P = () => {
+      X(E, n);
     };
-    y(i, { [n.Dots]: !0 }, j);
+    tt(n, { [s.Dots]: !0 }, P);
   }
 }
-class Et {
+class Dt {
   constructor(t) {
-    a(this, "state");
-    a(this, "slides");
-    a(this, "slider");
-    a(this, "rootSelector");
-    a(this, "setPositionByIndex");
-    a(this, "init", () => {
-      const { state: t, slides: i, setPositionByIndex: s } = this;
-      G(this.rootSelector), t.set(n.isDragging, !1);
-      const r = t.get(n.animationID);
-      typeof r == "number" ? (cancelAnimationFrame(r), w(this.rootSelector, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)")) : w(this.rootSelector, "");
-      const o = t.get(n.currentTranslate) - t.get(n.prevTranslate);
-      let d = t.get(n.SlideIndex);
-      dt(o, d, i) && t.set(n.SlideIndex, d += 1), ct(o, d) && t.set(n.SlideIndex, d -= 1), s.init();
+    o(this, "$root");
+    o(this, "state");
+    o(this, "setPositionByIndex");
+    o(this, "animation");
+    o(this, "init", () => {
+      const { $root: t, state: n, setPositionByIndex: i } = this;
+      console.log("vou te pegar 2");
+      const r = g(t);
+      n.set(s.isDragging, !1);
+      const a = n.get(s.animationID), l = n.get(s.IsMouseLeave), c = n.get(s.Infinite), u = n.get(s.SlideIndex), S = n.get(s.SliderReady), f = n.get(s.SlidesPerPage);
+      if (c && u <= 0 && f <= 1 && !S)
+        return;
+      l || y(r, D.TRANSITION, B.TRANSFORM_EASE), typeof a == "number" && cancelAnimationFrame(a);
+      const T = n.get(s.currentTranslate) - n.get(s.prevTranslate);
+      let E = n.get(s.SlideIndex);
+      const P = R(t);
+      gt(T, E, P) && n.set(s.SlideIndex, E += 1), It(T, E) && n.set(s.SlideIndex, E -= 1), i.init(), n.setMultipleState({
+        [s.TouchEndTime]: Date.now(),
+        [s.IsMouseLeave]: !0
+        // [State_Keys.prevTranslate]: state.get(State_Keys.currentTranslate)
+      });
     });
-    this.state = new u(t), this.slider = E(t), this.slides = Array.from(O(`${D} > *`, this.slider)), this.setPositionByIndex = new Tt(t), this.rootSelector = t;
+    this.$root = t, this.state = new h(this.$root), this.setPositionByIndex = new wt(this.$root), this.animation = new p(this.$root);
   }
 }
-function Z(e) {
+function et(e) {
   return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
 }
-class It {
+class yt {
   constructor(t) {
-    a(this, "state");
-    a(this, "rootSelector");
-    a(this, "slider");
-    a(this, "animation");
-    a(this, "intervalId", null);
-    a(this, "init", (t) => {
-      const { state: i, rootSelector: s, animation: r } = this, [o, d, c, I] = [
-        i.get(n.isDragging),
-        Z(t),
-        i.get(n.prevTranslate),
-        i.get(n.startPos)
-      ];
-      if (w(s, ""), o) {
-        d - I > 0 && i.get(n.SliderWidth), this.intervalId = setInterval(() => {
-        }, 10), i.set(n.currentTranslate, c + d - I);
-        const g = i.get(n.currentTranslate);
-        i.get(n.SliderReady) && (N(s, g), requestAnimationFrame(r.init));
+    o(this, "$root");
+    o(this, "state");
+    o(this, "animation");
+    o(this, "init", (t) => {
+      const { state: n, $root: i, animation: r } = this, a = Z(t), l = n.get(s.isDragging), c = et(a), u = n.get(s.prevTranslate), S = n.get(s.startPos), f = n.get(s.SlideIndex), T = n.get(s.Infinite), E = n.get(s.SliderReady), P = n.get(s.SlidesPerPage);
+      if (!(T && f <= 0 && P <= 1 && !E) && l) {
+        n.setMultipleState({
+          [s.currentTranslate]: u + c - S
+        });
+        const k = n.get(s.currentTranslate);
+        C(i, k), requestAnimationFrame(r.init);
       }
     });
-    this.animation = new B(t), this.state = new u(t), this.rootSelector = t, this.slider = E(this.rootSelector);
+    this.$root = t, this.state = new h(this.$root), this.animation = new p(this.$root);
   }
 }
-class gt {
+function Lt(e, t) {
+  return t > 1 ? Math.floor(e / t) : e;
+}
+class Mt {
   constructor(t) {
-    a(this, "state");
-    a(this, "rootSelector");
-    a(this, "animation");
-    a(this, "slider");
-    this.state = new u(t), this.animation = new B(t), this.rootSelector = t, this.slider = L(this.rootSelector);
+    o(this, "$root");
+    o(this, "state");
+    o(this, "animation");
+    this.$root = t, this.state = new h(t), this.animation = new p(t);
   }
   init(t) {
-    return (i) => {
-      const { state: s, animation: r, slider: o } = this;
-      s.setMultipleState({
-        [n.SlideIndex]: t,
-        [n.startPos]: Z(i),
-        [n.isDragging]: !0,
-        [n.animationID]: requestAnimationFrame(r.init)
->>>>>>> master
+    return (n) => {
+      const { state: i, animation: r } = this;
+      console.log("vou te pegar 1");
+      const a = Z(n), l = g(this.$root);
+      i.get(s.SliderReady);
+      const c = i.get(s.Infinite), u = i.get(s.SlideIndex), S = i.get(s.SlidesPerPage);
+      c && u <= 0 && S <= 1 && i.set(s.SliderReady, !0), y(l, D.TRANSITION, ""), i.setMultipleState({
+        [s.TouchStartTime]: Date.now(),
+        [s.SlideIndex]: Lt(t, S),
+        [s.startPos]: et(a),
+        [s.isDragging]: !0,
+        [s.IsMouseLeave]: !1,
+        [s.animationID]: requestAnimationFrame(r.init)
       });
     };
   }
 }
-<<<<<<< HEAD
-class ut {
+class vt {
   constructor(t) {
-    o(this, "rootSelector");
+    o(this, "$root");
     o(this, "slider");
     o(this, "slides");
     o(this, "state");
     o(this, "touchStart");
     o(this, "touchEnd");
     o(this, "touchMove");
-    this.rootSelector = t, this.slider = I(t), this.slides = Array.from(
-      w(`${D} > *`, this.slider)
-    ), this.state = new u(this.rootSelector), this.touchStart = new dt(this.rootSelector), this.touchEnd = new lt(this.rootSelector), this.touchMove = new ct(this.rootSelector);
+    this.$root = t, this.slider = g(t), this.slides = Array.from(v(`${W} > *`, this.slider)), this.state = new h(this.$root), this.touchStart = new Mt(this.$root), this.touchEnd = new Dt(this.$root), this.touchMove = new yt(this.$root);
   }
   init() {
-    const { slides: t, touchStart: s, touchEnd: i, touchMove: n } = this;
+    const { slides: t, touchStart: n, touchEnd: i, touchMove: r } = this;
     t.forEach((a, l) => {
-      const d = {
+      const c = {
         element: a,
         index: l,
-        touchStart: s.init(l),
+        touchStart: n.init(l),
+        // touchEnd: (event: Event) => touchEnd.init(event),
         touchEnd: i.init.bind(i),
-        touchMove: n.init.bind(n)
-      };
-      st(d);
-    });
-  }
-}
-function V(e) {
-  return document.createElement(e);
-}
-function ht(e) {
-  const t = [];
-  for (let s = 0; s < e; s++) {
-    const i = V(C.BUTTON), n = s === 0;
-    b(
-      i,
-      N.DIRECTION,
-      n ? S.NEXT : S.PREV
-    ), O([i], L.BRICK_ARROWS), W(i, n ? S.NEXT : S.PREV), t.push(i);
-  }
-  return t;
-}
-function St(e, t) {
-  e.prepend(t);
-}
-function ft(e, t) {
-  const s = A(t);
-  return e.forEach((i) => {
-    St(s, i);
-  }), e;
-}
-function Et(e, t) {
-  return e.getAttribute(t);
-}
-function Tt(e, t) {
-  return () => {
-    const s = new u(t);
-    if (!s.get(r.SliderReady))
-      return;
-    s.set(r.SliderReady, !1);
-    const i = Et(e, N.DIRECTION), n = I(t), a = i === S.PREV;
-    P({
-      from: a ? S.PREV : S.NEXT,
-      rootSelector: t
-    });
-    const l = s.get(r.SlideIndex), d = () => {
-      U(l, t);
-    };
-    p(t, { [r.Dots]: !0 }, d), T(E.TRANSITIONEND, n, () => {
-      s.set(r.SliderReady, !0);
-    });
-  };
-}
-class gt {
-  constructor(t) {
-    o(this, "rootSelector");
-    this.rootSelector = t;
-  }
-  init() {
-    const { rootSelector: t } = this, s = ht(2);
-    ft(s, t).forEach((n) => {
-      const a = Tt(n, t);
-      T(E.CLICK, n, a);
-    });
-  }
-}
-function It(e, t) {
-  for (let s = 0; s < e; s++) {
-    const i = V(C.LI);
-    M(t, i), O([i], g.SLIDER_DOT), s === 0 && O([i], g.SELECTED);
-  }
-}
-const mt = (e) => {
-  const t = new u(e), s = t.get(r.SlideIndex);
-  U(s, e), P({
-    from: S.DOTS,
-    index: s,
-    rootSelector: e
-  });
-};
-class Ot {
-  constructor(t) {
-    o(this, "rootSelector");
-    this.rootSelector = t;
-  }
-  init() {
-    const t = A(this.rootSelector), s = V(C.UL), i = new u(this.rootSelector), n = i.get(r.NumberOfSlides);
-    b(
-      s,
-      N.CLASS,
-      B.replace(".", "")
-    ), M(t, s), n && It(n, s);
-    const a = w(C.LI, s);
-    Array.from(a).forEach((l, d) => {
-      const h = () => {
-        i.set(r.SlideIndex, d), mt(this.rootSelector);
-      };
-      T(E.CLICK, l, h);
-    });
-  }
-}
-function Ct(e, t) {
-  const { dots: s, arrows: i, touch: n } = t || {};
-  s && new Ot(e).init(), i && new gt(e).init(), n && new ut(e).init();
-}
-class wt {
-=======
-class mt {
-  constructor(t) {
-    a(this, "rootSelector");
-    a(this, "slider");
-    a(this, "slides");
-    a(this, "state");
-    a(this, "touchStart");
-    a(this, "touchEnd");
-    a(this, "touchMove");
-    this.rootSelector = t, this.slider = E(t), this.slides = Array.from(O(`${D} > *`, this.slider)), this.state = new u(this.rootSelector), this.touchStart = new gt(this.rootSelector), this.touchEnd = new Et(this.rootSelector), this.touchMove = new It(this.rootSelector);
-  }
-  init() {
-    const { slides: t, touchStart: i, touchEnd: s, touchMove: r } = this;
-    t.forEach((o, d) => {
-      const c = {
-        element: o,
-        index: d,
-        touchStart: i.init(d),
-        touchEnd: s.init.bind(s),
+        //touchEnd: touchEnd.init(index),
         touchMove: r.init.bind(r)
       };
-      lt(c);
+      Tt(c);
     });
   }
 }
-function H(e) {
+function q(e) {
   return document.createElement(e);
 }
-function Ot(e) {
+function nt(e, t, n) {
+  e.setAttribute(t, n);
+}
+function pt(e, t) {
+  e.innerHTML = t;
+}
+function kt(e) {
   const t = [];
-  for (let i = 0; i < e; i++) {
-    const s = H(A.BUTTON), r = i === 0;
-    M(
-      s,
-      k.DIRECTION,
-      r ? h.NEXT : h.PREV
-    ), m([s], v.BRICK_ARROWS), q(s, r ? h.NEXT : h.PREV), t.push(s);
+  for (let n = 0; n < e; n++) {
+    const i = q(x.BUTTON), r = n === 0;
+    nt(i, V.DIRECTION, r ? I.NEXT : I.PREV), A([i], U.BRICK_ARROWS), pt(i, r ? I.NEXT : I.PREV), t.push(i);
   }
   return t;
 }
-function Ct(e, t) {
+function bt(e, t) {
   e.prepend(t);
 }
-function wt(e, t) {
-  const i = L(t);
-  return e.forEach((s) => {
-    Ct(i, s);
+function $t(e, t) {
+  const n = z(t);
+  return e.forEach((i) => {
+    bt(n, i);
   }), e;
 }
-function Dt(e, t) {
+function Ut(e, t) {
   return e.getAttribute(t);
 }
-function At(e, t) {
+function Vt(e, t) {
   return () => {
-    const i = new u(t);
-    if (!i.get(n.SliderReady))
-      return;
-    i.set(n.SliderReady, !1);
-    const r = Dt(e, k.DIRECTION) === h.PREV;
-    w(t, "transform 400ms  cubic-bezier(0.25, 1, 0.5,1)"), W({
-      from: r ? h.PREV : h.NEXT,
+    const n = new h(t), r = Ut(e, V.DIRECTION) === I.PREV, a = g(t);
+    n.get(s.SliderReady);
+    const l = n.get(s.Infinite);
+    console.log("index", n.get(s.SliderReady)), y(a, D.TRANSITION, B.TRANSFORM_EASE), H({
+      from: r ? I.PREV : I.NEXT,
       rootSelector: t
     });
-    const o = i.get(n.Infinite), d = i.get(n.SlideIndex), c = i.get(n.NumberOfSlides) + 2, I = o ? F(d, c) : d, C = () => {
-      X(I, t);
-    };
-    y(t, { [n.Dots]: !0 }, C);
-    const g = E(t);
-    S(f.TRANSITIONEND, g, () => {
-      i.set(n.SliderReady, !0), w(t, "");
+    const c = n.get(s.SlidesPerPage), u = n.get(s.SlideIndex), S = n.get(s.NumberOfSlides) + 2, f = l && c <= 1 ? J(u, S) : u;
+    tt(t, { [s.Dots]: !0 }, () => {
+      X(f, t);
+    }), m(O.TRANSITIONEND, a, () => {
+      n.set(s.SliderReady, !0);
     });
   };
 }
-class Nt {
+class Bt {
   constructor(t) {
-    a(this, "rootSelector");
-    this.rootSelector = t;
+    o(this, "$root");
+    this.$root = t;
   }
   init() {
-    const { rootSelector: t } = this, i = Ot(2);
-    wt(i, t).forEach((r) => {
-      const o = At(r, t);
-      S(f.CLICK, r, o);
+    const { $root: t } = this, n = kt(2);
+    $t(n, t).forEach((r) => {
+      const a = Vt(r, t);
+      m(O.CLICK, r, a);
     });
   }
 }
-function yt(e, t) {
-  const i = new u(e);
-  y(e, { [n.Infinite]: !0 }, () => {
-    i.set(
-      n.NumberOfSlides,
-      i.get(n.NumberOfSlides) - 2
-    );
-  });
-  const s = i.get(n.NumberOfSlides);
-  for (let r = 0; r < s; r++) {
-    const o = H(A.LI);
-    U(t, o), m([o], T.SLIDER_DOT), r === 0 && m([o], T.SELECTED);
+function Wt(e, t) {
+  const n = new h(e), i = n.get(s.Infinite), r = g(e), a = w(r), l = n.get(s.SlidesPerPage);
+  i && n.set(s.NumberOfSlides, a - 2), l > 1 && n.set(s.NumberOfSlides, Math.ceil(a / 2));
+  const c = n.get(s.NumberOfSlides);
+  for (let u = 0; u < c; u++) {
+    const S = q(x.LI);
+    F(t, S), A([S], N.SLIDER_DOT), u === 0 && A([S], N.SELECTED);
   }
 }
-function Rt(e) {
-  const t = new u(e), i = h.DOTS;
-  let s = t.get(n.SlideIndex);
-  X(s, e);
-  const r = t.get(n.Infinite);
-  W({
-    from: i,
-    index: r ? ++s : s,
+function Ft(e) {
+  const t = new h(e), n = I.DOTS;
+  let i = t.get(s.SlideIndex);
+  X(i, e);
+  const r = t.get(s.Infinite), a = t.get(s.SlidesPerPage), l = g(e);
+  y(l, D.TRANSITION, B.TRANSFORM_EASE), H({
+    from: n,
+    index: r && a <= 1 ? ++i : i,
     rootSelector: e
   });
 }
-class Lt {
+class Ht {
   constructor(t) {
-    a(this, "rootSelector");
-    this.rootSelector = t;
+    o(this, "$root");
+    this.$root = t;
   }
   init() {
-    const t = L(this.rootSelector), i = H(A.UL), s = new u(this.rootSelector);
-    M(i, k.CLASS, z.replace(".", "")), U(t, i), yt(this.rootSelector, i);
-    const r = O(A.LI, i);
-    Array.from(r).forEach((o, d) => {
+    const t = z(this.$root), n = q(x.UL), i = new h(this.$root);
+    nt(n, V.CLASS, Y.replace(".", "")), F(t, n), Wt(this.$root, n);
+    const r = v(x.LI, n);
+    Array.from(r).forEach((a, l) => {
       const c = () => {
-        s.set(n.SlideIndex, d), Rt(this.rootSelector);
+        i.set(s.SlideIndex, l), Ft(this.$root);
       };
-      S(f.CLICK, o, c);
+      m(O.CLICK, a, c);
     });
   }
 }
-function xt(e, t) {
-  const { dots: i, arrows: s, touch: r } = t || {};
-  i && new Lt(e).init(), s && new Nt(e).init(), r && new mt(e).init();
+function Xt(e, t) {
+  const { dots: n, arrows: i, touch: r } = t || {};
+  n && new Ht(e).init(), i && new Bt(e).init(), r && new vt(e).init();
 }
-class bt {
->>>>>>> master
+class zt {
   constructor() {
   }
   next() {
@@ -1025,66 +538,51 @@ class bt {
   destroy() {
   }
 }
-<<<<<<< HEAD
-class Dt extends wt {
-  constructor(s, i) {
-    super();
-    o(this, "clonedSlides", []);
-    o(this, "rootSelector");
-    o(this, "options");
-    _(tt(s), "Main Selector Not Found"), this.rootSelector = s, this.options = { ...new et(), ...i };
-  }
-  init() {
-    const { rootSelector: s, options: i, clonedSlides: n } = this, a = new u(s, i), l = I(s), d = F(l);
-    a.set(r.NumberOfSlides, d);
-    const h = G(I(s));
-    h && O([h], g.ACTIVE);
-    const f = v(l);
-    a.set(r.SliderWidth, f);
-    const m = () => J(s);
-    T(E.RESIZE, window, m);
-    const x = a.get(r.NumberOfSlides);
-    Y(x, l, n), K(l, n), Ct(s, i);
-  }
-}
-window.BrickSlider = Dt;
-=======
-function vt(e, t) {
-  t.forEach((i) => {
-    e.appendChild(i);
+function qt(e, t) {
+  t.forEach((n) => {
+    e.appendChild(n);
   });
 }
-function $(e) {
+function j(e) {
   return (e == null ? void 0 : e.children.item(e.children.length - 1)) ?? null;
 }
-function kt(e) {
-  const t = b(e), i = $(e);
-  e.insertBefore(i.cloneNode(!0), t), vt(e, [t.cloneNode(!0)]), m([b(e), $(e)], T.CLONED);
+function jt(e) {
+  const t = b(e), n = j(e);
+  e.insertBefore(n.cloneNode(!0), t), qt(e, [t.cloneNode(!0)]), A([b(e), j(e)], N.CLONED);
 }
-class Pt extends bt {
-  constructor(i, s) {
-    super();
-    a(this, "clonedSlides", []);
-    a(this, "rootSelector");
-    a(this, "options");
-    rt(at(i), "Main Selector Not Found"), this.rootSelector = i, this.options = { ...new ot(), ...s };
+class Gt {
+  constructor(t) {
+    o(this, "$root");
+    this.$root = t;
   }
   init() {
-    const { rootSelector: i, options: s, clonedSlides: r } = this, o = E(i), d = new u(i, s);
-    y(i, { [n.Infinite]: !0 }, () => {
-      kt(o);
-    });
-    const c = Q(o);
-    d.set(n.NumberOfSlides, c);
-    const I = b(E(i));
-    m([I], T.ACTIVE);
-    const C = P(o);
-    d.set(n.SliderWidth, C);
-    const g = () => et(i);
-    S(f.RESIZE, window, g);
-    const x = d.get(n.NumberOfSlides);
-    st(x, o, r), nt(o, r), d.set(n.LoadPage, !1), xt(i, s);
+    const { $root: t } = this, n = L(g(t));
+    new h(t).set(s.SliderWidth, n), C(t);
   }
 }
-window.BrickSlider = Pt;
->>>>>>> master
+class Zt extends zt {
+  constructor(n, i) {
+    super();
+    o(this, "clonedSlides", []);
+    o(this, "$root");
+    o(this, "options");
+    o(this, "resize");
+    St(ht(n), "Main Selector Not Found"), this.$root = n, this.options = { ...new ft(), ...i }, this.resize = new Gt(n);
+  }
+  init() {
+    const { $root: n, options: i, clonedSlides: r, resize: a } = this, l = g(n), c = new h(n, i), u = c.get(s.currentTranslate), S = u + 1, f = c.get(s.SlideSpacing), T = M(l, f, S), E = c.get(s.Infinite), P = c.get(s.SlidesPerPage), k = R(n)[u];
+    E && P <= 1 && (jt(l), c.set(s.SlideIndex, S), A([k], N.ACTIVE), C(n, T), c.setMultipleState({
+      [s.currentTranslate]: T,
+      [s.prevTranslate]: T
+    }));
+    const st = L(l);
+    c.set(s.SliderWidth, st);
+    const it = w(l);
+    c.set(s.NumberOfSlides, it), b(g(n)), c.get(s.NumberOfSlides);
+    const rt = c.get(s.SlideIndex);
+    E || _(R(n), rt, P);
+    const ot = () => a.init();
+    m(O.RESIZE, window, ot), ut(l, r), Xt(n, i);
+  }
+}
+window.BrickSlider = Zt;

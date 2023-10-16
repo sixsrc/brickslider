@@ -3,7 +3,8 @@ type typeTransition = "fade" | "slide" | "thorn" | "lines" | "halftone" | "brush
 export type TypeOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sliderOptions?: any
-  margin?: number | null
+  spacing?: number | null
+  slidesPerPage?: number | null
   autoplay?: boolean
   autoplaySpeed?: number
   dots?: boolean
@@ -16,7 +17,8 @@ export type TypeOptions = {
 }
 
 export class Options {
-  margin?: number | null
+  spacing?: number | null
+  slidesPerPage?: number | null
   autoplay?: boolean
   autoplaySpeed?: number
   dots?: boolean
@@ -29,7 +31,8 @@ export class Options {
 
   constructor(options?: TypeOptions) {
     this.autoplay = options?.autoplay ?? false
-    this.margin = options?.margin ?? 0
+    this.spacing = options?.spacing ?? 10
+    this.slidesPerPage = options?.slidesPerPage ?? 1
     this.autoplaySpeed = options?.autoplaySpeed ?? 500
     this.dots = options?.dots ?? true
     this.arrows = options?.arrows ?? true

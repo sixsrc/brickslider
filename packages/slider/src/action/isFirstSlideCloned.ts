@@ -7,11 +7,13 @@ export function isFirstSlideCloned($root: string, $children: HTMLElement): boole
 
   const transformValue = $children.style.transform
 
-  const slideMargin = state.get(State_Keys.SlideMargin)
+  const slideSpacing = state.get(State_Keys.SlideSpacing)
 
   const index = getChildrenCount($children)
 
-  const translate = calcTranslate($children, slideMargin, index - index)
+  const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+
+  const translate = calcTranslate($children, slideSpacing, index - index)
 
   const translateStyle = `translate3d(${translate}px, 0px, 0px)`
 

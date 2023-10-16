@@ -37,9 +37,7 @@ export class TouchEnd {
 
     const isSliderReady = state.get(State_Keys.SliderReady)
 
-    if (isInfinite && slideIndex <= 0) state.set(State_Keys.SliderReady, false)
-
-    if (!isSliderReady) return
+    const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
     if (!isMouseLeave) setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
@@ -62,6 +60,7 @@ export class TouchEnd {
     state.setMultipleState({
       [State_Keys.TouchEndTime]: Date.now(),
       [State_Keys.IsMouseLeave]: true
+      // [State_Keys.prevTranslate]: state.get(State_Keys.currentTranslate)
     })
   }
 }

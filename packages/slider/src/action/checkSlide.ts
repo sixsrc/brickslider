@@ -3,11 +3,13 @@ import { setStyle } from "@/dom/methods/setStyle"
 import { checkSlideCloned } from "@/action/checkSlideCloned"
 import { cancelWait, waitFor } from "@/util"
 import { STYLES, TIMES, slideNodeList } from "@/util/constants"
+import { State } from "@/state/BrickState"
 
 export const checkSlide = ($root: string, isInfinite: boolean) => {
+  const state = new State($root)
   const $children = getChildren($root)
 
-  const time = TIMES.DEFAULT_TRANSITION_TIME - 100
+  const time = 200
 
   const slides = slideNodeList($root)
 

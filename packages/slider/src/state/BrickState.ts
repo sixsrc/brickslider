@@ -5,8 +5,8 @@ import { TypeOptions } from "@/option/Options"
 export enum State_Keys {
   isLoadPage = "isLoadPage",
   SlideIndex = "slideIndex",
-  SlideInfiniteIndex = "slideInfiniteIndex",
-  SlideMargin = "slideMargin",
+  SlideSpacing = "slideSpacing",
+  SlidesPerPage = "slidesPerPage",
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   SliderReady = "sliderReady",
@@ -34,8 +34,8 @@ type StateType = {
   [key: string]: string | number | boolean | null | undefined
   [State_Keys.isLoadPage]: boolean
   [State_Keys.SlideIndex]: number
-  [State_Keys.SlideMargin]: number
-  [State_Keys.SlideInfiniteIndex]: number
+  [State_Keys.SlideSpacing]: number
+  [State_Keys.SlidesPerPage]: number
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
   [State_Keys.SliderReady]: boolean
@@ -74,8 +74,8 @@ class BrickState {
   private initializeState(options: TypeOptions) {
     BrickState.state[this.key][State_Keys.isLoadPage] = false
     BrickState.state[this.key][State_Keys.SlideIndex] = 0
-    BrickState.state[this.key][State_Keys.SlideMargin] = options.margin ?? 0
-    BrickState.state[this.key][State_Keys.SlideInfiniteIndex] = 0
+    BrickState.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 10
+    BrickState.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
     BrickState.state[this.key][State_Keys.NumberOfSlides] = 0
     BrickState.state[this.key][State_Keys.SliderWidth] = 0
     BrickState.state[this.key][State_Keys.SliderReady] = true

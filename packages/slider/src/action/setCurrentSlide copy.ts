@@ -6,8 +6,8 @@ import { State, State_Keys } from "../state/BrickState"
 import { getChildren } from "../core/functions/getChildren"
 import { isFirstOrLast } from "@/core/functions/isFirstOrLast"
 import { cancelWait, listener, waitFor } from "@/util"
-import { matchStateOptions } from "@/util/matchStateOptions"
-import { checkFirstSlideCloned } from "@/action/checkSlideCloned"
+//import { matchStateOptions } from "@/util/matchStateOptions"
+//import { checkFirstSlideCloned } from "@/action/checkSlideCloned"
 import { setStyle } from "@/dom/methods/setStyle"
 import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
 
@@ -62,9 +62,9 @@ export function setCurrentSlide(
 
     requestAnimationFrame(animation.init)
 
-    const isSlideCloned = () => {
+    /* const isSlideCloned = () => {
       checkFirstSlideCloned(rootSelector, slides)
-    }
+    }*/
 
     const isInfinite = state.get(State_Keys.Infinite)
 
@@ -90,7 +90,7 @@ export function setCurrentSlide(
         const wait = waitFor(TIMES.DEFAULT_TRANSITION_TIME - 200, () => {
           setStyle($children, STYLES.TRANSITION, "")
 
-          if (isInfinite) isSlideCloned()
+          //          if (isInfinite) isSlideCloned()
 
           cancelWait(wait)
         })

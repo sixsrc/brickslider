@@ -4,6 +4,7 @@ import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
 import { setStyle } from "@/dom/methods/setStyle"
 import { getChildren } from "@/core/functions/getChildren"
+import { adjustSlideIndex } from "./functions/adjustSlideIndex"
 
 export class TouchStart {
   $root: string
@@ -30,17 +31,25 @@ export class TouchStart {
 
       const slideIndex = state.get(State_Keys.SlideIndex)
 
-      if (isInfinite && slideIndex <= 0) state.set(State_Keys.SliderReady, false)
+      //retirar
 
-      if (!isSliderReady) return
+      const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+
+      if (isInfinite && slideIndex <= 0 && slidesPerPage <= 1)
+        if (!isSliderReady)
+          // state.set(State_Keys.SliderReady, false)
+
+          return
 
       state.set(State_Keys.SliderReady, true)
 
       setStyle($children, STYLES.TRANSITION, "")
 
+      // const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+
       state.setMultipleState({
         [State_Keys.TouchStartTime]: Date.now(),
-        [State_Keys.SlideIndex]: index,
+        [State_Keys.SlideIndex]: adjustSlideIndex(index, slidesPerPage),
         [State_Keys.startPos]: getPositionX(setEvent),
         [State_Keys.isDragging]: true,
         [State_Keys.IsMouseLeave]: false,

@@ -7,11 +7,13 @@ export function isLastSlideCloned($root: string, $children: HTMLElement): boolea
 
   const transformValue = $children.style.transform
 
-  const slideMargin = state.get(State_Keys.SlideMargin)
+  const slideSpacing = state.get(State_Keys.SlideSpacing)
 
   const index = getChildrenCount($children)
 
-  const translate = calcTranslate($children, slideMargin, index - 1)
+  const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+
+  const translate = calcTranslate($children, slideSpacing, index - 1)
 
   const translateStyle = `translate3d(${translate}px, 0px, 0px)`
 

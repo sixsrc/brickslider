@@ -16,6 +16,7 @@ import { Methods } from "./Methods"
 import { cloneSlides } from "./functions/cloneSlides"
 import { Resize } from "@/event/Resize"
 import { transform as transformSlider } from "@/transition/transform"
+import { setActiveClass } from "@/action/setActiveClass"
 
 export class BrickSlider extends Methods {
   clonedSlides: HTMLElement[] = []
@@ -42,15 +43,17 @@ export class BrickSlider extends Methods {
 
     const newSlideIndex = currentTranslate + 1
 
-    const slideMargin = state.get(State_Keys.SlideMargin)
+    const slideSpacing = state.get(State_Keys.SlideSpacing)
 
-    const translate = calcTranslate($children, slideMargin, newSlideIndex)
+    const translate = calcTranslate($children, slideSpacing, newSlideIndex)
 
     const isInfinite = state.get(State_Keys.Infinite)
 
+    const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+
     const slide = slideNodeList($root)[currentTranslate]
 
-    if (isInfinite) {
+    if (isInfinite && slidesPerPage <= 1) {
       cloneSlides($children)
 
       state.set(State_Keys.SlideIndex, newSlideIndex)
@@ -75,15 +78,18 @@ export class BrickSlider extends Methods {
 
     const firstSlide = getFirstChildren(getChildren($root)) as Element
 
-    if (!isInfinite) addClass([firstSlide], CLASS_VALUES.ACTIVE)
+    const numberOfSlides = state.get(State_Keys.NumberOfSlides)
+
+    const slideIndex = state.get(State_Keys.SlideIndex)
+
+    if (!isInfinite) setActiveClass(slideNodeList($root), slideIndex, slidesPerPage, numberOfSlides)
+    //addClass([firstSlide], CLASS_VALUES.ACTIVE)
 
     const handleResize = () => resize.init()
 
     listener(EVENTS.RESIZE, window, handleResize)
 
-    const numberOfSlides = state.get(State_Keys.NumberOfSlides)
-
-    setAcessibilitySlider($root, $children, numberOfSlides, clonedSlides)
+    // setAcessibilitySlider($root, $children, numberOfSlides, clonedSlides)
 
     appendSlider($children, clonedSlides)
 

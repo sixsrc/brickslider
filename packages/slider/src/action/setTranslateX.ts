@@ -9,14 +9,16 @@ export function setTranslateX($root: string, currentTranslateFixedValue: number)
 
   const currentSlideIndex = state.get(State_Keys.SlideIndex)
 
-  const slideMargin = state.get(State_Keys.SlideMargin)
+  const slideSpacing = state.get(State_Keys.SlideSpacing)
 
   // const sliderWidth = state.get(State_Keys.SliderWidth)
   // const marginDiference = currentSlideIndex * slideMargin
   //const sliderWidth = state.get(State_Keys.SliderWidth)
   // const translate = -(sliderWidth * currentSlideIndex + marginDiference)
 
-  const translate = calcTranslate($children, slideMargin, currentSlideIndex)
+  // const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+
+  const translate = calcTranslate($children, slideSpacing, currentSlideIndex)
 
   const translateFixedValue = currentTranslateFixedValue!
 
@@ -25,6 +27,8 @@ export function setTranslateX($root: string, currentTranslateFixedValue: number)
       [State_Keys.prevTranslate]: translate,
       [State_Keys.currentTranslate]: translate
     })
+
+  //console.log("translate", translate)
 
   return translateFixedValue ? translateFixedValue : translate
 }

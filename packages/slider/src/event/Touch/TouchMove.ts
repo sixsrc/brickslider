@@ -34,9 +34,13 @@ export class TouchMove {
 
     const isSliderReady = state.get(State_Keys.SliderReady)
 
-    if (isInfinite && slideIndex <= 0) state.set(State_Keys.SliderReady, false)
+    const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
-    if (!isSliderReady) return
+    if (isInfinite && slideIndex <= 0 && slidesPerPage <= 1)
+      if (!isSliderReady)
+        //state.set(State_Keys.SliderReady, false)
+
+        return
 
     if (isDragging) {
       state.setMultipleState({

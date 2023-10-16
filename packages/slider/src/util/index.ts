@@ -16,16 +16,33 @@ export function listener(
 ): void {
   target.addEventListener(event, callback)
 }
-
 export function calcTranslate(
   $children: HTMLElement,
-  slideMargin: number,
+  slideSpacing: number,
   slidePosition: number
 ): number {
-  const marginDiference = slidePosition * slideMargin
+  const marginDiference = slidePosition * slideSpacing
   const sliderWidth = getSliderWidth($children)
   const translate = -(sliderWidth * slidePosition + marginDiference)
   return translate
+}
+
+/*export function calcTranslate(
+  $children: HTMLElement,
+  slideSpacing: number,
+  slidePosition: number,
+  slidesPerPage: number
+): number {
+  const marginDifference = slidePosition * slideSpacing
+  const sliderWidth = getSliderWidth($children)
+  const translate = -(sliderWidth * (slidePosition * slidesPerPage) + marginDifference)
+  return translate
+}*/
+
+export function calcSlideWidth(slidesPerPage: number, spacing: number, sliderWidth: number) {
+  const sliderWidthPercent = ((100 / slidesPerPage) * (1 - spacing / sliderWidth)).toFixed(2)
+
+  return parseFloat(sliderWidthPercent)
 }
 
 /*export function waitFor(time: number, callback: () => void): void {
