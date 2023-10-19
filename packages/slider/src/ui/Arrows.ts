@@ -1,8 +1,9 @@
 import { EVENTS } from "../util/constants"
-import { listener } from "../util"
 import { createArrowButtons } from "./functions/createArrowButtons"
 import { appendArrowButtons } from "./functions/appendArrowButtons"
 import { handleClick } from "./functions/handleClick"
+import { State, State_Keys } from "@/state/BrickState"
+import { listener } from "@/util"
 
 export class Arrows {
   $root: string
@@ -14,14 +15,20 @@ export class Arrows {
   public init(): void {
     const { $root } = this
 
+    const state = new State($root)
+
     const createButtons = createArrowButtons(2)
 
     const buttons = appendArrowButtons(createButtons, $root)
 
     buttons.forEach(button => {
-      const setCurrentSlide = handleClick(button, $root)
+      listener(EVENTS.CLICK, button, () => {
+        state.set(State_Keys.StartTime, Date.now())
 
-      listener(EVENTS.CLICK, button, setCurrentSlide)
+        const setCurrentSlide = handleClick(button, $root)
+
+        setCurrentSlide()
+      })
     })
   }
 }

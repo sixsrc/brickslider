@@ -1,10 +1,12 @@
-import { eventX, STYLES } from "@/util/constants"
+import { EVENTS, eventX, STYLES } from "@/util/constants"
 import { State, State_Keys } from "../../state/BrickState"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
 import { setStyle } from "@/dom/methods/setStyle"
 import { getChildren } from "@/core/functions/getChildren"
 import { adjustSlideIndex } from "./functions/adjustSlideIndex"
+import { checkSlide } from "@/action/checkSlide"
+import { cancelWait, listener, waitFor } from "@/util"
 
 export class TouchStart {
   $root: string
@@ -25,8 +27,6 @@ export class TouchStart {
 
       const $children = getChildren(this.$root)
 
-      const isSliderReady = state.get(State_Keys.SliderReady)
-
       const isInfinite = state.get(State_Keys.Infinite)
 
       const slideIndex = state.get(State_Keys.SlideIndex)
@@ -35,20 +35,26 @@ export class TouchStart {
 
       const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
-      if (isInfinite && slideIndex <= 0 && slidesPerPage <= 1)
-        if (!isSliderReady)
-          // state.set(State_Keys.SliderReady, false)
+      const numberOfSlides = state.get(State_Keys.NumberOfSlides)
+      const checkSlideCallback = () => checkSlide(this.$root, isInfinite)
 
-          return
+      if ((isInfinite && slideIndex <= 0) || (isInfinite && slideIndex >= numberOfSlides + 1)) {
+      //  state.set(State_Keys.SliderReady, false)
+        //checkSlide(this.$root, isInfinite)
+        //listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
+        // const wait = waitFor(100, checkSlideCallback)
+        // cancelWait(wait)
+        // checkSlide(this.$root, isInfinite)
+      }
 
-      state.set(State_Keys.SliderReady, true)
+      const isSliderReady = state.get(State_Keys.SliderReady)
+
+      if (!isSliderReady) return
 
       setStyle($children, STYLES.TRANSITION, "")
 
-      // const slidesPerPage = state.get(State_Keys.SlidesPerPage)
-
       state.setMultipleState({
-        [State_Keys.TouchStartTime]: Date.now(),
+        [State_Keys.StartTime]: new Date().getMilliseconds(),
         [State_Keys.SlideIndex]: adjustSlideIndex(index, slidesPerPage),
         [State_Keys.startPos]: getPositionX(setEvent),
         [State_Keys.isDragging]: true,

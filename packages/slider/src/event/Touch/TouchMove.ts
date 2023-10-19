@@ -28,7 +28,7 @@ export class TouchMove {
 
     const startPos = state.get(State_Keys.startPos)
 
-    const slideIndex = state.get(State_Keys.SlideIndex)
+    // const slideIndex = state.get(State_Keys.SlideIndex)
 
     const isInfinite = state.get(State_Keys.Infinite)
 
@@ -36,14 +36,13 @@ export class TouchMove {
 
     const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
-    if (isInfinite && slideIndex <= 0 && slidesPerPage <= 1)
-      if (!isSliderReady)
-        //state.set(State_Keys.SliderReady, false)
-
-        return
+    // if (isInfinite && slideIndex <= 0 && slidesPerPage <= 1)
+    /// if (!isSliderReady) return
+    //state.set(State_Keys.SliderReady, false)
 
     if (isDragging) {
       state.setMultipleState({
+        [State_Keys.isTouch]: true,
         [State_Keys.currentTranslate]: prevTranslate + currentPosition - startPos
       })
 

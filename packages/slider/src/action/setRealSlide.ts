@@ -1,15 +1,19 @@
 import { transform as transformSlider } from "@/transition/transform"
 import { removeClass } from "@/dom/methods/removeClass"
 import { State, State_Keys } from "@/state/BrickState"
-import { CLASS_VALUES } from "@/util/constants"
+import { CLASS_VALUES, STYLES } from "@/util/constants"
 import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
+import { getChildren } from "@/core/functions/getChildren"
+import { setStyle } from "@/dom/methods/setStyle"
 
 export function setRealSlide($root: string, clonedSlide: HTMLElement, jumpToIndex: number) {
   const state = new State($root)
 
-  state.set(State_Keys.SlideIndex, jumpToIndex)
+  const $children = getChildren($root)
 
-  ///state.set(State_Keys.SliderReady, true)
+  setStyle($children, STYLES.TRANSITION, "")
+
+  state.set(State_Keys.SlideIndex, jumpToIndex)
 
   const animation = new RequestAnimationFrame($root)
 
@@ -20,4 +24,10 @@ export function setRealSlide($root: string, clonedSlide: HTMLElement, jumpToInde
   removeClass(clonedSlide, CLASS_VALUES.ACTIVE)
 
   state.set(State_Keys.isStopSlider, false)
+
+  // state.set(State_Keys.SliderReady, true)
+
+  //state.set(State_Keys.SliderReady, true)
+
+  //setStyle($children, STYLES.TRANSITION, "")
 }

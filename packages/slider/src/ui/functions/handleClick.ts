@@ -15,7 +15,11 @@ export function handleClick(button: Element, $root: string): () => void {
 
     const isInfinite = state.get(State_Keys.Infinite)
 
-    const isStopSlider = state.get(State_Keys.isStopSlider)
+    // const isStopSlider = state.get(State_Keys.isStopSlider)
+
+    const $children = getChildren($root)
+
+    setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
     // if (isStopSlider) return
 
@@ -25,38 +29,10 @@ export function handleClick(button: Element, $root: string): () => void {
 
     const isPrevDirection = getAttribute === FROM.PREV
 
-    const $children = getChildren($root)
-
-    const isSliderReady = state.get(State_Keys.SliderReady)
-
-    //console.log("index", state.get(State_Keys.SliderReady))
-
-    //if (!isSliderReady) return
-
-    //state.set(State_Keys.SliderReady, false)
-
-    setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
-
-    /*if (!isInfinite) {
-      if (state.get(State_Keys.SlideIndex) >= numberOfSlides - 1) {
-        // updateDots(slideIndex, $root)
-        state.set(State_Keys.isStopSlider, true)
-        //
-        // state.set(State_Keys.SlideIndex, state.get(State_Keys.SlideIndex) - 1)
-      } else if (state.get(State_Keys.SlideIndex) < numberOfSlides - 1) {
-        state.set(State_Keys.isStopSlider, false)
-        //
-      }
-    }*/
-
     setCurrentSlide({
       from: isPrevDirection ? FROM.PREV : FROM.NEXT,
       rootSelector: $root
     })
-
-    //state.set(State_Keys.SliderReady, false)
-
-    //state.set(State_Keys.isStopSlider, false)
 
     const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
@@ -72,7 +48,25 @@ export function handleClick(button: Element, $root: string): () => void {
     })
 
     listener(EVENTS.TRANSITIONEND, $children, () => {
-      // state.set(State_Keys.SliderReady, true)
+      state.set(State_Keys.EndTime, Date.now())
+
+      const [startTime, endTime] = [state.get(State_Keys.StartTime), state.get(State_Keys.EndTime)]
+
+      const timePerClick = Math.abs(startTime - endTime)
+
+      const numberOfSlides = state.get(State_Keys.NumberOfSlides)
+
+      console.log(timePerClick)
+
+      if (timePerClick >= 300) {
+        setStyle($children, STYLES.TRANSITION, "")
+      }
+
+      if ((!isInfinite && slideIndex > numberOfSlides - 1) || (!isInfinite && numberOfSlides < 0)) {
+        setStyle($children, STYLES.TRANSITION, "")
+      }
     })
+
+    listener(EVENTS.MOUSELEAVE, button, () => setStyle($children, STYLES.TRANSITION, ""))
   }
 }

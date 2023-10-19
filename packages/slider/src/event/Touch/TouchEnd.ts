@@ -3,9 +3,11 @@ import { State, State_Keys } from "../../state/BrickState"
 import { shouldGoToNextSlide } from "./functions/shouldGoToNextSlide"
 import { shouldGoToPrevSlide } from "./functions/shouldGoToPrevSlide"
 import { SetPositionByIndex } from "./SetPositionByIndex"
-import { slideNodeList, STYLES, /*TOUCH_LIMIT,*/ TRANSITIONS } from "@/util/constants"
+import { EVENTS, slideNodeList, STYLES, /*TOUCH_LIMIT,*/ TRANSITIONS } from "@/util/constants"
 import { getChildren } from "@/core/functions/getChildren"
 import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
+import { cancelWait, listener, waitFor } from "@/util"
+import { checkSlide } from "@/action/checkSlide"
 
 export class TouchEnd {
   $root: string
@@ -39,9 +41,39 @@ export class TouchEnd {
 
     const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
+    const PrevTranslate = state.get(State_Keys.prevTranslate)
+
+    const [startTime, endTime] = [state.get(State_Keys.StartTime), state.get(State_Keys.EndTime)]
+
+    state.set(State_Keys.EndTime, new Date().getMilliseconds())
+
+    // const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+
+    const numberOfSlides = state.get(State_Keys.NumberOfSlides)
+
+    const checkSlideCallback = () => checkSlide(this.$root, isInfinite)
+
+    //if(startTime - endTime)
+
+    if (Math.abs(startTime - endTime) < 150) {
+      //  cancelAnimationFrame(animationId)
+      state.set(State_Keys.currentTranslate, PrevTranslate)
+    }
+
     if (!isMouseLeave) setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
     if (typeof animationId === "number") cancelAnimationFrame(animationId)
+
+    //listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
+    //checkSlide(this.$root, isInfinite)
+    if ((isInfinite && slideIndex <= 0) || (isInfinite && slideIndex >= numberOfSlides + 1)) {
+      const wait = waitFor(150, () => {
+        checkSlide(this.$root, isInfinite)
+        cancelWait(wait)
+      })
+    }
+
+    //  listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
 
     const moveSlider = state.get(State_Keys.currentTranslate) - state.get(State_Keys.prevTranslate)
 
@@ -57,9 +89,18 @@ export class TouchEnd {
 
     setPositionByIndex.init()
 
+    listener(EVENTS.TRANSITIONEND, $children, () => {
+      state.set(State_Keys.SliderReady, true)
+    })
+
+    console.log(currentIndex)
+
+    //isInfinite &&   currentIndex <= 0 || currentIndex >=
+    // state.set(State_Keys.SliderReady, true)
+
     state.setMultipleState({
-      [State_Keys.TouchEndTime]: Date.now(),
-      [State_Keys.IsMouseLeave]: true
+      [State_Keys.IsMouseLeave]: true,
+      [State_Keys.isTouch]: false
       // [State_Keys.prevTranslate]: state.get(State_Keys.currentTranslate)
     })
   }

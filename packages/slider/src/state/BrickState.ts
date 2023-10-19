@@ -4,6 +4,8 @@ import { TypeOptions } from "@/option/Options"
 
 export enum State_Keys {
   isLoadPage = "isLoadPage",
+  Counter = "counter",
+  Seconds = "seconds",
   SlideIndex = "slideIndex",
   SlideSpacing = "slideSpacing",
   SlidesPerPage = "slidesPerPage",
@@ -11,12 +13,13 @@ export enum State_Keys {
   SliderWidth = "sliderWidth",
   SliderReady = "sliderReady",
   isStopSlider = "isStopSlider",
+  isTouch = "isTouch",
   isDragging = "isDragging",
   startPos = "startPos",
   prevTranslate = "prevTranslate",
   currentTranslate = "currentTranslate",
-  TouchStartTime = "touchStartTime",
-  TouchEndTime = "touchEndTime",
+  StartTime = "StartTime",
+  EndTime = "EndTime",
   IsMouseLeave = "isMouseLeave",
   animationID = "animationID",
   Autoplay = "autoplay",
@@ -33,6 +36,8 @@ export enum State_Keys {
 type StateType = {
   [key: string]: string | number | boolean | null | undefined
   [State_Keys.isLoadPage]: boolean
+  [State_Keys.Counter]: number
+  [State_Keys.Seconds]: number
   [State_Keys.SlideIndex]: number
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
@@ -40,12 +45,13 @@ type StateType = {
   [State_Keys.SliderWidth]: number
   [State_Keys.SliderReady]: boolean
   [State_Keys.isStopSlider]: boolean
+  [State_Keys.isTouch]: boolean
   [State_Keys.isDragging]: boolean
   [State_Keys.startPos]: number
   [State_Keys.prevTranslate]: number
   [State_Keys.currentTranslate]: number
-  [State_Keys.TouchStartTime]: number
-  [State_Keys.TouchEndTime]: number
+  [State_Keys.StartTime]: number
+  [State_Keys.EndTime]: number
   [State_Keys.IsMouseLeave]: boolean
   [State_Keys.animationID]: number
   [State_Keys.Autoplay]: boolean
@@ -73,6 +79,8 @@ class BrickState {
 
   private initializeState(options: TypeOptions) {
     BrickState.state[this.key][State_Keys.isLoadPage] = false
+    BrickState.state[this.key][State_Keys.Counter] = 0
+    BrickState.state[this.key][State_Keys.Seconds] = 0
     BrickState.state[this.key][State_Keys.SlideIndex] = 0
     BrickState.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 10
     BrickState.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
@@ -80,12 +88,13 @@ class BrickState {
     BrickState.state[this.key][State_Keys.SliderWidth] = 0
     BrickState.state[this.key][State_Keys.SliderReady] = true
     BrickState.state[this.key][State_Keys.isStopSlider] = false
+    BrickState.state[this.key][State_Keys.isTouch] = false
     BrickState.state[this.key][State_Keys.isDragging] = false
     BrickState.state[this.key][State_Keys.startPos] = 0
     BrickState.state[this.key][State_Keys.prevTranslate] = 0
     BrickState.state[this.key][State_Keys.currentTranslate] = 0
-    BrickState.state[this.key][State_Keys.TouchStartTime] = 0
-    BrickState.state[this.key][State_Keys.TouchEndTime] = 0
+    BrickState.state[this.key][State_Keys.StartTime] = 0
+    BrickState.state[this.key][State_Keys.EndTime] = 0
     BrickState.state[this.key][State_Keys.IsMouseLeave] = true
     BrickState.state[this.key][State_Keys.animationID] = 0
     BrickState.state[this.key][State_Keys.Autoplay] = options.autoplay ?? false

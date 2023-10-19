@@ -47,7 +47,7 @@ export const PROPERTYS = {
 //cubic-bezier(0.25,1,0.5,1)
 
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 300
+  DEFAULT_TRANSITION_TIME: 400
 }
 //`transform ${TIMES.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
 export const TRANSITIONS = {

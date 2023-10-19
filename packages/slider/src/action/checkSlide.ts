@@ -3,21 +3,22 @@ import { setStyle } from "@/dom/methods/setStyle"
 import { checkSlideCloned } from "@/action/checkSlideCloned"
 import { cancelWait, waitFor } from "@/util"
 import { STYLES, TIMES, slideNodeList } from "@/util/constants"
-import { State } from "@/state/BrickState"
+import { State, State_Keys } from "@/state/BrickState"
 
 export const checkSlide = ($root: string, isInfinite: boolean) => {
   const state = new State($root)
+
   const $children = getChildren($root)
 
-  const time = 200
+  //const time = 300
 
   const slides = slideNodeList($root)
 
-  const wait = waitFor(time, () => {
+  if (isInfinite) {
     setStyle($children, STYLES.TRANSITION, "")
-
-    if (isInfinite) checkSlideCloned($root, slides)
-
-    cancelWait(wait)
-  })
+    checkSlideCloned($root, slides)
+    /* const wait = waitFor(300, () => {
+      cancelWait(wait)
+    })*/
+  }
 }

@@ -2,6 +2,7 @@ import { getChildren } from "@/core/functions/getChildren"
 import { getSliderWidth } from "@/dom/methods/getSliderWidth"
 import { State, State_Keys } from "@/state/BrickState"
 import { transform as transformSlider } from "@/transition/transform"
+import { calcTranslate } from "@/util"
 
 export class Resize {
   $root: string
@@ -12,11 +13,21 @@ export class Resize {
 
   init(): void {
     const { $root } = this
-    const sliderWidth = getSliderWidth(getChildren($root))
+
     const state = new State($root)
+
+    const sliderWidth = getSliderWidth(getChildren($root))
+
+    const $children = getChildren($root)
+
+    const slideSpacing = state.get(State_Keys.SlideSpacing)
+
+    const index = state.get(State_Keys.SlideIndex)
 
     state.set(State_Keys.SliderWidth, sliderWidth)
 
-    transformSlider($root)
+    const translate = calcTranslate($children, slideSpacing, index)
+    console.log("translate", translate)
+    transformSlider($root, translate)
   }
 }

@@ -24,6 +24,7 @@ export function calcTranslate(
   const marginDiference = slidePosition * slideSpacing
   const sliderWidth = getSliderWidth($children)
   const translate = -(sliderWidth * slidePosition + marginDiference)
+
   return translate
 }
 
