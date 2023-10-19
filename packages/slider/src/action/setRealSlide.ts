@@ -25,7 +25,7 @@ export function setRealSlide($root: string, clonedSlide: HTMLElement, jumpToInde
 
   state.set(State_Keys.isStopSlider, false)
 
-  // state.set(State_Keys.SliderReady, true)
+  state.set(State_Keys.SliderReady, true)
 
   //state.set(State_Keys.SliderReady, true)
 

@@ -39,7 +39,7 @@ export class TouchStart {
       const checkSlideCallback = () => checkSlide(this.$root, isInfinite)
 
       if ((isInfinite && slideIndex <= 0) || (isInfinite && slideIndex >= numberOfSlides + 1)) {
-      //  state.set(State_Keys.SliderReady, false)
+        state.set(State_Keys.SliderReady, false)
         //checkSlide(this.$root, isInfinite)
         //listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
         // const wait = waitFor(100, checkSlideCallback)

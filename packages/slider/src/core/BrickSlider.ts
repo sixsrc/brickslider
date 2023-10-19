@@ -89,7 +89,7 @@ export class BrickSlider extends Methods {
 
     listener(EVENTS.RESIZE, window, handleResize)
 
-    // setAcessibilitySlider($root, $children, numberOfSlides, clonedSlides)
+    // //setAcessibilitySlider($root, $children, numberOfSlides, clonedSlides)
 
     appendSlider($children, clonedSlides)
 
