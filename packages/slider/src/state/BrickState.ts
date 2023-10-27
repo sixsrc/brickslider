@@ -18,8 +18,8 @@ export enum State_Keys {
   startPos = "startPos",
   prevTranslate = "prevTranslate",
   currentTranslate = "currentTranslate",
-  StartTime = "StartTime",
-  EndTime = "EndTime",
+  StartTime = "startTime",
+  EndTime = "endTime",
   IsMouseLeave = "isMouseLeave",
   animationID = "animationID",
   Autoplay = "autoplay",
@@ -118,6 +118,10 @@ class BrickState {
 
   get<K extends keyof StateType>(prop: K): StateType[K] {
     return BrickState.state[this.key][prop] ?? ""
+  }
+
+  get store(): StateType {
+    return BrickState.state[this.key]
   }
 
   set<K extends keyof StateType>(prop: K, value: StateType[K]): void {

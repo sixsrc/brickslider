@@ -1,12 +1,10 @@
-import { EVENTS, eventX, STYLES } from "@/util/constants"
+import { eventX, STYLES } from "@/util/constants"
 import { State, State_Keys } from "../../state/BrickState"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
 import { setStyle } from "@/dom/methods/setStyle"
 import { getChildren } from "@/core/functions/getChildren"
 import { adjustSlideIndex } from "./functions/adjustSlideIndex"
-import { checkSlide } from "@/action/checkSlide"
-import { cancelWait, listener, waitFor } from "@/util"
 
 export class TouchStart {
   $root: string
@@ -23,6 +21,8 @@ export class TouchStart {
     return (event: Event) => {
       const { state, animation } = this
 
+      console.log("touchstart")
+
       const setEvent = eventX(event as MouseEvent | TouchEvent)
 
       const $children = getChildren(this.$root)
@@ -31,20 +31,15 @@ export class TouchStart {
 
       const slideIndex = state.get(State_Keys.SlideIndex)
 
-      //retirar
-
       const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
       const numberOfSlides = state.get(State_Keys.NumberOfSlides)
-      const checkSlideCallback = () => checkSlide(this.$root, isInfinite)
 
-      if ((isInfinite && slideIndex <= 0) || (isInfinite && slideIndex >= numberOfSlides + 1)) {
+      if (
+        (isInfinite && slidesPerPage <= 1 && slideIndex <= 0) ||
+        (isInfinite && slidesPerPage <= 1 && slideIndex >= numberOfSlides + 1)
+      ) {
         state.set(State_Keys.SliderReady, false)
-        //checkSlide(this.$root, isInfinite)
-        //listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
-        // const wait = waitFor(100, checkSlideCallback)
-        // cancelWait(wait)
-        // checkSlide(this.$root, isInfinite)
       }
 
       const isSliderReady = state.get(State_Keys.SliderReady)

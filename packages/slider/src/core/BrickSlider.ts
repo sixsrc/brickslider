@@ -1,10 +1,8 @@
 import { getChildrenCount } from "../dom/methods/getChildrenCount"
-import { getFirstChildren } from "../dom/methods/getFirstChildren"
-import { CLASS_VALUES, EVENTS, slideNodeList } from "../util/constants"
-import { addClass } from "../dom/methods/addClass"
+import { EVENTS, slideNodeList } from "../util/constants"
 import { getSliderWidth } from "../dom/methods/getSliderWidth"
 import { calcTranslate, listener } from "../util"
-import { setAcessibilitySlider } from "../action/setAcessibilitySlider"
+//import { setAcessibilitySlider } from "../action/setAcessibilitySlider"
 import { appendSlider } from "./functions/appendSlider"
 import { assert } from "../error/assert"
 import { State, State_Keys } from "../state/BrickState"
@@ -39,26 +37,25 @@ export class BrickSlider extends Methods {
 
     const state = new State($root, options)
 
-    const currentTranslate = state.get(State_Keys.currentTranslate)
+    const { currentTranslate, slideSpacing, slidesPerPage, infinite } =
+      state.store
 
     const newSlideIndex = currentTranslate + 1
 
-    const slideSpacing = state.get(State_Keys.SlideSpacing)
+    const sliderWidth = getSliderWidth($children)
+
+    state.set(State_Keys.SliderWidth, sliderWidth)
 
     const translate = calcTranslate($children, slideSpacing, newSlideIndex)
 
-    const isInfinite = state.get(State_Keys.Infinite)
-
-    const slidesPerPage = state.get(State_Keys.SlidesPerPage)
-
-    const slide = slideNodeList($root)[currentTranslate]
-
-    if (isInfinite && slidesPerPage <= 1) {
+    if (infinite) {
       cloneSlides($children)
 
       state.set(State_Keys.SlideIndex, newSlideIndex)
 
-      addClass([slide], CLASS_VALUES.ACTIVE)
+      const slideIndex = state.get(State_Keys.SlideIndex)
+
+      setActiveClass(slideNodeList($root), slideIndex, slidesPerPage)
 
       transformSlider($root, translate)
 
@@ -68,28 +65,20 @@ export class BrickSlider extends Methods {
       })
     }
 
-    const sliderWidth = getSliderWidth($children)
-
-    state.set(State_Keys.SliderWidth, sliderWidth)
-
     const getCountChildren = getChildrenCount($children)
+    console.log(getCountChildren)
 
     state.set(State_Keys.NumberOfSlides, getCountChildren)
 
-    const firstSlide = getFirstChildren(getChildren($root)) as Element
-
-    const numberOfSlides = state.get(State_Keys.NumberOfSlides)
-
     const slideIndex = state.get(State_Keys.SlideIndex)
 
-    if (!isInfinite) setActiveClass(slideNodeList($root), slideIndex, slidesPerPage, numberOfSlides)
-    //addClass([firstSlide], CLASS_VALUES.ACTIVE)
+    setActiveClass(slideNodeList($root), slideIndex, slidesPerPage)
 
     const handleResize = () => resize.init()
 
     listener(EVENTS.RESIZE, window, handleResize)
 
-    // //setAcessibilitySlider($root, $children, numberOfSlides, clonedSlides)
+    // setAcessibilitySlider($root, $children, numberOfSlides, clonedSlides)
 
     appendSlider($children, clonedSlides)
 

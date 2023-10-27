@@ -27,7 +27,7 @@ export class Resize {
     state.set(State_Keys.SliderWidth, sliderWidth)
 
     const translate = calcTranslate($children, slideSpacing, index)
-    console.log("translate", translate)
+
     transformSlider($root, translate)
   }
 }

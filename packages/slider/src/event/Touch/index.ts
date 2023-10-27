@@ -1,7 +1,10 @@
 import { childrenSelector } from "@/util/constants"
 import { getAllElements } from "../../dom/methods/getAllElements"
 import { State } from "../../state/BrickState"
-import { initTouchListeners, TouchListenersParams } from "./functions/initTouchListeners"
+import {
+  initTouchListeners,
+  TouchListenersParams
+} from "./functions/initTouchListeners"
 import { TouchEnd } from "./TouchEnd"
 import { TouchMove } from "./TouchMove"
 import { TouchStart } from "./TouchStart"
@@ -19,7 +22,9 @@ export class Touch {
   constructor($root: string) {
     this.$root = $root
     this.slider = getChildren($root)
-    this.slides = Array.from(getAllElements<HTMLElement>(`${childrenSelector} > *`, this.slider))
+    this.slides = Array.from(
+      getAllElements<HTMLElement>(`${childrenSelector} > *`, this.slider)
+    )
     this.state = new State(this.$root)
     this.touchStart = new TouchStart(this.$root)
     this.touchEnd = new TouchEnd(this.$root)

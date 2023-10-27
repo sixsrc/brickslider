@@ -12,5 +12,8 @@ export function cloneSlides(selector: HTMLElement) {
 
   appendChildren(selector, [firstSlide!.cloneNode(true)! as HTMLElement])
 
-  addClass([getFirstChildren(selector)!, getLastChildren(selector)!], CLASS_VALUES.CLONED)
+  addClass(
+    [getFirstChildren(selector)!, getLastChildren(selector)!],
+    CLASS_VALUES.CLONED
+  )
 }

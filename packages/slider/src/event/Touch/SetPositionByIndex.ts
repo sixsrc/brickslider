@@ -31,9 +31,7 @@ export class SetPositionByIndex {
       [State_Keys.prevTranslate]: currentTranslate
     })
 
-    const index = currentIndex
-
-    const from = FROM.TOUCH
+    const [index, from] = [currentIndex, FROM.TOUCH]
 
     setCurrentSlide({
       from,
@@ -48,7 +46,9 @@ export class SetPositionByIndex {
     const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
     const slideIndex =
-      isInfinite && slidesPerPage <= 1 ? slideIndexBypass(index, numberOfSlides) : index
+      isInfinite && slidesPerPage <= 1
+        ? slideIndexBypass(index, numberOfSlides)
+        : index
 
     const setActiveDot = () => {
       updateDots(slideIndex, rootSelector)

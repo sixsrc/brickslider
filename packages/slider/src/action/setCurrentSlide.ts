@@ -1,16 +1,11 @@
-import { CLASS_VALUES, EVENTS, STYLES, TRANSITIONS, slideNodeList } from "../util/constants"
+import { EVENTS, slideNodeList } from "../util/constants"
 import { transform as transformSlider } from "../transition/transform"
-import { addClass } from "../dom/methods/addClass"
 import { setSlideIndex } from "./setSlideIndex"
 import { State, State_Keys } from "../state/BrickState"
 import { getChildren } from "../core/functions/getChildren"
-import { isFirstOrLast } from "@/core/functions/isFirstOrLast"
-import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
-import { calcSlideWidth, cancelWait, listener, waitFor } from "@/util"
 import { checkSlide } from "./checkSlide"
 import { setActiveClass } from "./setActiveClass"
-import { slideIndexBypass } from "@/core/functions/slideIndexBypass"
-import { setStyle } from "@/dom/methods/setStyle"
+import { listener } from "@/util"
 
 export enum FROM {
   DOTS = "dots",
@@ -40,8 +35,6 @@ export function setCurrentSlide(
 
   const currentSlideIndex = state.get(State_Keys.SlideIndex)
 
-  //setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
-
   let slideIndex = setSlideIndex({
     from,
     currentSlideIndex,
@@ -52,54 +45,29 @@ export function setCurrentSlide(
 
   const numberOfSlides = state.get(State_Keys.NumberOfSlides)
 
+  if (
+    (!isInfinite && slideIndex > numberOfSlides - 1) ||
+    (!isInfinite && slideIndex < 0)
+  )
+    return
+
   if (slideIndex > numberOfSlides + 1) slideIndex = slideIndex - 1
 
   if (slideIndex < 0) slideIndex = slideIndex + 1
 
-  if ((!isInfinite && slideIndex > numberOfSlides - 1) || (!isInfinite && slideIndex < 0)) return
-
-  /*slides.forEach((slide, index) => {
-    isFirstOrLast(rootSelector, from!, slide, index)
-  })*/
-
   const slidesPerPage = state.get(State_Keys.SlidesPerPage)
-
-  // const slideSpacing = state.get(State_Keys.SlideSpacing)
-
-  //const sliderWidth = state.get(State_Keys.SliderWidth)
-
-  //if (!isStopSlider) {
-  addClass([slides[slideIndex]], CLASS_VALUES.ACTIVE)
-
-  //const numberOfSlides = state.get(State_Keys.NumberOfSlides)
-
-  //setActiveClass(slides, slideIndex, slidesPerPage, numberOfSlides)
-
-  //console.log(calcSlideWidth(slidesPerPage, slideSpacing, sliderWidth))
 
   state.set(State_Keys.SlideIndex, slideIndex)
 
-  //const animation = new RequestAnimationFrame(rootSelector)
-
-  // state.set(State_Keys.SliderReady, false)
+  setActiveClass(slides, slideIndex, slidesPerPage)
 
   transformSlider(rootSelector)
 
-  // requestAnimationFrame(animation.init)
-
   const checkSlideCallback = () => checkSlide(rootSelector, isInfinite)
 
-  const isTouch = state.get(State_Keys.isTouch)
-
-  // const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+  const isClonedSlide = slideIndex === numberOfSlides - 1 || slideIndex <= 0
 
   if (isInfinite && slidesPerPage <= 1)
-    if (slideIndex === numberOfSlides - 1 || slideIndex <= 0) {
+    if (isClonedSlide)
       listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
-    }
-
-  //if ((isInfinite && slidesPerPage <= 1 && slideIndex === slidesCount - 1) || slideIndex <= 0)
-  // listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
-
-  //}
 }
