@@ -17,11 +17,18 @@ export function createDots($root: string, containerDots: HTMLElement): void {
 
   const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
-  if (isInfinite) state.set(State_Keys.NumberOfSlides, slidesCount - 2)
+  if (isInfinite && slidesPerPage <= 1)
+    state.set(State_Keys.NumberOfSlides, slidesCount - 2)
 
-  if (slidesPerPage > 1) {
-    //console.log("teste", Math.ceil((slidesCount - 2) / 2))
-    state.set(State_Keys.NumberOfSlides, Math.ceil(slidesCount / 2))
+  if (isInfinite && slidesPerPage > 1)
+    state.set(
+      State_Keys.NumberOfSlides,
+      Math.ceil(slidesCount / slidesPerPage) - slidesPerPage
+    )
+
+  if (!isInfinite && slidesPerPage > 1) {
+    // console.log("teste", 7 / slidesPerPage - slidesPerPage)
+    state.set(State_Keys.NumberOfSlides, Math.ceil(slidesCount / slidesPerPage))
   }
 
   const numberOfSlides = state.get(State_Keys.NumberOfSlides)

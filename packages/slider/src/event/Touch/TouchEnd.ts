@@ -7,7 +7,7 @@ import { EVENTS, slideNodeList, STYLES, TRANSITIONS } from "@/util/constants"
 import { getChildren } from "@/core/functions/getChildren"
 import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
 import { cancelWait, listener, waitFor } from "@/util"
-import { checkSlide } from "@/action/checkSlide"
+import { checkSlideCloned } from "@/action/checkSlideCloned"
 
 export class TouchEnd {
   $root: string
@@ -45,29 +45,37 @@ export class TouchEnd {
 
     const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
-    const [isFirstInfiniteSlide, isLastInfiniteSlide] = [
+    /*const [isFirstInfiniteSlide, isLastInfiniteSlide] = [
       isInfinite && slidesPerPage <= 1 && slideIndex <= 0,
       isInfinite && slidesPerPage <= 1 && slideIndex >= numberOfSlides + 1
-    ]
+    ]*/
+
+    const isClonedSlide = slideIndex === numberOfSlides - 1 || slideIndex <= 0
 
     const fastTouchSpeed = Math.abs(startTime - endTime) < 150
 
     const isAnimationIdNumber = typeof animationId === "number"
+
+    function checkSlideCallback() {
+      /* const wait =*/ waitFor(300, () => {
+        checkSlideCloned($root)
+
+        //cancelWait(wait)
+      })
+    }
 
     if (!isMouseLeave)
       setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
     if (isAnimationIdNumber) cancelAnimationFrame(animationId)
 
-    if (isFirstInfiniteSlide || isLastInfiniteSlide) {
-      listener(EVENTS.TRANSITIONSTART, $children, () => {
-        const wait = waitFor(200, () => {
-          checkSlide($root, isInfinite)
+    if (isInfinite && slidesPerPage <= 1)
+      if (isClonedSlide)
+        listener(EVENTS.TRANSITIONSTART, $children, () => checkSlideCallback())
 
-          cancelWait(wait)
-        })
-      })
-    }
+    /* if (isFirstInfiniteSlide || isLastInfiniteSlide) {
+     
+    }*/
 
     const {
       currentTranslate: updatedCurrentTranslate,
@@ -77,8 +85,6 @@ export class TouchEnd {
     const moveSlider = updatedCurrentTranslate - updatedPrevTranslate
 
     let currentIndex = state.get(State_Keys.SlideIndex)
-
-    console.log(currentIndex)
 
     if (fastTouchSpeed) {
       state.set(State_Keys.currentTranslate, prevTranslate)
@@ -102,9 +108,10 @@ export class TouchEnd {
 
     if (!isMouseLeave) setPositionByIndex.init()
 
-    listener(EVENTS.TRANSITIONEND, $children, () =>
+    listener(EVENTS.TRANSITIONEND, $children, () => {
+      setStyle($children, STYLES.TRANSITION, "")
       state.set(State_Keys.SliderReady, true)
-    )
+    })
 
     state.setMultipleState({
       [State_Keys.IsMouseLeave]: true,

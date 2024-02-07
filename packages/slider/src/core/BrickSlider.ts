@@ -49,7 +49,7 @@ export class BrickSlider extends Methods {
     const translate = calcTranslate($children, slideSpacing, newSlideIndex)
 
     if (infinite) {
-      cloneSlides($children)
+      cloneSlides($root, slidesPerPage)
 
       state.set(State_Keys.SlideIndex, newSlideIndex)
 
@@ -66,7 +66,6 @@ export class BrickSlider extends Methods {
     }
 
     const getCountChildren = getChildrenCount($children)
-    console.log(getCountChildren)
 
     state.set(State_Keys.NumberOfSlides, getCountChildren)
 

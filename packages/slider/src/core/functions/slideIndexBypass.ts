@@ -1,4 +1,12 @@
-export function slideIndexBypass(displayedIndex: number, numberOfSlides: number) {
+export function slideIndexBypass(
+  displayedIndex: number,
+  numberOfSlides: number,
+  slidesPerPage: number
+) {
+  slidesPerPage > 1
+    ? (numberOfSlides = numberOfSlides - (slidesPerPage + slidesPerPage))
+    : numberOfSlides
+
   const indexBypass =
     displayedIndex < 0
       ? numberOfSlides - 1

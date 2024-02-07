@@ -21,8 +21,6 @@ export class TouchStart {
     return (event: Event) => {
       const { state, animation } = this
 
-      console.log("touchstart")
-
       const setEvent = eventX(event as MouseEvent | TouchEvent)
 
       const $children = getChildren(this.$root)

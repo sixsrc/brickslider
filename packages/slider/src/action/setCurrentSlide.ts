@@ -3,9 +3,10 @@ import { transform as transformSlider } from "../transition/transform"
 import { setSlideIndex } from "./setSlideIndex"
 import { State, State_Keys } from "../state/BrickState"
 import { getChildren } from "../core/functions/getChildren"
-import { checkSlide } from "./checkSlide"
+//import { checkSlide } from "./checkSlide"
 import { setActiveClass } from "./setActiveClass"
 import { listener } from "@/util"
+import { checkSlideCloned } from "./checkSlideCloned"
 
 export enum FROM {
   DOTS = "dots",
@@ -63,7 +64,7 @@ export function setCurrentSlide(
 
   transformSlider(rootSelector)
 
-  const checkSlideCallback = () => checkSlide(rootSelector, isInfinite)
+  const checkSlideCallback = () => checkSlideCloned(rootSelector)
 
   const isClonedSlide = slideIndex === numberOfSlides - 1 || slideIndex <= 0
 
