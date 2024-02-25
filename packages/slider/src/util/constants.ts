@@ -78,4 +78,6 @@ export const dotsSelector = DOM_ELEMENTS.DOTS_SELECTOR
 export const childrenSelector = DOM_ELEMENTS.CHILDREN_SELECTOR
 
 export const slideNodeList = ($root: string) =>
-  Array.from(getAllElements<HTMLElement>(`${childrenSelector} > *`, getChildren($root)))
+  Array.from(
+    getAllElements<HTMLElement>(`${childrenSelector} > *`, getChildren($root))
+  )

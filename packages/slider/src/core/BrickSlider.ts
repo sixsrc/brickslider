@@ -46,8 +46,6 @@ export class BrickSlider extends Methods {
 
     state.set(State_Keys.SliderWidth, sliderWidth)
 
-    const translate = calcTranslate($children, slideSpacing, newSlideIndex)
-
     if (infinite) {
       cloneSlides($root, slidesPerPage)
 
@@ -57,6 +55,8 @@ export class BrickSlider extends Methods {
 
       setActiveClass(slideNodeList($root), slideIndex, slidesPerPage)
 
+      const translate = calcTranslate($children, slideSpacing, newSlideIndex)
+
       transformSlider($root, translate)
 
       state.setMultipleState({
@@ -65,17 +65,13 @@ export class BrickSlider extends Methods {
       })
     }
 
-    const getCountChildren = getChildrenCount($children)
-
-    state.set(State_Keys.NumberOfSlides, getCountChildren)
+    state.set(State_Keys.NumberOfSlides, getChildrenCount($children))
 
     const slideIndex = state.get(State_Keys.SlideIndex)
 
     setActiveClass(slideNodeList($root), slideIndex, slidesPerPage)
 
-    const handleResize = () => resize.init()
-
-    listener(EVENTS.RESIZE, window, handleResize)
+    listener(EVENTS.RESIZE, window, () => resize.init())
 
     // setAcessibilitySlider($root, $children, numberOfSlides, clonedSlides)
 

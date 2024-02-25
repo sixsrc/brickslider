@@ -4,7 +4,7 @@ import { FROM, setCurrentSlide } from "../../action/setCurrentSlide"
 import { updateDots } from "../../action/updateDots"
 import { State, State_Keys } from "../../state/BrickState"
 import { matchStateOptions } from "../../util/matchStateOptions"
-import { cancelWait, listener, waitFor } from "../../util"
+import { listener, waitFor } from "../../util"
 import { getChildren } from "../../core/functions/getChildren"
 import { slideIndexBypass } from "@/core/functions/slideIndexBypass"
 import { setStyle } from "@/dom/methods/setStyle"
@@ -30,7 +30,7 @@ export function handleClick(button: Element, $root: string): () => void {
 
     const isSliderReady = state.get(State_Keys.SliderReady)
 
-    if (!isSliderReady) return
+    //                                if (!isSliderReady) return
 
     state.set(State_Keys.SliderReady, false)
 
@@ -53,14 +53,15 @@ export function handleClick(button: Element, $root: string): () => void {
       updateDots(index, $root)
     })
 
-    const wait = waitFor(100, () => {
+    /*const wait =*/ waitFor(100, () => {
       if (
         (isInfinite && index !== numberOfSlides - 1) ||
         (isInfinite && numberOfSlides !== 0)
-      )
-        state.set(State_Keys.SliderReady, true)
+      ) {
+      }
+      // state.set(State_Keys.SliderReady, true)
 
-      cancelWait(wait)
+      // cancelWait(wait)
     })
 
     listener(EVENTS.TRANSITIONEND, $children, () => {
@@ -69,6 +70,9 @@ export function handleClick(button: Element, $root: string): () => void {
       const { startTime, endTime, numberOfSlides } = state.store
 
       const isDefaultClick = Math.abs(startTime - endTime) >= 300
+      state.set(State_Keys.SliderReady, true)
+      if (!isInfinite) {
+      }
 
       if (
         isDefaultClick ||

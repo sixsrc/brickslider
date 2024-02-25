@@ -1,8 +1,12 @@
+import { getChildren } from "@/core/functions/getChildren"
 import { State, State_Keys } from "../../state/BrickState"
 import { transform as transformSlider } from "../../transition/transform"
 import { getPositionX } from "./functions/getPositionX"
 import { RequestAnimationFrame } from "./RequestAnimationFrame"
-import { eventX } from "@/util/constants"
+import { EVENTS, STYLES, TRANSITIONS, eventX } from "@/util/constants"
+import { listener, waitFor } from "@/util"
+import { setStyle } from "@/dom/methods/setStyle"
+import { getSliderWidth } from "@/dom/methods/getSliderWidth"
 
 export class TouchMove {
   $root: string
@@ -28,21 +32,50 @@ export class TouchMove {
 
     const startPos = state.get(State_Keys.startPos)
 
-    // const slideIndex = state.get(State_Keys.SlideIndex)
-
-    //  const isInfinite = state.get(State_Keys.Infinite)
-
-    //const isSliderReady = state.get(State_Keys.SliderReady)
-
-    // const slidesPerPage = state.get(State_Keys.SlidesPerPage)
+    const isInfinite = state.get(State_Keys.Infinite)
 
     if (isDragging) {
       state.setMultipleState({
         [State_Keys.isTouch]: true,
-        [State_Keys.currentTranslate]: prevTranslate + currentPosition - startPos
+        [State_Keys.currentTranslate]:
+          prevTranslate + currentPosition - startPos
       })
 
-      const setCurrentTranslate = state.get(State_Keys.currentTranslate)
+      const direction = currentPosition - startPos > 0 ? "right" : "left"
+      //console.log("Direction:", direction)
+
+      const $children = getChildren($root)
+
+      let setCurrentTranslate = state.get(State_Keys.currentTranslate)
+
+      const sliderWidth = getSliderWidth($children)
+
+      listener(
+        [EVENTS.TOUCHEND, EVENTS.MOUSEUP, EVENTS.MOUSELEAVE],
+        $children,
+        () => {
+          if (isInfinite && Math.abs(setCurrentTranslate) <= sliderWidth / 2) {
+            // console.log("setCurrentTranslate", setCurrentTranslate)
+            state.set(State_Keys.IsJumpSlide, true)
+            const setTranslate = Math.abs(setCurrentTranslate) + 2352
+            state.set(State_Keys.SlideIndex, 4)
+            state.set(State_Keys.currentTranslate, -setTranslate)
+            const newTranslate = state.get(State_Keys.currentTranslate)
+            setCurrentTranslate = newTranslate
+
+            setStyle($children, STYLES.TRANSITION, "")
+
+            transformSlider($root, -newTranslate)
+
+            waitFor(0, () => {
+              state.set(State_Keys.currentTranslate, -2352)
+              state.set(State_Keys.prevTranslate, -2352)
+              setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+              transformSlider($root, -2352)
+            })
+          }
+        }
+      )
 
       transformSlider($root, setCurrentTranslate)
 

@@ -37,12 +37,12 @@ export class TouchStart {
         (isInfinite && slidesPerPage <= 1 && slideIndex <= 0) ||
         (isInfinite && slidesPerPage <= 1 && slideIndex >= numberOfSlides + 1)
       ) {
-        state.set(State_Keys.SliderReady, false)
+        //state.set(State_Keys.SliderReady, false)
       }
 
-      const isSliderReady = state.get(State_Keys.SliderReady)
+      // const isSliderReady = state.get(State_Keys.SliderReady)
 
-      if (!isSliderReady) return
+      //if (!isSliderReady) return
 
       setStyle($children, STYLES.TRANSITION, "")
 
@@ -52,6 +52,7 @@ export class TouchStart {
         [State_Keys.startPos]: getPositionX(setEvent),
         [State_Keys.isDragging]: true,
         [State_Keys.IsMouseLeave]: false,
+        [State_Keys.IsJumpSlide]: false,
         [State_Keys.animationID]: requestAnimationFrame(animation.init)
       })
     }

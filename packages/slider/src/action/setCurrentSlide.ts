@@ -64,11 +64,14 @@ export function setCurrentSlide(
 
   transformSlider(rootSelector)
 
+  //if (!isInfinite) state.set(State_Keys.SliderReady, true)
+
   const checkSlideCallback = () => checkSlideCloned(rootSelector)
 
   const isClonedSlide = slideIndex === numberOfSlides - 1 || slideIndex <= 0
 
   if (isInfinite && slidesPerPage <= 1)
-    if (isClonedSlide)
-      listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
+    if (isClonedSlide) {
+    }
+  // listener(EVENTS.TRANSITIONEND, $children, checkSlideCallback)
 }

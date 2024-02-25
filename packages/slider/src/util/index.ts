@@ -9,13 +9,34 @@ export function $(element: string): HTMLElement {
   return selectedElement
 }
 
-export function listener(
+/*export function listener(
   event: string,
   target: EventTarget,
   callback: EventListenerOrEventListenerObject
 ): void {
   target.addEventListener(event, callback)
+}*/
+export function listener(
+  events: string | string[],
+  target: EventTarget,
+  callback: EventListenerOrEventListenerObject
+): void {
+  // Verifique se events é uma string
+  if (typeof events === "string") {
+    target.addEventListener(events, callback)
+  } else if (Array.isArray(events)) {
+    // Se events for uma array, itere sobre cada evento e registre o callback
+    events.forEach(event => {
+      target.addEventListener(event, callback)
+    })
+  } else {
+    // Se events não for nem uma string nem uma array, lance um erro
+    throw new Error(
+      "O parâmetro 'events' deve ser uma string ou uma array de strings"
+    )
+  }
 }
+
 export function calcTranslate(
   $children: HTMLElement,
   slideSpacing: number,

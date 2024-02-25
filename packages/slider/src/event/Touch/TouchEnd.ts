@@ -3,11 +3,19 @@ import { State, State_Keys } from "../../state/BrickState"
 import { shouldGoToNextSlide } from "./functions/shouldGoToNextSlide"
 import { shouldGoToPrevSlide } from "./functions/shouldGoToPrevSlide"
 import { SetPositionByIndex } from "./SetPositionByIndex"
-import { EVENTS, slideNodeList, STYLES, TRANSITIONS } from "@/util/constants"
+import {
+  EVENTS,
+  eventX,
+  slideNodeList,
+  STYLES,
+  TRANSITIONS
+} from "@/util/constants"
 import { getChildren } from "@/core/functions/getChildren"
 import { RequestAnimationFrame } from "@/event/Touch/RequestAnimationFrame"
-import { cancelWait, listener, waitFor } from "@/util"
+import { listener, waitFor } from "@/util"
 import { checkSlideCloned } from "@/action/checkSlideCloned"
+import { transform as transformSlider } from "@/transition/transform"
+import { getPositionX } from "./functions/getPositionX"
 
 export class TouchEnd {
   $root: string
@@ -22,8 +30,14 @@ export class TouchEnd {
     this.animation = new RequestAnimationFrame(this.$root)
   }
 
-  public init = (): void => {
+  public init = (event: Event): void => {
     const { $root, state, setPositionByIndex } = this
+
+    const setEvent = eventX(event as MouseEvent | TouchEvent)
+
+    const currentPosition = getPositionX(setEvent)
+
+    // const startPos = state.get(State_Keys.startPos)
 
     state.set(State_Keys.isDragging, false)
 
@@ -33,6 +47,9 @@ export class TouchEnd {
       prevTranslate,
       startTime,
       endTime,
+      startPos,
+      isJumpSlide,
+      slidesPerPage,
       isMouseLeave,
       numberOfSlides
     } = state.store
@@ -43,26 +60,21 @@ export class TouchEnd {
 
     const isInfinite = state.get(State_Keys.Infinite)
 
-    const slidesPerPage = state.get(State_Keys.SlidesPerPage)
-
-    /*const [isFirstInfiniteSlide, isLastInfiniteSlide] = [
-      isInfinite && slidesPerPage <= 1 && slideIndex <= 0,
-      isInfinite && slidesPerPage <= 1 && slideIndex >= numberOfSlides + 1
-    ]*/
+    // const slidesPerPage = state.get(State_Keys.SlidesPerPage)
 
     const isClonedSlide = slideIndex === numberOfSlides - 1 || slideIndex <= 0
 
-    const fastTouchSpeed = Math.abs(startTime - endTime) < 150
+    //const isFastTouch = Math.abs(startTime - endTime) < 500
+
+    //console.log(Math.abs(startTime - endTime))
 
     const isAnimationIdNumber = typeof animationId === "number"
 
-    function checkSlideCallback() {
-      /* const wait =*/ waitFor(300, () => {
+    /*function checkSlideCallback() {
+      waitFor(300, () => {
         checkSlideCloned($root)
-
-        //cancelWait(wait)
       })
-    }
+    }*/
 
     if (!isMouseLeave)
       setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
@@ -70,12 +82,9 @@ export class TouchEnd {
     if (isAnimationIdNumber) cancelAnimationFrame(animationId)
 
     if (isInfinite && slidesPerPage <= 1)
-      if (isClonedSlide)
-        listener(EVENTS.TRANSITIONSTART, $children, () => checkSlideCallback())
-
-    /* if (isFirstInfiniteSlide || isLastInfiniteSlide) {
-     
-    }*/
+      if (isClonedSlide) {
+      }
+    // listener(EVENTS.TRANSITIONSTART, $children, () => checkSlideCallback())
 
     const {
       currentTranslate: updatedCurrentTranslate,
@@ -86,9 +95,11 @@ export class TouchEnd {
 
     let currentIndex = state.get(State_Keys.SlideIndex)
 
-    if (fastTouchSpeed) {
-      state.set(State_Keys.currentTranslate, prevTranslate)
-    }
+    /*if (isFastTouch) {
+      //state.set(State_Keys.currentTranslate, prevTranslate)
+      //state.set(State_Keys.SliderReady, false)
+      // waitFor(80, () => state.set(State_Keys.SliderReady, true))
+    }*/
 
     if (currentIndex >= numberOfSlides - 1) {
       // state.set(State_Keys.currentTranslate, prevTranslate)
@@ -97,20 +108,17 @@ export class TouchEnd {
 
     const slides = slideNodeList($root)
 
-    /* if (currentIndex < numberOfSlides - 1) {
-    }*/
-
     shouldGoToNextSlide(moveSlider, currentIndex, slides) &&
       state.set(State_Keys.SlideIndex, (currentIndex += 1))
 
     shouldGoToPrevSlide(moveSlider, currentIndex) &&
       state.set(State_Keys.SlideIndex, (currentIndex -= 1))
 
-    if (!isMouseLeave) setPositionByIndex.init()
+    if (!isMouseLeave && !isJumpSlide) setPositionByIndex.init()
 
     listener(EVENTS.TRANSITIONEND, $children, () => {
       setStyle($children, STYLES.TRANSITION, "")
-      state.set(State_Keys.SliderReady, true)
+      // state.set(State_Keys.SliderReady, true)
     })
 
     state.setMultipleState({

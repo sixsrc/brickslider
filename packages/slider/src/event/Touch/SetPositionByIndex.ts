@@ -33,11 +33,13 @@ export class SetPositionByIndex {
       [State_Keys.prevTranslate]: currentTranslate
     })
 
+    //console.log(currentTranslate)
+
     const [index, from] = [currentIndex, FROM.TOUCH]
 
     setCurrentSlide({
       from,
-      index,
+      index: state.get(State_Keys.SlideIndex),
       rootSelector: $root
     })
 
