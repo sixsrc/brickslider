@@ -1,47 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite Library Strict Mode</title>
+    <link rel="stylesheet" href="./examples/css/styles.css" />
+    <title>Brick Slider - Default Example</title>
   </head>
   <body>
-  
+    <div class="container">
+      <div id="slide4_container" class="multiple-items slider brick-slider">
+        <div class="slider__track">
+          <div class="slider__container">
+            <div class="slider__slide">
+              <img src="./examples/images/image1.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image2.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image3.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image4.jpg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div id="slide1_container" class="slider brick-slider">
-        <div class="slider__container">
-         <div class="slider__slide"> <img src="./examples/images/image1.jpg" /></div>
-        <div  class="slider__slide"> <img   src="./examples/images/image2.jpg" /></div>
-         <div  class="slider__slide"> <img   src="./examples/images/image3.jpg" /></div>
-         <div  class="slider__slide"> <img  src="./examples/images/image4.jpg" /></div>
-        
+        <div class="slider__track">
+          <div class="slider__container">
+            <div class="slider__slide">
+              <img src="./examples/images/image1.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image2.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image3.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image4.jpg" />
+            </div>
+          </div>
         </div>
       </div>
-     </div>
-  
-     <div class="container">
-  
+    </div>
+
+    <div class="container">
       <div id="slide2_container" class="slider brick-slider">
-        <div class="slider__container">
-         <div class="slider__slide"> <img src="./examples/images/image1.jpg" /></div>
-        <div  class="slider__slide"> <img   src="./examples/images/image2.jpg" /></div>
-        <div class="slider__slide"> <img src="./examples/images/image1.jpg" /></div>
-        <div  class="slider__slide"> <img   src="./examples/images/image2.jpg" /></div>
-      
-        
+        <div class="slider__track">
+          <div class="slider__container">
+            <div class="slider__slide">
+              <img src="./images/image1.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="/examples/images/image2.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image1.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image2.jpg" />
+            </div>
+          </div>
         </div>
       </div>
-     </div>
-  
-     <div class="container">
+    </div>
+
+    <div class="container">
       <div id="slide3_container" class="slider brick-slider">
-        <div class="slider__container">
-         <div class="slider__slide"> <img src="./examples/images/image4.jpg" /></div>
-        <div  class="slider__slide"> <img   src="./examples/images/image3.jpg" /></div>
+        <div class="slider__track">
+          <div class="slider__container">
+            <div class="slider__slide">
+              <img src="./examples/images/image4.jpg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image3.jpg" />
+            </div>
+          </div>
         </div>
       </div>
-     </div>
+    </div>
+
     <script type="module" src="/src/index.ts"></script>
   </body>
 </html>

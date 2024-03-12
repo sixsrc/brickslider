@@ -44,9 +44,13 @@ export class TouchStart {
 
       setStyle($children, STYLES.TRANSITION, "")
 
+      const index2 = state.get(State_Keys.SlideIndex)
+
+      console.log("index2", index2)
+
       state.setMultipleState({
         [State_Keys.StartTime]: new Date().getMilliseconds(),
-        [State_Keys.SlideIndex]: adjustIndex(index, slidesPerPage),
+        [State_Keys.SlideIndex]: adjustIndex(index2, slidesPerPage),
         [State_Keys.startPos]: getPositionX(setEvent),
         [State_Keys.isDragging]: true,
         [State_Keys.IsMouseLeave]: false,

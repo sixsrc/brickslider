@@ -41,7 +41,8 @@ export const PROPERTYS = {
 }
 
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 400
+  DEFAULT_TRANSITION_TIME: 400,
+  WITHOUT_TIMER: 0
 }
 export const TRANSITIONS = {
   TRANSFORM_EASE: `transform ${TIMES.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
@@ -66,3 +67,5 @@ export const TOUCH_LIMIT = 100
 export const dotsSelector = DOM_ELEMENTS.DOTS_SELECTOR
 
 export const childrenSelector = DOM_ELEMENTS.CHILDREN_SELECTOR
+
+export const trackSelector = ".slider__track"

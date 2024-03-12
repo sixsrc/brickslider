@@ -21,7 +21,6 @@ export class SetPosition {
 
     const {
       slideIndex: currentIndex,
-      numberOfSlides,
       slidesPerPage,
       infinite: isInfinite
     } = state.store
@@ -44,13 +43,11 @@ export class SetPosition {
     })
 
     const slideIndex = isInfinite
-      ? slideIndexBypass(index, numberOfSlides, slidesPerPage)
+      ? slideIndexBypass(index, 6, slidesPerPage)
       : index
 
     matchStateOptions($root, { [State_Keys.Dots]: true }, () => {
       updateDots(slideIndex, $root)
-
-      console.log("pinduco")
     })
   }
 }

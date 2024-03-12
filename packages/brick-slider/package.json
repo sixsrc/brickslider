@@ -19,10 +19,7 @@
   },
   "type": "module",
   "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "files": ["dist", "src"],
   "main": "dist/brick-slider.cjs",
   "module": "./dist/brick-slider.js",
   "exports": {
@@ -31,7 +28,7 @@
     "cjs": "./dist/brick-slider.cjs"
   },
   "scripts": {
-    "start": "vite build --watch",
+    "start": "vite",
     "test": "vitest",
     "lint": "eslint --ext .ts {src,__tests__}/**.ts",
     "build": "tsc && vite build  && node transform-cdn.js"

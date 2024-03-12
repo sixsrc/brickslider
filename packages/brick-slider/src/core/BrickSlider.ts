@@ -44,7 +44,7 @@ export class BrickSlider extends Methods {
 
     setActiveClass(slideNodeList($root), slideIndex, slidesPerPage)
 
-    listener(EVENTS.RESIZE, window, () => resize.init())
+    // listener(EVENTS.RESIZE, window, () => resize.init())
 
     appendSlider($children, clonedSlides)
 

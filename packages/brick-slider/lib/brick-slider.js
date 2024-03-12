@@ -2,75 +2,57 @@
  * brick-slider.js
  * Version  : 0.0.0
  * License  : MIT
- * Copyright: 2023 @malopestorres
+ * Copyright: 2024 @malopestorres
  */
-var at = Object.defineProperty;
-var ct = (e, t, n) => t in e ? at(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
-var o = (e, t, n) => (ct(e, typeof t != "symbol" ? t + "" : t, n), n);
-function w(e) {
-  return e.children.length;
-}
-function b(e) {
-  return (e == null ? void 0 : e.children.item(0)) ?? null;
-}
-function L(e) {
-  return e.offsetWidth;
-}
-function $(e) {
+var it = Object.defineProperty;
+var rt = (e, t, s) => t in e ? it(e, t, { enumerable: !0, configurable: !0, writable: !0, value: s }) : e[t] = s;
+var o = (e, t, s) => (rt(e, typeof t != "symbol" ? t + "" : t, s), s);
+function H(e) {
   const t = document.querySelector(e);
   if (!t)
     throw new Error(`Element not found: ${e}`);
   return t;
 }
-function m(e, t, n) {
-  t.addEventListener(e, n);
+function p(e) {
+  return e.offsetWidth;
 }
-function M(e, t, n) {
-  const i = n * t;
-  return -(L(e) * n + i);
+function W(e, t, s) {
+  const n = s * t;
+  return -(p(e) * s + n);
 }
-function lt(e, t) {
-  return setTimeout(() => {
-    t();
-  }, e);
-}
-function dt(e) {
-  clearTimeout(e);
-}
-function g(e) {
-  return $(`${e} ${W}`);
-}
-function v(e, t = document) {
-  return t.querySelectorAll(e);
-}
-const U = {
+const $ = {
   CHILDREN_SELECTOR: ".slider__container",
   DOTS_SELECTOR: ".slider__dots ",
   NEXT_BUTTON: "next-button",
   PREV_BUTTON: "prev-button",
   BRICK_ARROWS: "brick-arrows"
-}, D = {
+}, O = {
   TRANSITION: "transition"
-}, x = {
+}, L = {
   UL: "ul",
   LI: "li",
   BUTTON: "button",
   DIV: "div"
-}, N = {
+}, ot = {
+  VISIBLE: "visible",
+  HIDDEN: "hidden"
+}, A = {
   ACTIVE: "active",
   SLIDER_DOT: "slider__dot",
   SELECTED: "slider__dot--active",
   CLONED: "cloned"
-}, V = {
+}, k = {
   CLASS: "class",
   ARIA_HIDDEN: "aria-hidden",
   ROLE: "role",
   DIRECTION: "data-direction"
-}, G = {
-  DEFAULT_TRANSITION_TIME: 300
-}, B = {
-  TRANSFORM_EASE: `transform ${G.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
-}, O = {
+}, at = {
+  VISIBILITY: "visibility"
+}, Q = {
+  DEFAULT_TRANSITION_TIME: 400
+}, v = {
+  TRANSFORM_EASE: `transform ${Q.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
+}, S = {
   RESIZE: "resize",
   CLICK: "click",
   TOUCHSTART: "touchstart",
@@ -82,55 +64,528 @@ const U = {
   MOUSEMOVE: "mousemove",
   TRANSITIONSTART: "transitionstart",
   TRANSITIONEND: "transitionend"
-}, Z = (e) => (e.type.includes("mouse"), e), Y = U.DOTS_SELECTOR, W = U.CHILDREN_SELECTOR, R = (e) => Array.from(v(`${W} > *`, g(e)));
-function A(e, t) {
-  e.forEach((n) => {
-    n.classList.add(t);
-  });
+}, ct = 100, F = $.DOTS_SELECTOR, b = $.CHILDREN_SELECTOR, lt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  ATTRIBUTES: k,
+  CLASS_VALUES: A,
+  DOM_ELEMENTS: $,
+  EVENTS: S,
+  PROPERTYS: at,
+  PROPERTYS_VALUES: ot,
+  STYLES: O,
+  TAGS: L,
+  TIMES: Q,
+  TOUCH_LIMIT: ct,
+  TRANSITIONS: v,
+  childrenSelector: b,
+  dotsSelector: F
+}, Symbol.toStringTag, { value: "Module" })), K = (e) => (e.type.includes("mouse"), e);
+function _(e) {
+  return e.type.includes("mouse") ? e.pageX : e.touches && e.touches.length > 0 ? e.touches[0].clientX : NaN;
 }
-function F(e, t) {
-  return e && e.appendChild(t), t;
-}
-function ut(e, t) {
-  t.forEach((n) => {
-    F(e, n);
-  });
-}
-function St(e, t) {
-  if (!e)
-    throw new Error(` ${t || ""}`);
-}
-var s = /* @__PURE__ */ ((e) => (e.isLoadPage = "isLoadPage", e.SlideIndex = "slideIndex", e.SlideSpacing = "slideSpacing", e.SlidesPerPage = "slidesPerPage", e.NumberOfSlides = "numberOfSlides", e.SliderWidth = "sliderWidth", e.SliderReady = "sliderReady", e.isStopSlider = "isStopSlider", e.isDragging = "isDragging", e.startPos = "startPos", e.prevTranslate = "prevTranslate", e.currentTranslate = "currentTranslate", e.TouchStartTime = "touchStartTime", e.TouchEndTime = "touchEndTime", e.IsMouseLeave = "isMouseLeave", e.animationID = "animationID", e.Autoplay = "autoplay", e.AutoplaySpeed = "autoplaySpeed", e.Dots = "dots", e.Arrows = "arrows", e.Touch = "touch", e.Infinite = "infinite", e.Speed = "speed", e.Transition = "transition", e.UseTailwind = "useTailwind", e))(s || {});
-const d = class d {
-  constructor(t, n = {}) {
+var r = /* @__PURE__ */ ((e) => (e.isLoadPage = "isLoadPage", e.Counter = "counter", e.Seconds = "seconds", e.SlideIndex = "slideIndex", e.SlideSpacing = "slideSpacing", e.SlidesPerPage = "slidesPerPage", e.NumberOfSlides = "numberOfSlides", e.SliderWidth = "sliderWidth", e.SliderReady = "sliderReady", e.isStopSlider = "isStopSlider", e.isTouch = "isTouch", e.isDragging = "isDragging", e.IsJumpSlide = "isJumpSlide", e.startPos = "startPos", e.prevTranslate = "prevTranslate", e.currentTranslate = "currentTranslate", e.StartTime = "startTime", e.EndTime = "endTime", e.IsMouseLeave = "isMouseLeave", e.animationID = "animationID", e.Autoplay = "autoplay", e.AutoplaySpeed = "autoplaySpeed", e.Dots = "dots", e.Arrows = "arrows", e.Touch = "touch", e.Infinite = "infinite", e.Speed = "speed", e.Transition = "transition", e.UseTailwind = "useTailwind", e))(r || {});
+const l = class l {
+  constructor(t, s = {}) {
     o(this, "key");
-    this.key = t, d.state[t] || (d.state[t] = {}, this.initializeState(n));
+    this.key = t, l.state[t] || (l.state[t] = {}, this.initializeState(s));
   }
   initializeState(t) {
-    if (d.state[this.key].isLoadPage = !1, d.state[this.key].slideIndex = 0, d.state[this.key].slideSpacing = t.spacing ?? 10, d.state[this.key].slidesPerPage = t.slidesPerPage ?? 1, d.state[this.key].numberOfSlides = 0, d.state[this.key].sliderWidth = 0, d.state[this.key].sliderReady = !0, d.state[this.key].isStopSlider = !1, d.state[this.key].isDragging = !1, d.state[this.key].startPos = 0, d.state[this.key].prevTranslate = 0, d.state[this.key].currentTranslate = 0, d.state[this.key].touchStartTime = 0, d.state[this.key].touchEndTime = 0, d.state[this.key].isMouseLeave = !0, d.state[this.key].animationID = 0, d.state[this.key].autoplay = t.autoplay ?? !1, d.state[this.key].autoplaySpeed = t.autoplaySpeed ?? 3e3, d.state[this.key].dots = t.dots ?? !0, d.state[this.key].arrows = t.arrows ?? !0, d.state[this.key].touch = t.touch ?? !0, d.state[this.key].infinite = t.infinite ?? !1, d.state[this.key].speed = t.speed ?? 300, d.state[this.key].transition = t.transition ?? "slide", d.state[this.key].useTailwind = t.useTailwind ?? !0, t.sliderOptions)
-      for (const n in t.sliderOptions)
-        t.sliderOptions.hasOwnProperty(n) && (d.state[this.key][n] = t.sliderOptions[n]);
+    if (l.state[this.key].isLoadPage = !1, l.state[this.key].counter = 0, l.state[this.key].seconds = 0, l.state[this.key].slideIndex = 0, l.state[this.key].slideSpacing = t.spacing ?? 10, l.state[this.key].slidesPerPage = t.slidesPerPage ?? 1, l.state[this.key].numberOfSlides = 0, l.state[this.key].sliderWidth = 0, l.state[this.key].sliderReady = !0, l.state[this.key].isStopSlider = !1, l.state[this.key].isTouch = !1, l.state[this.key].isDragging = !1, l.state[this.key].isJumpSlide = !1, l.state[this.key].startPos = 0, l.state[this.key].prevTranslate = 0, l.state[this.key].currentTranslate = 0, l.state[this.key].startTime = 0, l.state[this.key].endTime = 0, l.state[this.key].isMouseLeave = !0, l.state[this.key].animationID = 0, l.state[this.key].autoplay = t.autoplay ?? !1, l.state[this.key].autoplaySpeed = t.autoplaySpeed ?? 3e3, l.state[this.key].dots = t.dots ?? !0, l.state[this.key].arrows = t.arrows ?? !0, l.state[this.key].touch = t.touch ?? !0, l.state[this.key].infinite = t.infinite ?? !1, l.state[this.key].speed = t.speed ?? 300, l.state[this.key].transition = t.transition ?? "slide", l.state[this.key].useTailwind = t.useTailwind ?? !0, t.sliderOptions)
+      for (const s in t.sliderOptions)
+        t.sliderOptions.hasOwnProperty(s) && (l.state[this.key][s] = t.sliderOptions[s]);
   }
   get(t) {
-    return d.state[this.key][t] ?? "";
+    return l.state[this.key][t] ?? "";
   }
-  set(t, n) {
-    d.state[this.key][t] = n;
+  get store() {
+    return l.state[this.key];
+  }
+  set(t, s) {
+    l.state[this.key][t] = s;
   }
   setOptions(t) {
     this.initializeState(t);
   }
   setMultipleState(t) {
-    for (const n in t)
-      t.hasOwnProperty(n) && (d.state[this.key][n] = t[n]);
+    for (const s in t)
+      t.hasOwnProperty(s) && (l.state[this.key][s] = t[s]);
   }
 };
-o(d, "state", {});
-let h = d;
-function ht(e) {
+o(l, "state", {});
+let T = l;
+function dt(e, t) {
+  e.get(r.Infinite) && t();
+}
+function ut(e) {
   return /^[.#].*/.test(e);
 }
-class ft {
+function g(e, t, s) {
+  if (typeof e == "string")
+    t.addEventListener(e, s);
+  else if (Array.isArray(e))
+    e.forEach((n) => {
+      t.addEventListener(n, s);
+    });
+  else
+    throw new Error(
+      "The 'events' parameter must be a string or an array of strings"
+    );
+}
+function X(e, t, s) {
+  return s > 1 && (t = t - (s + s)), e < 0 ? t - 1 : e >= t ? e : e === t - 1 ? 0 : e === 0 ? t - 3 : e - 1;
+}
+function M(e, t) {
+  e.forEach((s) => {
+    s.classList.add(t);
+  });
+}
+function z(e, t) {
+  return e && e.appendChild(t), t;
+}
+function q(e) {
+  return document.createElement(e);
+}
+function U(e, t = document) {
+  return t.querySelectorAll(e);
+}
+function E(e) {
+  return H(`${e} ${b}`);
+}
+function J(e) {
+  return e.children.length;
+}
+function ht(e) {
+  return H(`${e} ${F}`);
+}
+function Tt(e, t) {
+  return e.getAttribute(t);
+}
+function j(e) {
+  return H(`${e}`);
+}
+function ft(e, t) {
+  return e.classList.contains(t);
+}
+function St(e, t) {
+  e.prepend(t);
+}
+function tt(e, t) {
+  e.classList.remove(t);
+}
+function et(e, t, s) {
+  e.setAttribute(t, s);
+}
+function Et(e, t) {
+  e.innerHTML = t;
+}
+function w(e, t, s) {
+  e.style[t] = s;
+}
+function It(e, t) {
+  e.style.transform = `translate3d(${t()}px, 0, 0)`;
+}
+const x = (e) => Array.from(
+  U(`${b} > *`, E(e))
+);
+function st(e, t) {
+  let s;
+  function n(i) {
+    s || (s = i), i - s < e ? requestAnimationFrame(n) : t();
+  }
+  requestAnimationFrame(n);
+}
+function mt(e, t) {
+  return t > 1 ? Math.floor(e / t) : e;
+}
+function Ot(e, t) {
+  const s = j(t);
+  return e.forEach((n) => {
+    St(s, n);
+  }), e;
+}
+function gt(e, t) {
+  t.forEach((s) => {
+    z(e, s);
+  });
+}
+function Nt(e, t) {
+  const s = E(e), n = x(e), i = n.length;
+  if (i < t)
+    return;
+  t = Math.min(t, i);
+  const c = [];
+  for (let a = 0; a < t; a++) {
+    const d = n[a].cloneNode(!0);
+    c.push(d), s.appendChild(d);
+  }
+  for (let a = i - t; a < i; a++) {
+    const d = n[a].cloneNode(!0);
+    c.push(d), s.insertBefore(d, n[0]);
+  }
+  M(c, A.CLONED);
+}
+function At(e) {
+  const { from: t, currentSlideIndex: s, index: n } = e;
+  switch (t) {
+    case I.NEXT:
+      return s + 1;
+    case I.PREV:
+      return s - 1;
+    case I.DOTS:
+    case I.TOUCH:
+      return n ?? s;
+    default:
+      return s;
+  }
+}
+function G(e, t, s) {
+  let n = 0;
+  for (e.forEach((i) => {
+    tt(i, A.ACTIVE);
+  }), n; n < s; n++) {
+    const i = t * s + n;
+    M([e[i]], A.ACTIVE);
+  }
+}
+var I = /* @__PURE__ */ ((e) => (e.DOTS = "dots", e.PREV = "prev", e.NEXT = "next", e.TOUCH = "touch", e))(I || {});
+function Y(e = {
+  $root: ""
+}) {
+  const { index: t, $root: s } = e, n = new T(s), i = e.from, c = n.get(r.Infinite), {
+    slideIndex: a,
+    numberOfSlides: d,
+    slidesPerPage: u
+  } = n.store, f = x(s);
+  let h = At({
+    from: i,
+    currentSlideIndex: a,
+    index: t
+  });
+  !c && h > d - 1 || !c && h < 0 || (h > d + 1 && (h = h - 1), h < 0 && (h = h + 1), n.set(r.SlideIndex, h), G(f, h, u), D(s));
+}
+function wt(e) {
+  const t = [];
+  for (let s = 0; s < e; s++) {
+    const n = q(L.BUTTON), i = s === 0;
+    et(
+      n,
+      k.DIRECTION,
+      i ? I.NEXT : I.PREV
+    ), M([n], $.BRICK_ARROWS), Et(n, i ? I.NEXT : I.PREV), t.push(n);
+  }
+  return t;
+}
+function Rt(e, t) {
+  const s = new T(e), { slidesPerPage: n } = s.store, i = s.get(r.Infinite), c = E(e), a = J(c);
+  i && n <= 1 && s.set(r.NumberOfSlides, a - 2), i && n > 1 && s.set(
+    r.NumberOfSlides,
+    Math.ceil(a / n) - n
+  ), !i && n > 1 && s.set(r.NumberOfSlides, Math.ceil(a / n));
+  const d = s.get(r.NumberOfSlides);
+  for (let u = 0; u < d; u++) {
+    const f = q(L.LI);
+    z(t, f), M([f], A.SLIDER_DOT), u === 0 && M([f], A.SELECTED);
+  }
+}
+function V(e, t) {
+  const s = U(
+    L.LI,
+    ht(t)
+  ), n = e ?? 0;
+  s.forEach((i, c) => {
+    ft(i, A.SELECTED) && tt(i, A.SELECTED), c === n && M([i], A.SELECTED);
+  });
+}
+function nt(e, t, s) {
+  if (t) {
+    new T(e);
+    for (const [n, i] of Object.entries(t))
+      if (T.state[e][n] !== i)
+        return !1;
+    return s && s(), !0;
+  }
+  return !1;
+}
+function Dt(e, t) {
+  return () => {
+    const s = new T(t), n = s.get(r.Infinite), i = E(t);
+    g(
+      S.MOUSELEAVE,
+      e,
+      () => w(i, O.TRANSITION, "")
+    ), w(i, O.TRANSITION, v.TRANSFORM_EASE);
+    const a = Tt(e, k.DIRECTION) === I.PREV;
+    s.set(r.SliderReady, !1), Y({
+      from: a ? I.PREV : I.NEXT,
+      $root: t
+    });
+    const { slidesPerPage: d, slideIndex: u } = s.store, f = J(i), h = n ? X(u, f, d) : u;
+    nt(t, { [r.Dots]: !0 }, () => {
+      V(h, t);
+    }), st(100, () => {
+    }), g(S.TRANSITIONEND, i, () => {
+      s.set(r.EndTime, Date.now());
+      const { startTime: m, endTime: R, numberOfSlides: N } = s.store, y = Math.abs(m - R) >= 300;
+      s.set(r.SliderReady, !0), (y || !n && h > N - 1 || !n && N < 0) && w(i, O.TRANSITION, "");
+    });
+  };
+}
+class Ct {
+  constructor(t) {
+    o(this, "$root");
+    this.$root = t;
+  }
+  init() {
+    const { $root: t } = this, { EVENTS: s } = lt, n = new T(t), i = wt(2);
+    Ot(i, t).forEach((a) => {
+      g(s.CLICK, a, () => {
+        n.set(r.StartTime, Date.now()), Dt(a, t)();
+      });
+    });
+  }
+}
+class Lt {
+  constructor(t) {
+    o(this, "$root");
+    this.$root = t;
+  }
+  init() {
+    const t = j(this.$root), s = q(L.UL), n = new T(this.$root);
+    et(s, k.CLASS, F.replace(".", "")), z(t, s), Rt(this.$root, s);
+    const i = U(L.LI, s);
+    Array.from(i).forEach((c, a) => {
+      const d = () => {
+        n.set(r.SlideIndex, a), Bt(this.$root);
+      };
+      g(S.CLICK, c, d);
+    });
+  }
+}
+class Mt {
+  constructor(t) {
+    o(this, "state");
+    o(this, "$root");
+    o(this, "slider");
+    this.state = new T(t), this.$root = t, this.slider = j(t);
+  }
+  init() {
+    const { state: t, $root: s, slider: n } = this, {
+      slideIndex: i,
+      numberOfSlides: c,
+      slidesPerPage: a,
+      infinite: d
+    } = t.store, u = p(n), f = i * -u;
+    t.setMultipleState({
+      [r.currentTranslate]: f,
+      [r.prevTranslate]: f
+    });
+    const [h, m] = [i, I.TOUCH];
+    Y({
+      from: m,
+      index: h,
+      $root: s
+    });
+    const R = d ? X(h, c, a) : h;
+    nt(s, { [r.Dots]: !0 }, () => {
+      V(R, s), console.log("pinduco");
+    });
+  }
+}
+class Z {
+  constructor(t) {
+    o(this, "$root");
+    o(this, "state");
+    o(this, "init", () => {
+      const { state: t, $root: s, init: n } = this, { currentTranslate: i, isDragging: c } = t.store;
+      D(s, i), c && requestAnimationFrame(n);
+    });
+    this.state = new T(t), this.$root = t;
+  }
+}
+class yt {
+  constructor(t) {
+    o(this, "$root");
+    o(this, "state");
+    o(this, "setPosition");
+    o(this, "animation");
+    o(this, "init", (t) => {
+      const { $root: s, state: n, setPosition: i } = this, c = E(s), {
+        animationId: a,
+        isJumpSlide: d,
+        isMouseLeave: u,
+        numberOfSlides: f,
+        slidesPerPage: h,
+        infinite: m,
+        currentTranslate: R,
+        prevTranslate: N
+      } = n.store, y = x(s), P = R - N;
+      u || w(c, O.TRANSITION, v.TRANSFORM_EASE), typeof a == "number" && cancelAnimationFrame(a);
+      let C = n.get(r.SlideIndex);
+      Ut(P, C, y) && n.set(r.SlideIndex, C += 1), Vt(P, C) && n.set(r.SlideIndex, C -= 1), console.log({ isMouseLeave: u, currentIndex: C }), !u && !d && i.init(), m && V(X(C, 6, h), s), g(S.TRANSITIONEND, c, () => {
+        w(c, O.TRANSITION, "");
+      }), n.setMultipleState({
+        [r.isDragging]: !1,
+        [r.IsMouseLeave]: !0,
+        [r.isTouch]: !1,
+        [r.EndTime]: (/* @__PURE__ */ new Date()).getMilliseconds()
+      });
+    });
+    this.$root = t, this.state = new T(this.$root), this.setPosition = new Mt(this.$root), this.animation = new Z(this.$root);
+  }
+}
+class Pt {
+  constructor(t) {
+    o(this, "$root");
+    o(this, "state");
+    o(this, "animation");
+    o(this, "init", (t) => {
+      const { state: s, $root: n, animation: i } = this, c = K(t), {
+        isDragging: a,
+        prevTranslate: d,
+        startPos: u,
+        infinite: f
+      } = s.store, h = _(c), m = E(n), R = p(m);
+      if (a) {
+        s.setMultipleState({
+          [r.isTouch]: !0,
+          [r.currentTranslate]: d + h - u
+        });
+        let N = s.get(r.currentTranslate);
+        g(
+          [S.TOUCHEND, S.MOUSEUP, S.MOUSELEAVE],
+          m,
+          () => {
+            if (f && Math.abs(N) <= R / 2) {
+              s.set(r.IsJumpSlide, !0);
+              const y = Math.abs(N) + 2352;
+              s.set(r.SlideIndex, 4), s.set(r.currentTranslate, -y);
+              const P = s.get(r.currentTranslate);
+              N = P, w(m, O.TRANSITION, ""), D(n, -P), st(0, () => {
+                s.set(r.currentTranslate, -2352), s.set(r.prevTranslate, -2352), w(m, O.TRANSITION, v.TRANSFORM_EASE), D(n, -2352);
+              });
+            }
+          }
+        ), D(n, N), requestAnimationFrame(i.init);
+      }
+    });
+    this.$root = t, this.state = new T(this.$root), this.animation = new Z(this.$root);
+  }
+}
+class pt {
+  constructor(t) {
+    o(this, "$root");
+    o(this, "state");
+    o(this, "animation");
+    this.$root = t, this.state = new T(t), this.animation = new Z(t);
+  }
+  init(t) {
+    return (s) => {
+      const { $root: n, state: i, animation: c } = this, {
+        slideIndex: a,
+        slidesPerPage: d,
+        numberOfSlides: u,
+        infinite: f
+      } = i.store, h = K(s), m = E(n);
+      w(m, O.TRANSITION, ""), i.setMultipleState({
+        [r.StartTime]: (/* @__PURE__ */ new Date()).getMilliseconds(),
+        [r.SlideIndex]: mt(t, d),
+        [r.startPos]: _(h),
+        [r.isDragging]: !0,
+        [r.IsMouseLeave]: !1,
+        [r.IsJumpSlide]: !1,
+        [r.animationID]: requestAnimationFrame(c.init)
+      });
+    };
+  }
+}
+function vt(e) {
+  const { element: t, touchStart: s, touchEnd: n, touchMove: i } = e;
+  g([S.TOUCHSTART, S.MOUSEDOWN], t, s), g(
+    [S.TOUCHEND, S.MOUSELEAVE, S.MOUSEUP],
+    t,
+    n
+  ), g([S.TOUCHMOVE, S.MOUSEMOVE], t, i);
+}
+class xt {
+  constructor(t) {
+    o(this, "$root");
+    o(this, "slider");
+    o(this, "slides");
+    o(this, "state");
+    o(this, "touchStart");
+    o(this, "touchEnd");
+    o(this, "touchMove");
+    this.$root = t, this.slider = E(t), this.slides = Array.from(
+      U(`${b} > *`, this.slider)
+    ), this.state = new T(this.$root), this.touchStart = new pt(this.$root), this.touchEnd = new yt(this.$root), this.touchMove = new Pt(this.$root);
+  }
+  init() {
+    const { slides: t, touchStart: s, touchEnd: n, touchMove: i } = this;
+    t.forEach((c, a) => {
+      const d = {
+        element: c,
+        index: a,
+        touchStart: s.init(a),
+        touchEnd: n.init.bind(n),
+        touchMove: i.init.bind(i)
+      };
+      vt(d);
+    });
+  }
+}
+function $t(e, t) {
+  const { dots: s, arrows: n, touch: i } = t || {};
+  s && new Lt(e).init(), n && new Ct(e).init(), i && new xt(e).init();
+}
+function kt(e) {
+  const t = new T(e), s = E(e), { currentTranslate: n, slidesPerPage: i, slideIndex: c, slideSpacing: a } = t.store, d = n + 1, u = W(s, a, d);
+  Nt(e, i), G(x(e), c, i), D(e, u), t.setMultipleState({
+    currentTranslate: u,
+    prevTranslate: u,
+    slideIndex: d
+  });
+}
+function bt(e, t) {
+  const s = new T(e), n = E(e), { slideIndex: i, slideSpacing: c } = s.store, a = W(n, c, i), d = t;
+  return !t && s.setMultipleState({
+    [r.prevTranslate]: a,
+    [r.currentTranslate]: a
+  }), d || a;
+}
+function Ut(e, t, s) {
+  const n = e < -294, i = t < s.length - 1;
+  return n && i;
+}
+function Vt(e, t) {
+  const s = e > 294, n = t > 0;
+  return s && n;
+}
+function Bt(e) {
+  const t = new T(e), s = I.DOTS;
+  let n = t.get(r.SlideIndex);
+  V(n, e);
+  const i = t.get(r.Infinite), c = E(e);
+  w(c, O.TRANSITION, v.TRANSFORM_EASE), Y({
+    from: s,
+    index: i ? ++n : n,
+    $root: e
+  });
+}
+function D(e, t) {
+  const s = E(e);
+  It(s, () => bt(e, t));
+}
+class Ht {
+  constructor(t) {
+    o(this, "$root");
+    this.$root = t;
+  }
+  init() {
+    const { $root: t } = this, s = new T(t), { slideSpacing: n, slideIndex: i } = s.store, c = p(E(t)), a = E(t), d = W(a, n, i);
+    s.set(r.SliderWidth, c), D(t, d);
+  }
+}
+class Wt {
   constructor(t) {
     o(this, "spacing");
     o(this, "slidesPerPage");
@@ -146,380 +601,7 @@ class ft {
     this.autoplay = (t == null ? void 0 : t.autoplay) ?? !1, this.spacing = (t == null ? void 0 : t.spacing) ?? 10, this.slidesPerPage = (t == null ? void 0 : t.slidesPerPage) ?? 1, this.autoplaySpeed = (t == null ? void 0 : t.autoplaySpeed) ?? 500, this.dots = (t == null ? void 0 : t.dots) ?? !0, this.arrows = (t == null ? void 0 : t.arrows) ?? !0, this.infinite = (t == null ? void 0 : t.infinite) ?? !1, this.speed = (t == null ? void 0 : t.speed) ?? 500, this.transition = (t == null ? void 0 : t.transition) ?? "slide", this.touch = (t == null ? void 0 : t.touch) ?? !0, this.useTailwind = (t == null ? void 0 : t.useTailwind) ?? !0;
   }
 }
-function Tt(e) {
-  const { element: t, touchStart: n, touchEnd: i, touchMove: r } = e;
-  m(O.TOUCHSTART, t, n), m(O.TOUCHEND, t, i), m(O.TOUCHMOVE, t, r), m(O.MOUSEDOWN, t, n), m(O.MOUSEUP, t, i), m(O.MOUSELEAVE, t, i), m(O.MOUSEMOVE, t, r);
-}
-function y(e, t, n) {
-  e.style[t] = n;
-}
-function gt(e, t, n) {
-  const i = e < -180, r = t < n.length - 1;
-  return i && r;
-}
-function It(e, t) {
-  const n = e > 180, i = t > 0;
-  return n && i;
-}
-function J(e, t) {
-  return e < 0 ? t - 1 : e >= t ? e : e === t - 1 ? 0 : e === 0 ? t - 3 : e - 1;
-}
-function Et(e, t) {
-  e.style.transform = `translate3d(${t()}px, 0, 0)`;
-}
-function mt(e, t) {
-  const n = new h(e), i = g(e), r = n.get(s.SlideIndex), a = n.get(s.SlideSpacing), l = M(i, a, r), c = t;
-  return !t && n.setMultipleState({
-    [s.prevTranslate]: l,
-    [s.currentTranslate]: l
-  }), c || l;
-}
-function C(e, t) {
-  const n = g(e);
-  Et(n, () => mt(e, t));
-}
-function Ot(e) {
-  const { from: t, currentSlideIndex: n, index: i } = e;
-  switch (t) {
-    case I.NEXT:
-      return n + 1;
-    case I.PREV:
-      return n - 1;
-    case I.DOTS:
-    case I.TOUCH:
-      return i ?? n;
-    default:
-      return n;
-  }
-}
-class p {
-  constructor(t) {
-    o(this, "rootSelector");
-    o(this, "state");
-    o(this, "init", () => {
-      const { state: t, rootSelector: n, init: i } = this, [r, a] = [
-        t.get(s.currentTranslate),
-        t.get(s.isDragging)
-      ];
-      C(n, r), a && requestAnimationFrame(i);
-    });
-    this.state = new h(t), this.rootSelector = t;
-  }
-}
-function Q(e, t) {
-  e.classList.remove(t);
-}
-function Pt(e, t, n) {
-  new h(e).set(s.SlideIndex, n), C(e), Q(t, N.ACTIVE);
-}
-function K(e, t) {
-  return e.classList.contains(t);
-}
-function Nt(e, t) {
-  const n = new h(e), i = t.style.transform, r = n.get(s.SlideSpacing), a = w(t);
-  n.get(s.SlidesPerPage);
-  const c = `translate3d(${M(t, r, a - a)}px, 0px, 0px)`;
-  return i.includes(c);
-}
-function At(e, t) {
-  const n = new h(e), i = t.style.transform, r = n.get(s.SlideSpacing), a = w(t);
-  n.get(s.SlidesPerPage);
-  const c = `translate3d(${M(t, r, a - 1)}px, 0px, 0px)`;
-  return i.includes(c);
-}
-function Ct(e, t) {
-  const n = g(e), i = w(n), [r, a] = [Nt(e, n), At(e, n)], l = [
-    { first: r, index: i - i, jumpToIndex: i - 2 },
-    { last: a, index: i - 1, jumpToIndex: i - i + 1 }
-  ], c = l.findIndex(
-    (u) => u.first || u.last
-  );
-  if (c !== -1) {
-    const { index: u, jumpToIndex: S } = l[c], f = K(t[u], N.ACTIVE), T = t[u];
-    f && Pt(e, T, S);
-  }
-}
-const xt = (e, t) => {
-  const n = g(e), i = G.DEFAULT_TRANSITION_TIME - 100, r = R(e), a = lt(i, () => {
-    y(n, D.TRANSITION, ""), t && Ct(e, r), dt(a);
-  });
-};
-function _(e, t, n, i) {
-  for (let r = 0; r < n; r++) {
-    const a = t * n + r;
-    A([e[a]], N.ACTIVE);
-  }
-}
-var I = /* @__PURE__ */ ((e) => (e.DOTS = "dots", e.PREV = "prev", e.NEXT = "next", e.TOUCH = "touch", e))(I || {});
-function H(e = {
-  rootSelector: ""
-}) {
-  const { index: t, rootSelector: n } = e, i = new h(n), r = i.get(s.NumberOfSlides), a = e.from, l = g(n), c = R(n), u = i.get(s.SlideIndex), S = Ot({
-    from: a,
-    currentSlideIndex: u,
-    index: t
-  }), f = i.get(s.Infinite);
-  if (!f && S > r - 1 || !f && S < 0)
-    return;
-  i.get(s.isStopSlider);
-  const T = i.get(s.SlidesPerPage);
-  i.get(s.SlideSpacing), i.get(s.SliderWidth), _(c, S, T), i.set(s.SlideIndex, S);
-  const E = new p(n);
-  C(n), requestAnimationFrame(E.init);
-  const P = () => xt(n, f);
-  T <= 1 && m(O.TRANSITIONSTART, l, P);
-}
-function Rt(e) {
-  return $(`${e} ${Y}`);
-}
-function X(e, t) {
-  const n = v(x.LI, Rt(t)), i = e ?? 0;
-  n.forEach((r, a) => {
-    K(r, N.SELECTED) && Q(r, N.SELECTED), a === i && A([r], N.SELECTED);
-  });
-}
-function z(e) {
-  return $(`${e}`);
-}
-function tt(e, t, n) {
-  if (t) {
-    new h(e);
-    for (const [i, r] of Object.entries(t))
-      if (h.state[e][i] !== r)
-        return !1;
-    return n && n(), !0;
-  }
-  return !1;
-}
-class wt {
-  constructor(t) {
-    o(this, "state");
-    o(this, "rootSelector");
-    o(this, "slider");
-    this.state = new h(t), this.rootSelector = t, this.slider = z(this.rootSelector);
-  }
-  init() {
-    const { state: t, rootSelector: n, slider: i } = this, r = t.get(s.SlideIndex), a = L(i), l = r * -a;
-    t.setMultipleState({
-      [s.currentTranslate]: l,
-      [s.prevTranslate]: l
-    });
-    const c = r, u = I.TOUCH;
-    H({
-      from: u,
-      index: c,
-      rootSelector: n
-    });
-    const S = t.get(s.NumberOfSlides) + 2, f = t.get(s.Infinite), T = t.get(s.SlidesPerPage), E = f && T <= 1 ? J(c, S) : c, P = () => {
-      X(E, n);
-    };
-    tt(n, { [s.Dots]: !0 }, P);
-  }
-}
-class Dt {
-  constructor(t) {
-    o(this, "$root");
-    o(this, "state");
-    o(this, "setPositionByIndex");
-    o(this, "animation");
-    o(this, "init", () => {
-      const { $root: t, state: n, setPositionByIndex: i } = this;
-      console.log("vou te pegar 2");
-      const r = g(t);
-      n.set(s.isDragging, !1);
-      const a = n.get(s.animationID), l = n.get(s.IsMouseLeave), c = n.get(s.Infinite), u = n.get(s.SlideIndex), S = n.get(s.SliderReady), f = n.get(s.SlidesPerPage);
-      if (c && u <= 0 && f <= 1 && !S)
-        return;
-      l || y(r, D.TRANSITION, B.TRANSFORM_EASE), typeof a == "number" && cancelAnimationFrame(a);
-      const T = n.get(s.currentTranslate) - n.get(s.prevTranslate);
-      let E = n.get(s.SlideIndex);
-      const P = R(t);
-      gt(T, E, P) && n.set(s.SlideIndex, E += 1), It(T, E) && n.set(s.SlideIndex, E -= 1), i.init(), n.setMultipleState({
-        [s.TouchEndTime]: Date.now(),
-        [s.IsMouseLeave]: !0
-        // [State_Keys.prevTranslate]: state.get(State_Keys.currentTranslate)
-      });
-    });
-    this.$root = t, this.state = new h(this.$root), this.setPositionByIndex = new wt(this.$root), this.animation = new p(this.$root);
-  }
-}
-function et(e) {
-  return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
-}
-class yt {
-  constructor(t) {
-    o(this, "$root");
-    o(this, "state");
-    o(this, "animation");
-    o(this, "init", (t) => {
-      const { state: n, $root: i, animation: r } = this, a = Z(t), l = n.get(s.isDragging), c = et(a), u = n.get(s.prevTranslate), S = n.get(s.startPos), f = n.get(s.SlideIndex), T = n.get(s.Infinite), E = n.get(s.SliderReady), P = n.get(s.SlidesPerPage);
-      if (!(T && f <= 0 && P <= 1 && !E) && l) {
-        n.setMultipleState({
-          [s.currentTranslate]: u + c - S
-        });
-        const k = n.get(s.currentTranslate);
-        C(i, k), requestAnimationFrame(r.init);
-      }
-    });
-    this.$root = t, this.state = new h(this.$root), this.animation = new p(this.$root);
-  }
-}
-function Lt(e, t) {
-  return t > 1 ? Math.floor(e / t) : e;
-}
-class Mt {
-  constructor(t) {
-    o(this, "$root");
-    o(this, "state");
-    o(this, "animation");
-    this.$root = t, this.state = new h(t), this.animation = new p(t);
-  }
-  init(t) {
-    return (n) => {
-      const { state: i, animation: r } = this;
-      console.log("vou te pegar 1");
-      const a = Z(n), l = g(this.$root);
-      i.get(s.SliderReady);
-      const c = i.get(s.Infinite), u = i.get(s.SlideIndex), S = i.get(s.SlidesPerPage);
-      c && u <= 0 && S <= 1 && i.set(s.SliderReady, !0), y(l, D.TRANSITION, ""), i.setMultipleState({
-        [s.TouchStartTime]: Date.now(),
-        [s.SlideIndex]: Lt(t, S),
-        [s.startPos]: et(a),
-        [s.isDragging]: !0,
-        [s.IsMouseLeave]: !1,
-        [s.animationID]: requestAnimationFrame(r.init)
-      });
-    };
-  }
-}
-class vt {
-  constructor(t) {
-    o(this, "$root");
-    o(this, "slider");
-    o(this, "slides");
-    o(this, "state");
-    o(this, "touchStart");
-    o(this, "touchEnd");
-    o(this, "touchMove");
-    this.$root = t, this.slider = g(t), this.slides = Array.from(v(`${W} > *`, this.slider)), this.state = new h(this.$root), this.touchStart = new Mt(this.$root), this.touchEnd = new Dt(this.$root), this.touchMove = new yt(this.$root);
-  }
-  init() {
-    const { slides: t, touchStart: n, touchEnd: i, touchMove: r } = this;
-    t.forEach((a, l) => {
-      const c = {
-        element: a,
-        index: l,
-        touchStart: n.init(l),
-        // touchEnd: (event: Event) => touchEnd.init(event),
-        touchEnd: i.init.bind(i),
-        //touchEnd: touchEnd.init(index),
-        touchMove: r.init.bind(r)
-      };
-      Tt(c);
-    });
-  }
-}
-function q(e) {
-  return document.createElement(e);
-}
-function nt(e, t, n) {
-  e.setAttribute(t, n);
-}
-function pt(e, t) {
-  e.innerHTML = t;
-}
-function kt(e) {
-  const t = [];
-  for (let n = 0; n < e; n++) {
-    const i = q(x.BUTTON), r = n === 0;
-    nt(i, V.DIRECTION, r ? I.NEXT : I.PREV), A([i], U.BRICK_ARROWS), pt(i, r ? I.NEXT : I.PREV), t.push(i);
-  }
-  return t;
-}
-function bt(e, t) {
-  e.prepend(t);
-}
-function $t(e, t) {
-  const n = z(t);
-  return e.forEach((i) => {
-    bt(n, i);
-  }), e;
-}
-function Ut(e, t) {
-  return e.getAttribute(t);
-}
-function Vt(e, t) {
-  return () => {
-    const n = new h(t), r = Ut(e, V.DIRECTION) === I.PREV, a = g(t);
-    n.get(s.SliderReady);
-    const l = n.get(s.Infinite);
-    console.log("index", n.get(s.SliderReady)), y(a, D.TRANSITION, B.TRANSFORM_EASE), H({
-      from: r ? I.PREV : I.NEXT,
-      rootSelector: t
-    });
-    const c = n.get(s.SlidesPerPage), u = n.get(s.SlideIndex), S = n.get(s.NumberOfSlides) + 2, f = l && c <= 1 ? J(u, S) : u;
-    tt(t, { [s.Dots]: !0 }, () => {
-      X(f, t);
-    }), m(O.TRANSITIONEND, a, () => {
-      n.set(s.SliderReady, !0);
-    });
-  };
-}
-class Bt {
-  constructor(t) {
-    o(this, "$root");
-    this.$root = t;
-  }
-  init() {
-    const { $root: t } = this, n = kt(2);
-    $t(n, t).forEach((r) => {
-      const a = Vt(r, t);
-      m(O.CLICK, r, a);
-    });
-  }
-}
-function Wt(e, t) {
-  const n = new h(e), i = n.get(s.Infinite), r = g(e), a = w(r), l = n.get(s.SlidesPerPage);
-  i && n.set(s.NumberOfSlides, a - 2), l > 1 && n.set(s.NumberOfSlides, Math.ceil(a / 2));
-  const c = n.get(s.NumberOfSlides);
-  for (let u = 0; u < c; u++) {
-    const S = q(x.LI);
-    F(t, S), A([S], N.SLIDER_DOT), u === 0 && A([S], N.SELECTED);
-  }
-}
-function Ft(e) {
-  const t = new h(e), n = I.DOTS;
-  let i = t.get(s.SlideIndex);
-  X(i, e);
-  const r = t.get(s.Infinite), a = t.get(s.SlidesPerPage), l = g(e);
-  y(l, D.TRANSITION, B.TRANSFORM_EASE), H({
-    from: n,
-    index: r && a <= 1 ? ++i : i,
-    rootSelector: e
-  });
-}
-class Ht {
-  constructor(t) {
-    o(this, "$root");
-    this.$root = t;
-  }
-  init() {
-    const t = z(this.$root), n = q(x.UL), i = new h(this.$root);
-    nt(n, V.CLASS, Y.replace(".", "")), F(t, n), Wt(this.$root, n);
-    const r = v(x.LI, n);
-    Array.from(r).forEach((a, l) => {
-      const c = () => {
-        i.set(s.SlideIndex, l), Ft(this.$root);
-      };
-      m(O.CLICK, a, c);
-    });
-  }
-}
-function Xt(e, t) {
-  const { dots: n, arrows: i, touch: r } = t || {};
-  n && new Ht(e).init(), i && new Bt(e).init(), r && new vt(e).init();
-}
-class zt {
+class Ft {
   constructor() {
   }
   next() {
@@ -538,51 +620,45 @@ class zt {
   destroy() {
   }
 }
-function qt(e, t) {
-  t.forEach((n) => {
-    e.appendChild(n);
-  });
+function Xt(e, t) {
+  if (!e)
+    throw new Error(` ${t || ""}`);
 }
-function j(e) {
-  return (e == null ? void 0 : e.children.item(e.children.length - 1)) ?? null;
-}
-function jt(e) {
-  const t = b(e), n = j(e);
-  e.insertBefore(n.cloneNode(!0), t), qt(e, [t.cloneNode(!0)]), A([b(e), j(e)], N.CLONED);
-}
-class Gt {
-  constructor(t) {
-    o(this, "$root");
-    this.$root = t;
-  }
-  init() {
-    const { $root: t } = this, n = L(g(t));
-    new h(t).set(s.SliderWidth, n), C(t);
-  }
-}
-class Zt extends zt {
-  constructor(n, i) {
+class B extends Ft {
+  constructor(s, n) {
     super();
     o(this, "clonedSlides", []);
     o(this, "$root");
     o(this, "options");
     o(this, "resize");
-    St(ht(n), "Main Selector Not Found"), this.$root = n, this.options = { ...new ft(), ...i }, this.resize = new Gt(n);
+    Xt(ut(s), "Main Selector Not Found"), this.$root = s, this.options = { ...new Wt(), ...n }, this.resize = new Ht(s);
   }
   init() {
-    const { $root: n, options: i, clonedSlides: r, resize: a } = this, l = g(n), c = new h(n, i), u = c.get(s.currentTranslate), S = u + 1, f = c.get(s.SlideSpacing), T = M(l, f, S), E = c.get(s.Infinite), P = c.get(s.SlidesPerPage), k = R(n)[u];
-    E && P <= 1 && (jt(l), c.set(s.SlideIndex, S), A([k], N.ACTIVE), C(n, T), c.setMultipleState({
-      [s.currentTranslate]: T,
-      [s.prevTranslate]: T
-    }));
-    const st = L(l);
-    c.set(s.SliderWidth, st);
-    const it = w(l);
-    c.set(s.NumberOfSlides, it), b(g(n)), c.get(s.NumberOfSlides);
-    const rt = c.get(s.SlideIndex);
-    E || _(R(n), rt, P);
-    const ot = () => a.init();
-    m(O.RESIZE, window, ot), ut(l, r), Xt(n, i);
+    const { $root: s, options: n, clonedSlides: i, resize: c } = this, a = new T(s, n), d = E(s), { slideIndex: u, slidesPerPage: f } = a.store;
+    dt(a, () => kt(s)), a.setMultipleState({
+      sliderWidth: p(d),
+      numberOfSlides: J(d)
+    }), G(x(s), u, f), g(S.RESIZE, window, () => c.init()), gt(d, i), $t(s, n);
   }
 }
-window.BrickSlider = Zt;
+const zt = new B("#slide4_container", {
+  infinite: !0,
+  slidesPerPage: 2,
+  spacing: 20
+});
+zt.init();
+const qt = new B("#slide1_container", {
+  infinite: !0,
+  spacing: 20
+});
+qt.init();
+const Jt = new B("#slide2_container", {
+  arrows: !0,
+  spacing: 20
+});
+Jt.init();
+const jt = new B("#slide3_container", { spacing: 20 });
+jt.init();
+export {
+  B as BrickSlider
+};

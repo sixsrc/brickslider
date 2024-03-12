@@ -8,6 +8,7 @@ import {
   initTouchListeners
 } from "@/action/initTouchListeners"
 import { getAllElements, getChildren } from "@/dom"
+import { getTrackChildren } from "@/dom/getTrackChildren"
 
 export class Touch {
   $root: string
@@ -20,7 +21,9 @@ export class Touch {
 
   constructor($root: string) {
     this.$root = $root
-    this.slider = getChildren($root)
+    // this.slider = getChildren($root)
+    this.slider = getTrackChildren($root)
+
     this.slides = Array.from(
       getAllElements<HTMLElement>(`${childrenSelector} > *`, this.slider)
     )
@@ -33,15 +36,26 @@ export class Touch {
   public init() {
     const { slides, touchStart, touchEnd, touchMove } = this
 
-    slides.forEach((slide, index) => {
+    /*  slides.forEach((slide, index) => {
       const params: TouchListenersParams = {
         element: slide,
         index,
-        touchStart: touchStart.init(index),
+        touchStart: touchStart.init(0),
         touchEnd: touchEnd.init.bind(touchEnd),
         touchMove: touchMove.init.bind(touchMove)
       }
       initTouchListeners(params)
     })
+
+    */
+    const params: TouchListenersParams = {
+      element: this.slider,
+      index: 0,
+      touchStart: touchStart.init(0),
+      touchEnd: touchEnd.init.bind(touchEnd),
+      touchMove: touchMove.init.bind(touchMove)
+    }
+
+    initTouchListeners(params)
   }
 }

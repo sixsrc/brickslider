@@ -12,11 +12,13 @@ import { setActiveSlide } from "./setActiveSlide"
 import { setCurrentSlide } from "./setCurrentSlide"
 import { setSlideIndex } from "./setIndex"
 import { setAttributes } from "./setAttributes"
+import { shouldJumpingSlide } from "./shouldJumpingSlide"
 import { setTranslateX } from "./setTranslateX"
 import { shouldGoToNextSlide } from "./shouldGoToNextSlide"
 import { shouldGoToPrevSlide } from "./shouldGoToPrevSlide"
 import { updateDots } from "./updateDots"
 import { updateSliderFromDots } from "./updateSliderFromDots"
+import { endSlideJumpingAction } from "./endSlideJumpingAction"
 
 export {
   adjustIndex,
@@ -33,9 +35,11 @@ export {
   setCurrentSlide,
   setSlideIndex,
   setAttributes,
+  shouldJumpingSlide,
   setTranslateX,
   shouldGoToNextSlide,
   shouldGoToPrevSlide,
   updateDots,
-  updateSliderFromDots
+  updateSliderFromDots,
+  endSlideJumpingAction
 }

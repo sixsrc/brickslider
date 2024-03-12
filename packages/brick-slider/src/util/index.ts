@@ -10,6 +10,7 @@ import { listener } from "./listener"
 import { slideIndexBypass } from "./slideIndexBypass"
 import { slideNodeList } from "./slideNodeList"
 import { waitFor } from "./waitFor"
+import { mathAbs } from "./mathAbs"
 
 export {
   $,
@@ -23,5 +24,6 @@ export {
   listener,
   slideIndexBypass,
   slideNodeList,
-  waitFor
+  waitFor,
+  mathAbs
 }

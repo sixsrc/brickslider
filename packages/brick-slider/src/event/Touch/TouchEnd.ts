@@ -1,13 +1,8 @@
 import { State, State_Keys } from "../../state/BrickState"
 import { SetPosition } from "./SetPosition"
 import { AnimationFrame } from "@/event/Touch/AnimationFrame"
-import { listener, slideIndexBypass, slideNodeList } from "@/util"
-import {
-  adjustIndex,
-  shouldGoToNextSlide,
-  shouldGoToPrevSlide,
-  updateDots
-} from "@/action"
+import { listener, slideNodeList } from "@/util"
+import { shouldGoToNextSlide, shouldGoToPrevSlide } from "@/action"
 import { getChildren, setStyle } from "@/dom"
 import { EVENTS, STYLES, TRANSITIONS } from "@/util/constants"
 
@@ -27,7 +22,7 @@ export class TouchEnd {
   public init = (event: Event): void => {
     const { $root, state, setPosition } = this
 
-    //const setEvent = eventX(event as MouseEvent | TouchEvent),
+    // const setEvent = eventX(event as MouseEvent | TouchEvent),
     const $children = getChildren($root)
 
     const {
@@ -35,7 +30,6 @@ export class TouchEnd {
       isJumpSlide,
       isMouseLeave,
       numberOfSlides,
-      slidesPerPage,
       infinite: isInfinite,
       currentTranslate: updatedCurrentTranslate,
       prevTranslate: updatedPrevTranslate
@@ -45,7 +39,7 @@ export class TouchEnd {
 
     const moveSlider = updatedCurrentTranslate - updatedPrevTranslate
 
-    if (!isMouseLeave)
+    if (!isMouseLeave && !isJumpSlide)
       setStyle($children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
     if (typeof animationId === "number") cancelAnimationFrame(animationId)
@@ -57,23 +51,22 @@ export class TouchEnd {
       //state.set(State_Keys.SlideIndex, numberOfSlides - 1)
     }
 
+    if (isInfinite && currentIndex <= 1) {
+      // currentIndex = 0
+      //console.log("currentIndex", currentIndex)
+      // console.log("slideIndex", state.get(State_Keys.SlideIndex))
+    }
     shouldGoToNextSlide(moveSlider, currentIndex, slides) &&
       state.set(State_Keys.SlideIndex, (currentIndex += 1))
 
     shouldGoToPrevSlide(moveSlider, currentIndex) &&
       state.set(State_Keys.SlideIndex, (currentIndex -= 1))
 
-    console.log({ isMouseLeave, currentIndex })
-
     if (!isMouseLeave && !isJumpSlide) setPosition.init()
 
-    if (isInfinite) {
-      updateDots(slideIndexBypass(currentIndex, 6, slidesPerPage), $root)
-    }
-
-    listener(EVENTS.TRANSITIONEND, $children, () => {
+    listener(EVENTS.TRANSITIONEND, $children, () =>
       setStyle($children, STYLES.TRANSITION, "")
-    })
+    )
 
     state.setMultipleState({
       [State_Keys.isDragging]: false,
