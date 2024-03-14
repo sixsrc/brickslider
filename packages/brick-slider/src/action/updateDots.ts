@@ -12,8 +12,6 @@ export function updateDots(index: number, rootSelector: string): void {
   )
   const selectedIndex = index ?? 0
 
-  console.log("index update dots", selectedIndex)
-
   dots.forEach((dot, i) => {
     if (hasClass(dot, CLASS_VALUES.SELECTED))
       removeClass(dot, CLASS_VALUES.SELECTED)

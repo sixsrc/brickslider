@@ -11,6 +11,7 @@ import { slideIndexBypass } from "./slideIndexBypass"
 import { slideNodeList } from "./slideNodeList"
 import { waitFor } from "./waitFor"
 import { mathAbs } from "./mathAbs"
+import { arrayToClasses } from "./arrayToClasses"
 
 export {
   $,
@@ -25,5 +26,6 @@ export {
   slideIndexBypass,
   slideNodeList,
   waitFor,
-  mathAbs
+  mathAbs,
+  arrayToClasses
 }

@@ -3,8 +3,8 @@ import { State, State_Keys } from "../../state/BrickState"
 import { transform as transformSlider } from "../../transition/transform"
 import { AnimationFrame } from "./AnimationFrame"
 import { eventX, listener, getPositionX } from "@/util"
-import { shouldJumpingSlide } from "@/action"
 import { EVENTS } from "@/util/constants"
+import { shouldSkipSlide } from "@/action/shouldSkipSlide"
 
 export class TouchMove {
   $root: string
@@ -18,26 +18,28 @@ export class TouchMove {
   }
 
   public init = (event: Event): void => {
-    const { state, $root, animation } = this
-    const { isDragging, prevTranslate, startPos } = state.store
-    const setEvent = eventX(event as MouseEvent | TouchEvent)
-    const currentPosition = getPositionX(setEvent)
-    const $children = getChildren($root)
+    const { isDragging, prevTranslate, startPos } = this.state.store
+    const currentPosition = getPositionX(
+      eventX(event as MouseEvent | TouchEvent)
+    )
+    const $children = getChildren(this.$root)
     const eventsArray = [EVENTS.TOUCHEND, EVENTS.MOUSEUP, EVENTS.MOUSELEAVE]
 
     if (isDragging) {
-      listener(eventsArray, $children, () => shouldJumpingSlide($root, state))
+      listener(eventsArray, $children, () =>
+        shouldSkipSlide(this.$root, this.state)
+      )
 
-      state.setMultipleState({
+      this.state.setMultipleState({
         isTouch: true,
         currentTranslate: prevTranslate + currentPosition - startPos
       })
 
-      let currentTranslate = state.store["currentTranslate"]
+      const currentTranslate = this.state.store[State_Keys.currentTranslate]
 
-      transformSlider($root, currentTranslate)
+      transformSlider(this.$root, currentTranslate)
 
-      requestAnimationFrame(animation.init)
+      requestAnimationFrame(this.animation.init)
     }
   }
 }

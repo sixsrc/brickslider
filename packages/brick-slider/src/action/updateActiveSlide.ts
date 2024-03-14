@@ -2,7 +2,7 @@ import { addClass } from "@/dom/addClass"
 import { removeClass } from "@/dom/removeClass"
 import { CLASS_VALUES } from "@/util/constants"
 
-export function setActiveClass(
+export function updateActiveSlide(
   slides: HTMLElement[],
   slideIndex: number,
   slidesPerPage: number
@@ -15,7 +15,6 @@ export function setActiveClass(
 
   for (i; i < slidesPerPage; i++) {
     const index = slideIndex * slidesPerPage + i
-
     addClass([slides[index]], CLASS_VALUES.ACTIVE)
   }
 }

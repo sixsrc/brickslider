@@ -1,7 +1,7 @@
 import { transform as transformSlider } from "../transition/transform"
 import { setSlideIndex } from "./setIndex"
 import { State, State_Keys } from "../state/BrickState"
-import { setActiveClass } from "./setActiveClass"
+import { setActiveSlide } from "./setActiveSlide"
 import { slideNodeList } from "@/util"
 
 export enum FROM {
@@ -53,7 +53,7 @@ export function setCurrentSlide(
 
   state.set(State_Keys.SlideIndex, slideIndex)
 
-  setActiveClass(slides, slideIndex, slidesPerPage)
+  setActiveSlide(slides, slideIndex, slidesPerPage)
 
   transformSlider($root)
 

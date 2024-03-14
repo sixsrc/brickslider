@@ -1,23 +1,19 @@
-import { listener, slideNodeList, isLoop, isValidSelector } from "../util"
+import { listener, isValidSelector, arrayToClasses } from "../util"
 import { Resize } from "@/event/Resize"
-import {
-  appendSlider,
-  initSliderControls,
-  setActiveClass,
-  setActiveSlide
-} from "@/action"
+import { appendSlider, setAcessibility, setActiveSlide } from "@/action"
 import { Options } from "@/option/Options"
 import { Methods } from "./Methods"
 import { assert } from "@/error/assert"
-import { State } from "@/state/BrickState"
-import { getChildren, getChildrenCount, getSliderWidth } from "@/dom"
+import { State, StateType } from "@/state/BrickState"
 import { EVENTS } from "@/util/constants"
+import { Actions } from "./Actions"
 
 export class BrickSlider extends Methods {
-  clonedSlides: HTMLElement[] = []
-  $root: string
-  options?: Options
-  resize: Resize
+  private clonedSlides: HTMLElement[] = []
+  public $root: string
+  public options?: Options
+  private resize: Resize
+  private instances: (State | Actions)[]
 
   constructor($root: string, options?: Options) {
     super()
@@ -25,29 +21,41 @@ export class BrickSlider extends Methods {
     this.$root = $root
     this.options = { ...new Options(), ...options }
     this.resize = new Resize($root)
+    this.instances = arrayToClasses([State, Actions], this.$root, options)
   }
 
-  init(): void {
-    const { $root, options, clonedSlides, resize } = this
+  public init(): void {
+    const { options, clonedSlides, resize } = this
+    const [state, slider] = this.instances as [State, Actions]
+    const { slideIndex, slidesPerPage, infinite } = state.store as StateType
 
-    const state = new State($root, options),
-      $children = getChildren($root)
+    if (infinite) slider.setSlideActiveCloned()
 
-    const { slideIndex, slidesPerPage } = state.store
-
-    isLoop(state, () => setActiveSlide($root))
+    const [sliderWidth, numberOfSlides] = [
+      slider.getSliderWidth(),
+      slider.getChildrenCount()
+    ]
 
     state.setMultipleState({
-      sliderWidth: getSliderWidth($children),
-      numberOfSlides: getChildrenCount($children)
+      sliderWidth,
+      numberOfSlides
     })
 
-    setActiveClass(slideNodeList($root), slideIndex, slidesPerPage)
+    setActiveSlide(slider.getSlideNodeList(), slideIndex, slidesPerPage)
 
-    // listener(EVENTS.RESIZE, window, () => resize.init())
+    listener(EVENTS.RESIZE, window, () => resize.init())
 
-    appendSlider($children, clonedSlides)
+    setAcessibility(
+      this.$root,
+      slider.getChildren(),
+      numberOfSlides,
+      clonedSlides
+    )
 
-    initSliderControls($root, options)
+    appendSlider(slider.getChildren(), clonedSlides)
+
+    slider.setSliderControls(options)
   }
 }
+
+//const instances = arrayToClasses([State, Actions], this.$root, options)

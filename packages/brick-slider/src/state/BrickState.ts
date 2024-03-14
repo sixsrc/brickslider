@@ -34,7 +34,7 @@ export enum State_Keys {
   UseTailwind = "useTailwind"
 }
 
-type StateType = {
+export type StateType = {
   [key: string]: string | number | boolean | null | undefined
   [State_Keys.isLoadPage]: boolean
   [State_Keys.Counter]: number

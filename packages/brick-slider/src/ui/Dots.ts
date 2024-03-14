@@ -9,7 +9,7 @@ import { getRootSelector } from "../dom/getRootSelector"
 import { createDots, updateSliderFromDots } from "@/action"
 
 export class Dots {
-  $root: string
+  public $root: string
 
   constructor($root: string) {
     this.$root = $root

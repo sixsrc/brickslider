@@ -1,7 +1,7 @@
 import { getChildren, getSliderWidth, setStyle } from "@/dom"
 import { State } from "@/state/BrickState"
 import { slideNodeList, mathAbs, waitFor } from "@/util"
-import { setActiveClass } from "./setActiveClass"
+import { setActiveSlide } from "./setActiveSlide"
 import { transform as transformSlider } from "@/transition/transform"
 import { STYLES, TIMES } from "@/util/constants"
 import { updateDots } from "./updateDots"
@@ -22,13 +22,11 @@ export function shouldJumpingSlide($root: string, state: State) {
         currentTranslate: -(mathAbs(currentTranslate) + 2352)
       })
 
-      const newTranslate = state.store["currentTranslate"]
-
       setStyle($children, STYLES.TRANSITION, "")
 
-      setActiveClass(slideNodeList($root), 4, slidesPerPage)
+      setActiveSlide(slideNodeList($root), 4, slidesPerPage)
 
-      transformSlider($root, -newTranslate)
+      transformSlider($root, -state.store["currentTranslate"])
 
       updateDots(3, $root)
 

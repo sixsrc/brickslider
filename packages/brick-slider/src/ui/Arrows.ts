@@ -4,7 +4,7 @@ import { State, State_Keys } from "@/state/BrickState"
 import { listener, constants } from "@/util"
 
 export class Arrows {
-  $root: string
+  public $root: string
 
   constructor($root: string) {
     this.$root = $root

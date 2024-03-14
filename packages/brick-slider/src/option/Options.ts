@@ -1,4 +1,10 @@
-type typeTransition = "fade" | "slide" | "thorn" | "lines" | "halftone" | "brush"
+type typeTransition =
+  | "fade"
+  | "slide"
+  | "thorn"
+  | "lines"
+  | "halftone"
+  | "brush"
 
 export type TypeOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,17 +23,17 @@ export type TypeOptions = {
 }
 
 export class Options {
-  spacing?: number | null
-  slidesPerPage?: number | null
-  autoplay?: boolean
-  autoplaySpeed?: number
-  dots?: boolean
-  arrows?: boolean
-  touch?: boolean
-  infinite?: boolean
-  speed?: number
-  transition?: typeTransition
-  useTailwind?: boolean
+  public spacing?: number | null
+  public slidesPerPage?: number | null
+  public autoplay?: boolean
+  public autoplaySpeed?: number
+  public dots?: boolean
+  public arrows?: boolean
+  public touch?: boolean
+  public infinite?: boolean
+  public speed?: number
+  public transition?: typeTransition
+  public useTailwind?: boolean
 
   constructor(options?: TypeOptions) {
     this.autoplay = options?.autoplay ?? false

@@ -46,8 +46,8 @@ export class SetPosition {
       ? slideIndexBypass(index, 6, slidesPerPage)
       : index
 
-    matchStateOptions($root, { [State_Keys.Dots]: true }, () => {
-      updateDots(slideIndex, $root)
-    })
+    const { dots } = state.store
+
+    if (dots) updateDots(slideIndex, $root)
   }
 }
