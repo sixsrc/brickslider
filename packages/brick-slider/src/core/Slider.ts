@@ -1,63 +1,107 @@
-import { State, StateType } from "@/state"
-import { arrayToClasses, slideNodeList } from "@/util"
-import { setActiveSlide, setSlideIndex } from "@/action"
-import { State_Keys } from "@/state/BrickState"
-import { Actions } from "./Actions"
-
-export enum FROM {
-  DOTS = "dots",
-  PREV = "prev",
-  NEXT = "next",
-  TOUCH = "touch"
-}
+import { addClass } from "@/dom/addClass"
+import { getAllElements } from "@/dom/getAllElements"
+import { getDotsSelector } from "@/dom/getDotsSelector"
+import { getSlideNodeList } from "@/dom/getSlideNodeList"
+import { hasClass } from "@/dom/hasClass"
+import { removeClass } from "@/dom/removeClass"
+import { State, StateType, State_Keys } from "@/state/BrickState"
+import { transform as transformSlider } from "@/transition/transform"
+import { CLASS_VALUES, TAGS } from "@/util/constants"
+import { setActiveClass } from "@/util/setActiveClass"
 
 export type SetCurrentSlideType = {
-  from?: FROM.DOTS | FROM.PREV | FROM.NEXT | FROM.TOUCH
+  from?: "dots" | "prev" | "next" | "touch"
   index?: number
   $root: string | ""
 }
 
 export class Slider {
-  private $root: string
+  private state: State
+  private store: StateType
 
-  constructor($root: string) {
+  constructor(private $root: string) {
     this.$root = $root
+    this.store = State.store(this.$root)
+    this.state = new State(this.$root)
   }
 
-  public setCurrentSlide(params: SetCurrentSlideType): void {
-    const { index, from } = params
-    const instances = arrayToClasses([State, Actions], this.$root)
-    const [state, slider] = instances as [State, Actions]
-    const {
-      slideIndex: currentSlideIndex,
-      infinite,
-      numberOfSlides,
-      slidesPerPage
-    } = state.store as StateType
-    const slides = slideNodeList(this.$root)
+  public setCurrentSlide(
+    params: {
+      from?: "next" | "prev" | "next" | "touch"
+      index?: number
+      $root: string
+    } = {
+      $root: ""
+    }
+  ): void {
+    const { index, from } = params!
 
-    let slideIndex = setSlideIndex({
+    const currentSlideIndex = this.state.get(State_Keys.SlideIndex)
+    const { infinite, numberOfSlides } = this.store
+
+    let currentIndex = this.updateIndex({
       from: from!,
       currentSlideIndex,
       index
     })
 
-    if (
-      (!infinite && slideIndex > numberOfSlides - 1) ||
-      (!infinite && slideIndex < 0)
+    if (!infinite && currentIndex > numberOfSlides - 1) return
+    if (!infinite && currentIndex < 0) return
+    if (currentIndex > currentIndex + 1) currentIndex = currentIndex - 1
+    if (currentIndex < 0) currentIndex = currentIndex + 1
+
+    this.state.seti({ [State_Keys.SlideIndex]: currentIndex })
+
+    setActiveClass(
+      getSlideNodeList(this.$root),
+      currentIndex,
+      this.store[State_Keys.SlidesPerPage]
     )
-      return
 
-    if (slideIndex > numberOfSlides + 1) slideIndex = slideIndex - 1
-    if (slideIndex < 0) slideIndex = slideIndex + 1
+    transformSlider(this.$root)
+  }
 
-    state.set(State_Keys.SlideIndex, slideIndex)
+  private updateIndex(params: {
+    from: string
+    currentSlideIndex: number
+    index?: number
+  }) {
+    const { from, currentSlideIndex, index } = params
 
-    setActiveSlide(slides, slideIndex, slidesPerPage)
+    switch (from) {
+      case "next":
+        return currentSlideIndex + 1
+      case "prev":
+        return currentSlideIndex - 1
+      case "dots":
+      case "touch":
+        return index ?? currentSlideIndex
+      default:
+        return currentSlideIndex
+    }
+  }
 
-    slider.setTransform()
+  public updateDots(index: number, $root: string): void {
+    const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
+    const selectedIndex = index ?? 0
+
+    dots.forEach((dot, i) => {
+      if (hasClass(dot, CLASS_VALUES.SELECTED))
+        removeClass(dot, CLASS_VALUES.SELECTED)
+
+      if (i === selectedIndex) addClass([dot], CLASS_VALUES.SELECTED)
+    })
   }
 }
+
+/*IMPORTANTE REALOCAR ISSO DEPOIS
+
+ if (!infinite && currentIndex > numberOfSlides - 1) return
+    if (!infinite && currentIndex < 0) return
+    if (currentIndex > currentIndex + 1) currentIndex = currentIndex - 1
+    if (currentIndex < 0) currentIndex = currentIndex + 1/*
+
+
 
 //const isClonedSlide = slideIndex === numberOfSlides - 1 || slideIndex <= 0
 /* if (isClonedSlide) {
@@ -65,3 +109,10 @@ export class Slider {
 
 //if (isInfinite && slidesPerPage <= 1) {
 //}
+
+/*  const {
+  slideIndex: currentSlideIndex,
+  infinite,
+  numberOfSlides,
+  slidesPerPage
+} = this.state.store as StateType*/

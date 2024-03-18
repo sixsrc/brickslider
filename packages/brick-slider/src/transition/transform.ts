@@ -1,11 +1,11 @@
-import { setTranslateX } from "@/action"
-import { getChildren, setTransform } from "@/dom"
+import { getChildren } from "@/dom/getChildren"
+import { setTransform } from "@/dom/setTransform"
+import { setTranslateX } from "@/util"
 
-export function transform($root: string, currentTranslateFixedValue?: number) {
+export function transform($root: string, currentTranslateFixed?: number) {
   const slider = getChildren($root)
 
-  const setTranslateXCallback = () =>
-    setTranslateX($root, currentTranslateFixedValue!)
+  const callback = () => setTranslateX($root, currentTranslateFixed!)
 
-  setTransform(slider, setTranslateXCallback)
+  setTransform(slider, callback)
 }

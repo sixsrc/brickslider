@@ -1,4 +1,4 @@
-export function slideIndexBypass(
+export function setIndexBypass(
   displayedIndex: number,
   numberOfSlides: number,
   slidesPerPage: number
@@ -11,12 +11,12 @@ export function slideIndexBypass(
     displayedIndex < 0
       ? numberOfSlides - 1
       : displayedIndex >= numberOfSlides
-      ? displayedIndex
-      : displayedIndex === numberOfSlides - 1
-      ? 0
-      : displayedIndex === 0
-      ? numberOfSlides - 3
-      : displayedIndex - 1
+        ? displayedIndex
+        : displayedIndex === numberOfSlides - 1
+          ? 0
+          : displayedIndex === 0
+            ? numberOfSlides - 3
+            : displayedIndex - 1
 
   return indexBypass
 }

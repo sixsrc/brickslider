@@ -1,28 +1,26 @@
 /* eslint-disable no-prototype-builtins */
 
-import { TypeOptions } from "@/option/Options"
-
 export enum State_Keys {
-  isLoadPage = "isLoadPage",
+  IsLoadPage = "isLoadPage",
   Counter = "counter",
   Seconds = "seconds",
   SlideIndex = "slideIndex",
-  SlideSpacing = "slideSpacing",
+  SlideSpacing = "spacing",
   SlidesPerPage = "slidesPerPage",
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   SliderReady = "sliderReady",
-  isStopSlider = "isStopSlider",
-  isTouch = "isTouch",
+  IsStopSlider = "isStopSlider",
+  IsTouch = "isTouch",
   isDragging = "isDragging",
   IsJumpSlide = "isJumpSlide",
-  startPos = "startPos",
-  prevTranslate = "prevTranslate",
-  currentTranslate = "currentTranslate",
+  StartPos = "startPos",
+  PrevTranslate = "prevTranslate",
+  CurrentTranslate = "currentTranslate",
   StartTime = "startTime",
   EndTime = "endTime",
   IsMouseLeave = "isMouseLeave",
-  animationID = "animationID",
+  AnimationID = "animationID",
   Autoplay = "autoplay",
   AutoplaySpeed = "autoplaySpeed",
   Dots = "dots",
@@ -36,7 +34,7 @@ export enum State_Keys {
 
 export type StateType = {
   [key: string]: string | number | boolean | null | undefined
-  [State_Keys.isLoadPage]: boolean
+  [State_Keys.IsLoadPage]: boolean
   [State_Keys.Counter]: number
   [State_Keys.Seconds]: number
   [State_Keys.SlideIndex]: number
@@ -45,17 +43,17 @@ export type StateType = {
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
   [State_Keys.SliderReady]: boolean
-  [State_Keys.isStopSlider]: boolean
-  [State_Keys.isTouch]: boolean
+  [State_Keys.IsStopSlider]: boolean
+  [State_Keys.IsTouch]: boolean
   [State_Keys.isDragging]: boolean
   [State_Keys.IsJumpSlide]: boolean
-  [State_Keys.startPos]: number
-  [State_Keys.prevTranslate]: number
-  [State_Keys.currentTranslate]: number
+  [State_Keys.StartPos]: number
+  [State_Keys.PrevTranslate]: number
+  [State_Keys.CurrentTranslate]: number
   [State_Keys.StartTime]: number
   [State_Keys.EndTime]: number
   [State_Keys.IsMouseLeave]: boolean
-  [State_Keys.animationID]: number
+  [State_Keys.AnimationID]: number
   [State_Keys.Autoplay]: boolean
   [State_Keys.AutoplaySpeed]: number
   [State_Keys.Dots]: boolean
@@ -67,20 +65,35 @@ export type StateType = {
   [State_Keys.UseTailwind]: boolean
 }
 
+export type TypeOptions = Partial<{
+  [State_Keys.SlideSpacing]: number
+  [State_Keys.SlidesPerPage]: number
+  [State_Keys.Autoplay]: boolean
+  [State_Keys.AutoplaySpeed]: number
+  [State_Keys.Dots]: boolean
+  [State_Keys.Arrows]: boolean
+  [State_Keys.Touch]: boolean
+  [State_Keys.Infinite]: boolean
+  [State_Keys.Speed]: number
+  [State_Keys.Transition]: string
+  [State_Keys.UseTailwind]: boolean
+}>
+
 class BrickState {
   static state: { [key: string]: StateType } = {}
-  private key: string
+  public key: string
 
-  constructor(key: string, options: TypeOptions = {}) {
+  constructor(key: string, options?: Partial<TypeOptions>) {
     this.key = key
+
     if (!BrickState.state[key]) {
       BrickState.state[key] = {} as StateType
-      this.initializeState(options)
+      options && this.initializeState(options)
     }
   }
 
-  private initializeState(options: TypeOptions) {
-    BrickState.state[this.key][State_Keys.isLoadPage] = false
+  private initializeState(options: TypeOptions): void {
+    BrickState.state[this.key][State_Keys.IsLoadPage] = false
     BrickState.state[this.key][State_Keys.Counter] = 0
     BrickState.state[this.key][State_Keys.Seconds] = 0
     BrickState.state[this.key][State_Keys.SlideIndex] = 0
@@ -90,17 +103,17 @@ class BrickState {
     BrickState.state[this.key][State_Keys.NumberOfSlides] = 0
     BrickState.state[this.key][State_Keys.SliderWidth] = 0
     BrickState.state[this.key][State_Keys.SliderReady] = true
-    BrickState.state[this.key][State_Keys.isStopSlider] = false
-    BrickState.state[this.key][State_Keys.isTouch] = false
+    BrickState.state[this.key][State_Keys.IsStopSlider] = false
+    BrickState.state[this.key][State_Keys.IsTouch] = false
     BrickState.state[this.key][State_Keys.isDragging] = false
     BrickState.state[this.key][State_Keys.IsJumpSlide] = false
-    BrickState.state[this.key][State_Keys.startPos] = 0
-    BrickState.state[this.key][State_Keys.prevTranslate] = 0
-    BrickState.state[this.key][State_Keys.currentTranslate] = 0
+    BrickState.state[this.key][State_Keys.StartPos] = 0
+    BrickState.state[this.key][State_Keys.PrevTranslate] = 0
+    BrickState.state[this.key][State_Keys.CurrentTranslate] = 0
     BrickState.state[this.key][State_Keys.StartTime] = 0
     BrickState.state[this.key][State_Keys.EndTime] = 0
     BrickState.state[this.key][State_Keys.IsMouseLeave] = true
-    BrickState.state[this.key][State_Keys.animationID] = 0
+    BrickState.state[this.key][State_Keys.AnimationID] = 0
     BrickState.state[this.key][State_Keys.Autoplay] = options.autoplay ?? false
     BrickState.state[this.key][State_Keys.AutoplaySpeed] =
       options.autoplaySpeed ?? 3000
@@ -113,18 +126,26 @@ class BrickState {
       options.transition ?? "slide"
     BrickState.state[this.key][State_Keys.UseTailwind] =
       options.useTailwind ?? true
+  }
 
-    if (options.sliderOptions) {
-      for (const key in options.sliderOptions) {
-        if (options.sliderOptions.hasOwnProperty(key)) {
-          BrickState.state[this.key][key] = options.sliderOptions[key]
-        }
-      }
-    }
+  setOptions(options: TypeOptions): void {
+    this.initializeState(options)
   }
 
   get<K extends keyof StateType>(prop: K): StateType[K] {
     return BrickState.state[this.key][prop] ?? ""
+  }
+
+  public static store<K extends keyof StateType>(key: K): StateType {
+    return BrickState.state[key]
+  }
+
+  seti(props: { [key in keyof StateType]?: StateType[key] }): void {
+    for (const key in props) {
+      if (props.hasOwnProperty(key)) {
+        BrickState.state[this.key][key] = props[key]!
+      }
+    }
   }
 
   get store(): StateType {
@@ -133,10 +154,6 @@ class BrickState {
 
   set<K extends keyof StateType>(prop: K, value: StateType[K]): void {
     BrickState.state[this.key][prop] = value
-  }
-
-  setOptions(options: TypeOptions): void {
-    this.initializeState(options)
   }
 
   setMultipleState(props: { [key in keyof StateType]?: StateType[key] }): void {

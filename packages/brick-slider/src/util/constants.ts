@@ -1,5 +1,6 @@
 export const DOM_ELEMENTS = {
   CHILDREN_SELECTOR: ".slider__container",
+  TRACK_SELECTOR: ".slider__track",
   DOTS_SELECTOR: ".slider__dots ",
   NEXT_BUTTON: "next-button",
   PREV_BUTTON: "prev-button",
@@ -17,10 +18,12 @@ export const TAGS = {
   DIV: "div"
 }
 
-export const PROPERTYS_VALUES = {
-  VISIBLE: "visible",
-  HIDDEN: "hidden"
-}
+export const FROM = {
+  DOTS: "dots",
+  PREV: "prev",
+  NEXT: "next",
+  TOUCH: "touch"
+} as const
 
 export const CLASS_VALUES = {
   ACTIVE: "active",
@@ -36,14 +39,10 @@ export const ATTRIBUTES = {
   DIRECTION: "data-direction"
 }
 
-export const PROPERTYS = {
-  VISIBILITY: "visibility"
+export const TIMES = {
+  DEFAULT_TRANSITION_TIME: 400
 }
 
-export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 400,
-  WITHOUT_TIMER: 0
-}
 export const TRANSITIONS = {
   TRANSFORM_EASE: `transform ${TIMES.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
 }
@@ -61,11 +60,3 @@ export const EVENTS = {
   TRANSITIONSTART: "transitionstart",
   TRANSITIONEND: "transitionend"
 }
-
-export const TOUCH_LIMIT = 100
-
-export const dotsSelector = DOM_ELEMENTS.DOTS_SELECTOR
-
-export const childrenSelector = DOM_ELEMENTS.CHILDREN_SELECTOR
-
-export const trackSelector = ".slider__track"

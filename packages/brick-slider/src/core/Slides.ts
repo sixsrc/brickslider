@@ -1,63 +1,72 @@
-import { addClass } from "@/dom"
-import { State, StateType } from "@/state"
-import { arrayToClasses, calcTranslate } from "@/util"
-import { Actions } from "./Actions"
+import { addClass } from "@/dom/addClass"
+import { getChildren } from "@/dom/getChildren"
+import { getSlideNodeList } from "@/dom/getSlideNodeList"
+import { State, StateType, State_Keys } from "@/state/BrickState"
+import { transform as transformSlider } from "@/transition/transform"
+import { calcTranslate } from "@/util/calcTranslate"
 import { CLASS_VALUES } from "@/util/constants"
 
 export class Slides {
-  private $children: HTMLElement | null
+  private $children: HTMLElement
   private slides: HTMLElement[] | null
+  private clonedSlides: any[]
+  private state: State
+  public store: StateType
 
   constructor(private $root: string) {
-    this.$children = null
-    this.slides = []
+    this.$root = $root
+    this.$children = getChildren(this.$root)
+    this.slides = getSlideNodeList(this.$root)
+    this.clonedSlides = []
+    this.state = new State(this.$root)
+    this.store = State.store(this.$root)
   }
 
   public cloneSlides(): void {
-    const instances = arrayToClasses([State, Actions], this.$root)
-    const [state, slider] = instances as [State, Actions]
-    const { currentTranslate, slideSpacing, slidesPerPage } =
-      state.store as StateType
-    const newIndex = currentTranslate + 1
+    const { spacing } = this.store
 
-    this.slides = slider.getSlideNodeList()
-    this.$children = slider.getChildren()
+    this.duplicateSlides(this.state.store[State_Keys.SlidesPerPage])
 
-    this.duplicateSlides(slidesPerPage)
+    const newIndex = this.state.store[State_Keys.SlideIndex] + 1
+    const translate = calcTranslate(this.$children, spacing, newIndex)
 
-    const translate = calcTranslate(this.$children, slideSpacing, newIndex)
-
-    slider.setTransform(translate)
-
-    state.setMultipleState({
-      currentTranslate: translate,
-      prevTranslate: translate,
-      slideIndex: newIndex
+    this.state.seti({
+      [State_Keys.CurrentTranslate]: translate,
+      [State_Keys.PrevTranslate]: translate,
+      [State_Keys.SlideIndex]: newIndex
     })
+
+    transformSlider(this.$root, translate)
   }
 
   private duplicateSlides(slidesPerPage: number) {
-    const slideCount = this.slides!.length
-    const clonedSlides: Node | (HTMLElement | Element)[] | null = []
+    const sliderCount = this.slides!.length
 
-    if (slideCount < slidesPerPage) return
+    if (sliderCount < slidesPerPage) return
 
-    slidesPerPage = Math.min(slidesPerPage, slideCount)
+    slidesPerPage = Math.min(slidesPerPage, sliderCount)
 
-    for (let i = 0; i < slidesPerPage; i++) {
-      const cloneFirst = this.slides![i].cloneNode(true) as HTMLElement
+    this.loopByClonedSlides(slidesPerPage, sliderCount)
+  }
 
-      clonedSlides.push(cloneFirst)
-      this.$children!.appendChild(cloneFirst)
+  private loopByClonedSlides(slidesPerPage: number, slideCount: number): void {
+    const endIndices = [...Array(slidesPerPage).keys()]
+    const startIndices = [...Array(slidesPerPage).keys()]
+      .map(i => slideCount - i - 1)
+      .reverse()
+
+    for (const indices of [endIndices, startIndices]) {
+      for (const index of indices) {
+        const clone = this.slides![index].cloneNode(true) as HTMLElement
+
+        this.clonedSlides.push(clone)
+
+        addClass(this.clonedSlides, CLASS_VALUES.CLONED)
+
+        index < slidesPerPage
+          ? this.$children.appendChild(clone)
+          : this.$children.insertBefore(clone, this.slides![0])
+      }
     }
-
-    for (let i = slideCount - slidesPerPage; i < slideCount; i++) {
-      const cloneLast = this.slides![i].cloneNode(true) as HTMLElement
-
-      clonedSlides.push(cloneLast)
-      this.$children!.insertBefore(cloneLast, this.slides![0])
-    }
-
-    addClass(clonedSlides, CLASS_VALUES.CLONED)
   }
 }

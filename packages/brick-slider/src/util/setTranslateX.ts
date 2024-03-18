@@ -1,6 +1,6 @@
 import { getChildren } from "@/dom/getChildren"
 import { State, State_Keys } from "../state/BrickState"
-import { calcTranslate } from "@/util"
+import { calcTranslate } from "./calcTranslate"
 
 export function setTranslateX(
   $root: string,
@@ -10,15 +10,15 @@ export function setTranslateX(
 
   const $children = getChildren($root)
 
-  const { slideIndex, slideSpacing } = state.store
+  const { slideIndex, spacing } = state.store
 
-  const translate = calcTranslate($children, slideSpacing, slideIndex),
+  const translate = calcTranslate($children, spacing, slideIndex),
     translateFixedValue = currentTranslateFixedValue!
 
   !currentTranslateFixedValue &&
     state.setMultipleState({
-      [State_Keys.prevTranslate]: translate,
-      [State_Keys.currentTranslate]: translate
+      [State_Keys.PrevTranslate]: translate,
+      [State_Keys.CurrentTranslate]: translate
     })
 
   return translateFixedValue ? translateFixedValue : translate

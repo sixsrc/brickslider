@@ -1,6 +1,6 @@
-import { $ } from "../util"
-import { childrenSelector } from "../util/constants"
+import { $ } from "@/util/$"
+import { DOM_ELEMENTS } from "@/util/constants"
 
 export function getChildren(rootSelector: string): HTMLElement {
-  return $(`${rootSelector} ${childrenSelector}`)
+  return $(`${rootSelector} ${DOM_ELEMENTS.CHILDREN_SELECTOR}`)
 }
