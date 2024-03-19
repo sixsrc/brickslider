@@ -4,85 +4,50 @@ import { getDotsSelector } from "@/dom/getDotsSelector"
 import { getSlideNodeList } from "@/dom/getSlideNodeList"
 import { hasClass } from "@/dom/hasClass"
 import { removeClass } from "@/dom/removeClass"
-import { State, StateType, State_Keys } from "@/state/BrickState"
 import { transform as transformSlider } from "@/transition/transform"
 import { CLASS_VALUES, TAGS } from "@/util/constants"
-import { setActiveClass } from "@/util/setActiveClass"
+import { toggleActiveClass } from "@/util/toggleActiveClass"
+import { Base } from "./Base"
+import { State_Keys } from "@/state/BrickState"
+import { isNotMapped } from "@/util/isNotMapped"
+import { indexBasedBy } from "@/util/indexBasedBy"
 
-export type SetCurrentSlideType = {
-  from?: "dots" | "prev" | "next" | "touch"
-  index?: number
-  $root: string | ""
+type TypeTargetSlideParams = {
+  from?: "next" | "prev" | "next" | "touch"
+  touchIndex?: number
+  $root: string
 }
 
-export class Slider {
-  private state: State
-  private store: StateType
-
-  constructor(private $root: string) {
-    this.$root = $root
-    this.store = State.store(this.$root)
-    this.state = new State(this.$root)
+export class Slider extends Base {
+  constructor($root: string) {
+    super($root)
   }
 
-  public setCurrentSlide(
-    params: {
-      from?: "next" | "prev" | "next" | "touch"
-      index?: number
-      $root: string
-    } = {
-      $root: ""
-    }
-  ): void {
-    const { index, from } = params!
+  public setTargetSlide(params: TypeTargetSlideParams = { $root: "" }): void {
+    const { touchIndex, from } = params!
 
-    const currentSlideIndex = this.state.get(State_Keys.SlideIndex)
-    const { infinite, numberOfSlides } = this.store
+    const { infinite, numberOfSlides, slideIndex, slidesPerPage } = this.store
 
-    let currentIndex = this.updateIndex({
+    const updateIndexObj = {
       from: from!,
-      currentSlideIndex,
-      index
-    })
+      slideIndex,
+      touchIndex
+    }
 
-    if (!infinite && currentIndex > numberOfSlides - 1) return
-    if (!infinite && currentIndex < 0) return
-    if (currentIndex > currentIndex + 1) currentIndex = currentIndex - 1
-    if (currentIndex < 0) currentIndex = currentIndex + 1
+    let currentIndex = indexBasedBy(updateIndexObj)
 
-    this.state.seti({ [State_Keys.SlideIndex]: currentIndex })
+    if (!isNotMapped(infinite, currentIndex, numberOfSlides)) return
 
-    setActiveClass(
-      getSlideNodeList(this.$root),
-      currentIndex,
-      this.store[State_Keys.SlidesPerPage]
-    )
+    this.state.set({ [State_Keys.SlideIndex]: currentIndex })
+
+    toggleActiveClass(getSlideNodeList(this.$root), currentIndex, slidesPerPage)
 
     transformSlider(this.$root)
   }
 
-  private updateIndex(params: {
-    from: string
-    currentSlideIndex: number
-    index?: number
-  }) {
-    const { from, currentSlideIndex, index } = params
-
-    switch (from) {
-      case "next":
-        return currentSlideIndex + 1
-      case "prev":
-        return currentSlideIndex - 1
-      case "dots":
-      case "touch":
-        return index ?? currentSlideIndex
-      default:
-        return currentSlideIndex
-    }
-  }
-
-  public updateDots(index: number, $root: string): void {
+  public static updateDots(index: number, $root: string): void {
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
+
     const selectedIndex = index ?? 0
 
     dots.forEach((dot, i) => {
@@ -93,26 +58,3 @@ export class Slider {
     })
   }
 }
-
-/*IMPORTANTE REALOCAR ISSO DEPOIS
-
- if (!infinite && currentIndex > numberOfSlides - 1) return
-    if (!infinite && currentIndex < 0) return
-    if (currentIndex > currentIndex + 1) currentIndex = currentIndex - 1
-    if (currentIndex < 0) currentIndex = currentIndex + 1/*
-
-
-
-//const isClonedSlide = slideIndex === numberOfSlides - 1 || slideIndex <= 0
-/* if (isClonedSlide) {
-  }*/
-
-//if (isInfinite && slidesPerPage <= 1) {
-//}
-
-/*  const {
-  slideIndex: currentSlideIndex,
-  infinite,
-  numberOfSlides,
-  slidesPerPage
-} = this.state.store as StateType*/

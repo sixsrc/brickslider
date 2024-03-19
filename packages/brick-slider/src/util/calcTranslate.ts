@@ -5,9 +5,9 @@ export function calcTranslate(
   slideSpacing: number,
   slidePosition: number
 ): number {
-  const marginDiference = slidePosition * slideSpacing,
-    sliderWidth = getSliderWidth($children),
-    translate = -(sliderWidth * slidePosition + marginDiference)
+  const marginDiference = slidePosition * slideSpacing
+  const sliderWidth = getSliderWidth($children)
+  const translate = -(sliderWidth * slidePosition + marginDiference)
 
   return translate
 }

@@ -132,31 +132,11 @@ class BrickState {
     this.initializeState(options)
   }
 
-  get<K extends keyof StateType>(prop: K): StateType[K] {
-    return BrickState.state[this.key][prop] ?? ""
-  }
-
   public static store<K extends keyof StateType>(key: K): StateType {
     return BrickState.state[key]
   }
 
-  seti(props: { [key in keyof StateType]?: StateType[key] }): void {
-    for (const key in props) {
-      if (props.hasOwnProperty(key)) {
-        BrickState.state[this.key][key] = props[key]!
-      }
-    }
-  }
-
-  get store(): StateType {
-    return BrickState.state[this.key]
-  }
-
-  set<K extends keyof StateType>(prop: K, value: StateType[K]): void {
-    BrickState.state[this.key][prop] = value
-  }
-
-  setMultipleState(props: { [key in keyof StateType]?: StateType[key] }): void {
+  set(props: { [key in keyof StateType]?: StateType[key] }): void {
     for (const key in props) {
       if (props.hasOwnProperty(key)) {
         BrickState.state[this.key][key] = props[key]!

@@ -1,11 +1,10 @@
-import { State } from "@/state/BrickState"
 import { TouchEnd } from "./TouchEnd"
 import { TouchMove } from "./TouchMove"
 import { TouchStart } from "./TouchStart"
 import { EVENTS } from "@/util/constants"
 import { getTrackChildren } from "@/dom/getTrackChildren"
 import { listener } from "@/util/listener"
-import { getSlideNodeList } from "@/dom/getSlideNodeList"
+import { Base } from "@/core/Base"
 
 type TouchListenersParams = {
   element: HTMLElement
@@ -15,19 +14,15 @@ type TouchListenersParams = {
   touchMove: EventListener
 }
 
-export class Touch {
-  public $root: string
+export class Touch extends Base {
   private slider: HTMLElement
-
-  touchStart: TouchStart
-  touchEnd: TouchEnd
-  touchMove: TouchMove
+  private touchStart: TouchStart
+  private touchEnd: TouchEnd
+  private touchMove: TouchMove
 
   constructor($root: string) {
-    this.$root = $root
+    super($root)
     this.slider = getTrackChildren($root)
-    this.slides = getSlideNodeList(this.$root)
-    this.state = new State(this.$root)
     this.touchStart = new TouchStart(this.$root)
     this.touchEnd = new TouchEnd(this.$root)
     this.touchMove = new TouchMove(this.$root)

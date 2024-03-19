@@ -1,4 +1,4 @@
-export function calcSlideWidth(
+export function calcSliderWidth(
   slidesPerPage: number,
   spacing: number,
   sliderWidth: number

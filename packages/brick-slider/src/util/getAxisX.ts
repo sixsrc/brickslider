@@ -1,4 +1,4 @@
-export function getPositionX(event: MouseEvent | TouchEvent): number {
+export function getAxisX(event: MouseEvent | TouchEvent): number {
   if (event.type.includes("mouse")) {
     return (event as MouseEvent).pageX
   } else if (

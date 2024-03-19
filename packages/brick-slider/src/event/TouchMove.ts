@@ -1,45 +1,41 @@
 import { EVENTS, STYLES, TRANSITIONS } from "@/util/constants"
 import { AnimationFrame } from "./AnimationFrame"
-import { getPositionX } from "@/util/getPositionX"
-import { getChildren } from "@/dom/getChildren"
+import { getAxisX } from "@/util/getAxisX"
 import { eventX } from "@/util/eventX"
 import { listener } from "@/util/listener"
 import { transform as transformSlider } from "@/transition/transform"
-import { State, StateType, State_Keys } from "@/state/BrickState"
+import { State_Keys } from "@/state/BrickState"
 import { waitFor } from "@/util/waitFor"
 import { setStyle } from "@/dom/setStyle"
 import { getSlideNodeList } from "@/dom/getSlideNodeList"
 import { stateUpdates } from "./constants"
-import { setActiveClass } from "@/util/setActiveClass"
+import { toggleActiveClass } from "@/util/toggleActiveClass"
 import { Slider } from "@/core/Slider"
+import { Base } from "@/core/Base"
 
-export class TouchMove {
-  public $root: string
-  private $children: HTMLElement
+export class TouchMove extends Base {
   private slider: Slider
-  private state: State
-  private store: StateType
   private animation: AnimationFrame
 
   constructor($root: string) {
-    this.$root = $root
-    this.$children = getChildren(this.$root)
+    super($root)
     this.slider = new Slider(this.$root)
-    this.state = new State(this.$root)
-    this.store = State.store(this.$root)
     this.animation = new AnimationFrame(this.$root)
   }
 
   public init = (event: Event): void => {
     const { isDragging } = this.store
 
+    console.log("root", this.$root)
+
     if (isDragging) {
       this.handleEvents()
-      this.handleTouchMove()
+      this.setState(event)
+      this.updateDOM()
     }
   }
 
-  private handleEvents(): void {
+  protected handleEvents(): void {
     const eventsArray = [EVENTS.TOUCHEND, EVENTS.MOUSEUP, EVENTS.MOUSELEAVE]
 
     listener(eventsArray, this.$children, () => {
@@ -47,19 +43,17 @@ export class TouchMove {
     })
   }
 
-  private handleTouchMove(): void {
+  protected setState(event: Event) {
+    const currentPosition = getAxisX(eventX(event as MouseEvent | TouchEvent))
     const { prevTranslate, startPos } = this.store
-
-    const currentPosition = getPositionX(
-      eventX(event as MouseEvent | TouchEvent)
-    )
-
-    this.state.seti({
+    this.state.set({
       [State_Keys.IsTouch]: true,
       [State_Keys.CurrentTranslate]: prevTranslate + currentPosition - startPos
     })
+  }
 
-    const currentTranslate = this.state.store[State_Keys.CurrentTranslate]
+  protected updateDOM() {
+    const currentTranslate = this.store[State_Keys.CurrentTranslate]
 
     transformSlider(this.$root, currentTranslate)
 
@@ -82,15 +76,15 @@ export class TouchMove {
     const stateObj = stateUpdates(numberOfSlides, currentTranslate)
 
     if (index < stateObj.length) {
-      this.state.seti(stateObj[index])
+      this.state.set(stateObj[index])
 
-      setActiveClass(
+      toggleActiveClass(
         getSlideNodeList(this.$root),
         numberOfSlides,
         slidesPerPage
       )
 
-      this.slider.updateDots(numberOfSlides - 1, this.$root)
+      Slider.updateDots(numberOfSlides - 1, this.$root)
 
       if (index === stateObj.length - 1) {
         setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
@@ -103,10 +97,5 @@ export class TouchMove {
   }
 }
 
-/*
-else {
-        waitFor(TIMES.WITHOUT_TIMER, () => this.executeNextUpdate(index + 1))
-      }
-*/
 //const direction = currentPosition - startPos > 0 ? "right" : "left"
 //console.log("Direction:", direction)

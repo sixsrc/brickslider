@@ -60,7 +60,7 @@ export class Dots {
   }
 
   private createDots(): void {
-    const numberOfSlides = this.state.get(State_Keys.NumberOfSlides)
+    const numberOfSlides = this.store[State_Keys.NumberOfSlides]
 
     for (let i = 0; i < numberOfSlides; i++) {
       const liDots = createNewElement(TAGS.LI)
@@ -75,34 +75,35 @@ export class Dots {
 
   private setSliderCount(): void {
     const { slidesPerPage, infinite } = this.store
+
     const sliderCount = getChildrenCount(this.$children)
 
     if (infinite && slidesPerPage <= 1) {
-      this.state.set(State_Keys.NumberOfSlides, sliderCount - 2)
+      this.state.set({ [State_Keys.NumberOfSlides]: sliderCount - 2 })
     } else if (infinite && slidesPerPage > 1) {
-      this.state.set(
-        State_Keys.NumberOfSlides,
-        Math.ceil(sliderCount / slidesPerPage) - slidesPerPage
-      )
+      this.state.set({
+        [State_Keys.NumberOfSlides]:
+          Math.ceil(sliderCount / slidesPerPage) - slidesPerPage
+      })
     } else if (!infinite && slidesPerPage > 1) {
-      this.state.set(
-        State_Keys.NumberOfSlides,
-        Math.ceil(sliderCount / slidesPerPage)
-      )
+      this.state.set({
+        [State_Keys.NumberOfSlides]: Math.ceil(sliderCount / slidesPerPage)
+      })
     }
   }
 
   private dotHandler($root: string): void {
-    let index = this.state.store[State_Keys.SlideIndex]
+    let index = this.store[State_Keys.SlideIndex]
 
-    this.slider.updateDots(index, $root)
+    Slider.updateDots(index, $root)
 
     setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
     const from = "dots"
-    const isInfinite = this.state.store[State_Keys.Infinite]
 
-    this.slider.setCurrentSlide({
+    const isInfinite = this.store[State_Keys.Infinite]
+
+    this.slider.setTargetSlide({
       from,
       index: isInfinite ? ++index : index,
       $root
@@ -111,7 +112,7 @@ export class Dots {
 
   private handleClick(dot: HTMLElement, index: number): void {
     listener(EVENTS.CLICK, dot, () => {
-      this.state.set(State_Keys.SlideIndex, index)
+      this.state.set({ [State_Keys.SlideIndex]: index })
 
       this.dotHandler(this.$root)
     })

@@ -2,7 +2,7 @@ import { addClass } from "@/dom/addClass"
 import { removeClass } from "@/dom/removeClass"
 import { CLASS_VALUES } from "@/util/constants"
 
-export function setActiveClass(
+export function toggleActiveClass(
   slides: HTMLElement[],
   slideIndex: number,
   slidesPerPage: number

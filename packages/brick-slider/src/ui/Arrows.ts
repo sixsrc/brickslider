@@ -45,7 +45,7 @@ export class Arrows {
 
     buttons.forEach(button => {
       listener(EVENTS.CLICK, button, () => {
-        this.state.set(State_Keys.StartTime, Date.now())
+        this.state.set({ [State_Keys.StartTime]: Date.now() })
 
         this.arrowHandler(button, this.$root)()
       })
@@ -77,7 +77,7 @@ export class Arrows {
     selector: string
   ): HTMLElement[] {
     const $root = getRootSelector(selector)
-    getRootSelector
+
     buttons.forEach(button => {
       prependChild($root, button)
     })
@@ -93,36 +93,36 @@ export class Arrows {
 
       setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
-      this.state.set(State_Keys.SliderReady, false)
+      this.state.set({ [State_Keys.SliderReady]: false })
 
-      this.slider.setCurrentSlide({
+      this.slider.setTargetSlide({
         from: getAttribute === "prev" ? "prev" : "next",
         $root
       })
 
-      const { slideIndex, slidesPerPage, infinite, dots } = this.state.store
+      const { slideIndex, slidesPerPage, infinite, dots } = this.store
 
       const index = infinite
         ? setIndexBypass(slideIndex, this.getChildrenCount, slidesPerPage)
         : slideIndex
 
-      if (dots) this.slider.updateDots(index, $root)
+      if (dots) Slider.updateDots(index, $root)
 
       this.handleTransitionEnd(index)
     }
   }
 
   private handleMouseLeave(): void {
-    listener([EVENTS.MOUSELEAVE], this.$children, () =>
+    listener([EVENTS.MOUSELEAVE], this.$children, () => {
       setStyle(this.$children, STYLES.TRANSITION, "")
-    )
+    })
   }
 
   private handleTransitionEnd(index: number): void {
     listener([EVENTS.TRANSITIONEND], this.$children, () => {
-      this.state.set(State_Keys.EndTime, Date.now())
+      this.state.set({ [State_Keys.EndTime]: Date.now() })
 
-      const { infinite, numberOfSlides, startTime, endTime } = this.state.store
+      const { infinite, numberOfSlides, startTime, endTime } = this.store
       const isDefaultClick = Math.abs(startTime - endTime) >= 300
 
       if (

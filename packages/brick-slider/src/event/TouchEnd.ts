@@ -1,40 +1,31 @@
-import { getChildren } from "@/dom/getChildren"
 import { AnimationFrame } from "./AnimationFrame"
 import { EVENTS, STYLES, TRANSITIONS } from "@/util/constants"
 import { getSlideNodeList } from "@/dom/getSlideNodeList"
 import { setStyle } from "@/dom/setStyle"
-import { State, StateType, State_Keys } from "@/state/BrickState"
+import { State_Keys } from "@/state/BrickState"
 import { listener } from "@/util/listener"
 import { setIndexBypass } from "@/util/setIndexBypass"
 import { getSliderWidth } from "@/dom/getSliderWidth"
 import { Slider } from "@/core/Slider"
+import { Base } from "@/core/Base"
 
-export class TouchEnd {
-  public $root: string
-  private state: State
-  private store: StateType
-  private $children: HTMLElement
+export class TouchEnd extends Base {
   private slides: HTMLElement[]
   private slider: Slider
   private sliderWidth: number
   animation: AnimationFrame
 
   constructor($root: string) {
-    this.$root = $root
-    this.$children = getChildren(this.$root)
+    super($root)
     this.slides = getSlideNodeList(this.$root)
     this.slider = new Slider(this.$root)
     this.sliderWidth = getSliderWidth(this.$children)
-    this.state = new State(this.$root)
-    this.store = State.store(this.$root)
     this.animation = new AnimationFrame(this.$root)
   }
 
   public init = (): void => {
     this.handleTouchMove()
-
     this.handleTransitionEnd()
-
     this.setState()
   }
 
@@ -49,29 +40,29 @@ export class TouchEnd {
 
     const moveSlider = updatedCurrentTranslate - updatedPrevTranslate
 
-    if (!isMouseLeave && !isJumpSlide)
-      setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
-
     if (typeof animationId === "number") cancelAnimationFrame(animationId)
 
-    let currentIndex = this.state.get(State_Keys.SlideIndex)
+    let currentIndex = this.store[State_Keys.SlideIndex]
 
     this.goToNextSlide(moveSlider, currentIndex, this.slides) &&
       this.incrementSlideIndex()
 
     this.goToPrevSlide(moveSlider, currentIndex) && this.decrementSlideIndex()
 
-    if (!isMouseLeave && !isJumpSlide) this.setPosition()
+    if (!isMouseLeave && !isJumpSlide) {
+      setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+      this.setPosition()
+    }
   }
 
   private incrementSlideIndex(): void {
-    const currentIndex = this.state.get(State_Keys.SlideIndex)
-    this.state.seti({ [State_Keys.SlideIndex]: currentIndex + 1 })
+    const currentIndex = this.store[State_Keys.SlideIndex]
+    this.state.set({ [State_Keys.SlideIndex]: currentIndex + 1 })
   }
 
   private decrementSlideIndex(): void {
-    const currentIndex = this.state.get(State_Keys.SlideIndex)
-    this.state.seti({ [State_Keys.SlideIndex]: currentIndex - 1 })
+    const currentIndex = this.store[State_Keys.SlideIndex]
+    this.state.set({ [State_Keys.SlideIndex]: currentIndex - 1 })
   }
 
   private goToNextSlide(
@@ -90,14 +81,14 @@ export class TouchEnd {
     return isMovedByThreshold && isNotFirstSlide
   }
 
-  private handleTransitionEnd(): void {
-    listener(EVENTS.TRANSITIONEND, this.$children, () =>
+  protected handleTransitionEnd(): void {
+    listener(EVENTS.TRANSITIONEND, this.$children, () => {
       setStyle(this.$children, STYLES.TRANSITION, "")
-    )
+    })
   }
 
-  private setState() {
-    this.state.seti({
+  protected setState() {
+    this.state.set({
       [State_Keys.isDragging]: false,
       [State_Keys.IsMouseLeave]: true,
       [State_Keys.IsTouch]: false,
@@ -106,7 +97,7 @@ export class TouchEnd {
   }
 
   private setPosition() {
-    const { state, $root, sliderWidth } = this
+    const { $root, sliderWidth } = this
     const {
       slideIndex: currentIndex,
       slidesPerPage,
@@ -116,39 +107,23 @@ export class TouchEnd {
 
     const currentTranslate = currentIndex * -sliderWidth
 
-    state.setMultipleState({
+    this.state.set({
       [State_Keys.CurrentTranslate]: currentTranslate,
       [State_Keys.PrevTranslate]: currentTranslate
     })
 
-    const [index, from] = [currentIndex, "touch"]
+    const [touchIndex, from] = [currentIndex, "touch"]
 
-    this.slider.setCurrentSlide({
+    this.slider.setTargetSlide({
       from: "touch",
-      index,
+      touchIndex,
       $root
     })
 
     const slideIndex = isInfinite
-      ? setIndexBypass(index, 6, slidesPerPage)
-      : index
+      ? setIndexBypass(touchIndex, 6, slidesPerPage)
+      : touchIndex
 
-    if (dots) this.slider.updateDots(slideIndex, $root)
+    if (dots) Slider.updateDots(slideIndex, $root)
   }
 }
-
-/*
-
-event: Event
-
-if (currentIndex >= numberOfSlides - 1) {
-      // state.set(State_Keys.CurrentTranslate, updatedPrevTranslate)
-      //state.set(State_Keys.SlideIndex, numberOfSlides - 1)
-    }
-
-    if (isInfinite && currentIndex <= 1) {
-      // currentIndex = 0
-      //console.log("currentIndex", currentIndex)
-      // console.log("slideIndex", state.get(State_Keys.SlideIndex))
-    }
-*/

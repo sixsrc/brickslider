@@ -1,13 +1,9 @@
-import { State, StateType } from "@/state/BrickState"
+import { Base } from "@/core/Base"
 import { transform } from "@/transition/transform"
 
-export class AnimationFrame {
-  public $root: string
-  private store: StateType
-
+export class AnimationFrame extends Base {
   constructor($root: string) {
-    this.$root = $root
-    this.store = State.store(this.$root)
+    super($root)
   }
   public init = (): void => {
     const { currentTranslate, isDragging } = this.store

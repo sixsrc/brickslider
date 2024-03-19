@@ -7,16 +7,13 @@ export function setTranslateX(
   currentTranslateFixedValue: number
 ): number {
   const state = new State($root)
-
   const $children = getChildren($root)
-
-  const { slideIndex, spacing } = state.store
-
+  const { slideIndex, spacing } = State.store($root)
   const translate = calcTranslate($children, spacing, slideIndex),
     translateFixedValue = currentTranslateFixedValue!
 
   !currentTranslateFixedValue &&
-    state.setMultipleState({
+    state.set({
       [State_Keys.PrevTranslate]: translate,
       [State_Keys.CurrentTranslate]: translate
     })
