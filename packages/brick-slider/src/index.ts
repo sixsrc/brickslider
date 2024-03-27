@@ -1,5 +1,6 @@
-import { BrickSlider } from "./core/BrickSlider"
 //;(window as any).BrickSlider = BrickSlider
+
+import { BrickSlider } from "./BrickSlider"
 
 const slider4 = new BrickSlider("#slide4_container", {
   infinite: false,
