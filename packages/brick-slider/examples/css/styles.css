@@ -60,13 +60,13 @@ body {
 
 .slider__container {
   box-sizing: border-box;
-  backface-visibility: hidden;
+
   z-index: 1;
   display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: row;
   gap: 20px;
-  will-change: transform;
+  /*will-change: transform;*/
   touch-action: pan-y;
   /* padding-bottom: 1.7rem;*/
   margin: 0;
@@ -114,10 +114,10 @@ body {
 
 .slider__slide:before,
 .slider__slide:after {
-  /*display: block;
+  display: block;
   height: 100%;
   content: "";
-  width: 20px;*/
+  width: 20px;
 }
 .multiple-items .slider__slide {
   flex: 48.24%;
@@ -221,11 +221,17 @@ body {
   width: 20px;
   background: blue;
 }
+/* cubic-bezier(0.25, 1, 0.5, 1)*/
+.transition {
+  /*transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1) 200ms;*/
 
-.transition-400-ms {
-  transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 400ms ease-out ;
 }
+
+.duration-400{transition-duration: 400ms;}
+.duration-100{transition-duration: 100ms;}
 
 .no-transition {
-  transition: none !important;
+  transition-property: none;
 }
+/*   transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);* /

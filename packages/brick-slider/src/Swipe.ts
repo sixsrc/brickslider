@@ -3,7 +3,7 @@ import { TouchEnd } from "./TouchEnd"
 import { TouchMove } from "./TouchMove"
 import { TouchStart } from "./TouchStart"
 import { EVENTS } from "./constants"
-import { getTrackChildren, listener } from "./helpers"
+import { listener } from "./helpers"
 
 type TouchListenersParams = {
   element: HTMLElement
@@ -13,16 +13,13 @@ type TouchListenersParams = {
   touchMove: EventListener
 }
 
-export class Swipe {
-  private slider: HTMLElement
+export class Swipe extends BaseSlider {
   private touchStart: TouchStart
   private touchEnd: TouchEnd
   private touchMove: TouchMove
-  public $root: string
 
   constructor($root: string) {
-    this.$root = $root
-    this.slider = getTrackChildren($root)
+    super($root)
     this.touchStart = new TouchStart(this.$root)
     this.touchEnd = new TouchEnd(this.$root)
     this.touchMove = new TouchMove(this.$root)
@@ -32,7 +29,7 @@ export class Swipe {
     const { touchStart, touchEnd, touchMove } = this
 
     const params: TouchListenersParams = {
-      element: this.slider,
+      element: this.$track,
       index: 0,
       touchStart: touchStart.init(),
       touchEnd: touchEnd.init.bind(touchEnd),

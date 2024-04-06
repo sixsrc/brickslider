@@ -10,6 +10,6 @@ export class AnimationFrame extends BaseSlider {
 
     transform(this.$root, currentTranslate)
 
-    if (isDragging && !isJumpSlide) requestAnimationFrame(this.init)
+    if (isDragging) requestAnimationFrame(this.init)
   }
 }

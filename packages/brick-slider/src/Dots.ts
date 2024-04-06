@@ -99,7 +99,9 @@ export class Dots {
 
     this.slider.updateDots(index, $root)
 
-    setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+    // addClass([this.$children], "transition")
+
+    //setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
     const from = "dots"
 

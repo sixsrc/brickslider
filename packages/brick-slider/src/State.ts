@@ -1,6 +1,7 @@
 export enum State_Keys {
   IsLoadPage = "isLoadPage",
   Counter = "counter",
+  MaxVelocity = "maxVelocity",
   Seconds = "seconds",
   SlideIndex = "slideIndex",
   SlideSpacing = "spacing",
@@ -35,6 +36,7 @@ export type StateType = {
   [State_Keys.IsLoadPage]: boolean
   [State_Keys.Counter]: number
   [State_Keys.Seconds]: number
+  [State_Keys.MaxVelocity]: number
   [State_Keys.SlideIndex]: number
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
@@ -93,13 +95,14 @@ class State {
   private initializeState(options: TypeOptions): void {
     State.state[this.key][State_Keys.IsLoadPage] = false
     State.state[this.key][State_Keys.Counter] = 0
+    State.state[this.key][State_Keys.MaxVelocity] = 70
     State.state[this.key][State_Keys.Seconds] = 0
     State.state[this.key][State_Keys.SlideIndex] = 0
-    State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 10
+    State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 300
     State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
     State.state[this.key][State_Keys.NumberOfSlides] = 0
     State.state[this.key][State_Keys.SliderWidth] = 0
-    State.state[this.key][State_Keys.SliderReady] = true
+    State.state[this.key][State_Keys.SliderReady] = false
     State.state[this.key][State_Keys.IsStopSlider] = false
     State.state[this.key][State_Keys.IsTouch] = false
     State.state[this.key][State_Keys.isDragging] = false

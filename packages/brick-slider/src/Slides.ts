@@ -1,29 +1,69 @@
 import { BaseSlider } from "./BaseSlider"
 import { State_Keys } from "./State"
-import { CLASS_VALUES } from "./constants"
+import { CLASS_VALUES, EVENTS } from "./constants"
 import {
   addClass,
   calcTranslate,
   getSliderNodeList,
-  transform
+  listener,
+  removeClass,
+  transform,
+  waitFor
 } from "./helpers"
 
 export class Slides extends BaseSlider {
   private slides: HTMLElement[] | null
   private clonedSlides: any[]
+  private arrEvents: string[]
 
   constructor($root: string) {
     super($root)
     this.slides = getSliderNodeList(this.$root)
     this.clonedSlides = []
+    this.arrEvents = [
+      EVENTS.TOUCHEND,
+      EVENTS.MOUSEUP,
+      EVENTS.MOUSEMOVE,
+      EVENTS.MOUSELEAVE
+    ]
   }
 
   public cloneSlides(): void {
     this.duplicateSlides(this.store.slidesPerPage)
     this.setState()
-    this.updateDOM()
+    this.updateDOM().transform()
   }
 
+  public setSlideEvents(clonedSlides: HTMLElement[]) {
+    clonedSlides?.forEach((slide, index) => {
+      this.setListener(slide, index)
+    })
+  }
+
+  private setListener(slide: HTMLElement, index: number) {
+    const { updateDOM } = this
+
+    listener(this.arrEvents, slide, event => {
+      if (event.type === "mouseup") console.log(event.type)
+      if (index === 1) {
+        //removeClass(this.$children, "transition")
+      }
+      const interval = setInterval(() => {
+        const { isJumpSlide, isMouseLeave, isDragging, currentTranslate } =
+          this.store
+
+        if (
+          (isJumpSlide && !isMouseLeave && event.type == "mousedown") ||
+          event.type == "mouseleave"
+        ) {
+          if (index == 5 && currentTranslate < -2800) {
+            // updateDOM().addClass([this.$children], "transition")
+            clearInterval(interval)
+          }
+        }
+      }, 50)
+    })
+  }
   private duplicateSlides(slidesPerPage: number) {
     const sliderCount = this.slides!.length
 
@@ -43,10 +83,11 @@ export class Slides extends BaseSlider {
     for (const indices of [endIndices, startIndices]) {
       for (const index of indices) {
         const clone = this.slides![index].cloneNode(true) as HTMLElement
+        const { updateDOM } = this
 
         this.clonedSlides.push(clone)
 
-        addClass(this.clonedSlides, CLASS_VALUES.CLONED)
+        updateDOM().addClass(this.clonedSlides, CLASS_VALUES.CLONED)
 
         index < slidesPerPage
           ? this.$children.appendChild(clone)
@@ -71,6 +112,10 @@ export class Slides extends BaseSlider {
   }
 
   protected updateDOM() {
-    transform(this.$root)
+    return {
+      transform: () => transform(this.$root),
+      addClass: (elements: (HTMLElement | Element)[], className: string) =>
+        addClass(elements, className)
+    }
   }
 }

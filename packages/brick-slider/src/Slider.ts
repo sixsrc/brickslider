@@ -1,3 +1,5 @@
+import { EVENTS } from "./constants"
+import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { State_Keys } from "./State"
 import { CLASS_VALUES, TAGS } from "./constants"
@@ -9,6 +11,7 @@ import {
   hasClass,
   indexBasedBy,
   isNotMapped,
+  listener,
   removeClass,
   toggleClass,
   transform
@@ -21,13 +24,22 @@ type TypeTargetSlideParams = {
 }
 
 export class Slider extends BaseSlider {
+  private animation: any
+
   constructor($root: string) {
     super($root)
+    this.animation = new AnimationFrame(this.$root)
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
     const { touchIndex, from } = params!
-    const { infinite, numberOfSlides, slideIndex, slidesPerPage } = this.store
+    const {
+      infinite,
+      numberOfSlides,
+      slideIndex,
+      slidesPerPage,
+      currentTranslate
+    } = this.store
 
     let currentIndex = indexBasedBy({
       from,
@@ -40,6 +52,8 @@ export class Slider extends BaseSlider {
     this.state.set({ [State_Keys.SlideIndex]: currentIndex })
 
     toggleClass(getSliderNodeList(this.$root), currentIndex, slidesPerPage)
+
+    //requestAnimationFrame(this.animation.init)
 
     transform(this.$root)
   }

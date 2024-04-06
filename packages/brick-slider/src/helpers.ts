@@ -1,5 +1,6 @@
 import { State, State_Keys } from "./State"
 import { CLASS_VALUES, DOM_ELEMENTS, EVENTS } from "./constants"
+import { DirectionType } from "./types"
 
 type TypeIndexBaseSliderdBy = {
   from: string
@@ -94,6 +95,13 @@ export function getSliderWidth(el: HTMLElement): number {
   return el.offsetWidth
 }
 
+export function getTouchDirection(
+  currentPosition: number,
+  startPos: number
+): DirectionType {
+  return currentPosition - startPos > 0 ? { right: true } : { left: true }
+}
+
 export function getTrackChildren(rootSelector: string): HTMLElement {
   return $(`${rootSelector} ${DOM_ELEMENTS.TRACK_SELECTOR}`)
 }
@@ -136,7 +144,7 @@ export function setStyle(el: HTMLElement, styleProp: any, value: string): void {
 }
 
 export function setTransform(el: HTMLElement, fn: () => number): void {
-  el.style.transform = `translate3d(${fn()}px, 0, 0)`
+  el.style.transform = `translateX(${fn()}px)`
 }
 
 export function $(element: string): HTMLElement {
@@ -178,17 +186,8 @@ export function calcIndex(
   return { index, sliderCount }
 }
 
-export function calcSliderWidth(
-  slidesPerPage: number,
-  spacing: number,
-  sliderWidth: number
-) {
-  const sliderWidthPercent = (
-    (100 / slidesPerPage) *
-    (1 - spacing / sliderWidth)
-  ).toFixed(2)
-
-  return parseFloat(sliderWidthPercent)
+export function calcSliderWidth(spacing: number, sliderWidth: number) {
+  return sliderWidth + spacing
 }
 
 export function calcTranslate(
@@ -218,9 +217,44 @@ export function getAxisX(event: MouseEvent | TouchEvent): number {
   }
 }
 
+export function limitSwipeVelocity(
+  distanceX: number,
+  elapsedTime: number,
+  maxVelocity: number
+): number {
+  // Calcular a velocidade como a distância percorrida dividida pelo tempo decorrido
+  const velocity = Math.abs(distanceX / elapsedTime)
+
+  // Limite a velocidade se for maior que a velocidade máxima permitida
+  if (velocity > maxVelocity) {
+    // Reduza a velocidade para o máximo permitido
+    return maxVelocity * elapsedTime * (distanceX > 0 ? 1 : -1) // Mantenha a direção do deslize
+  }
+  // Se a velocidade estiver dentro do limite, retorne a distância original
+  return distanceX
+}
+
+/*export function limitSwipeVelocity(
+  distanceX: number,
+  elapsedTime: number,
+  maxVelocity: number
+): number {
+  // Calcular a velocidade como a distância percorrida dividida pelo tempo decorrido
+  const velocity = Math.abs(distanceX / elapsedTime)
+
+  // Limite a velocidade se for maior que a velocidade máxima permitida
+  if (velocity > maxVelocity) {
+    // Calcular a velocidade reduzida gradualmente em direção ao limite máximo
+    const smoothedVelocity = (velocity + maxVelocity) / 2
+    // Reduza a velocidade para a velocidade suavizada
+    return smoothedVelocity * elapsedTime * (distanceX > 0 ? 1 : -1) // Mantenha a direção do deslize
+  }
+  // Se a velocidade estiver dentro do limite, retorne a distância original
+  return distanceX
+}*/
+
 export function indexBasedBy(params: TypeIndexBaseSliderdBy) {
   const { from, slideIndex, touchIndex } = params
-
   switch (from) {
     case "next":
       return slideIndex + 1
@@ -351,18 +385,4 @@ export function waitFor(time: number, callback: () => void) {
     }
   }
   requestAnimationFrame(wait)
-}
-
-export function prevQueue(numberOfSlides: number, currentTranslate: number) {
-  return [
-    {
-      [State_Keys.IsJumpSlide]: true,
-      [State_Keys.SlideIndex]: 4,
-      [State_Keys.CurrentTranslate]: -(Math.abs(currentTranslate) + 2352)
-    },
-    {
-      //[State_Keys.CurrentTranslate]: -2352,
-      // [State_Keys.PrevTranslate]: -2352
-    }
-  ]
 }

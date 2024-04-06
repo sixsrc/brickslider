@@ -115,9 +115,9 @@ export class Arrows {
   }
 
   private handleMouseLeave(): void {
-    listener([EVENTS.MOUSELEAVE], this.$children, () => {
+    /*listener([EVENTS.MOUSELEAVE], this.$children, () => {
       setStyle(this.$children, STYLES.TRANSITION, "")
-    })
+    })*/
   }
 
   private handleTransitionEnd(index: number): void {
