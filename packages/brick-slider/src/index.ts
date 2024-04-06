@@ -3,7 +3,7 @@
 import { BrickSlider } from "./BrickSlider"
 
 const slider4 = new BrickSlider("#slide4_container", {
-  infinite: false,
+  infinite: true,
   slidesPerPage: 2,
   spacing: 20
 })

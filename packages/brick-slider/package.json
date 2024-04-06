@@ -19,7 +19,10 @@
   },
   "type": "module",
   "typings": "dist/index.d.ts",
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "main": "dist/brick-slider.cjs",
   "module": "./dist/brick-slider.js",
   "exports": {
@@ -32,6 +35,8 @@
     "test": "vitest",
     "lint": "eslint --ext .ts {src,__tests__}/**.ts",
     "build": "tsc --noEmit && vite build"
+  },
+  "dependencies": {
+    "bezier-easing": "^2.1.0"
   }
-  
 }

@@ -2,6 +2,7 @@ import { Arrows } from "./Arrows"
 import { BaseSlider } from "./BaseSlider"
 import { Dots } from "./Dots"
 import { Resize } from "./Resize"
+import { Slides } from "./Slides"
 import { State_Keys } from "./State"
 import { Swipe } from "./Swipe"
 import { EVENTS } from "./constants"
@@ -20,21 +21,25 @@ import {
 
 export class Mount extends BaseSlider {
   public clonedSlides: HTMLElement[] = []
-  private clonedSlide: any
   private resize: Resize
+  private events: Slides
+  private slides: HTMLElement[]
 
   constructor($root: string) {
     super($root)
-    this.clonedSlide = null
+    this.slides = getSliderNodeList(this.$root)
+    this.events = new Slides(this.$root)
     this.resize = new Resize(this.$root)
   }
 
   public init() {
+    const { slideIndex, slidesPerPage } = this.store
     this.setState()
-    this.updateDOM()
+    this.updateDOM().toggleClass(this.slides, slideIndex, slidesPerPage)
     this.setAcessibility(this.$children)
     this.appendSlider(this.$children, this.clonedSlides)
     this.enableControls(this.store)
+    this.setSlideEvents(this.clonedSlides)
     this.handleResize()
   }
 
@@ -42,7 +47,9 @@ export class Mount extends BaseSlider {
     const { infinite, numberOfSlides, slidesPerPage } = this.store
 
     for (let i = 0; i < numberOfSlides; i++) {
-      this.clonedSlide = this.$children.children[i].cloneNode(true)
+      const clonedSlide = this.$children.children[i].cloneNode(
+        true
+      ) as HTMLElement
 
       const { index, sliderCount } = calcIndex(
         infinite,
@@ -52,9 +59,10 @@ export class Mount extends BaseSlider {
       )
 
       for (const [key, value] of Object.entries(attr(index, sliderCount))) {
-        setAttribute(this.clonedSlide, key, value)
+        setAttribute(clonedSlide, key, value)
       }
-      this.clonedSlides.push(this.clonedSlide)
+
+      this.clonedSlides.push(clonedSlide)
     }
     setInnerHTML($children, "")
   }
@@ -80,11 +88,18 @@ export class Mount extends BaseSlider {
     })
   }
 
-  protected updateDOM(): void {
-    const slides = getSliderNodeList(this.$root)
-    const { slideIndex, slidesPerPage } = this.store
+  protected updateDOM() {
+    return {
+      toggleClass: (
+        slides: HTMLElement[],
+        slideIndex: number,
+        slidesPerPage: number
+      ) => toggleClass(slides, slideIndex, slidesPerPage)
+    }
+  }
 
-    toggleClass(slides, slideIndex, slidesPerPage)
+  private setSlideEvents(clonedSlides: HTMLElement[]) {
+    this.events.setSlideEvents(clonedSlides)
   }
 
   private handleResize(): void {

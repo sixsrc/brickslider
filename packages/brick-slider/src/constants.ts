@@ -58,5 +58,6 @@ export const EVENTS = {
   MOUSELEAVE: "mouseleave",
   MOUSEMOVE: "mousemove",
   TRANSITIONSTART: "transitionstart",
-  TRANSITIONEND: "transitionend"
+  TRANSITIONEND: "transitionend",
+  DRAGEND: "dragend"
 }

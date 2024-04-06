@@ -1,21 +1,39 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { State_Keys } from "./State"
 
 import {
-  adjustIndex,
   calcTranslate,
   eventX,
   getAxisX,
+  getSliderNodeList,
   transform
 } from "./helpers"
 
+enum IndexesNames {
+  First = 0,
+  Second = 1,
+  Third = 4,
+  Last = 5
+}
+
 export class TouchMove extends BaseSlider {
   private animation: AnimationFrame
+  private currentPosition: number
+  private previousPosition: number
+  private currentIndex: number
+  private translate: number
+  private slides: HTMLElement[]
+  private skipSlide: boolean
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame(this.$root)
+    this.currentPosition = 0
+    this.previousPosition = 0
+    this.currentIndex = 0
+    this.translate = 0
+    this.skipSlide = false
+    this.slides = getSliderNodeList(this.$root)
   }
 
   public init = (event: Event): void => {
@@ -23,77 +41,86 @@ export class TouchMove extends BaseSlider {
 
     if (isDragging) {
       this.setState(event)
-      this.updateDOM()
+      this.getPosition(event)
+      this.updateDOM(event)
+    }
+  }
+
+  protected getPosition(event: Event) {
+    this.previousPosition = this.currentPosition
+    this.currentPosition = getAxisX(eventX(event as MouseEvent | TouchEvent))
+
+    return {
+      right: () => this.currentPosition > this.previousPosition,
+      left: () => this.currentPosition < this.previousPosition
     }
   }
 
   protected setState(event: Event) {
-    const currentPosition = getAxisX(eventX(event as MouseEvent | TouchEvent))
-    let {
-      infinite,
-      prevTranslate,
-      currentTranslate,
-      sliderWidth,
-      slidesPerPage,
-      startPos,
-      spacing
-    } = this.store
+    let { infinite, spacing, slideIndex } = this.store
 
-    const isHalfSwipe =
-      infinite && Math.abs(currentTranslate) <= sliderWidth / 2
+    const position = this.getPosition(event)
 
-    let infiniteTouchState = {}
+    /*if (infinite)
+      if (
+        position.right() &&
+        slideIndex === 1 &&
+        Math.abs(this.store.currentTranslate) <= 588 - (588 * 0.1) / 100
+      ) {
+        // this.skipSlide = true
+        // this.currentIndex = IndexesNames["Last"]
+      } else {
+        this.skipSlide = false
+      }*/
 
-    const mainTouchState = {
-      [State_Keys.IsTouch]: true,
-      [State_Keys.CurrentTranslate]: prevTranslate + currentPosition - startPos,
-      ...infiniteTouchState
-    }
+    this.translate = calcTranslate(this.$children, spacing, this.currentIndex)
 
-    const index = adjustIndex(this.childrenCount - 1, slidesPerPage)
-    const translate = calcTranslate(
-      this.$children,
-      spacing,
-      this.childrenCount - 1
+    this.state.set(
+      this.skipSlide ? this.infiniteTouchState() : this.mainTouchState()
     )
-
-    infiniteTouchState = {
-      [State_Keys.IsJumpSlide]: true,
-      [State_Keys.SlideIndex]: index,
-      [State_Keys.PrevTranslate]: translate,
-      ...mainTouchState
-    }
-
-    this.state.set(isHalfSwipe ? infiniteTouchState : mainTouchState)
   }
 
-  protected updateDOM() {
-    const { currentTranslate } = this.store
+  protected infiniteTouchState() {
+    return {
+      isJumpSlide: false,
+      slideIndex: this.currentIndex,
+      prevTranslate: this.translate
+    }
+  }
 
-    transform(this.$root, currentTranslate)
+  protected mainTouchState() {
+    const { prevTranslate, startPos } = this.store
 
-    requestAnimationFrame(this.animation.init)
+    return {
+      isJumpSlide: true,
+      isTouch: true,
+      currentTranslate: prevTranslate + this.currentPosition - startPos
+    }
+  }
+  protected updateDOM(event: Event) {
+    const { currentTranslate, isJumpSlide } = this.store
+
+    if (!isJumpSlide) {
+      requestAnimationFrame(this.animation.init)
+      transform(this.$root, currentTranslate)
+    }
   }
 }
-//<= //(sliderWidth * 10) / 100
-//const direction = currentPosition - startPos > 0 ? "right" : "left"
-//console.log("Direction:", direction)
+
+// Math.abs(this.store.currentTranslate) <= 588 - (588 * 3) / 100 //10 - 3- 30*/
 
 /*
 
- private shouldSkipSlide(): false | void {
-    const { currentTranslate, sliderWidth, slidesPerPage, infinite } =
-      this.store
 
-    const index = adjustIndex(this.childrenCount - 1, slidesPerPage)
+      if (position.right() && slideIndex === 1) {
+        this.skipSlide = true
+        this.currentIndex = IndexesNames["Last"]
+      } else if (
+        position.right() &&
+        slideIndex === 5 //&&
+        //!hasClass(this.slides[0], "cloned")
+      ) 
+        this.skipSlide = false
 
-    switch (true) {
-      case infinite && Math.abs(currentTranslate) <= sliderWidth / 2:
-        this.state.set({
-          [State_Keys.IsJumpSlide]: true,
-          [State_Keys.SlideIndex]: index
-        })
-    }
-  }
-
-*/
+        //removeClass(this.$children, "no-transition")
+      }*/
