@@ -42,26 +42,11 @@ export class Slides extends BaseSlider {
 
   private setListener(slide: HTMLElement, index: number) {
     const { updateDOM } = this
+    const { isJumpSlide } = this.store
 
     listener(this.arrEvents, slide, event => {
-      if (event.type === "mouseup") console.log(event.type)
-      if (index === 1) {
-        //removeClass(this.$children, "transition")
+      if (isJumpSlide && index === 1) {
       }
-      const interval = setInterval(() => {
-        const { isJumpSlide, isMouseLeave, isDragging, currentTranslate } =
-          this.store
-
-        if (
-          (isJumpSlide && !isMouseLeave && event.type == "mousedown") ||
-          event.type == "mouseleave"
-        ) {
-          if (index == 5 && currentTranslate < -2800) {
-            // updateDOM().addClass([this.$children], "transition")
-            clearInterval(interval)
-          }
-        }
-      }, 50)
     })
   }
   private duplicateSlides(slidesPerPage: number) {

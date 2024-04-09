@@ -1,12 +1,17 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
+import { EVENTS } from "./constants"
 
 import {
+  addClass,
   calcTranslate,
   eventX,
   getAxisX,
   getSliderNodeList,
-  transform
+  listener,
+  removeClass,
+  transform,
+  waitFor
 } from "./helpers"
 
 enum IndexesNames {
@@ -37,7 +42,7 @@ export class TouchMove extends BaseSlider {
   }
 
   public init = (event: Event): void => {
-    const { isDragging } = this.store
+    const { isDragging, slideIndex, isJumpSlide } = this.store
 
     if (isDragging) {
       this.setState(event)
@@ -57,21 +62,26 @@ export class TouchMove extends BaseSlider {
   }
 
   protected setState(event: Event) {
-    let { infinite, spacing, slideIndex } = this.store
+    let { infinite, spacing, slideIndex, currentTranslate } = this.store
 
     const position = this.getPosition(event)
+    // console.log(currentTranslate, event)
 
-    /*if (infinite)
+    // if (infinite && slideIndex == 5) return
+
+    if (infinite)
       if (
         position.right() &&
         slideIndex === 1 &&
-        Math.abs(this.store.currentTranslate) <= 588 - (588 * 0.1) / 100
+        Math.abs(this.store.currentTranslate) <= 588 - (588 * 1) / 100
       ) {
+        //addClass([this.$track], "pointer-events")
         // this.skipSlide = true
         // this.currentIndex = IndexesNames["Last"]
+        //waitFor(400, () => removeClass(this.$children, "pointer-events"))
       } else {
-        this.skipSlide = false
-      }*/
+        // this.skipSlide = false
+      }
 
     this.translate = calcTranslate(this.$children, spacing, this.currentIndex)
 
@@ -81,10 +91,12 @@ export class TouchMove extends BaseSlider {
   }
 
   protected infiniteTouchState() {
+    const { prevTranslate, startPos } = this.store
     return {
-      isJumpSlide: false,
+      isJumpSlide: true,
       slideIndex: this.currentIndex,
       prevTranslate: this.translate
+      //currentTranslate: this.translate + this.currentPosition - startPos
     }
   }
 
@@ -92,7 +104,6 @@ export class TouchMove extends BaseSlider {
     const { prevTranslate, startPos } = this.store
 
     return {
-      isJumpSlide: true,
       isTouch: true,
       currentTranslate: prevTranslate + this.currentPosition - startPos
     }
@@ -100,10 +111,13 @@ export class TouchMove extends BaseSlider {
   protected updateDOM(event: Event) {
     const { currentTranslate, isJumpSlide } = this.store
 
-    if (!isJumpSlide) {
-      requestAnimationFrame(this.animation.init)
-      transform(this.$root, currentTranslate)
-    }
+    //addClass([this.$children], "transition")
+
+    // addClass([this.$children], "transition-50")
+
+    // requestAnimationFrame(this.animation.init)
+
+    //transform(this.$root, currentTranslate)
   }
 }
 

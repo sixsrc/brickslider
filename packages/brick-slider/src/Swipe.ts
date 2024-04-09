@@ -5,11 +5,12 @@ import { TouchStart } from "./TouchStart"
 import { EVENTS } from "./constants"
 import { listener } from "./helpers"
 
+// EventListener |
 type TouchListenersParams = {
   element: HTMLElement
   index: number
-  touchStart: EventListener
-  touchEnd: EventListener
+  touchStart: any
+  touchEnd: any
   touchMove: EventListener
 }
 

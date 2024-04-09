@@ -58,7 +58,12 @@ body {
   right: 15px;
 }
 
-.slider__container {
+.slider__container{
+  position:relative;
+  z-index:0
+}
+
+.teste{
   box-sizing: border-box;
 
   z-index: 1;
@@ -66,13 +71,27 @@ body {
   flex-wrap: nowrap;
   flex-direction: row;
   gap: 20px;
-  /*will-change: transform;*/
+  will-change: transform;
   touch-action: pan-y;
   /* padding-bottom: 1.7rem;*/
   margin: 0;
-
+z-index:0;
   position: relative;
   width: 100%;
+}
+
+.layer{
+  position: absolute;
+  z-index:50;
+  width:100%;
+  background:red;
+  top: 0;
+  left: 0;
+  content: "";
+  height:100%;
+  pointer-events: none;
+  touch-action: none;
+  
 }
 
 .slider__track:after {
@@ -82,12 +101,12 @@ body {
   width: 100%;
 }
 
-.slider__container > * {
+.slider__track > * {
   user-select: none;
   -webkit-user-select: none;
 }
 
-.slider__container img {
+.slider__track img {
   width: auto;
   max-width: 100%;
   pointer-events: none;
@@ -106,19 +125,6 @@ body {
   position: relative;
 }
 
-.slider__slide:before {
-  position: absolute;
-  top: 0;
-  left: -20px;
-}
-
-.slider__slide:before,
-.slider__slide:after {
-  display: block;
-  height: 100%;
-  content: "";
-  width: 20px;
-}
 .multiple-items .slider__slide {
   flex: 48.24%;
   flex-shrink: 0;
@@ -130,7 +136,7 @@ body {
 }
 
 .transition {
-  transition: transform 400ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: none;
 }
 
 .slider__content {
@@ -221,17 +227,21 @@ body {
   width: 20px;
   background: blue;
 }
+/*cubic-bezier(0.4, 0, 0.2, 1);*/
 /* cubic-bezier(0.25, 1, 0.5, 1)*/
 .transition {
-  /*transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1) 200ms;*/
-
-  transition: transform 400ms ease-out ;
+  transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
+  -webkit-transition: -webkit-transform 400ms cubic-bezier(0.25, 1, 0.5, 1); /* Prefixo para o Safari */
 }
 
-.duration-400{transition-duration: 400ms;}
-.duration-100{transition-duration: 100ms;}
 
 .no-transition {
   transition-property: none;
 }
-/*   transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);* /
+
+.pointer-events{
+  pointer-events:none;
+  touch-action: none;
+}
+
+/*////   transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);* /

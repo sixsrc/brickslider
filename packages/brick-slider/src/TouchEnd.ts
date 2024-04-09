@@ -32,22 +32,30 @@ export class TouchEnd extends BaseSlider {
     this.limitedMoveSlider = 0
   }
 
-  public init = (event: Event): void => {
-    const { infinite, isJumpSlide, slideIndex } = this.store
+  public init = (event: TouchEvent | MouseEvent): void => {
+    const {
+      infinite,
+      isJumpSlide,
+      slideIndex,
+      currentTranslate,
+      prevTranslate
+    } = this.store
 
     this.handleTouchMove(event)
     this.handleTransitionEnd()
     this.setState()
   }
 
-  private handleTouchMove(event: Event) {
+  private handleTouchMove(event: TouchEvent | MouseEvent) {
     const {
       animationId,
       isMouseLeave,
       isTouch,
       currentTranslate,
       prevTranslate,
-      infinite
+      infinite,
+      slideIndex,
+      isJumpSlide
     } = this.store
     //const teste = 2940 - (588 - Math.abs(currentTranslate))
     //const moveSlider = teste - 2940
@@ -57,17 +65,15 @@ export class TouchEnd extends BaseSlider {
 
     const moveSlider = currentTranslate - prevTranslate
 
-    //console.log(teste, moveSlider)
-
     let currentIndex = this.store[State_Keys.SlideIndex]
 
     if (typeof animationId === "number") cancelAnimationFrame(animationId)
 
-    //addClass([this.$children], "transition")
+    const speed = this.moveTracker.stopTracking()
 
-    this.state.set({
-      endTime: performance.now()
-    })
+    console.log("speed", speed)
+
+    //addClass([this.$children], "transition")
 
     this.goToNextSlide(moveSlider, currentIndex, this.slides) &&
       this.incrementSlideIndex()
@@ -76,13 +82,16 @@ export class TouchEnd extends BaseSlider {
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
+      //removeClass(this.$children, "transition-50")
+      //([this.$children], "transition-400")
+
       addClass([this.$children], "transition")
     }
 
-    console.log("currentindex", currentIndex)
-
-    listener([EVENTS.TRANSITIONEND], this.$children, () => {
-      removeClass(this.$children, "transition")
+    listener([EVENTS.TRANSITIONSTART], this.$children, event => {
+      setTimeout(() => {
+        removeClass(this.$children, "transition")
+      }, 300)
     })
   }
 
@@ -99,23 +108,46 @@ export class TouchEnd extends BaseSlider {
     currentIndex: number,
     element: HTMLElement[]
   ): boolean {
-    const isMovedByThreshold = moveSlider < (-this.sliderWidth * 30) / 100
+    const isMovedByThreshold = moveSlider < (-this.sliderWidth * 20) / 100
     const isNotLastSlide = currentIndex < element.length - 1
     return isMovedByThreshold && isNotLastSlide
   }
 
   private goToPrevSlide(moveSlider: number, currentIndex: number): boolean {
-    const isMovedByThreshold = moveSlider > (this.sliderWidth * 30) / 100
+    //removeClass(this.$children, "transition")
+    // console.log("sempre passa aqui??")
+    const isMovedByThreshold = moveSlider > (this.sliderWidth * 2) / 100
     const isNotFirstSlide = currentIndex > 0
     return isMovedByThreshold && isNotFirstSlide
   }
 
   protected handleTransitionEnd(): void {
     const { currentTranslate, infinite } = this.store
-    const firstSlide = getSliderNodeList(this.$root)[1]
+    const firstSlide = getSliderNodeList(this.$root)[0]
+
     listener([EVENTS.TRANSITIONEND], this.$children, () => {
-      if (infinite && hasClass(firstSlide, "active")) {
+      //removeClass(this.$children, "transition")
+      //console.log("event", event)
+      if (Math.abs(this.store.currentTranslate) === 588) {
+        /* removeClass(this.$children, "transition")
+
+        this.state.set({
+          currentTranslate: -2940,
+          prevTranslate: -2940,
+          slideIndex: 5,
+          isJumpSlide: true
+        })
+        transform(this.$root)*/
       }
+      /* if (infinite && hasClass(firstSlide, "active")) {
+        this.state.set({
+          slideIndex: 4,
+          currentTranslate: -2352,
+          prevTranslate: -2352
+          //isJumpSlide: true
+        })
+        transform(this.$root)
+      }*/
     })
   }
 
@@ -136,13 +168,12 @@ export class TouchEnd extends BaseSlider {
 
     //removeClass(this.$children, "transition")
 
+    const touchIndex = slideIndex
+
     this.state.set({
       [State_Keys.CurrentTranslate]: currentTranslate,
-      [State_Keys.PrevTranslate]: currentTranslate,
-      [State_Keys.IsJumpSlide]: false
+      [State_Keys.PrevTranslate]: currentTranslate
     })
-
-    const touchIndex = slideIndex
 
     this.slider.setSlideTarget({
       from: "touch",
