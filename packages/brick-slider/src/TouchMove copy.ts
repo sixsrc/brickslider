@@ -129,7 +129,6 @@ export class TouchMove extends BaseSlider {
 
   protected infiniteTouchState() {
     return {
-      isJumpSlide: true,
       slideIndex: this.currentIndex,
       prevTranslate: this.translate
     }
@@ -146,6 +145,8 @@ export class TouchMove extends BaseSlider {
   protected updateDOM(event: Event) {
     const { currentTranslate, isJumpSlide } = this.store
 
+    console.log(event)
+
     if (this.skipSlide) {
       //this.skipSlide = false
       //removeClass(this.$children, "transition")
@@ -154,8 +155,8 @@ export class TouchMove extends BaseSlider {
 
     // waitFor(50, () => addClass([this.$children], "transition"))
 
-    requestAnimationFrame(this.animation.init)
+    //requestAnimationFrame(this.animation.init)
 
-    transform(this.$root, currentTranslate)
+    // transform(this.$root, currentTranslate)
   }
 }

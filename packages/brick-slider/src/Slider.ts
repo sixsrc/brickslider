@@ -53,7 +53,7 @@ export class Slider extends BaseSlider {
 
     toggleClass(getSliderNodeList(this.$root), currentIndex, slidesPerPage)
 
-    //requestAnimationFrame(this.animation.init)
+    requestAnimationFrame(this.animation.init)
 
     transform(this.$root)
   }

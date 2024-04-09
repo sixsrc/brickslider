@@ -39,7 +39,7 @@ export class Mount extends BaseSlider {
     this.setAcessibility(this.$children)
     this.appendSlider(this.$children, this.clonedSlides)
     this.enableControls(this.store)
-    this.setSlideEvents(this.clonedSlides)
+    // this.setSlideEvents(this.clonedSlides)
     this.handleResize()
   }
 

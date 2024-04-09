@@ -102,7 +102,9 @@ export function getTouchDirection(
   return currentPosition - startPos > 0 ? { right: true } : { left: true }
 }
 
-export function getTrackChildren(rootSelector: string): HTMLElement {
+export function getTrackChildren(
+  rootSelector: string
+): HTMLElement | undefined {
   return $(`${rootSelector} ${DOM_ELEMENTS.TRACK_SELECTOR}`)
 }
 
@@ -144,15 +146,14 @@ export function setStyle(el: HTMLElement, styleProp: any, value: string): void {
 }
 
 export function setTransform(el: HTMLElement, fn: () => number): void {
-  el.style.transform = `translateX(${fn()}px)`
+  if (el) el.style.transform = `translate3d(${fn()}px, 0px, 0px)`
 }
 
-export function $(element: string): HTMLElement {
+export function $(element: string): HTMLElement | undefined {
   const selectedElement: HTMLElement | null = document.querySelector(element)
-  if (!selectedElement) {
-    throw new Error(`Element not found: ${element}`)
+  if (selectedElement) {
+    return selectedElement
   }
-  return selectedElement
 }
 
 export function adjustIndex(index: number, slidesPerPage: number) {

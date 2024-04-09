@@ -8,26 +8,29 @@ import {
   eventX,
   getAxisX,
   removeClass,
+  transform,
   waitFor
 } from "./helpers"
 
 export class TouchStart extends BaseSlider {
   private animation: AnimationFrame
+  slides: any
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame($root)
   }
 
-  public init(): (event: Event) => void {
-    return (event: Event) => {
+  public init(): (event: TouchEvent | MouseEvent) => void {
+    return (event: TouchEvent | MouseEvent) => {
       const {
         slideIndex,
         infinite,
         startTime,
         endTime,
         currentTranslate,
-        prevTranslate
+        prevTranslate,
+        isJumpSlide
       } = this.store
       const elapsedTime = startTime - endTime
 
@@ -36,14 +39,50 @@ export class TouchStart extends BaseSlider {
     }
   }
   private handleTouchStart() {
-    const { slideIndex, infinite, isJumpSlide } = this.store
+    const { slideIndex, isLoadPage, infinite, currentTranslate, isJumpSlide } =
+      this.store
 
-    console.log("start")
+    //removeClass(this.$children, "pointer-events")
+
+    //removeClass(this.$children, "transition")
+
+    if (infinite)
+      if (slideIndex === 1) {
+        /* removeClass(this.$children, "transition")
+        this.state.set({''''''''''
+          slideIndex: 5,
+          currentTranslate: -2940,
+          prevTranslate: -2940,
+          isJumpSlide: true
+        })
+
+        waitFor(100, () =>
+          this.state.set({
+            isJumpSlide: false
+          })
+        )
+        return*/
+      }
   }
 
-  protected setState(event: Event) {
+  protected setState(event: TouchEvent | MouseEvent) {
     const setEvent = eventX(event as MouseEvent | TouchEvent)
-    const { slidesPerPage, slideIndex } = this.store
+    const { slidesPerPage, slideIndex, isJumpSlide, sliderReady } = this.store
+    let eventNext = false
+    if (slideIndex === 1 && !sliderReady) {
+      waitFor(200, () => {
+        this.state.set({
+          sliderReady: false,
+          currentTranslate: -1764,
+          prevTranslate: -2352,
+          slideIndex: 3
+        })
+      })
+    }
+
+    if (!sliderReady) return
+
+    this.moveTracker.startTracking(event)
 
     this.state.set({
       [State_Keys.StartTime]: new Date().getMilliseconds(),
@@ -51,7 +90,6 @@ export class TouchStart extends BaseSlider {
       [State_Keys.StartPos]: getAxisX(setEvent),
       [State_Keys.isDragging]: true,
       [State_Keys.IsMouseLeave]: false,
-      //[State_Keys.IsJumpSlide]: false,
       [State_Keys.AnimationID]: requestAnimationFrame(this.animation.init)
     })
   }
