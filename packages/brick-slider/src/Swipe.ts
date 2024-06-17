@@ -4,15 +4,7 @@ import { TouchMove } from "./TouchMove"
 import { TouchStart } from "./TouchStart"
 import { EVENTS } from "./constants"
 import { listener } from "./helpers"
-
-// EventListener |
-type TouchListenersParams = {
-  element: HTMLElement
-  index: number
-  touchStart: any
-  touchEnd: any
-  touchMove: EventListener
-}
+import { TouchListenersParams } from "./types"
 
 export class Swipe extends BaseSlider {
   private touchStart: TouchStart

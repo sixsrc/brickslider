@@ -230,9 +230,16 @@ z-index:0;
 /*cubic-bezier(0.4, 0, 0.2, 1);*/
 /* cubic-bezier(0.25, 1, 0.5, 1)*/
 .transition {
-  transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
-  -webkit-transition: -webkit-transform 400ms cubic-bezier(0.25, 1, 0.5, 1); /* Prefixo para o Safari */
+ /*transition: transform 100ms ease;*/
+ transition:transform 400ms ease
+  
 }
+
+.transition2 {
+  transition: transform 400ms ease;
+ 
+   
+ }
 
 
 .no-transition {

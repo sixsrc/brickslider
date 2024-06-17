@@ -1,12 +1,11 @@
 import { State, State_Keys } from "./State"
-import { CLASS_VALUES, DOM_ELEMENTS, EVENTS } from "./constants"
-import { DirectionType } from "./types"
-
-type TypeIndexBaseSliderdBy = {
-  from: string
-  slideIndex: number
-  touchIndex?: number
-}
+import { CLASS_VALUES, DOM_ELEMENTS } from "./constants"
+import {
+  DirectionType,
+  SliderSpeedParams,
+  SpeedCategory,
+  TypeIndexBaseSliderdBy
+} from "./types"
 
 export function addClass(
   elements: (HTMLElement | Element)[],
@@ -33,11 +32,13 @@ export function applyCss(
 }
 
 export function appendToParent(
-  parent: HTMLElement,
-  element: HTMLElement
-): HTMLElement {
-  if (parent) parent.appendChild(element)
-  return element
+  parent: HTMLElement | undefined,
+  element: HTMLElement | undefined
+): HTMLElement | undefined {
+  if (parent && element) {
+    parent.appendChild(element)
+    return element
+  }
 }
 
 export function attr(index: number, numberOfSlides: number) {
@@ -59,15 +60,15 @@ export function getAllElements<T extends Element>(
   return parent.querySelectorAll(selector) as NodeListOf<T>
 }
 
-export function getChildren(rootSelector: string): HTMLElement {
+export function getChildren(rootSelector: string): HTMLElement | undefined {
   return $(`${rootSelector}  ${DOM_ELEMENTS.CHILDREN_SELECTOR}`)
 }
 
-export function getChildrenCount(el: HTMLElement): number {
-  return el.children.length
+export function getChildrenCount(el: HTMLElement | undefined): number {
+  return el!.children.length
 }
 
-export function getDotsSelector($root: string): HTMLElement {
+export function getDotsSelector($root: string): HTMLElement | undefined {
   return $(`${$root} ${DOM_ELEMENTS.DOTS_SELECTOR}`)
 }
 
@@ -78,7 +79,7 @@ export function getElementAttribute(
   return element.getAttribute(attributeName)
 }
 
-export function getRootSelector($root: string): HTMLElement {
+export function getRootSelector($root: string): HTMLElement | undefined {
   return $(`${$root}`)
 }
 
@@ -91,8 +92,10 @@ export function getSliderNodeList($root: string) {
   )
 }
 
-export function getSliderWidth(el: HTMLElement): number {
-  return el.offsetWidth
+export function getSliderWidth(
+  el: HTMLElement | undefined
+): number | undefined {
+  if (el) return el.offsetWidth
 }
 
 export function getTouchDirection(
@@ -198,7 +201,7 @@ export function calcTranslate(
 ): number {
   const marginDiference = slidePosition * slideSpacing
   const sliderWidth = getSliderWidth($children)
-  const translate = -(sliderWidth * slidePosition + marginDiference)
+  const translate = -(sliderWidth! * slidePosition + marginDiference)
 
   return translate
 }
@@ -218,41 +221,12 @@ export function getAxisX(event: MouseEvent | TouchEvent): number {
   }
 }
 
-export function limitSwipeVelocity(
-  distanceX: number,
-  elapsedTime: number,
-  maxVelocity: number
-): number {
-  // Calcular a velocidade como a distância percorrida dividida pelo tempo decorrido
-  const velocity = Math.abs(distanceX / elapsedTime)
-
-  // Limite a velocidade se for maior que a velocidade máxima permitida
-  if (velocity > maxVelocity) {
-    // Reduza a velocidade para o máximo permitido
-    return maxVelocity * elapsedTime * (distanceX > 0 ? 1 : -1) // Mantenha a direção do deslize
-  }
-  // Se a velocidade estiver dentro do limite, retorne a distância original
-  return distanceX
+export function isAppleDevice(): boolean {
+  const ua = navigator.userAgent.toLowerCase()
+  return (
+    ua.includes("safari") && !ua.includes("chrome") && !ua.includes("android")
+  )
 }
-
-/*export function limitSwipeVelocity(
-  distanceX: number,
-  elapsedTime: number,
-  maxVelocity: number
-): number {
-  // Calcular a velocidade como a distância percorrida dividida pelo tempo decorrido
-  const velocity = Math.abs(distanceX / elapsedTime)
-
-  // Limite a velocidade se for maior que a velocidade máxima permitida
-  if (velocity > maxVelocity) {
-    // Calcular a velocidade reduzida gradualmente em direção ao limite máximo
-    const smoothedVelocity = (velocity + maxVelocity) / 2
-    // Reduza a velocidade para a velocidade suavizada
-    return smoothedVelocity * elapsedTime * (distanceX > 0 ? 1 : -1) // Mantenha a direção do deslize
-  }
-  // Se a velocidade estiver dentro do limite, retorne a distância original
-  return distanceX
-}*/
 
 export function indexBasedBy(params: TypeIndexBaseSliderdBy) {
   const { from, slideIndex, touchIndex } = params
@@ -337,7 +311,7 @@ export function setTranslateX(
   const state = new State($root)
   const $children = getChildren($root)
   const { slideIndex, spacing } = State.store($root)
-  const translate = calcTranslate($children, spacing, slideIndex),
+  const translate = calcTranslate($children!, spacing, slideIndex),
     translateFixedValue = currentTranslateFixedValue!
 
   !currentTranslateFixedValue &&
@@ -371,7 +345,7 @@ export function transform($root: string, currentTranslateFixed?: number) {
   const slider = getChildren($root)
   const callback = () => setTranslateX($root, currentTranslateFixed!)
 
-  setTransform(slider, callback)
+  setTransform(slider!, callback)
 }
 
 export function waitFor(time: number, callback: () => void) {
@@ -386,4 +360,68 @@ export function waitFor(time: number, callback: () => void) {
     }
   }
   requestAnimationFrame(wait)
+}
+
+export function calculateSliderSpeed(params: SliderSpeedParams): number {
+  const { startX, endX, slideSpeed } = params
+
+  // Verificar se startX, endX e slideSpeed são números válidos
+  if (
+    typeof startX !== "number" ||
+    typeof endX !== "number" ||
+    typeof slideSpeed !== "number"
+  ) {
+    return 0 // Se algum dos valores não for um número válido, retornar zero
+  }
+
+  // Verificar se startX é menor que endX (movimento para a direita) ou maior que endX (movimento para a esquerda)
+  if (startX <= endX) {
+    return 0 // Não houve movimento ou movimento para a direita, então a velocidade é zero
+  }
+
+  const distance = Math.abs(startX - endX)
+  const elapsedTime = performance.now() - slideSpeed
+
+  // Verificar se o tempo decorrido é muito pequeno ou se a distância percorrida é zero
+  if (elapsedTime < 1 || distance === 0) {
+    return 0 // Não houve movimento ou o tempo decorrido é muito pequeno, então a velocidade é zero
+  }
+
+  const speedPxPerMs = distance / elapsedTime
+  return speedPxPerMs
+}
+
+export function convertToPixelsPerSecond(speedInPxPerMs: number): number {
+  return speedInPxPerMs * 1000 // 1000 milisseconds = 1 second
+}
+
+export function getSpeedCategory(speed: number): SpeedCategory {
+  if (speed < 300) {
+    return SpeedCategory.VERY_SLOW
+  } else if (speed < 700) {
+    return SpeedCategory.SLOW
+  } else if (speed < 1500) {
+    return SpeedCategory.MODERATE
+  } else if (speed < 3000) {
+    return SpeedCategory.FAST
+  } else {
+    return SpeedCategory.VERY_FAST
+  }
+}
+
+export function getCategoryLabel(category: SpeedCategory): string {
+  switch (category) {
+    case SpeedCategory.VERY_SLOW:
+      return "Very Slow"
+    case SpeedCategory.SLOW:
+      return "Slow"
+    case SpeedCategory.MODERATE:
+      return "Moderate"
+    case SpeedCategory.FAST:
+      return "Fast"
+    case SpeedCategory.VERY_FAST:
+      return "Very Fast"
+    default:
+      return "Unknown"
+  }
 }

@@ -6,7 +6,7 @@ export class AnimationFrame extends BaseSlider {
     super($root)
   }
   public init = (): void => {
-    const { currentTranslate, isDragging, isJumpSlide } = this.store
+    const { currentTranslate, isDragging } = this.store
 
     transform(this.$root, currentTranslate)
 

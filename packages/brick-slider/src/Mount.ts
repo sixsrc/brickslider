@@ -2,7 +2,6 @@ import { Arrows } from "./Arrows"
 import { BaseSlider } from "./BaseSlider"
 import { Dots } from "./Dots"
 import { Resize } from "./Resize"
-import { Slides } from "./Slides"
 import { State_Keys } from "./State"
 import { Swipe } from "./Swipe"
 import { EVENTS } from "./constants"
@@ -22,13 +21,11 @@ import {
 export class Mount extends BaseSlider {
   public clonedSlides: HTMLElement[] = []
   private resize: Resize
-  private events: Slides
   private slides: HTMLElement[]
 
   constructor($root: string) {
     super($root)
     this.slides = getSliderNodeList(this.$root)
-    this.events = new Slides(this.$root)
     this.resize = new Resize(this.$root)
   }
 
@@ -36,7 +33,7 @@ export class Mount extends BaseSlider {
     const { slideIndex, slidesPerPage } = this.store
     this.setState()
     this.updateDOM().toggleClass(this.slides, slideIndex, slidesPerPage)
-    this.setAcessibility(this.$children)
+    this.setAcessibility(this.$children!)
     this.appendSlider(this.$children, this.clonedSlides)
     this.enableControls(this.store)
     // this.setSlideEvents(this.clonedSlides)
@@ -47,7 +44,7 @@ export class Mount extends BaseSlider {
     const { infinite, numberOfSlides, slidesPerPage } = this.store
 
     for (let i = 0; i < numberOfSlides; i++) {
-      const clonedSlide = this.$children.children[i].cloneNode(
+      const clonedSlide = this.$children?.children[i].cloneNode(
         true
       ) as HTMLElement
 
@@ -67,7 +64,10 @@ export class Mount extends BaseSlider {
     setInnerHTML($children, "")
   }
 
-  public appendSlider(container: HTMLElement, children: HTMLElement[]): void {
+  public appendSlider(
+    container: HTMLElement | undefined,
+    children: HTMLElement[]
+  ): void {
     children.forEach(element => {
       appendToParent(container, element)
     })
@@ -83,7 +83,7 @@ export class Mount extends BaseSlider {
 
   protected setState(): void {
     this.state.set({
-      [State_Keys.SliderWidth]: getSliderWidth(this.$children),
+      [State_Keys.SliderWidth]: getSliderWidth(this.$children!),
       [State_Keys.NumberOfSlides]: getChildrenCount(this.$children)
     })
   }
@@ -96,10 +96,6 @@ export class Mount extends BaseSlider {
         slidesPerPage: number
       ) => toggleClass(slides, slideIndex, slidesPerPage)
     }
-  }
-
-  private setSlideEvents(clonedSlides: HTMLElement[]) {
-    this.events.setSlideEvents(clonedSlides)
   }
 
   private handleResize(): void {

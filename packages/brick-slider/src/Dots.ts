@@ -5,9 +5,7 @@ import {
   CLASS_VALUES,
   DOM_ELEMENTS,
   EVENTS,
-  STYLES,
-  TAGS,
-  TRANSITIONS
+  TAGS
 } from "./constants"
 import {
   addClass,
@@ -18,8 +16,7 @@ import {
   getChildrenCount,
   getRootSelector,
   listener,
-  setAttribute,
-  setStyle
+  setAttribute
 } from "./helpers"
 
 export class Dots {
@@ -100,8 +97,6 @@ export class Dots {
     this.slider.updateDots(index, $root)
 
     // addClass([this.$children], "transition")
-
-    //setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
     const from = "dots"
 
