@@ -1,34 +1,14 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { EVENTS } from "./constants"
-
-import {
-  addClass,
-  calcTranslate,
-  eventX,
-  getAxisX,
-  getSliderNodeList,
-  listener,
-  removeClass,
-  transform,
-  waitFor
-} from "./helpers"
-
-enum IndexesNames {
-  First = 0,
-  Second = 1,
-  Third = 4,
-  Last = 5
-}
+import { eventX, getAxisX, removeClass, transform } from "./helpers"
 
 export class TouchMove extends BaseSlider {
-  private animation: AnimationFrame
   private currentPosition: number
   private previousPosition: number
+  private animation: AnimationFrame
+  private skipSlide: boolean
   private currentIndex: number
   private translate: number
-  private slides: HTMLElement[]
-  private skipSlide: boolean
 
   constructor($root: string) {
     super($root)
@@ -38,16 +18,15 @@ export class TouchMove extends BaseSlider {
     this.currentIndex = 0
     this.translate = 0
     this.skipSlide = false
-    this.slides = getSliderNodeList(this.$root)
   }
 
-  public init = (event: Event): void => {
-    const { isDragging, slideIndex, isJumpSlide } = this.store
+  public init = (event: any): void => {
+    const { isDragging } = this.store
 
     if (isDragging) {
       this.setState(event)
       this.getPosition(event)
-      this.updateDOM(event)
+      this.updateDOM()
     }
   }
 
@@ -61,46 +40,25 @@ export class TouchMove extends BaseSlider {
     }
   }
 
-  protected setState(event: Event) {
-    let { infinite, spacing, slideIndex, currentTranslate } = this.store
-
+  protected async setState(event: Event) {
     const position = this.getPosition(event)
-    // console.log(currentTranslate, event)
+    const { slideIndex } = this.store
 
-    // if (infinite && slideIndex == 5) return
-
-    if (infinite)
-      if (
-        position.right() &&
-        slideIndex === 1 &&
-        Math.abs(this.store.currentTranslate) <= 588 - (588 * 1) / 100
-      ) {
-        //addClass([this.$track], "pointer-events")
-        // this.skipSlide = true
-        // this.currentIndex = IndexesNames["Last"]
-        //waitFor(400, () => removeClass(this.$children, "pointer-events"))
-      } else {
-        // this.skipSlide = false
-      }
-
-    this.translate = calcTranslate(this.$children, spacing, this.currentIndex)
+    if (position.right() && slideIndex === 1) {
+      removeClass(this.$children, "transition")
+      this.skipSlide = true
+      this.currentIndex = IndexesNames["Last"]
+      this.translate = -2940
+    }
 
     this.state.set(
-      this.skipSlide ? this.infiniteTouchState() : this.mainTouchState()
+      this.skipSlide ? this.infiniteTouchState() : this.mainState()
     )
+
+    this.skipSlide = false
   }
 
-  protected infiniteTouchState() {
-    const { prevTranslate, startPos } = this.store
-    return {
-      isJumpSlide: true,
-      slideIndex: this.currentIndex,
-      prevTranslate: this.translate
-      //currentTranslate: this.translate + this.currentPosition - startPos
-    }
-  }
-
-  protected mainTouchState() {
+  protected mainState() {
     const { prevTranslate, startPos } = this.store
 
     return {
@@ -108,23 +66,30 @@ export class TouchMove extends BaseSlider {
       currentTranslate: prevTranslate + this.currentPosition - startPos
     }
   }
-  protected updateDOM(event: Event) {
-    const { currentTranslate, isJumpSlide } = this.store
 
-    //addClass([this.$children], "transition")
+  protected infiniteTouchState() {
+    return {
+      slideIndex: this.currentIndex,
+      prevTranslate: this.translate
+    }
+  }
+  protected updateDOM() {
+    const { currentTranslate } = this.store
 
-    // addClass([this.$children], "transition-50")
-
-    // requestAnimationFrame(this.animation.init)
-
-    //transform(this.$root, currentTranslate)
+    requestAnimationFrame(this.animation.init)
+    transform(this.$root, currentTranslate)
   }
 }
 
+enum IndexesNames {
+  First = 0,
+  Second = 1,
+  Third = 4,
+  Last = 5
+}
 // Math.abs(this.store.currentTranslate) <= 588 - (588 * 3) / 100 //10 - 3- 30*/
 
 /*
-
 
       if (position.right() && slideIndex === 1) {
         this.skipSlide = true
