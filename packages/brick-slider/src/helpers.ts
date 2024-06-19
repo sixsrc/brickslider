@@ -116,10 +116,10 @@ export function hasClass(el: HTMLElement, className: string): boolean {
 }
 
 export function prependChild(
-  parentEl: HTMLElement,
+  parentEl: HTMLElement | undefined,
   childEl: HTMLElement
 ): void {
-  parentEl.prepend(childEl)
+  parentEl?.prepend(childEl)
 }
 
 export function removeClass(el: HTMLElement, className: string): void {
@@ -179,13 +179,14 @@ export function calcIndex(
   let index: number
   let sliderCount: number
 
+  index = i + 1
+  sliderCount = numberOfSlides
+
   if (infinite) {
     index = setIndexBypass(i, numberOfSlides, slidesPerPage) + 1
     sliderCount = numberOfSlides - 2
+    console.log(index)
   }
-
-  index = i + 1
-  sliderCount = numberOfSlides
 
   return { index, sliderCount }
 }

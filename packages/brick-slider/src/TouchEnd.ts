@@ -2,7 +2,12 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { State_Keys } from "./State"
-import { getSliderNodeList, getSliderWidth, setIndexBypass } from "./helpers"
+import {
+  addClass,
+  getSliderNodeList,
+  getSliderWidth,
+  setIndexBypass
+} from "./helpers"
 
 export class TouchEnd extends BaseSlider {
   private slides: HTMLElement[]
@@ -64,6 +69,7 @@ export class TouchEnd extends BaseSlider {
     if (isTouch && !isMouseLeave) {
       this.setPosition()
       this.animate(currentTranslate, moveSlider)
+      addClass([this.$children], "transition")
     }
   }
 
@@ -80,13 +86,13 @@ export class TouchEnd extends BaseSlider {
     currentIndex: number,
     element: HTMLElement[]
   ): boolean {
-    const isMovedByThreshold = moveSlider < (-this.sliderWidth! * 10) / 100
+    const isMovedByThreshold = moveSlider < (-this.sliderWidth! * 40) / 100
     const isNotLastSlide = currentIndex < element.length - 1
     return isMovedByThreshold && isNotLastSlide
   }
 
   private goToPrevSlide(moveSlider: number, currentIndex: number): boolean {
-    const isMovedByThreshold = moveSlider > (this.sliderWidth! * 10) / 100
+    const isMovedByThreshold = moveSlider > (this.sliderWidth! * 40) / 100
     const isNotFirstSlide = currentIndex > 0
     return isMovedByThreshold && isNotFirstSlide
   }
@@ -96,13 +102,13 @@ export class TouchEnd extends BaseSlider {
       [
         { transform: `translate3d(${currentTranslate}px, 0px, 0px)` },
         {
-          transform: `translate3d(${currentTranslate + moveSlider}px 0px, 0px)`
+          transform: `translate3d(${currentTranslate + moveSlider}px, 0px, 0px)`
         }
       ],
       {
-        duration: 400,
-        easing: "ease",
-        fill: "forwards"
+        duration: 0,
+        easing: "ease"
+        // fill: "forwards"
       }
     )
   }

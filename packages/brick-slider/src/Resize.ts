@@ -16,6 +16,6 @@ export class Resize extends BaseSlider {
 
     this.state.set({ [State_Keys.SliderWidth]: this.sliderWidth })
 
-    transform(this.$root, translate)
+    /// transform(this.$root, translate)
   }
 }

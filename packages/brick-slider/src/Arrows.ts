@@ -1,5 +1,6 @@
+import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
-import { State, StateType, State_Keys } from "./State"
+import { State_Keys } from "./State"
 import {
   ATTRIBUTES,
   DOM_ELEMENTS,
@@ -11,7 +12,6 @@ import {
 import {
   addClass,
   createNewElement,
-  getChildren,
   getChildrenCount,
   getElementAttribute,
   getRootSelector,
@@ -23,21 +23,16 @@ import {
   setStyle
 } from "./helpers"
 
-export class Arrows {
+export class Arrows extends BaseSlider {
   public $root: string
-  private $children: HTMLElement
-  private state: State
-  private store: StateType
   private slider: Slider
   private buttons: HTMLElement[] = []
   private getChildrenCount: number
 
   constructor($root: string) {
+    super($root)
     this.$root = $root
-    this.$children = getChildren(this.$root)
     this.getChildrenCount = getChildrenCount(this.$children)
-    this.state = new State(this.$root)
-    this.store = State.store(this.$root)
     this.slider = new Slider(this.$root)
   }
 
@@ -91,7 +86,7 @@ export class Arrows {
     return () => {
       const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
 
-      this.handleMouseLeave()
+      //  this.handleMouseLeave()
 
       setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
@@ -110,7 +105,7 @@ export class Arrows {
 
       if (dots) this.slider.updateDots(index, $root)
 
-      this.handleTransitionEnd(index)
+      //this.handleTransitionEnd(index)
     }
   }
 
