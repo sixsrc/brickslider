@@ -72,7 +72,7 @@ body {
   flex-direction: row;
   gap: 20px;
   will-change: transform;
-  touch-action: pan-y;
+ /* touch-action: pan-y;*/
   /* padding-bottom: 1.7rem;*/
   margin: 0;
 z-index:0;
@@ -135,9 +135,6 @@ z-index:0;
   z-index: 15;
 }
 
-.transition {
-  transition: none;
-}
 
 .slider__content {
   position: absolute;
@@ -230,9 +227,7 @@ z-index:0;
 /*cubic-bezier(0.4, 0, 0.2, 1);*/
 /* cubic-bezier(0.25, 1, 0.5, 1)*/
 .transition {
- /*transition: transform 100ms ease;*/
- transition:transform 400ms ease
-  
+  transition: transform 400ms ease;
 }
 
 .transition2 {
@@ -243,7 +238,7 @@ z-index:0;
 
 
 .no-transition {
-  transition-property: none;
+  transition: none !important;
 }
 
 .pointer-events{

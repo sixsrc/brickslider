@@ -1,6 +1,6 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { eventX, getAxisX, removeClass, transform } from "./helpers"
+import { addClass, eventX, getAxisX, removeClass, transform } from "./helpers"
 
 export class TouchMove extends BaseSlider {
   private currentPosition: number
@@ -40,15 +40,16 @@ export class TouchMove extends BaseSlider {
     }
   }
 
-  protected async setState(event: Event) {
+  protected setState(event: Event) {
     const position = this.getPosition(event)
-    const { slideIndex } = this.store
+    const { slideIndex, infinite } = this.store
 
-    if (position.right() && slideIndex === 1) {
-      removeClass(this.$children, "transition")
-      this.skipSlide = true
-      this.currentIndex = IndexesNames["Last"]
-      this.translate = -2940
+    if(infinite){
+      if (position.right() && slideIndex === 1) {
+        this.skipSlide = true
+        this.currentIndex = IndexesNames["Last"]
+        this.translate = -2940
+      }
     }
 
     this.state.set(
@@ -74,10 +75,28 @@ export class TouchMove extends BaseSlider {
     }
   }
   protected updateDOM() {
-    const { currentTranslate } = this.store
+    const { currentTranslate, prevTranslate } = this.store
 
-    requestAnimationFrame(this.animation.init)
-    transform(this.$root, currentTranslate)
+    // requestAnimationFrame(this.animation.init)
+    // transform(this.$root, currentTranslate)
+
+    console.log("prevtranslate", prevTranslate)
+    /*
+    
+    this.$children.animate(
+      [
+        {
+          transform: `translateX(${currentTranslate}px)`
+        }
+      ],
+
+      {
+        duration: 0,
+        easing: "ease",
+        fill: "forwards"
+      }
+    )
+    */
   }
 }
 

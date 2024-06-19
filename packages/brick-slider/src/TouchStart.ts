@@ -31,6 +31,8 @@ export class TouchStart extends BaseSlider {
   protected mainState(event: TouchEvent | MouseEvent) {
     const { slideIndex, slidesPerPage } = this.store
 
+    console.log("touchstart slideIndex", slideIndex)
+
     this.setState({
       [State_Keys.SliderReady]: false,
       [State_Keys.StartTime]: new Date().getMilliseconds(),

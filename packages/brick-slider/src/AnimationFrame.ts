@@ -6,9 +6,24 @@ export class AnimationFrame extends BaseSlider {
     super($root)
   }
   public init = (): void => {
-    const { currentTranslate, isDragging } = this.store
+    const { currentTranslate, isDragging} = this.store
+    const userDuration = isDragging ? 0 : 600
+    const delay = 50
+    const actualDuration = userDuration - delay
 
-    transform(this.$root, currentTranslate)
+    this.$children.animate(
+      [
+        {
+          transform: `translate3d(${currentTranslate}px, 0px, 0px)`
+        }
+      ],
+      {
+        duration: actualDuration > 0 ? actualDuration : 0,
+        easing: "ease-out",
+        fill: "forwards",
+        delay: delay,
+      }
+    )
 
     if (isDragging) requestAnimationFrame(this.init)
   }

@@ -30,14 +30,17 @@ export class Mount extends BaseSlider {
   }
 
   public init() {
-    const { slideIndex, slidesPerPage } = this.store
     this.setState()
-    this.updateDOM().toggleClass(this.slides, slideIndex, slidesPerPage)
     this.setAcessibility(this.$children!)
     this.appendSlider(this.$children, this.clonedSlides)
+
     this.enableControls(this.store)
-    // this.setSlideEvents(this.clonedSlides)
     this.handleResize()
+    this.updateDOM().toggleClass(
+      this.slides,
+      this.store.slideIndex,
+      this.store.slidesPerPage
+    )
   }
 
   public setAcessibility($children: HTMLElement): void {
@@ -74,7 +77,7 @@ export class Mount extends BaseSlider {
   }
 
   public enableControls(this: any, options: any): void {
-    const { dots, arrows, touch } = options || {}
+    const { dots, arrows, touch } = options
 
     if (dots) new Dots(this.$root).init()
     if (arrows) new Arrows(this.$root).init()

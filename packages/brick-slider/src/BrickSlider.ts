@@ -1,6 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
 import { Mount } from "./Mount"
-import { Observer } from "./Observer"
 import { Slides } from "./Slides"
 import { TypeOptions } from "./State"
 
@@ -10,7 +9,6 @@ export class BrickSlider extends BaseSlider {
   private slides: Slides
   private mount: Mount
   public options?: TypeOptions
-  private observer: Observer
 
   constructor($root: string, options?: TypeOptions) {
     super($root)
@@ -19,7 +17,6 @@ export class BrickSlider extends BaseSlider {
     this.slides = new Slides(this.$root)
     this.mount = new Mount(this.$root)
     options && this.state.setOptions(this.options!)
-    this.observer = new Observer(this.$children)
   }
 
   public init(): void {

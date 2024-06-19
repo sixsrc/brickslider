@@ -4,6 +4,7 @@ import { State_Keys } from "./State"
 import { CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
+  calcTranslate,
   getAllElements,
   getDotsSelector,
   getSliderNodeList,
@@ -42,12 +43,36 @@ export class Slider extends BaseSlider {
 
     requestAnimationFrame(this.animation.init)
 
-    transform(this.$root)
+    // transform(this.$root)
+
+    const { currentTranslate, spacing } = this.store
+
+    const translate = calcTranslate(this.$children!, spacing, slideIndex)
+
+    this.state.set({
+      [State_Keys.PrevTranslate]: translate,
+      [State_Keys.CurrentTranslate]: translate
+    })
+
+    this.$children.animate(
+      [
+        {
+          transform: `translate3d(${currentTranslate}px, 0px, 0px)`
+        },
+        {
+          transform: `translate3d(${currentTranslate * currentIndex}px, 0px, 0px)`
+        }
+      ],
+      {
+        duration: 0,
+        easing: "ease"
+        //fill: "forwards"
+      }
+    )
   }
 
   public updateDots(index: number, $root: string): void {
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
-
     const selectedIndex = index ?? 0
 
     dots.forEach((dot, i) => {

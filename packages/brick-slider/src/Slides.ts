@@ -21,7 +21,18 @@ export class Slides extends BaseSlider {
   public cloneSlides(): void {
     this.duplicateSlides(this.store.slidesPerPage)
     this.setState()
-    this.updateDOM().transform()
+    //this.updateDOM().transform()
+
+    this.$children.animate(
+      [
+        {
+          transform: `translate3d(${this.store.currentTranslate}px, 0px, 0px)`
+        }
+      ],
+      {
+        fill: "forwards"
+      }
+    )
   }
 
   private duplicateSlides(slidesPerPage: number) {
