@@ -40,3 +40,16 @@ export enum SpeedCategory {
   FAST = 2000,
   VERY_FAST = 5000
 }
+
+export type KeyframeAnimation = Record<string, any>
+
+export type AnimationOptions = {
+  duration: number
+  easing?: string
+  fill?: "none" | "forwards" | "backwards" | "both" | "auto"
+  delay?: number
+  iterations?: number
+  direction?: "normal" | "reverse" | "alternate" | "alternate-reverse"
+  endDelay?: number
+  iterationStart?: number
+}

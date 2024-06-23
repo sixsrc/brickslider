@@ -1,5 +1,6 @@
+import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
-import { State, StateType, State_Keys } from "./State"
+import { State_Keys } from "./State"
 import {
   ATTRIBUTES,
   CLASS_VALUES,
@@ -12,26 +13,18 @@ import {
   appendToParent,
   createNewElement,
   getAllElements,
-  getChildren,
   getChildrenCount,
   getRootSelector,
   listener,
   setAttribute
 } from "./helpers"
 
-export class Dots {
-  public $root: string
-  private $children: HTMLElement
-  private state: State
-  private store: StateType
+export class Dots extends BaseSlider {
   private slider: Slider
   private containerDots: HTMLElement
 
   constructor($root: string) {
-    this.$root = $root
-    this.$children = getChildren(this.$root)
-    this.state = new State(this.$root)
-    this.store = State.store(this.$root)
+    super($root)
     this.slider = new Slider(this.$root)
     this.containerDots = createNewElement(TAGS.UL)
   }
@@ -73,60 +66,46 @@ export class Dots {
   }
 
   private setSliderCount(): void {
-    const { slidesPerPage, infinite } = this.store
+    this.state.set({
+      [State_Keys.NumberOfSlides]: this.calculateNumberOfSlides()
+    })
+  }
 
+  private calculateNumberOfSlides() {
+    const { slidesPerPage, infinite } = this.store
     const sliderCount = getChildrenCount(this.$children)
 
     if (infinite && slidesPerPage <= 1) {
-      this.state.set({ [State_Keys.NumberOfSlides]: sliderCount - 2 })
-    } else if (infinite && slidesPerPage > 1) {
-      this.state.set({
-        [State_Keys.NumberOfSlides]:
-          Math.ceil(sliderCount / slidesPerPage) - slidesPerPage
-      })
-    } else if (!infinite && slidesPerPage > 1) {
-      this.state.set({
-        [State_Keys.NumberOfSlides]: Math.ceil(sliderCount / slidesPerPage)
-      })
+      return sliderCount - 2
     }
+    if (infinite && slidesPerPage > 1) {
+      return Math.ceil(sliderCount / slidesPerPage) - slidesPerPage
+    }
+    if (!infinite && slidesPerPage > 1) {
+      return Math.ceil(sliderCount / slidesPerPage)
+    }
+    return sliderCount
   }
 
   private dotHandler($root: string): void {
-    let index = this.store[State_Keys.SlideIndex]
-
-    this.slider.updateDots(index, $root)
-
-    // addClass([this.$children], "transition")
-
+    let { slideIndex } = this.store
     const from = "dots"
 
-    const isInfinite = this.store[State_Keys.Infinite]
+    this.slider.updateDots(slideIndex, $root)
 
     this.slider.setSlideTarget({
       from,
-      touchIndex: isInfinite ? ++index : index,
+      // touchIndex: infinite ? ++slideIndex : slideIndex,
+      touchIndex: slideIndex,
       $root
     })
   }
 
   private handleClick(dot: HTMLElement, index: number): void {
     listener([EVENTS.CLICK], dot, () => {
-      this.state.set({ [State_Keys.SlideIndex]: index })
+      this.state.set({ slideIndex: index })
 
       this.dotHandler(this.$root)
     })
   }
 }
-
-/*if (infinite && slidesPerPage <= 1)
-      this.state.set(State_Keys.NumberOfSlides, sliderCount - 2)
-  
-    if (infinite && slidesPerPage > 1)
-      this.state.set(
-        State_Keys.NumberOfSlides,
-        Math.ceil(sliderCount / slidesPerPage) - slidesPerPage
-      )
-  
-    if (!infinite && slidesPerPage > 1) {
-      this.state.set(State_Keys.NumberOfSlides, Math.ceil(sliderCount / slidesPerPage))
-    }*/

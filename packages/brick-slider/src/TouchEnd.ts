@@ -1,20 +1,24 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
-import { State_Keys } from "./State"
+import { StateType, State_Keys } from "./State"
+import { ANIMATION_OPTIONS } from "./constants"
 import {
   addClass,
+  animateElement,
   getSliderNodeList,
   getSliderWidth,
-  setIndexBypass
+  setIndexBypass,
+  translate3d
 } from "./helpers"
+import { AnimationOptions, KeyframeAnimation } from "./types"
 
 export class TouchEnd extends BaseSlider {
   private slides: HTMLElement[]
   private sliderWidth: number | undefined
   animation: AnimationFrame
   private slider: Slider
-  limitedMoveSlider: number
+  moveSlider: number
 
   constructor($root: string) {
     super($root)
@@ -22,63 +26,79 @@ export class TouchEnd extends BaseSlider {
     this.slides = getSliderNodeList(this.$root)
     this.sliderWidth = getSliderWidth(this.$children)
     this.animation = new AnimationFrame(this.$root)
-    this.limitedMoveSlider = 0
+    this.moveSlider = 0
   }
 
-  public init = (event: TouchEvent | MouseEvent): void => {
+  public init = (): void => {
     this.handleTouchMove()
     this.setState(this.mainState())
   }
 
-  private mainState() {
+  private mainState(): Partial<StateType> {
     return {
-      [State_Keys.isDragging]: false,
-      [State_Keys.IsMouseLeave]: true,
-      [State_Keys.IsTouch]: false,
-      [State_Keys.EndTime]: new Date().getMilliseconds()
+      isDragging: false,
+      isMouseLeave: true,
+      isTouch: false,
+      endTime: new Date().getMilliseconds()
     }
   }
 
-  private positionState(currentTranslate: number) {
+  private positionState(currentTranslate: number): Partial<StateType> {
     return {
-      [State_Keys.CurrentTranslate]: currentTranslate,
-      [State_Keys.PrevTranslate]: currentTranslate
+      currentTranslate,
+      prevTranslate: currentTranslate
     }
   }
 
-  private handleTouchMove() {
+  private handleTouchMove(): void {
     const {
-      animationId,
       isMouseLeave,
       isTouch,
+      slideIndex,
       currentTranslate,
-      prevTranslate
+      prevTranslate,
+      startTime,
+      endTime
     } = this.store
 
-    const moveSlider = currentTranslate - prevTranslate
+    this.moveSlider = currentTranslate - prevTranslate
 
-    let currentIndex = this.store[State_Keys.SlideIndex]
+    this.setCancelAnimationFrame()
 
-    if (typeof animationId === "number") cancelAnimationFrame(animationId)
+    if (Math.abs(startTime - endTime) <= 250) {
+      // this.state.set({ velocity: 100 })
+    }
+    console.log()
 
-    this.goToNextSlide(moveSlider, currentIndex, this.slides) &&
+    if (this.goToNextSlide(this.moveSlider, slideIndex, this.slides)) {
       this.incrementSlideIndex()
+    }
 
-    this.goToPrevSlide(moveSlider, currentIndex) && this.decrementSlideIndex()
+    if (this.goToPrevSlide(this.moveSlider, slideIndex)) {
+      this.decrementSlideIndex()
+    }
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
-      this.animate(currentTranslate, moveSlider)
-      addClass([this.$children], "transition")
+      this.animate()
+      this.setState({ isJumpSlide: false })
     }
   }
 
+  private setCancelAnimationFrame(): void {
+    const { animationId } = this.store
+
+    if (typeof animationId === "number") cancelAnimationFrame(animationId)
+  }
+
   private incrementSlideIndex(): void {
-    this.state.set({ [State_Keys.SlideIndex]: this.store.slideIndex + 1 })
+    const { slideIndex } = this.store
+    this.setState({ slideIndex: slideIndex + 1 })
   }
 
   private decrementSlideIndex(): void {
-    this.state.set({ [State_Keys.SlideIndex]: this.store.slideIndex - 1 })
+    const { slideIndex } = this.store
+    this.setState({ slideIndex: slideIndex - 1 })
   }
 
   private goToNextSlide(
@@ -88,29 +108,36 @@ export class TouchEnd extends BaseSlider {
   ): boolean {
     const isMovedByThreshold = moveSlider < (-this.sliderWidth! * 40) / 100
     const isNotLastSlide = currentIndex < element.length - 1
+
     return isMovedByThreshold && isNotLastSlide
   }
 
   private goToPrevSlide(moveSlider: number, currentIndex: number): boolean {
     const isMovedByThreshold = moveSlider > (this.sliderWidth! * 40) / 100
     const isNotFirstSlide = currentIndex > 0
+
     return isMovedByThreshold && isNotFirstSlide
   }
 
-  private animate(currentTranslate: number, moveSlider: number) {
-    this.$children.animate(
-      [
-        { transform: `translate3d(${currentTranslate}px, 0px, 0px)` },
-        {
-          transform: `translate3d(${currentTranslate + moveSlider}px, 0px, 0px)`
-        }
-      ],
+  private animate(): void {
+    animateElement(this.$children, this.keyFrames(), this.options())
+  }
+
+  private keyFrames(): KeyframeAnimation[] {
+    const { currentTranslate } = this.store
+
+    return [
+      { transform: translate3d(currentTranslate, 0, 0) },
       {
-        duration: 0,
-        easing: "ease"
-        // fill: "forwards"
+        transform: translate3d(currentTranslate + this.moveSlider, 0, 0)
       }
-    )
+    ]
+  }
+  private options(): AnimationOptions {
+    return {
+      duration: 0,
+      easing: ANIMATION_OPTIONS.EASEOUT
+    }
   }
 
   protected setState(state: any) {

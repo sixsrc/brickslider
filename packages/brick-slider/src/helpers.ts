@@ -1,7 +1,9 @@
 import { State, State_Keys } from "./State"
 import { CLASS_VALUES, DOM_ELEMENTS } from "./constants"
 import {
+  AnimationOptions,
   DirectionType,
+  KeyframeAnimation,
   SliderSpeedParams,
   SpeedCategory,
   TypeIndexBaseSliderdBy
@@ -13,6 +15,21 @@ export function addClass(
 ): void {
   elements.forEach(el => {
     el.classList.add(className)
+  })
+}
+export function animateElement(
+  element: HTMLElement | HTMLElement[],
+  keyframes: Keyframe[],
+  options: AnimationOptions
+): void {
+  if (!element) {
+    throw new Error("Element is required for animation.")
+  }
+
+  const elements = Array.isArray(element) ? element : [element]
+
+  elements.forEach(el => {
+    el.animate(keyframes, options)
   })
 }
 
@@ -185,7 +202,6 @@ export function calcIndex(
   if (infinite) {
     index = setIndexBypass(i, numberOfSlides, slidesPerPage) + 1
     sliderCount = numberOfSlides - 2
-    console.log(index)
   }
 
   return { index, sliderCount }
@@ -217,6 +233,29 @@ export function getAxisX(event: MouseEvent | TouchEvent): number {
     (event as TouchEvent).touches.length > 0
   ) {
     return (event as TouchEvent).touches[0].clientX
+  } else {
+    return NaN
+  }
+}
+
+export function getRelativeX(
+  event: MouseEvent | TouchEvent,
+  element: HTMLElement
+): number {
+  if (event.type.includes("mouse")) {
+    return (
+      (event as MouseEvent).pageX -
+      element.getBoundingClientRect().left -
+      window.scrollX
+    )
+  } else if (
+    (event as TouchEvent).touches &&
+    (event as TouchEvent).touches.length > 0
+  ) {
+    return (
+      (event as TouchEvent).touches[0].clientX -
+      element.getBoundingClientRect().left
+    )
   } else {
     return NaN
   }
@@ -347,6 +386,10 @@ export function transform($root: string, currentTranslateFixed?: number) {
   const callback = () => setTranslateX($root, currentTranslateFixed!)
 
   setTransform(slider!, callback)
+}
+
+export function translate3d(x: number, y: number, z: number): string {
+  return `translate3d(${x}px, ${y}px, ${z}px)`
 }
 
 export function waitFor(time: number, callback: () => void) {
