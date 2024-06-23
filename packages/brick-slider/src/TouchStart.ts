@@ -22,6 +22,8 @@ export class TouchStart extends BaseSlider {
 
   private handleTouchStart(event: TouchEvent | MouseEvent) {
     this.eventX = eventX(event as MouseEvent | TouchEvent)
+
+    const { infinite, slideIndex } = this.store
   }
 
   protected setState(state: any) {
@@ -30,8 +32,6 @@ export class TouchStart extends BaseSlider {
 
   protected mainState(event: TouchEvent | MouseEvent) {
     const { slideIndex, slidesPerPage } = this.store
-
-    console.log("touchstart slideIndex", slideIndex)
 
     this.setState({
       [State_Keys.SliderReady]: false,

@@ -1,9 +1,9 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { State_Keys } from "./State"
-import { CLASS_VALUES, TAGS } from "./constants"
+import { ANIMATION_OPTIONS, CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
+  animateElement,
   calcTranslate,
   getAllElements,
   getDotsSelector,
@@ -13,62 +13,112 @@ import {
   isNotMapped,
   removeClass,
   toggleClass,
-  transform
+  translate3d
 } from "./helpers"
-import { TypeTargetSlideParams } from "./types"
+import {
+  AnimationOptions,
+  KeyframeAnimation,
+  TypeTargetSlideParams
+} from "./types"
 
 export class Slider extends BaseSlider {
   private animation: any
+  currentIndex: number
+  translate: number
+  recordedIndex: null | number
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame(this.$root)
+    this.currentIndex = 0
+    this.recordedIndex = 0
+    this.translate = 0
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
-    const { touchIndex, from } = params!
-    const { infinite, numberOfSlides, slideIndex, slidesPerPage } = this.store
+    this.setIndexBasedBy(params)
 
-    let currentIndex = indexBasedBy({
+    if (this.mapSlideIndex()) return
+
+    this.animationFrame()
+    this.calcTranslate()
+    this.setState()
+    this.updateDOM()
+  }
+
+  private setIndexBasedBy(params: TypeTargetSlideParams): void {
+    let { touchIndex, from } = params!
+    const { slideIndex, infinite } = this.store
+
+    if (touchIndex !== undefined) {
+      if (infinite && from === "dots") {
+        touchIndex = touchIndex + 1
+      }
+    }
+
+    this.currentIndex = indexBasedBy({
       from,
       slideIndex,
       touchIndex
     })
+  }
 
-    if (isNotMapped(infinite, currentIndex, numberOfSlides)) return
+  private mapSlideIndex(): boolean {
+    const { infinite, numberOfSlides } = this.store
 
-    this.state.set({ [State_Keys.SlideIndex]: currentIndex })
+    return isNotMapped(infinite, this.currentIndex, numberOfSlides)
+  }
 
-    toggleClass(getSliderNodeList(this.$root), currentIndex, slidesPerPage)
+  private isLastClonedSlide() {
+    return this.currentIndex === this.recordedIndex
+  }
 
+  private animationFrame() {
     requestAnimationFrame(this.animation.init)
+  }
 
-    // transform(this.$root)
+  private calcTranslate() {
+    const { spacing } = this.store
 
-    const { currentTranslate, spacing } = this.store
+    this.translate = calcTranslate(this.$children!, spacing, this.currentIndex)
+  }
 
-    const translate = calcTranslate(this.$children!, spacing, slideIndex)
-
+  protected setState(): void {
     this.state.set({
-      [State_Keys.PrevTranslate]: translate,
-      [State_Keys.CurrentTranslate]: translate
+      slideIndex: this.currentIndex,
+      prevTranslate: this.translate,
+      currentTranslate: this.translate
     })
+  }
 
-    this.$children.animate(
-      [
-        {
-          transform: `translate3d(${currentTranslate}px, 0px, 0px)`
-        },
-        {
-          transform: `translate3d(${currentTranslate * currentIndex}px, 0px, 0px)`
-        }
-      ],
+  protected updateDOM(): void {
+    const { slidesPerPage } = this.store
+
+    toggleClass(getSliderNodeList(this.$root), this.currentIndex, slidesPerPage)
+
+    this.animate()
+  }
+
+  private animate(): void {
+    animateElement(this.$children, this.keyFrames(), this.options())
+  }
+
+  private keyFrames(): KeyframeAnimation[] {
+    const { currentTranslate } = this.store
+    const shouldJumpSlide = this.isLastClonedSlide()
+
+    return [
       {
-        duration: 0,
-        easing: "ease"
-        //fill: "forwards"
+        transform: translate3d(currentTranslate, 0, 0)
       }
-    )
+    ]
+  }
+
+  private options(): AnimationOptions {
+    return {
+      duration: 0,
+      easing: ANIMATION_OPTIONS.EASEOUT
+    }
   }
 
   public updateDots(index: number, $root: string): void {
@@ -83,3 +133,12 @@ export class Slider extends BaseSlider {
     })
   }
 }
+
+//this.state.set({ [State_Keys.SlideIndex]: this.currentIndex })
+/* {
+        transform: translate3d(
+          this.store.currentTranslate * this.currentIndex,
+          0,
+          0
+        )
+      }*/

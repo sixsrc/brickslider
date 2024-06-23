@@ -1,6 +1,15 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { addClass, eventX, getAxisX, removeClass, transform } from "./helpers"
+import {
+  addClass,
+  eventX,
+  getAxisX,
+  getRelativeX,
+  getSliderWidth,
+  removeClass,
+  transform,
+  translate3d
+} from "./helpers"
 
 export class TouchMove extends BaseSlider {
   private currentPosition: number
@@ -9,6 +18,8 @@ export class TouchMove extends BaseSlider {
   private skipSlide: boolean
   private currentIndex: number
   private translate: number
+  private eventX: MouseEvent | TouchEvent | null
+  sliderWidth: any
 
   constructor($root: string) {
     super($root)
@@ -18,37 +29,64 @@ export class TouchMove extends BaseSlider {
     this.currentIndex = 0
     this.translate = 0
     this.skipSlide = false
+    this.eventX = null
+    this.sliderWidth = getSliderWidth(this.$children)
   }
 
   public init = (event: any): void => {
     const { isDragging } = this.store
 
     if (isDragging) {
+      this.updatePosition(event)
       this.setState(event)
-      this.getPosition(event)
       this.updateDOM()
     }
   }
 
-  protected getPosition(event: Event) {
+  protected updatePosition(event: Event) {
     this.previousPosition = this.currentPosition
     this.currentPosition = getAxisX(eventX(event as MouseEvent | TouchEvent))
-
-    return {
-      right: () => this.currentPosition > this.previousPosition,
-      left: () => this.currentPosition < this.previousPosition
-    }
   }
 
-  protected setState(event: Event) {
-    const position = this.getPosition(event)
-    const { slideIndex, infinite } = this.store
+  protected isMovingRight() {
+    const { currentTranslate } = this.store
+    const translate = Math.abs(currentTranslate)
+    const limit = (this.sliderWidth * 5) / 100 - this.sliderWidth
 
-    if(infinite){
-      if (position.right() && slideIndex === 1) {
+    return translate <= limit
+  }
+
+  protected isMovingLeft(): boolean {
+    const { currentTranslate } = this.store
+    const translate = Math.abs(currentTranslate)
+    const limit = (this.sliderWidth * 5) / 100 - this.sliderWidth
+
+    return translate >= limit
+  }
+
+  protected setState(event: MouseEvent | TouchEvent) {
+    const { slideIndex, infinite, isJumpSlide, velocity } = this.store
+    this.eventX = eventX(event as MouseEvent | TouchEvent)
+
+    console.log(this.$children.getBoundingClientRect())
+
+    if (infinite) {
+      if (slideIndex === 0) {
         this.skipSlide = true
-        this.currentIndex = IndexesNames["Last"]
+        this.currentIndex = IndexesNames.Third
+        this.translate = -2352
+        this.state.set({ isJumpSlide: true })
+      }
+      if (this.isMovingRight() && slideIndex === 1) {
+        this.skipSlide = true
+        this.currentIndex = IndexesNames.Last
         this.translate = -2940
+        this.state.set({ isJumpSlide: true })
+      } else if (this.isMovingLeft() && slideIndex === 5) {
+        this.skipSlide = true
+        this.currentIndex = IndexesNames.Second
+        this.translate = -588
+        this.state.set({ isJumpSlide: true })
       }
     }
 
@@ -74,29 +112,22 @@ export class TouchMove extends BaseSlider {
       prevTranslate: this.translate
     }
   }
+
   protected updateDOM() {
-    const { currentTranslate, prevTranslate } = this.store
+    const { currentTranslate } = this.store
 
-    // requestAnimationFrame(this.animation.init)
-    // transform(this.$root, currentTranslate)
-
-    console.log("prevtranslate", prevTranslate)
-    /*
-    
     this.$children.animate(
       [
         {
-          transform: `translateX(${currentTranslate}px)`
+          transform: translate3d(currentTranslate, 0, 0)
         }
       ],
-
       {
-        duration: 0,
-        easing: "ease",
-        fill: "forwards"
+        duration: 0
+        // easing: "ease",
+        //fill: "forwards"
       }
     )
-    */
   }
 }
 
@@ -106,19 +137,3 @@ enum IndexesNames {
   Third = 4,
   Last = 5
 }
-// Math.abs(this.store.currentTranslate) <= 588 - (588 * 3) / 100 //10 - 3- 30*/
-
-/*
-
-      if (position.right() && slideIndex === 1) {
-        this.skipSlide = true
-        this.currentIndex = IndexesNames["Last"]
-      } else if (
-        position.right() &&
-        slideIndex === 5 //&&
-        //!hasClass(this.slides[0], "cloned")
-      ) 
-        this.skipSlide = false
-
-        //removeClass(this.$children, "no-transition")
-      }*/

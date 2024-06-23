@@ -62,3 +62,10 @@ export const EVENTS = {
   TRANSITIONCANCEL: "transitioncancel",
   DRAGEND: "dragend"
 }
+
+export const ANIMATION_DELAY = 80
+
+export const ANIMATION_OPTIONS = {
+  FORWARDS: "forwards",
+  EASEOUT: "ease-out"
+} as const
