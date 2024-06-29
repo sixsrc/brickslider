@@ -1,12 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { State_Keys } from "./State"
 import { CLASS_VALUES } from "./constants"
-import {
-  addClass,
-  calcTranslate,
-  getSliderNodeList,
-  transform
-} from "./helpers"
+import { addClass, calcTranslate, getSliderNodeList } from "./helpers"
 
 export class Slides extends BaseSlider {
   private slides: HTMLElement[] | null
@@ -54,11 +49,11 @@ export class Slides extends BaseSlider {
     for (const indices of [endIndices, startIndices]) {
       for (const index of indices) {
         const clone = this.slides![index].cloneNode(true) as HTMLElement
-        const { updateDOM } = this
+        const { updateDOM, clonedSlides } = this
 
-        this.clonedSlides.push(clone)
+        clonedSlides.push(clone)
 
-        updateDOM().addClass(this.clonedSlides, CLASS_VALUES.CLONED)
+        updateDOM().addClass(clonedSlides, CLASS_VALUES.CLONED)
 
         index < slidesPerPage
           ? this.$children?.appendChild(clone)
@@ -84,7 +79,7 @@ export class Slides extends BaseSlider {
 
   protected updateDOM() {
     return {
-      transform: () => transform(this.$root),
+      // transform: () => transform(this.$root),
       addClass: (elements: (HTMLElement | Element)[], className: string) =>
         addClass(elements, className)
     }

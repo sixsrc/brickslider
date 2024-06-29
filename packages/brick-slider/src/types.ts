@@ -1,3 +1,14 @@
+export type AnimationOptions = {
+  duration: number
+  easing?: string
+  fill?: "none" | "forwards" | "backwards" | "both" | "auto"
+  delay?: number
+  iterations?: number
+  direction?: "normal" | "reverse" | "alternate" | "alternate-reverse"
+  endDelay?: number
+  iterationStart?: number
+}
+
 export type TouchListenersParams = {
   element: HTMLElement
   index: number
@@ -33,23 +44,6 @@ export type SliderSpeedParams = {
   slideSpeed: number
 }
 
-export enum SpeedCategory {
-  VERY_SLOW = 200,
-  SLOW = 500,
-  MODERATE = 1000,
-  FAST = 2000,
-  VERY_FAST = 5000
-}
+export type UpdateSlideIndexType = "increment" | "decrement"
 
 export type KeyframeAnimation = Record<string, any>
-
-export type AnimationOptions = {
-  duration: number
-  easing?: string
-  fill?: "none" | "forwards" | "backwards" | "both" | "auto"
-  delay?: number
-  iterations?: number
-  direction?: "normal" | "reverse" | "alternate" | "alternate-reverse"
-  endDelay?: number
-  iterationStart?: number
-}

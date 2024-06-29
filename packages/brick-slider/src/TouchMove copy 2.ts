@@ -1,6 +1,4 @@
 import { BaseSlider } from "./BaseSlider"
-import { StateType } from "./State"
-import { MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
 import { animateElement, eventX, getAxisX, translate3d } from "./helpers"
 import { AnimationOptions, KeyframeAnimation } from "./types"
 
@@ -10,14 +8,6 @@ enum IndexesNames {
   Third = 4,
   Last = 5
 }
-type IndexData = {
-  currentIndex: "First" | "Second" | "Third" | "Last"
-  translate: number
-}
-type IndexMap = Record<IndexKey, IndexData>
-type IndexKey = "first" | "second" | "last"
-type EvalConditions = { [key: string]: boolean }
-type MainStateTouchMove = Pick<StateType, "isTouch" | "currentTranslate">
 
 export class TouchMove extends BaseSlider {
   private currentPosition: number
@@ -54,12 +44,12 @@ export class TouchMove extends BaseSlider {
   protected movingTo(position: "right" | "left"): boolean {
     const { currentTranslate } = this.store
     const translate = Math.abs(currentTranslate)
-    const limit = (this.sliderWidth! * MOVE_TO_LIMIT) / 100 - this.sliderWidth!
+    const limit = (this.sliderWidth! * 5) / 100 - this.sliderWidth!
 
-    return position === POSITION.RIGHT ? translate <= limit : translate >= limit
+    return position === "right" ? translate <= limit : translate >= limit
   }
 
-  protected setState(): void {
+  protected setState() {
     this.state.set(
       this.skipSlide ? this.infiniteTouchState() : this.mainState()
     )
@@ -67,35 +57,38 @@ export class TouchMove extends BaseSlider {
     this.skipSlide = false
   }
 
-  protected handleSwipe(): boolean | void {
+  protected handleSwipe() {
     const { infinite } = this.store
 
     infinite && this.infiniteSwipe()
   }
 
-  protected infiniteSwipe(): void {
-    const isEqual = Object.keys(this.evalSlideConditions()).find(
-      key => this.evalSlideConditions()[key]
-    )
+  protected infiniteSwipe() {
+    switch (true) {
+      case this.SlideIndex().isFirstCloned():
+        this.skipSlide = true
+        this.currentIndex = IndexesNames.Third
+        this.translate = -2352
+        this.state.set({ isJumpSlide: true })
+        break
 
-    if (isEqual) {
-      this.jumpSlideTo(SLIDE_INDEX[isEqual as keyof typeof SLIDE_INDEX])
+      case this.movingTo("right") && this.SlideIndex().isSecondSlide():
+        this.skipSlide = true
+        this.currentIndex = IndexesNames.Last
+        this.translate = -2940
+        this.state.set({ isJumpSlide: true })
+        break
+
+      case this.movingTo("left") && this.SlideIndex().isLastCloned():
+        this.skipSlide = true
+        this.currentIndex = IndexesNames.Second
+        this.translate = -588
+        this.state.set({ isJumpSlide: true })
+        break
     }
   }
 
-  private evalSlideConditions(): EvalConditions {
-    const isFirstCloned = this.slideIndex().isFirstCloned()
-    const isSecondSlide = this.slideIndex().isSecondSlide()
-    const isLastCloned = this.slideIndex().isLastCloned()
-
-    return {
-      FIRST: isFirstCloned,
-      SECOND: this.movingTo(POSITION.RIGHT) && isSecondSlide,
-      LAST: this.movingTo(POSITION.LEFT) && isLastCloned
-    }
-  }
-
-  private slideIndex() {
+  private SlideIndex() {
     const { slideIndex } = this.store
     return {
       isFirstCloned: () => slideIndex === 0,
@@ -104,26 +97,7 @@ export class TouchMove extends BaseSlider {
     }
   }
 
-  private jumpSlideTo(to: keyof IndexMap): void {
-    const indexData = this.mapIndex().get(to)
-
-    if (indexData) {
-      this.skipSlide = true
-      this.currentIndex = IndexesNames[indexData.currentIndex]
-      this.translate = indexData.translate
-      this.state.set({ isJumpSlide: true })
-    }
-  }
-
-  private mapIndex(): Map<IndexKey, IndexData> {
-    return new Map([
-      [SLIDE_INDEX.FIRST, { currentIndex: "Third", translate: -2352 }],
-      [SLIDE_INDEX.SECOND, { currentIndex: "Last", translate: -2940 }],
-      [SLIDE_INDEX.LAST, { currentIndex: "Second", translate: -588 }]
-    ])
-  }
-
-  protected mainState(): Partial<MainStateTouchMove> {
+  protected mainState() {
     const { prevTranslate, startPos } = this.store
     const { currentPosition } = this
 
@@ -133,7 +107,7 @@ export class TouchMove extends BaseSlider {
     }
   }
 
-  protected infiniteTouchState(): Partial<StateType> {
+  protected infiniteTouchState() {
     const { currentIndex, translate } = this
 
     return {
@@ -191,43 +165,3 @@ export class TouchMove extends BaseSlider {
     return translate >= limit
   }
  */
-
-// this.currentIndex = IndexesNames[this.mapIndex()[to].currentIndex]
-// this.translate = this.mapIndex()[to].translate
-
-/* private mapIndex(): IndexMap {
-    return {
-      first: {
-        currentIndex: "Third",
-        translate: -2352
-      },
-      second: {
-        currentIndex: "Last",
-        translate: -2940
-      },
-      last: {
-        currentIndex: "Second",
-        translate: -588
-      }
-    }
-  }*/
-
-/*protected infiniteSwipe() {
-    const isFirstCloned = this.slideIndex().isFirstCloned()
-    const isSecondSlide = this.slideIndex().isSecondSlide()
-    const isLastCloned = this.slideIndex().isLastCloned()
-
-    switch (true) {
-      case isFirstCloned:
-        this.jumpSlideTo(SLIDE_INDEX.FIRST)
-        break
-
-      case this.movingTo(POSITION.RIGHT) && isSecondSlide:
-        this.jumpSlideTo(SLIDE_INDEX.SECOND)
-        break
-
-      case this.movingTo(POSITION.LEFT) && isLastCloned:
-        this.jumpSlideTo(SLIDE_INDEX.LAST)
-        break
-    }
-  }*/

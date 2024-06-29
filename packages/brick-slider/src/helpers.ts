@@ -1,11 +1,7 @@
-import { State, State_Keys } from "./State"
 import { CLASS_VALUES, DOM_ELEMENTS } from "./constants"
 import {
   AnimationOptions,
   DirectionType,
-  KeyframeAnimation,
-  SliderSpeedParams,
-  SpeedCategory,
   TypeIndexBaseSliderdBy
 } from "./types"
 
@@ -165,10 +161,6 @@ export function setStyle(el: HTMLElement, styleProp: any, value: string): void {
   el.style[styleProp] = value
 }
 
-export function setTransform(el: HTMLElement, fn: () => number): void {
-  if (el) el.style.transform = `translate3d(${fn()}px, 0px, 0px)`
-}
-
 export function $(element: string): HTMLElement | undefined {
   const selectedElement: HTMLElement | null = document.querySelector(element)
   if (selectedElement) {
@@ -225,6 +217,7 @@ export function calcTranslate(
 
 export const eventX = (event: MouseEvent | TouchEvent) =>
   event.type.includes("mouse") ? (event as MouseEvent) : (event as TouchEvent)
+
 export function getAxisX(event: MouseEvent | TouchEvent): number {
   if (event.type.includes("mouse")) {
     return (event as MouseEvent).pageX
@@ -233,29 +226,6 @@ export function getAxisX(event: MouseEvent | TouchEvent): number {
     (event as TouchEvent).touches.length > 0
   ) {
     return (event as TouchEvent).touches[0].clientX
-  } else {
-    return NaN
-  }
-}
-
-export function getRelativeX(
-  event: MouseEvent | TouchEvent,
-  element: HTMLElement
-): number {
-  if (event.type.includes("mouse")) {
-    return (
-      (event as MouseEvent).pageX -
-      element.getBoundingClientRect().left -
-      window.scrollX
-    )
-  } else if (
-    (event as TouchEvent).touches &&
-    (event as TouchEvent).touches.length > 0
-  ) {
-    return (
-      (event as TouchEvent).touches[0].clientX -
-      element.getBoundingClientRect().left
-    )
   } else {
     return NaN
   }
@@ -344,6 +314,54 @@ export function setIndexBypass(
   return indexBypass
 }
 
+export function toggleClass(
+  slides: HTMLElement[],
+  slideIndex: number,
+  slidesPerPage: number
+): void {
+  let i = 0
+
+  slides.forEach(slide => {
+    removeClass(slide, CLASS_VALUES.ACTIVE)
+  })
+
+  for (i; i < slidesPerPage; i++) {
+    const index = slideIndex * slidesPerPage + i
+
+    addClass([slides[index]], CLASS_VALUES.ACTIVE)
+  }
+}
+
+export function translate3d(x: number): string {
+  return `translate3d(${x}px, 0px, 0px)`
+}
+
+export function waitFor(time: number, callback: () => void) {
+  let start: number
+
+  function wait(timestamp: number) {
+    if (!start) start = timestamp
+    if (timestamp - start < time) {
+      requestAnimationFrame(wait)
+    } else {
+      callback()
+    }
+  }
+  requestAnimationFrame(wait)
+}
+
+/*
+export function transform($root: string, currentTranslateFixed?: number) {
+  const slider = getChildren($root)
+  const callback = () => setTranslateX($root, currentTranslateFixed!)
+
+  setTransform(slider!, callback)
+
+  export function setTransform(el: HTMLElement, fn: () => number): void {
+  if (el) el.style.transform = `translate3d(${fn()}px, 0px, 0px)`
+}
+}
+
 export function setTranslateX(
   $root: string,
   currentTranslateFixedValue: number
@@ -363,109 +381,4 @@ export function setTranslateX(
   return translateFixedValue ? translateFixedValue : translate
 }
 
-export function toggleClass(
-  slides: HTMLElement[],
-  slideIndex: number,
-  slidesPerPage: number
-): void {
-  let i = 0
-
-  slides.forEach(slide => {
-    removeClass(slide, CLASS_VALUES.ACTIVE)
-  })
-
-  for (i; i < slidesPerPage; i++) {
-    const index = slideIndex * slidesPerPage + i
-
-    addClass([slides[index]], CLASS_VALUES.ACTIVE)
-  }
-}
-
-export function transform($root: string, currentTranslateFixed?: number) {
-  const slider = getChildren($root)
-  const callback = () => setTranslateX($root, currentTranslateFixed!)
-
-  setTransform(slider!, callback)
-}
-
-export function translate3d(x: number, y: number, z: number): string {
-  return `translate3d(${x}px, ${y}px, ${z}px)`
-}
-
-export function waitFor(time: number, callback: () => void) {
-  let start: number
-
-  function wait(timestamp: number) {
-    if (!start) start = timestamp
-    if (timestamp - start < time) {
-      requestAnimationFrame(wait)
-    } else {
-      callback()
-    }
-  }
-  requestAnimationFrame(wait)
-}
-
-export function calculateSliderSpeed(params: SliderSpeedParams): number {
-  const { startX, endX, slideSpeed } = params
-
-  // Verificar se startX, endX e slideSpeed são números válidos
-  if (
-    typeof startX !== "number" ||
-    typeof endX !== "number" ||
-    typeof slideSpeed !== "number"
-  ) {
-    return 0 // Se algum dos valores não for um número válido, retornar zero
-  }
-
-  // Verificar se startX é menor que endX (movimento para a direita) ou maior que endX (movimento para a esquerda)
-  if (startX <= endX) {
-    return 0 // Não houve movimento ou movimento para a direita, então a velocidade é zero
-  }
-
-  const distance = Math.abs(startX - endX)
-  const elapsedTime = performance.now() - slideSpeed
-
-  // Verificar se o tempo decorrido é muito pequeno ou se a distância percorrida é zero
-  if (elapsedTime < 1 || distance === 0) {
-    return 0 // Não houve movimento ou o tempo decorrido é muito pequeno, então a velocidade é zero
-  }
-
-  const speedPxPerMs = distance / elapsedTime
-  return speedPxPerMs
-}
-
-export function convertToPixelsPerSecond(speedInPxPerMs: number): number {
-  return speedInPxPerMs * 1000 // 1000 milisseconds = 1 second
-}
-
-export function getSpeedCategory(speed: number): SpeedCategory {
-  if (speed < 300) {
-    return SpeedCategory.VERY_SLOW
-  } else if (speed < 700) {
-    return SpeedCategory.SLOW
-  } else if (speed < 1500) {
-    return SpeedCategory.MODERATE
-  } else if (speed < 3000) {
-    return SpeedCategory.FAST
-  } else {
-    return SpeedCategory.VERY_FAST
-  }
-}
-
-export function getCategoryLabel(category: SpeedCategory): string {
-  switch (category) {
-    case SpeedCategory.VERY_SLOW:
-      return "Very Slow"
-    case SpeedCategory.SLOW:
-      return "Slow"
-    case SpeedCategory.MODERATE:
-      return "Moderate"
-    case SpeedCategory.FAST:
-      return "Fast"
-    case SpeedCategory.VERY_FAST:
-      return "Very Fast"
-    default:
-      return "Unknown"
-  }
-}
+*/

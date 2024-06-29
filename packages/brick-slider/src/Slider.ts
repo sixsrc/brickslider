@@ -1,5 +1,6 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
+import { StateType } from "./State"
 import { ANIMATION_OPTIONS, CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
@@ -21,18 +22,23 @@ import {
   TypeTargetSlideParams
 } from "./types"
 
+type MainStateSlider = Pick<
+  StateType,
+  "slideIndex" | "prevTranslate" | "currentTranslate"
+>
+
 export class Slider extends BaseSlider {
   private animation: any
-  currentIndex: number
-  translate: number
-  recordedIndex: null | number
+  private currentIndex: number
+  private translate: number
+  private from: TypeTargetSlideParams["from"] | null
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame(this.$root)
     this.currentIndex = 0
-    this.recordedIndex = 0
     this.translate = 0
+    this.from = null
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
@@ -42,16 +48,17 @@ export class Slider extends BaseSlider {
 
     this.animationFrame()
     this.calcTranslate()
-    this.setState()
-    this.updateDOM()
+    this.setState(this.mainState())
   }
 
   private setIndexBasedBy(params: TypeTargetSlideParams): void {
     let { touchIndex, from } = params!
     const { slideIndex, infinite } = this.store
 
+    this.from = from
+
     if (touchIndex !== undefined) {
-      if (infinite && from === "dots") {
+      if (infinite && this.from === "dots") {
         touchIndex = touchIndex + 1
       }
     }
@@ -69,32 +76,36 @@ export class Slider extends BaseSlider {
     return isNotMapped(infinite, this.currentIndex, numberOfSlides)
   }
 
-  private isLastClonedSlide() {
-    return this.currentIndex === this.recordedIndex
-  }
-
   private animationFrame() {
     requestAnimationFrame(this.animation.init)
   }
 
   private calcTranslate() {
     const { spacing } = this.store
+    const { $children, currentIndex } = this
 
-    this.translate = calcTranslate(this.$children!, spacing, this.currentIndex)
+    this.translate = calcTranslate($children!, spacing, currentIndex)
   }
 
-  protected setState(): void {
-    this.state.set({
-      slideIndex: this.currentIndex,
-      prevTranslate: this.translate,
-      currentTranslate: this.translate
-    })
+  private mainState(): Partial<MainStateSlider> {
+    const { currentIndex, translate } = this
+
+    return {
+      slideIndex: currentIndex,
+      prevTranslate: translate,
+      currentTranslate: translate
+    }
+  }
+
+  protected setState(state: Partial<StateType>): void {
+    this.state.set(state)
   }
 
   protected updateDOM(): void {
     const { slidesPerPage } = this.store
+    const { $root, currentIndex } = this
 
-    toggleClass(getSliderNodeList(this.$root), this.currentIndex, slidesPerPage)
+    toggleClass(getSliderNodeList($root), currentIndex, slidesPerPage)
 
     this.animate()
   }
@@ -105,11 +116,10 @@ export class Slider extends BaseSlider {
 
   private keyFrames(): KeyframeAnimation[] {
     const { currentTranslate } = this.store
-    const shouldJumpSlide = this.isLastClonedSlide()
 
     return [
       {
-        transform: translate3d(currentTranslate, 0, 0)
+        transform: translate3d(currentTranslate)
       }
     ]
   }
@@ -133,12 +143,3 @@ export class Slider extends BaseSlider {
     })
   }
 }
-
-//this.state.set({ [State_Keys.SlideIndex]: this.currentIndex })
-/* {
-        transform: translate3d(
-          this.store.currentTranslate * this.currentIndex,
-          0,
-          0
-        )
-      }*/

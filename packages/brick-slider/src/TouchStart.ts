@@ -1,7 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { State_Keys } from "./State"
-import { adjustIndex, eventX, getAxisX } from "./helpers"
+import { StateType } from "./State"
+import { adjustIndex, eventX, getAxisX, translate3d } from "./helpers"
 
 export class TouchStart extends BaseSlider {
   private animation: AnimationFrame
@@ -22,11 +22,9 @@ export class TouchStart extends BaseSlider {
 
   private handleTouchStart(event: TouchEvent | MouseEvent) {
     this.eventX = eventX(event as MouseEvent | TouchEvent)
-
-    const { infinite, slideIndex } = this.store
   }
 
-  protected setState(state: any) {
+  protected setState(state: Partial<StateType>) {
     this.state.set(state)
   }
 
@@ -34,16 +32,12 @@ export class TouchStart extends BaseSlider {
     const { slideIndex, slidesPerPage } = this.store
 
     this.setState({
-      [State_Keys.SliderReady]: false,
-      [State_Keys.StartTime]: new Date().getMilliseconds(),
-      [State_Keys.SlideIndex]: adjustIndex(slideIndex, slidesPerPage),
-      [State_Keys.StartPos]: getAxisX(event),
-      [State_Keys.isDragging]: true,
-      [State_Keys.IsMouseLeave]: false,
-      [State_Keys.AnimationID]: requestAnimationFrame(this.animation.init)
+      startTime: new Date().getMilliseconds(),
+      slideIndex: adjustIndex(slideIndex, slidesPerPage),
+      startPos: getAxisX(event),
+      isDragging: true,
+      isMouseLeave: false,
+      animationID: requestAnimationFrame(this.animation.init)
     })
   }
 }
-
-//const setEvent = eventX(event as MouseEvent | TouchEvent)
-//const { slidesPerPage, slideIndex } = this.store

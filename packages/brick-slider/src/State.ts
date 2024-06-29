@@ -4,6 +4,7 @@ export enum State_Keys {
   MoveTrack = "moveTrack",
   Velocity = "velocity",
   Seconds = "seconds",
+  PrevSlideIndex = "prevSlideIndex",
   SlideIndex = "slideIndex",
   SlideSpacing = "spacing",
   SlidesPerPage = "slidesPerPage",
@@ -38,6 +39,7 @@ export type StateType = {
   [State_Keys.Seconds]: number
   [State_Keys.MoveTrack]: number
   [State_Keys.Velocity]: number
+  [State_Keys.PrevSlideIndex]: number | null
   [State_Keys.SlideIndex]: number
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
@@ -47,7 +49,7 @@ export type StateType = {
   [State_Keys.IsTouch]: boolean
   [State_Keys.isDragging]: boolean
   [State_Keys.IsJumpSlide]: boolean
-  [State_Keys.StartPos]: number
+  [State_Keys.StartPos]: number | null
   [State_Keys.PrevTranslate]: number
   [State_Keys.CurrentTranslate]: number
   [State_Keys.StartTime]: number
@@ -98,6 +100,7 @@ class State {
     State.state[this.key][State_Keys.Velocity] = 0
     State.state[this.key][State_Keys.MoveTrack] = 0
     State.state[this.key][State_Keys.Seconds] = 0
+    State.state[this.key][State_Keys.PrevSlideIndex] = null
     State.state[this.key][State_Keys.SlideIndex] = 0
     State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 300
     State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
