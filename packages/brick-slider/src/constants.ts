@@ -69,3 +69,17 @@ export const ANIMATION_OPTIONS = {
   FORWARDS: "forwards",
   EASEOUT: "ease-out"
 } as const
+
+export const TOUCH_LIMIT = 40
+export const MOVE_TO_LIMIT = 5
+
+export const POSITION = {
+  RIGHT: "right",
+  LEFT: "left"
+} as const
+
+export const SLIDE_INDEX = {
+  FIRST: "first",
+  SECOND: "second",
+  LAST: "last"
+} as const

@@ -33,7 +33,6 @@ export class Mount extends BaseSlider {
     this.setState()
     this.setAcessibility(this.$children!)
     this.appendSlider(this.$children, this.clonedSlides)
-
     this.enableControls(this.store)
     this.handleResize()
     this.updateDOM().toggleClass(
@@ -45,11 +44,10 @@ export class Mount extends BaseSlider {
 
   public setAcessibility($children: HTMLElement): void {
     const { infinite, numberOfSlides, slidesPerPage } = this.store
+    const element = this.$children
 
     for (let i = 0; i < numberOfSlides; i++) {
-      const clonedSlide = this.$children?.children[i].cloneNode(
-        true
-      ) as HTMLElement
+      const clonedSlide = element?.children[i].cloneNode(true) as HTMLElement
 
       const { index, sliderCount } = calcIndex(
         infinite,

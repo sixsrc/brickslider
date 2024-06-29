@@ -19,17 +19,19 @@ export class Swipe extends BaseSlider {
   }
 
   public init(): void {
+    this.setTouchListeners(this.params())
+  }
+
+  private params(): TouchListenersParams {
     const { touchStart, touchEnd, touchMove } = this
 
-    const params: TouchListenersParams = {
+    return {
       element: this.$track,
       index: 0,
       touchStart: touchStart.init(),
       touchEnd: touchEnd.init.bind(touchEnd),
       touchMove: touchMove.init.bind(touchMove)
     }
-
-    this.setTouchListeners(params)
   }
 
   private setTouchListeners(params: TouchListenersParams): void {

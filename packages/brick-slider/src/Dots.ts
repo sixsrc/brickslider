@@ -16,7 +16,8 @@ import {
   getChildrenCount,
   getRootSelector,
   listener,
-  setAttribute
+  setAttribute,
+  setIndexBypass
 } from "./helpers"
 
 export class Dots extends BaseSlider {
@@ -41,7 +42,6 @@ export class Dots extends BaseSlider {
     appendToParent($root, this.containerDots)
 
     this.setSliderCount()
-
     this.createDots()
 
     const dots = getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
@@ -58,7 +58,6 @@ export class Dots extends BaseSlider {
       const liDots = createNewElement(TAGS.LI)
 
       appendToParent(this.containerDots, liDots)
-
       addClass([liDots], CLASS_VALUES.SLIDER_DOT)
 
       if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
@@ -88,10 +87,17 @@ export class Dots extends BaseSlider {
   }
 
   private dotHandler($root: string): void {
-    let { slideIndex } = this.store
+    let { slideIndex, prevSlideIndex, startPos } = this.store
     const from = "dots"
+    let dotIndex = 0
 
     this.slider.updateDots(slideIndex, $root)
+
+    //dotIndex = slideIndex == 0 ? slideIndex + 1 : slideIndex
+
+    console.log("naked in the rain", prevSlideIndex)
+
+    return
 
     this.slider.setSlideTarget({
       from,
@@ -99,6 +105,8 @@ export class Dots extends BaseSlider {
       touchIndex: slideIndex,
       $root
     })
+
+    // console.log("taaa", dotIndex, slideIndex + 1)
   }
 
   private handleClick(dot: HTMLElement, index: number): void {

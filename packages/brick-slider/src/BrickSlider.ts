@@ -2,8 +2,7 @@ import { BaseSlider } from "./BaseSlider"
 import { Mount } from "./Mount"
 import { Slides } from "./Slides"
 import { TypeOptions } from "./State"
-
-import { assert, isValidSelector, waitFor } from "./helpers"
+import { assert, isValidSelector } from "./helpers"
 
 export class BrickSlider extends BaseSlider {
   private slides: Slides
