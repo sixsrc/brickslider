@@ -2,70 +2,67 @@ import { Arrows } from "./Arrows"
 import { BaseSlider } from "./BaseSlider"
 import { Dots } from "./Dots"
 import { Resize } from "./Resize"
-import { State_Keys } from "./State"
+import { Slides } from "./Slides"
+import { StateType } from "./State"
 import { Swipe } from "./Swipe"
 import { EVENTS } from "./constants"
 import {
   appendToParent,
-  attr,
-  calcIndex,
   getChildrenCount,
   getSliderNodeList,
   getSliderWidth,
   listener,
-  setAttribute,
-  setInnerHTML,
+  setAttributes,
   toggleClass
 } from "./helpers"
 
 export class Mount extends BaseSlider {
   public clonedSlides: HTMLElement[] = []
   private resize: Resize
+  private _slides: Slides
   private slides: HTMLElement[]
 
   constructor($root: string) {
     super($root)
+    this._slides = new Slides(this.$root)
     this.slides = getSliderNodeList(this.$root)
     this.resize = new Resize(this.$root)
   }
 
   public init() {
-    this.setState()
-    this.setAcessibility(this.$children!)
-    this.appendSlider(this.$children, this.clonedSlides)
-    this.enableControls(this.store)
+    this._init()
+  }
+
+  private _init() {
+    const { $children, clonedSlides, store } = this
+    const state = this.mountSlideState()
+
+    this.setState(state)
+    this.setAcessibility()
+    this.cloneSlides()
+    this.appendSlider($children, clonedSlides)
+    this.enableControls(store)
     this.handleResize()
-    this.updateDOM().toggleClass(
-      this.slides,
-      this.store.slideIndex,
-      this.store.slidesPerPage
-    )
+    this.updateDOM()
   }
 
-  public setAcessibility($children: HTMLElement): void {
-    const { infinite, numberOfSlides, slidesPerPage } = this.store
-    const element = this.$children
+  private setAcessibility(): void {
+    this.slides.forEach((slide, index) => {
+      setAttributes(slide, this.setAria(index))
+    })
+  }
 
-    for (let i = 0; i < numberOfSlides; i++) {
-      const clonedSlide = element?.children[i].cloneNode(true) as HTMLElement
+  private setAria(index: number) {
+    const { numberOfSlides } = this.store
 
-      const { index, sliderCount } = calcIndex(
-        infinite,
-        i,
-        numberOfSlides,
-        slidesPerPage
-      )
-
-      for (const [key, value] of Object.entries(attr(index, sliderCount))) {
-        setAttribute(clonedSlide, key, value)
-      }
-
-      this.clonedSlides.push(clonedSlide)
+    return {
+      "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
+      "aria-hidden": "true",
+      role: "group"
     }
-    setInnerHTML($children, "")
   }
 
-  public appendSlider(
+  private appendSlider(
     container: HTMLElement | undefined,
     children: HTMLElement[]
   ): void {
@@ -74,29 +71,40 @@ export class Mount extends BaseSlider {
     })
   }
 
-  public enableControls(this: any, options: any): void {
+  private enableControls(this: any, options: any): void {
     const { dots, arrows, touch } = options
+    const { $root } = this
 
-    if (dots) new Dots(this.$root).init()
-    if (arrows) new Arrows(this.$root).init()
-    if (touch) new Swipe(this.$root).init()
+    if (dots) new Dots($root).init()
+    if (arrows) new Arrows($root).init()
+    if (touch) new Swipe($root).init()
   }
 
-  protected setState(): void {
-    this.state.set({
-      [State_Keys.SliderWidth]: getSliderWidth(this.$children!),
-      [State_Keys.NumberOfSlides]: getChildrenCount(this.$children)
-    })
+  private cloneSlides() {
+    const { infinite } = this.store
+
+    if (infinite) this._slides.cloneSlides()
+  }
+
+  protected setState(state: Partial<StateType>): void {
+    this.state.set(state)
+  }
+
+  protected mountSlideState(): Partial<StateType> {
+    const { $children } = this
+
+    return {
+      sliderWidth: getSliderWidth($children!),
+      numberOfSlides: getChildrenCount($children)
+    }
   }
 
   protected updateDOM() {
-    return {
-      toggleClass: (
-        slides: HTMLElement[],
-        slideIndex: number,
-        slidesPerPage: number
-      ) => toggleClass(slides, slideIndex, slidesPerPage)
-    }
+    const { infinite, slideIndex, slidesPerPage } = this.store
+    const { slides } = this
+    const index = infinite ? 0 : slideIndex
+
+    toggleClass(slides, index, slidesPerPage)
   }
 
   private handleResize(): void {

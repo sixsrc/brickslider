@@ -1,110 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/styles.css" />
     <title>Brick Slider - Default Example</title>
-</head>
-<body>
-
-
-  <div class="container">
-
-    <div id="slide4_container" class=" multiple-items slider brick-slider">
-    
-      <div  class="slider__track">
-        <div class="slider__container">
-         <div class="slider__slide"> <img src="./images/image1.jpg" /></div>
-        <div class="slider__slide"> <img src="./images/image2.jpg" /></div>
-         <div class="slider__slide"> <img   src="./images/image3.jpg" /></div>
-         <div class="slider__slide"> <img  src="./images/image4.jpg" /></div>
-        
+  </head>
+  <body>
+    <div class="container">
+      <div id="slide4_container" class="multiple-items slider brick-slider">
+        <div class="slider__track">
+          <div class="slider__container">
+            <div class="slider__slide"><img src="./images/image1.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image2.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image3.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image4.jpg" /></div>
+          </div>
         </div>
       </div>
     </div>
-   </div>
 
-   <div class="container">
-
-    <div id="slide1_container" class="slider brick-slider">
-    
-      <div  class="slider__track">
-        <div class="slider__container">
-         <div class="slider__slide"> <img src="./images/image1.jpg" /></div>
-        <div class="slider__slide"> <img src="./images/image2.jpg" /></div>
-         <div class="slider__slide"> <img   src="./images/image3.jpg" /></div>
-         <div class="slider__slide"> <img  src="./images/image4.jpg" /></div>
-        
+    <div class="container">
+      <div id="slide1_container" class="slider brick-slider">
+        <div class="slider__track">
+          <div class="slider__container">
+            <div class="slider__slide"><img src="./images/image1.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image2.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image3.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image4.jpg" /></div>
+          </div>
         </div>
       </div>
     </div>
-   </div>
 
-   <div class="container">
-
-    <div id="slide2_container" class="slider brick-slider">
-      <div  class="slider__track">
-      <div class="slider__container">
-<!--   slider__slide--overlay -->
-       <div class="slider__slide ">
-        
-        <img src="./images/image1.jpg" />
-
-        <!--<div class="slider__content">
-
-          <h2>Rio de Janeiro is one of the most<br> Beautiful Cities in Brazil.</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            
-              
-        </div>!-->
-      
-      </div>
-      <div  class="slider__slide"> <img   src="./images/image2.jpg" /></div>
-      <div class="slider__slide"> <img src="./images/image1.jpg" /></div>
-      <div  class="slider__slide"> <img   src="./images/image2.jpg" /></div>
-    
-      
+    <div class="container">
+      <div id="slide2_container" class="slider brick-slider">
+        <div class="slider__track">
+          <div class="slider__container">
+            <div class="slider__slide">
+              <img src="./images/image1.jpg" />
+            </div>
+            <div class="slider__slide"><img src="./images/image2.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image1.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image2.jpg" /></div>
+          </div>
+        </div>
       </div>
     </div>
 
-  </div>
-   </div>
-
-   <div class="container">
-
-
-    <div id="slide3_container" class="slider brick-slider">
-      <div  class="slider__track">
-      <div class="slider__container">
-       <div class="slider__slide"> <img src="./images/image4.jpg" /></div>
-      <div  class="slider__slide"> <img   src="./images/image3.jpg" /></div>
+    <div class="container">
+      <div id="slide3_container" class="slider brick-slider">
+        <div class="slider__track">
+          <div class="slider__container">
+            <div class="slider__slide"><img src="./images/image4.jpg" /></div>
+            <div class="slider__slide"><img src="./images/image3.jpg" /></div>
+          </div>
+        </div>
       </div>
     </div>
-
-  </div>
-   </div>
 
     <script src="../dist/brick-slider.js"></script>
     <script>
+      const slider4 = new BrickSlider("#slide4_container", {
+        infinite: true,
+        slidesPerPage: 2,
+        spacing: 20
+      })
 
-const slider4 = new BrickSlider("#slide4_container", {infinite:true,  slidesPerPage:2, spacing:20  } );
+      slider4.init()
 
-slider4.init()
-
-      const slider = new BrickSlider("#slide1_container", {infinite:true,  spacing:20  } );
+      const slider = new BrickSlider("#slide1_container", {
+        infinite: true,
+        spacing: 20
+      })
 
       slider.init()
 
-      const slider2 = new BrickSlider("#slide2_container", { arrows: true,  spacing:20,  });
+      const slider2 = new BrickSlider("#slide2_container", {
+        arrows: true,
+        spacing: 20
+      })
 
       slider2.init()
 
-      const slider3 = new BrickSlider("#slide3_container", { spacing:20 });
-      
+      const slider3 = new BrickSlider("#slide3_container", { spacing: 20 })
+
       slider3.init()
     </script>
-    
-</body>
+  </body>
 </html>

@@ -9,8 +9,6 @@ import {
 } from "./helpers"
 import { AnimationOptions, KeyframeAnimation } from "./types"
 
-type ResizeStateSlider = Pick<StateType, "sliderWidth">
-
 export class Resize extends BaseSlider {
   constructor($root: string) {
     super($root)
@@ -22,33 +20,49 @@ export class Resize extends BaseSlider {
     this.animate()
   }
 
-  private setState(state: any) {
+  private setState(state: Partial<StateType>) {
     this.state.set(state)
   }
 
-  private resizeState(): Partial<ResizeStateSlider> {
-    return { sliderWidth: this.sliderWidth }
+  private resizeState(): Partial<StateType> {
+    const { sliderWidth } = this
+    const translate = this.calcTranslate()
+
+    return {
+      sliderWidth,
+      prevTranslate: translate,
+      currentTranslate: translate
+    }
   }
 
   private animate(): void {
-    animateElement(this.$children, this.keyFrames(), this.options())
+    const { $children } = this
+
+    animateElement($children, this.keyFrames(), this.options())
+  }
+
+  private calcTranslate() {
+    const { spacing, slideIndex } = this.store
+    const { $children } = this
+
+    return calcTranslate($children, spacing, slideIndex)
   }
 
   private keyFrames(): KeyframeAnimation[] {
-    const { spacing, slideIndex } = this.store
-    const translate = calcTranslate(this.$children, spacing, slideIndex)
+    const { currentTranslate } = this.store
 
     return [
       {
-        transform: translate3d(translate)
+        transform: translate3d(currentTranslate)
       }
     ]
   }
 
-  private options(): AnimationOptions {
+  private options(time = 400): AnimationOptions {
     return {
-      duration: 0,
-      easing: ANIMATION_OPTIONS.EASEOUT
+      duration: time,
+      easing: ANIMATION_OPTIONS.EASEOUT,
+      fill: ANIMATION_OPTIONS.FORWARDS
     }
   }
 }

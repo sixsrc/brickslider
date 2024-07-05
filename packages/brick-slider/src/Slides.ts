@@ -1,7 +1,13 @@
 import { BaseSlider } from "./BaseSlider"
-import { State_Keys } from "./State"
-import { CLASS_VALUES } from "./constants"
-import { addClass, calcTranslate, getSliderNodeList } from "./helpers"
+import { ANIMATION_OPTIONS, CLASS_VALUES } from "./constants"
+import {
+  addClass,
+  animateElement,
+  calcTranslate,
+  getSliderNodeList,
+  translate3d
+} from "./helpers"
+import { AnimationOptions, KeyframeAnimation } from "./types"
 
 export class Slides extends BaseSlider {
   private slides: HTMLElement[] | null
@@ -14,23 +20,15 @@ export class Slides extends BaseSlider {
   }
 
   public cloneSlides(): void {
-    this.duplicateSlides(this.store.slidesPerPage)
-    this.setState()
-    //this.updateDOM().transform()
+    const state = this.slidePositionState()
 
-    this.$children.animate(
-      [
-        {
-          transform: `translate3d(${this.store.currentTranslate}px, 0px, 0px)`
-        }
-      ],
-      {
-        fill: "forwards"
-      }
-    )
+    this.duplicateSlides()
+    this.setState(state)
+    this.animate()
   }
 
-  private duplicateSlides(slidesPerPage: number) {
+  private duplicateSlides() {
+    let { slidesPerPage } = this.store
     const sliderCount = this.slides!.length
 
     if (sliderCount < slidesPerPage) return
@@ -41,47 +39,61 @@ export class Slides extends BaseSlider {
   }
 
   private loopByClonedSlides(slidesPerPage: number, slideCount: number): void {
-    const endIndices = [...Array(slidesPerPage).keys()]
-    const startIndices = [...Array(slidesPerPage).keys()]
+    const end = [...Array(slidesPerPage).keys()]
+    const start = [...Array(slidesPerPage).keys()]
       .map(i => slideCount - i - 1)
       .reverse()
 
-    for (const indices of [endIndices, startIndices]) {
+    for (const indices of [end, start]) {
       for (const index of indices) {
-        const clone = this.slides![index].cloneNode(true) as HTMLElement
-        const { updateDOM, clonedSlides } = this
+        const { $children, slides, clonedSlides } = this
+        const clone = slides![index].cloneNode(true) as HTMLElement
 
         clonedSlides.push(clone)
 
-        updateDOM().addClass(clonedSlides, CLASS_VALUES.CLONED)
+        addClass(clonedSlides, CLASS_VALUES.CLONED)
 
         index < slidesPerPage
-          ? this.$children?.appendChild(clone)
-          : this.$children?.insertBefore(clone, this.slides![0])
+          ? $children?.appendChild(clone)
+          : $children?.insertBefore(clone, slides![0])
       }
     }
   }
 
-  protected setState() {
-    const newIndex = this.store[State_Keys.SlideIndex] + 1
-    const translate = calcTranslate(
-      this.$children!,
-      this.store[State_Keys.SlideSpacing],
-      newIndex
-    )
-
-    this.state.set({
-      [State_Keys.CurrentTranslate]: translate,
-      [State_Keys.PrevTranslate]: translate,
-      [State_Keys.SlideIndex]: newIndex
-    })
+  protected setState(state: any) {
+    this.state.set(state)
   }
 
-  protected updateDOM() {
+  private slidePositionState() {
+    const { $children } = this
+    const { slideIndex } = this.store
+    const translate = this.calcTranslate($children)
+
     return {
-      // transform: () => transform(this.$root),
-      addClass: (elements: (HTMLElement | Element)[], className: string) =>
-        addClass(elements, className)
+      currentTranslate: translate,
+      prevTranslate: translate,
+      slideIndex: slideIndex + 1
+    }
+  }
+
+  private calcTranslate($children: HTMLElement) {
+    const { slideIndex, spacing } = this.store
+
+    return calcTranslate($children!, spacing, slideIndex + 1)
+  }
+
+  private animate(): void {
+    animateElement(this.$children, this.keyFrames(), this.options())
+  }
+
+  private keyFrames(): KeyframeAnimation[] {
+    const { currentTranslate } = this.store
+
+    return [{ transform: translate3d(currentTranslate) }]
+  }
+  private options(): Partial<AnimationOptions> {
+    return {
+      fill: ANIMATION_OPTIONS.FORWARDS
     }
   }
 }

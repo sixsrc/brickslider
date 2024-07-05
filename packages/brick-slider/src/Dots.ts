@@ -1,6 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
-import { State_Keys } from "./State"
+import { StateType } from "./State"
 import {
   ATTRIBUTES,
   CLASS_VALUES,
@@ -11,23 +11,26 @@ import {
 import {
   addClass,
   appendToParent,
+  calcNumberOfSlides,
   createNewElement,
   getAllElements,
-  getChildrenCount,
   getRootSelector,
   listener,
   setAttribute,
-  setIndexBypass
+  waitFor
 } from "./helpers"
+import { TypeTargetSlideParams } from "./types"
 
 export class Dots extends BaseSlider {
   private slider: Slider
   private containerDots: HTMLElement
+  private from: TypeTargetSlideParams["from"]
 
   constructor($root: string) {
     super($root)
     this.slider = new Slider(this.$root)
     this.containerDots = createNewElement(TAGS.UL)
+    this.from = "dots"
   }
 
   public init(): void {
@@ -52,12 +55,13 @@ export class Dots extends BaseSlider {
   }
 
   private createDots(): void {
-    const numberOfSlides = this.store[State_Keys.NumberOfSlides]
+    const { numberOfSlides } = this.store
+    const { containerDots } = this
 
     for (let i = 0; i < numberOfSlides; i++) {
       const liDots = createNewElement(TAGS.LI)
 
-      appendToParent(this.containerDots, liDots)
+      appendToParent(containerDots, liDots)
       addClass([liDots], CLASS_VALUES.SLIDER_DOT)
 
       if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
@@ -65,55 +69,88 @@ export class Dots extends BaseSlider {
   }
 
   private setSliderCount(): void {
-    this.state.set({
-      [State_Keys.NumberOfSlides]: this.calculateNumberOfSlides()
-    })
+    this.setState(this.numberOfSlidesState())
   }
 
-  private calculateNumberOfSlides() {
-    const { slidesPerPage, infinite } = this.store
-    const sliderCount = getChildrenCount(this.$children)
+  private dotHandler(): void {
+    const { from, $root } = this
+    const { infinite, slideIndex, prevSlideIndex, startPos } = this.store
+    const isPrevFirstSlide = infinite && startPos > 0
+    const isPrevLastSlide = prevSlideIndex === 5 || prevSlideIndex === 0
+    const touchIndex = slideIndex
 
-    if (infinite && slidesPerPage <= 1) {
-      return sliderCount - 2
-    }
-    if (infinite && slidesPerPage > 1) {
-      return Math.ceil(sliderCount / slidesPerPage) - slidesPerPage
-    }
-    if (!infinite && slidesPerPage > 1) {
-      return Math.ceil(sliderCount / slidesPerPage)
-    }
-    return sliderCount
+    this.updateDots(slideIndex, $root)
+
+    isPrevFirstSlide && isPrevLastSlide
+      ? this.handleJumpSlide()
+      : this.setSlideTarget({ from, touchIndex, $root })
+
+    this.setState(this.startPosState())
   }
 
-  private dotHandler($root: string): void {
-    let { slideIndex, prevSlideIndex, startPos } = this.store
-    const from = "dots"
-    let dotIndex = 0
+  private handleJumpSlide(): void {
+    const { from, $root } = this
+    const state = this.jumpSlideState(true)
 
-    this.slider.updateDots(slideIndex, $root)
-
-    //dotIndex = slideIndex == 0 ? slideIndex + 1 : slideIndex
-
-    console.log("naked in the rain", prevSlideIndex)
-
-    return
-
-    this.slider.setSlideTarget({
-      from,
-      // touchIndex: infinite ? ++slideIndex : slideIndex,
-      touchIndex: slideIndex,
-      $root
-    })
-
-    // console.log("taaa", dotIndex, slideIndex + 1)
+    this.setState(state)
+    this.setSlideTarget({ from, $root })
+    this.waitForAction()
   }
 
   private handleClick(dot: HTMLElement, index: number): void {
     listener([EVENTS.CLICK], dot, () => {
-      this.state.set({ slideIndex: index })
+      this.setState(this.slideIndexState(index))
 
-      this.dotHandler(this.$root)
+      this.dotHandler()
     })
+  }
+
+  private waitForAction() {
+    const { from, $root } = this
+    const { slideIndex } = this.store
+    const state = this.jumpSlideState(false)
+
+    const action = () => {
+      this.setState(state)
+      this.setSlideTarget({ from, touchIndex: slideIndex, $root })
+    }
+    waitFor(0, action)
+  }
+
+  protected setState(state: Partial<StateType>) {
+    this.state.set(state)
+  }
+
+  protected slideIndexState(index: number): Partial<StateType> {
+    return { slideIndex: index }
+  }
+
+  protected numberOfSlidesState(): Partial<StateType> {
+    const { infinite, slidesPerPage } = this.store
+    const { $children } = this
+
+    return {
+      numberOfSlides: calcNumberOfSlides(infinite, slidesPerPage, $children)
+    }
+  }
+
+  protected jumpSlideState(condition: boolean) {
+    return {
+      isJumpSlide: condition
+    }
+  }
+
+  protected startPosState() {
+    return {
+      startPos: 0
+    }
+  }
+
+  protected setSlideTarget(params: TypeTargetSlideParams) {
+    this.slider.setSlideTarget(params)
+  }
+
+  protected updateDots(slideIndex: number, $root: string) {
+    this.slider.updateDots(slideIndex, $root)
   }
 }
