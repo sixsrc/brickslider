@@ -15,16 +15,9 @@ import {
   UpdateSlideIndexType
 } from "./types"
 
-type MainStateTouchEnd = Pick<
-  StateType,
-  "isDragging" | "isMouseLeave" | "isTouch" | "endTime"
->
-
-type IncrementOrDecrementSlide = Pick<StateType, "slideIndex">
-
 export class TouchEnd extends BaseSlider {
   private slides: HTMLElement[]
-  animation: AnimationFrame
+  protected animation: AnimationFrame
   private slider: Slider
   private moveSlider: number
 
@@ -41,7 +34,7 @@ export class TouchEnd extends BaseSlider {
     this.setState(this.mainState())
   }
 
-  private mainState(): Partial<MainStateTouchEnd> {
+  private mainState(): Partial<StateType> {
     return {
       isDragging: false,
       isMouseLeave: true,
@@ -101,7 +94,7 @@ export class TouchEnd extends BaseSlider {
 
   private shouldIncrementOrDecrement(
     action: UpdateSlideIndexType
-  ): Partial<IncrementOrDecrementSlide> {
+  ): Partial<StateType> {
     const { slideIndex } = this.store
 
     return action === "increment"
@@ -117,6 +110,8 @@ export class TouchEnd extends BaseSlider {
     const isMovedByThreshold =
       moveSlider < (-this.sliderWidth! * TOUCH_LIMIT) / 100
     const isNotLastSlide = currentIndex < element.length - 1
+
+    //  console.log("moveSlider", moveSlider)
 
     return isMovedByThreshold && isNotLastSlide
   }
@@ -162,6 +157,8 @@ export class TouchEnd extends BaseSlider {
     const touchIndex = slideIndex
     const from = "touch"
 
+    // console.log("currentTranslate", currentTranslate, slideIndex)
+
     this.setState(this.positionState(currentTranslate))
 
     this.slider.setSlideTarget({
@@ -174,14 +171,16 @@ export class TouchEnd extends BaseSlider {
   }
 
   private updateDots(touchIndex: number, dots: boolean) {
-    const { $root } = this
+    const { $root, slider } = this
     const { infinite, slidesPerPage } = this.store
+    const countSlides = this.childrenCount
+    const { updateDots } = slider
 
     const index = infinite
-      ? setIndexBypass(touchIndex, 6, slidesPerPage)
+      ? setIndexBypass(touchIndex, countSlides, slidesPerPage)
       : touchIndex
 
-    if (dots) this.slider.updateDots(index, $root)
+    if (dots) updateDots(index, $root)
   }
 
   private prevSlideState(slideIndex: number): Partial<StateType> {
@@ -194,19 +193,3 @@ export class TouchEnd extends BaseSlider {
     return { isJumpSlide: false }
   }
 }
-
-/*
- private incrementSlideIndex(): void {
-    const { slideIndex } = this.store
-    this.setState({ slideIndex: slideIndex + 1 })
-  }
-
-  private decrementSlideIndex(): void {
-    const { slideIndex } = this.store
-    this.setState({ slideIndex: slideIndex - 1 })
-  }
-
-     // this.incrementSlideIndex()
-
-     // this.decrementSlideIndex()
-*/

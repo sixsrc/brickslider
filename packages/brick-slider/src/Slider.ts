@@ -22,11 +22,6 @@ import {
   TypeTargetSlideParams
 } from "./types"
 
-type MainStateSlider = Pick<
-  StateType,
-  "slideIndex" | "prevTranslate" | "currentTranslate"
->
-
 export class Slider extends BaseSlider {
   private animation: any
   private currentIndex: number
@@ -49,16 +44,20 @@ export class Slider extends BaseSlider {
     this.animationFrame()
     this.calcTranslate()
     this.setState(this.mainState())
+    this.updateDOM()
   }
 
   private setIndexBasedBy(params: TypeTargetSlideParams): void {
-    let { touchIndex, from } = params!
     const { slideIndex, infinite } = this.store
+
+    let { touchIndex, from } = params!
 
     this.from = from
 
     if (touchIndex !== undefined) {
-      if (infinite && this.from === "dots") {
+      const { from } = this
+
+      if (infinite && from === "dots") {
         touchIndex = touchIndex + 1
       }
     }
@@ -87,7 +86,7 @@ export class Slider extends BaseSlider {
     this.translate = calcTranslate($children!, spacing, currentIndex)
   }
 
-  private mainState(): Partial<MainStateSlider> {
+  private mainState(): Partial<StateType> {
     const { currentIndex, translate } = this
 
     return {

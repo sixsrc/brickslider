@@ -1,7 +1,11 @@
 import { BaseSlider } from "./BaseSlider"
 import { ANIMATION_DELAY, ANIMATION_OPTIONS } from "./constants"
 import { animateElement, translate3d } from "./helpers"
-import { AnimationOptions, KeyframeAnimation } from "./types"
+import {
+  AnimationCondition,
+  AnimationOptions,
+  KeyframeAnimation
+} from "./types"
 
 export class AnimationFrame extends BaseSlider {
   constructor($root: string) {
@@ -23,19 +27,17 @@ export class AnimationFrame extends BaseSlider {
   }
 
   private keyFrames(): KeyframeAnimation[] {
-    const { currentTranslate, prevSlideIndex, slideIndex } = this.store
+    const { currentTranslate } = this.store
+    const found = this.evalSlideConditions()
 
-    /* console.log({
-      prevSlideIndex,
-      slideIndex
-    })
-*/
-    return [this.transformSlide(), { transform: translate3d(currentTranslate) }]
+    // if (found) return found.k
+
+    return [{ transform: translate3d(currentTranslate) }]
   }
 
-  private options(): AnimationOptions {
+  private options(time: number = 400): AnimationOptions {
     const { isDragging, isJumpSlide } = this.store
-    const duration = isDragging || isJumpSlide ? 0 : 400
+    const duration = isDragging || isJumpSlide ? 0 : time
     const actualDuration = duration - ANIMATION_DELAY
 
     return {
@@ -50,48 +52,30 @@ export class AnimationFrame extends BaseSlider {
     this.state.set(state)
   }
 
-  private shouldFirstSlide(): boolean {
-    const { infinite, prevSlideIndex } = this.store
+  private evalSlideConditions() {
+    const found = this.getSlideKeyFrames().find(
+      (item: AnimationCondition) => item.c
+    )
 
-    return infinite && prevSlideIndex === 0
+    return found
   }
 
-  private shouldLastSlide(): boolean {
-    const { infinite, prevSlideIndex, slideIndex, prevTranslate, startPos } =
-      this.store
+  private getKeyFrameForSlide(
+    slideIndex: number,
+    transform: number
+  ): AnimationCondition {
+    const { isJumpSlide, prevSlideIndex } = this.store
 
-    //  console.log({ prevSlideIndex, prevTranslate, startPos })
-
-    return infinite && prevSlideIndex === 1 && startPos === -1
-  }
-
-  private transformSlide() {
-    switch (true) {
-      case this.shouldFirstSlide():
-        return { transform: translate3d(-2352) }
-      case this.shouldLastSlide():
-        return { transform: translate3d(-588) }
-      default:
-        return {}
+    return {
+      c: isJumpSlide && prevSlideIndex === slideIndex,
+      k: [{ transform: translate3d(transform) }]
     }
+  }
+
+  private getSlideKeyFrames(): AnimationCondition[] {
+    return [
+      this.getKeyFrameForSlide(0, -2352),
+      this.getKeyFrameForSlide(5, -588)
+    ]
   }
 }
-
-/// this.resetPrevSlide()
-
-/*
- private resetPrevSlide() {
-    const { prevSlideIndex, slideIndex } = this.store
-    const isLastSlide = prevSlideIndex === 5 && slideIndex === 1
-    const isFirstSlide = prevSlideIndex == 1 && slideIndex === 0
-
-    if (isFirstSlide || isLastSlide) this.setState(this.resetPrevSlideState())
-  }
-
-   private resetPrevSlideState() {
-    return {
-      prevSlideIndex: null
-    }
-  }
-
-*/

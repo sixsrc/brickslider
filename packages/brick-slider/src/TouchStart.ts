@@ -1,7 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
-import { adjustIndex, eventX, getAxisX, translate3d } from "./helpers"
+import { adjustIndex, eventX, getAxisX } from "./helpers"
 
 export class TouchStart extends BaseSlider {
   private animation: AnimationFrame
@@ -21,6 +21,12 @@ export class TouchStart extends BaseSlider {
   }
 
   private handleTouchStart(event: TouchEvent | MouseEvent) {
+    console.log(
+      "currentTranslate",
+      this.store.currentTranslate,
+      this.store.slideIndex
+    )
+
     this.eventX = eventX(event as MouseEvent | TouchEvent)
   }
 
@@ -30,10 +36,12 @@ export class TouchStart extends BaseSlider {
 
   protected mainState(event: TouchEvent | MouseEvent) {
     const { slideIndex, slidesPerPage } = this.store
+    const isTrue = slidesPerPage <= 1
+    const index = isTrue ? adjustIndex(slideIndex, slidesPerPage) : slideIndex
 
     this.setState({
       startTime: new Date().getMilliseconds(),
-      slideIndex: adjustIndex(slideIndex, slidesPerPage),
+      slideIndex: index,
       startPos: getAxisX(event),
       isDragging: true,
       isMouseLeave: false,

@@ -5,10 +5,22 @@ import {
   TypeIndexBaseSliderdBy
 } from "./types"
 
-export function addClass(
+/*export function addClass(
   elements: (HTMLElement | Element)[],
   className: string
 ): void {
+  elements.forEach(el => {
+    el.classList.add(className)
+  })
+}*/
+
+export function addClass(
+  elements: HTMLElement | Element | (HTMLElement | Element)[],
+  className: string
+): void {
+  if (!Array.isArray(elements)) {
+    elements = [elements]
+  }
   elements.forEach(el => {
     el.classList.add(className)
   })
@@ -16,7 +28,7 @@ export function addClass(
 export function animateElement(
   element: HTMLElement | HTMLElement[],
   keyframes: Keyframe[],
-  options: AnimationOptions
+  options: Partial<AnimationOptions>
 ): void {
   if (!element) {
     throw new Error("Element is required for animation.")
@@ -54,12 +66,23 @@ export function appendToParent(
   }
 }
 
-export function attr(index: number, numberOfSlides: number) {
-  return {
-    "aria-label": `slide ${index} of ${numberOfSlides}`,
-    "aria-hidden": "true",
-    role: "group"
+export function calcNumberOfSlides(
+  infinite: boolean,
+  slidesPerPage: number,
+  $children: HTMLElement
+) {
+  const sliderCount = getChildrenCount($children)
+
+  if (infinite && slidesPerPage <= 1) {
+    return sliderCount - 2
   }
+  if (infinite && slidesPerPage > 1) {
+    return Math.ceil(sliderCount / slidesPerPage) - slidesPerPage
+  }
+  if (!infinite && slidesPerPage > 1) {
+    return Math.ceil(sliderCount / slidesPerPage)
+  }
+  return sliderCount
 }
 
 export function createNewElement(tagName: string): HTMLElement {
@@ -192,12 +215,56 @@ export function calcIndex(
   sliderCount = numberOfSlides
 
   if (infinite) {
-    index = setIndexBypass(i, numberOfSlides, slidesPerPage) + 1
+    ///setIndexBypass(i, numberOfSlides, slidesPerPage) + 1
     sliderCount = numberOfSlides - 2
   }
 
+  // index = i + 1
   return { index, sliderCount }
 }
+
+/*export function calcIndex(
+  infinite: boolean,
+  i: number,
+  numberOfSlides: number,
+  slidesPerPage: number
+) {
+  let index: number
+  let sliderCount: number
+
+  index = i + 1
+  sliderCount = numberOfSlides
+
+ 
+
+  if (infinite) {
+    index = setIndexBypass(i, numberOfSlides, slidesPerPage) + 1
+    sliderCount = numberOfSlides
+  }
+
+  return { index, sliderCount }
+}*/
+
+/*export function calcIndex(
+  infinite: boolean,
+  i: number,
+  numberOfSlides: number,
+  slidesPerPage: number
+) {
+  let index: number
+  let sliderCount: number
+
+  index = i + 1
+  sliderCount = numberOfSlides
+
+  if (infinite) {
+    const numberOfRealSlides = numberOfSlides - slidesPerPage * 2
+    index = i + 1
+    sliderCount = numberOfRealSlides
+  }
+
+  return { index, sliderCount }
+}*/
 
 export function calcSliderWidth(spacing: number, sliderWidth: number) {
   return sliderWidth + spacing
@@ -349,36 +416,3 @@ export function waitFor(time: number, callback: () => void) {
   }
   requestAnimationFrame(wait)
 }
-
-/*
-export function transform($root: string, currentTranslateFixed?: number) {
-  const slider = getChildren($root)
-  const callback = () => setTranslateX($root, currentTranslateFixed!)
-
-  setTransform(slider!, callback)
-
-  export function setTransform(el: HTMLElement, fn: () => number): void {
-  if (el) el.style.transform = `translate3d(${fn()}px, 0px, 0px)`
-}
-}
-
-export function setTranslateX(
-  $root: string,
-  currentTranslateFixedValue: number
-): number {
-  const state = new State($root)
-  const $children = getChildren($root)
-  const { slideIndex, spacing } = State.store($root)
-  const translate = calcTranslate($children!, spacing, slideIndex),
-    translateFixedValue = currentTranslateFixedValue!
-
-  !currentTranslateFixedValue &&
-    state.set({
-      [State_Keys.PrevTranslate]: translate,
-      [State_Keys.CurrentTranslate]: translate
-    })
-
-  return translateFixedValue ? translateFixedValue : translate
-}
-
-*/

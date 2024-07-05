@@ -86,8 +86,6 @@ export class Arrows extends BaseSlider {
     return () => {
       const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
 
-      //  this.handleMouseLeave()
-
       setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
 
       this.state.set({ [State_Keys.SliderReady]: false })
@@ -104,30 +102,6 @@ export class Arrows extends BaseSlider {
         : slideIndex
 
       if (dots) this.slider.updateDots(index, $root)
-
-      //this.handleTransitionEnd(index)
     }
-  }
-
-  private handleMouseLeave(): void {
-    /*listener([EVENTS.MOUSELEAVE], this.$children, () => {
-      setStyle(this.$children, STYLES.TRANSITION, "")
-    })*/
-  }
-
-  private handleTransitionEnd(index: number): void {
-    listener([EVENTS.TRANSITIONEND], this.$children, () => {
-      this.state.set({ [State_Keys.EndTime]: Date.now() })
-
-      const { infinite, numberOfSlides, startTime, endTime } = this.store
-      const isDefaultClick = Math.abs(startTime - endTime) >= 300
-
-      if (
-        isDefaultClick ||
-        (!infinite && index > numberOfSlides - 1) ||
-        (!infinite && numberOfSlides < 0)
-      )
-        setStyle(this.$children, STYLES.TRANSITION, "")
-    })
   }
 }

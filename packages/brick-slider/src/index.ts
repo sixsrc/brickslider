@@ -12,16 +12,17 @@ const slider2 = new BrickSlider("#slide2_container", {
   spacing: 20
 })
 
-/*const slider3 = new BrickSlider("#slide3_container", { spacing: 20 })
+const slider3 = new BrickSlider("#slide3_container", { spacing: 20 })
 
 const slider4 = new BrickSlider("#slide4_container", {
   slidesPerPage: 2,
-  spacing: 20
-})*/
+  spacing: 20,
+  infinite: true
+})
 
 slider.init()
 slider2.init()
-////slider3.init()
-//slider4.init()
+slider3.init()
+slider4.init()
 
 export { BrickSlider }

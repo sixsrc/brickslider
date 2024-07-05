@@ -1,3 +1,8 @@
+export type AnimationCondition = {
+  c: boolean
+  k: KeyframeAnimation[]
+}
+
 export type AnimationOptions = {
   duration: number
   easing?: string
@@ -8,6 +13,19 @@ export type AnimationOptions = {
   endDelay?: number
   iterationStart?: number
 }
+
+export type EvalConditionsTouchMove = { [key: string]: boolean }
+
+export type IndexMap = Record<IndexKey, IndexData>
+
+export type IndexKey = "first" | "second" | "last"
+
+export type IndexData = {
+  currentIndex: Capitalize<IndexKey> | "Third"
+  translate: number
+}
+
+export type PositionSlider = "right" | "left"
 
 export type TouchListenersParams = {
   element: HTMLElement
@@ -29,19 +47,10 @@ export type DirectionType = Partial<
   Record<Directions, boolean | undefined>
 > | null
 
-export type TupleIndexesType = [number, number, number, number]
-
 export type TypeTargetSlideParams = {
   from: "next" | "prev" | "dots" | "touch"
   touchIndex?: number
   $root: string
-}
-
-export type SliderSpeedParams = {
-  startX: number
-  endX: number
-  sliderWidth: number | undefined
-  slideSpeed: number
 }
 
 export type UpdateSlideIndexType = "increment" | "decrement"
