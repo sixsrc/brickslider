@@ -1,33 +1,60 @@
 import { State, StateType } from "./State"
+import { ANIMATION_OPTIONS } from "./constants"
 import {
+  animateElement,
   getChildren,
   getChildrenCount,
+  getRootSelector,
   getSliderWidth,
-  getTrackChildren
+  getTrackChildren,
+  translate3d
 } from "./helpers"
+import { AnimationOptions, KeyframeAnimation } from "./types"
 
 export class BaseSlider {
   protected $root: string
+  protected getRootSelector: HTMLElement | undefined
   protected state: State
   protected store: StateType
   protected $children: HTMLElement
-  protected $track: HTMLElement | any
+  protected getTrackChildren: HTMLElement | any
   protected childrenCount: number
   protected sliderWidth: number | undefined
 
   constructor($root: string) {
     this.$root = $root
+    this.getRootSelector = getRootSelector($root)
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
     this.$children = getChildren(this.$root) as HTMLElement
-    this.$track = getTrackChildren($root)
+    this.getTrackChildren = getTrackChildren($root)
     this.childrenCount = getChildrenCount(this.$children)
     this.sliderWidth = getSliderWidth(this.$children)
   }
 
-  /* protected setState(_event?: Event, _state?: Partial<StateType> | any) {
-    this.state.set(_state)
-  }*/
-  protected updateDOM(_event?: Event) {}
   protected handleEvents(_event?: Event) {}
+
+  protected animate(
+    keyFrames: KeyframeAnimation[],
+    options: AnimationOptions
+  ): void {
+    animateElement(this.$children, keyFrames, options)
+  }
+
+  protected options(duration = 0): AnimationOptions {
+    return {
+      duration,
+      fill: ANIMATION_OPTIONS.FORWARDS
+    }
+  }
+
+  protected keyFrames(): KeyframeAnimation[] {
+    const { currentTranslate } = this.store
+
+    return [{ transform: translate3d(currentTranslate) }]
+  }
+
+  protected setState(state: Partial<StateType>) {
+    this.state.set(state)
+  }
 }

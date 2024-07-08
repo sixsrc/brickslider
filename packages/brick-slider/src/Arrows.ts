@@ -1,14 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
-import { State_Keys } from "./State"
-import {
-  ATTRIBUTES,
-  DOM_ELEMENTS,
-  EVENTS,
-  STYLES,
-  TAGS,
-  TRANSITIONS
-} from "./constants"
+import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TAGS } from "./constants"
 import {
   addClass,
   createNewElement,
@@ -17,10 +9,9 @@ import {
   getRootSelector,
   listener,
   prependChild,
+  reorderIndex,
   setAttribute,
-  setIndexBypass,
-  setInnerHTML,
-  setStyle
+  setInnerHTML
 } from "./helpers"
 
 export class Arrows extends BaseSlider {
@@ -42,8 +33,6 @@ export class Arrows extends BaseSlider {
 
     buttons.forEach(button => {
       listener([EVENTS.CLICK], button, () => {
-        this.state.set({ [State_Keys.StartTime]: Date.now() })
-
         this.arrowHandler(button, this.$root)()
       })
     })
@@ -66,6 +55,7 @@ export class Arrows extends BaseSlider {
 
       this.buttons.push(button)
     }
+
     return this.buttons
   }
 
@@ -83,25 +73,28 @@ export class Arrows extends BaseSlider {
   }
 
   private arrowHandler(button: Element, $root: string): () => void {
+    const { slideIndex, slidesPerPage, infinite, dots } = this.store
+
     return () => {
       const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
-
-      setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
-
-      this.state.set({ [State_Keys.SliderReady]: false })
 
       this.slider.setSlideTarget({
         from: getAttribute === "prev" ? "prev" : "next",
         $root
       })
 
-      const { slideIndex, slidesPerPage, infinite, dots } = this.store
-
       const index = infinite
-        ? setIndexBypass(slideIndex, this.getChildrenCount, slidesPerPage)
+        ? reorderIndex(slideIndex, this.getChildrenCount, slidesPerPage)
         : slideIndex
 
       if (dots) this.slider.updateDots(index, $root)
     }
   }
 }
+
+/*
+ this.state.set({ [State_Keys.StartTime]: Date.now() })
+this.state.set({ [State_Keys.SliderReady]: false })
+
+      setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
+*/

@@ -1,37 +1,18 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { StateType } from "./State"
-import { adjustIndex, eventX, getAxisX } from "./helpers"
+import { adjustIndex, getAxisX } from "./helpers"
+import { MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
   private animation: AnimationFrame
-  protected eventX: null | TouchEvent | MouseEvent
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame($root)
-    this.eventX = null
   }
 
-  public init(): (event: TouchEvent | MouseEvent) => void {
-    return (event: TouchEvent | MouseEvent) => {
-      this.handleTouchStart(event)
-      this.mainState(event)
-    }
-  }
-
-  private handleTouchStart(event: TouchEvent | MouseEvent) {
-    console.log(
-      "currentTranslate",
-      this.store.currentTranslate,
-      this.store.slideIndex
-    )
-
-    this.eventX = eventX(event as MouseEvent | TouchEvent)
-  }
-
-  protected setState(state: Partial<StateType>) {
-    this.state.set(state)
+  public init(event: MouseEventOrTouchEvent): void {
+    this.setState(this.mainState(event))
   }
 
   protected mainState(event: TouchEvent | MouseEvent) {
@@ -39,13 +20,23 @@ export class TouchStart extends BaseSlider {
     const isTrue = slidesPerPage <= 1
     const index = isTrue ? adjustIndex(slideIndex, slidesPerPage) : slideIndex
 
-    this.setState({
+    return {
       startTime: new Date().getMilliseconds(),
       slideIndex: index,
       startPos: getAxisX(event),
       isDragging: true,
       isMouseLeave: false,
       animationID: requestAnimationFrame(this.animation.init)
-    })
+    }
   }
 }
+
+/*
+ protected eventX: null | TouchEvent | MouseEvent
+     this.eventX = null
+  this.handleTouchStart(event)
+  private handleTouchStart(event: TouchEvent | MouseEvent) {
+    this.eventX = eventX(event as MouseEvent | TouchEvent)
+  }
+
+*/

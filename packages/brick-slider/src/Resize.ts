@@ -1,12 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
 import { ANIMATION_OPTIONS } from "./constants"
-import {
-  animateElement,
-  calcTranslate,
-  getSliderWidth,
-  translate3d
-} from "./helpers"
+import { calcTranslate, getSliderWidth, translate3d } from "./helpers"
 import { AnimationOptions, KeyframeAnimation } from "./types"
 
 export class Resize extends BaseSlider {
@@ -17,11 +12,7 @@ export class Resize extends BaseSlider {
 
   init(): void {
     this.setState(this.resizeState())
-    this.animate()
-  }
-
-  private setState(state: Partial<StateType>) {
-    this.state.set(state)
+    this.animate(this.keyFrames(), this.options())
   }
 
   private resizeState(): Partial<StateType> {
@@ -35,12 +26,6 @@ export class Resize extends BaseSlider {
     }
   }
 
-  private animate(): void {
-    const { $children } = this
-
-    animateElement($children, this.keyFrames(), this.options())
-  }
-
   private calcTranslate() {
     const { spacing, slideIndex } = this.store
     const { $children } = this
@@ -48,7 +33,7 @@ export class Resize extends BaseSlider {
     return calcTranslate($children, spacing, slideIndex)
   }
 
-  private keyFrames(): KeyframeAnimation[] {
+  /*private keyFrames(): KeyframeAnimation[] {
     const { currentTranslate } = this.store
 
     return [
@@ -56,13 +41,5 @@ export class Resize extends BaseSlider {
         transform: translate3d(currentTranslate)
       }
     ]
-  }
-
-  private options(time = 400): AnimationOptions {
-    return {
-      duration: time,
-      easing: ANIMATION_OPTIONS.EASEOUT,
-      fill: ANIMATION_OPTIONS.FORWARDS
-    }
-  }
+  }*/
 }

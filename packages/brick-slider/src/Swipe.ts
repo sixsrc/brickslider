@@ -26,24 +26,23 @@ export class Swipe extends BaseSlider {
     const { touchStart, touchEnd, touchMove } = this
 
     return {
-      element: this.$track,
+      element: this.getTrackChildren,
       index: 0,
-      touchStart: touchStart.init(),
-      touchEnd: touchEnd.init.bind(touchEnd),
-      touchMove: touchMove.init.bind(touchMove)
+      touchStart: touchStart.init.bind(touchStart) as EventListener,
+      touchEnd: touchEnd.init.bind(touchEnd) as EventListener,
+      touchMove: touchMove.init.bind(touchMove) as EventListener
     }
   }
 
   private setTouchListeners(params: TouchListenersParams): void {
     const { element, touchStart, touchEnd, touchMove } = params
+    const touchStartEvents = [EVENTS.TOUCHSTART, EVENTS.MOUSEDOWN]
+    const touchEndEvents = [EVENTS.TOUCHEND, EVENTS.MOUSELEAVE, EVENTS.MOUSEUP]
+    const touchMoveEvents = [EVENTS.TOUCHMOVE, EVENTS.MOUSEMOVE]
 
-    listener([EVENTS.TOUCHSTART, EVENTS.MOUSEDOWN], element, touchStart)
-    listener(
-      [EVENTS.TOUCHEND, EVENTS.MOUSELEAVE, EVENTS.MOUSEUP],
-      element,
-      touchEnd
-    )
-    listener([EVENTS.TOUCHMOVE, EVENTS.MOUSEMOVE], element, touchMove)
+    listener(touchStartEvents, element, touchStart)
+    listener(touchEndEvents, element, touchEnd)
+    listener(touchMoveEvents, element, touchMove)
   }
 }
 

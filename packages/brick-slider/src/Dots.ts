@@ -14,7 +14,6 @@ import {
   calcNumberOfSlides,
   createNewElement,
   getAllElements,
-  getRootSelector,
   listener,
   setAttribute,
   waitFor
@@ -34,24 +33,19 @@ export class Dots extends BaseSlider {
   }
 
   public init(): void {
-    const $root = getRootSelector(this.$root)
-
     setAttribute(
       this.containerDots,
       ATTRIBUTES.CLASS,
       DOM_ELEMENTS.DOTS_SELECTOR.replace(".", "")
     )
 
-    appendToParent($root, this.containerDots)
+    appendToParent(this.getRootSelector, this.containerDots)
 
-    this.setSliderCount()
+    this.setState(this.numberOfSlidesState())
+
     this.createDots()
 
-    const dots = getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
-
-    Array.from(dots).forEach((dot, index) => {
-      this.handleClick(dot, index)
-    })
+    this.eventMount()
   }
 
   private createDots(): void {
@@ -62,14 +56,11 @@ export class Dots extends BaseSlider {
       const liDots = createNewElement(TAGS.LI)
 
       appendToParent(containerDots, liDots)
+
       addClass([liDots], CLASS_VALUES.SLIDER_DOT)
 
       if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
     }
-  }
-
-  private setSliderCount(): void {
-    this.setState(this.numberOfSlidesState())
   }
 
   private dotHandler(): void {
@@ -79,46 +70,49 @@ export class Dots extends BaseSlider {
     const isPrevLastSlide = prevSlideIndex === 5 || prevSlideIndex === 0
     const touchIndex = slideIndex
 
-    this.updateDots(slideIndex, $root)
+    this.slider.updateDots(slideIndex, $root)
 
     isPrevFirstSlide && isPrevLastSlide
       ? this.handleJumpSlide()
-      : this.setSlideTarget({ from, touchIndex, $root })
+      : this.slider.setSlideTarget({ from, touchIndex, $root })
 
     this.setState(this.startPosState())
   }
 
-  private handleJumpSlide(): void {
-    const { from, $root } = this
-    const state = this.jumpSlideState(true)
+  private eventMount() {
+    const dots = getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
 
-    this.setState(state)
-    this.setSlideTarget({ from, $root })
-    this.waitForAction()
+    Array.from(dots).forEach((dot, index) => {
+      this.handleClick(dot, index)
+    })
   }
 
-  private handleClick(dot: HTMLElement, index: number): void {
-    listener([EVENTS.CLICK], dot, () => {
-      this.setState(this.slideIndexState(index))
+  private handleJumpSlide(): void {
+    const { from, $root } = this
 
-      this.dotHandler()
-    })
+    this.setState(this.jumpSlideState(true))
+
+    this.slider.setSlideTarget({ from, $root })
+
+    this.waitForAction()
   }
 
   private waitForAction() {
     const { from, $root } = this
     const { slideIndex } = this.store
-    const state = this.jumpSlideState(false)
 
     const action = () => {
-      this.setState(state)
-      this.setSlideTarget({ from, touchIndex: slideIndex, $root })
+      this.setState(this.jumpSlideState(false))
+      this.slider.setSlideTarget({ from, touchIndex: slideIndex, $root })
     }
     waitFor(0, action)
   }
 
-  protected setState(state: Partial<StateType>) {
-    this.state.set(state)
+  private handleClick(dot: HTMLElement, index: number): void {
+    listener([EVENTS.CLICK], dot, () => {
+      this.setState(this.slideIndexState(index))
+      this.dotHandler()
+    })
   }
 
   protected slideIndexState(index: number): Partial<StateType> {
@@ -144,13 +138,5 @@ export class Dots extends BaseSlider {
     return {
       startPos: 0
     }
-  }
-
-  protected setSlideTarget(params: TypeTargetSlideParams) {
-    this.slider.setSlideTarget(params)
-  }
-
-  protected updateDots(slideIndex: number, $root: string) {
-    this.slider.updateDots(slideIndex, $root)
   }
 }

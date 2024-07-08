@@ -4,7 +4,7 @@ export type AnimationCondition = {
 }
 
 export type AnimationOptions = {
-  duration: number
+  duration?: number
   easing?: string
   fill?: "none" | "forwards" | "backwards" | "both" | "auto"
   delay?: number
@@ -24,6 +24,8 @@ export type IndexData = {
   currentIndex: Capitalize<IndexKey> | "Third"
   translate: number
 }
+
+export type MouseEventOrTouchEvent = TouchEvent | MouseEvent
 
 export type PositionSlider = "right" | "left"
 

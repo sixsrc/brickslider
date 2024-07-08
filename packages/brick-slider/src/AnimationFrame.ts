@@ -1,6 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { ANIMATION_DELAY, ANIMATION_OPTIONS } from "./constants"
-import { animateElement, translate3d } from "./helpers"
+import { translate3d } from "./helpers"
 import {
   AnimationCondition,
   AnimationOptions,
@@ -13,12 +13,8 @@ export class AnimationFrame extends BaseSlider {
   }
 
   public init = (): void => {
-    this.animate()
+    this.animate(this.keyFrames(), this.options())
     this.setAnimationFrame()
-  }
-
-  private animate(): void {
-    animateElement(this.$children, this.keyFrames(), this.options())
   }
 
   private setAnimationFrame(): void {
@@ -26,7 +22,7 @@ export class AnimationFrame extends BaseSlider {
     if (isDragging) requestAnimationFrame(this.init)
   }
 
-  private keyFrames(): KeyframeAnimation[] {
+  protected keyFrames(): KeyframeAnimation[] {
     const { currentTranslate } = this.store
     const found = this.evalSlideConditions()
 
@@ -35,7 +31,7 @@ export class AnimationFrame extends BaseSlider {
     return [{ transform: translate3d(currentTranslate) }]
   }
 
-  private options(time: number = 400): AnimationOptions {
+  protected options(time: number = 800): AnimationOptions {
     const { isDragging, isJumpSlide } = this.store
     const duration = isDragging || isJumpSlide ? 0 : time
     const actualDuration = duration - ANIMATION_DELAY
@@ -46,10 +42,6 @@ export class AnimationFrame extends BaseSlider {
       fill: ANIMATION_OPTIONS.FORWARDS,
       delay: ANIMATION_DELAY
     }
-  }
-
-  protected setState(state: any) {
-    this.state.set(state)
   }
 
   private evalSlideConditions() {

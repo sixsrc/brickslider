@@ -4,24 +4,20 @@ import { TypeOptions } from "./State"
 import { assert, isValidSelector } from "./helpers"
 
 export class BrickSlider extends BaseSlider {
+  public userOptions?: TypeOptions
   public clonedSlides: HTMLElement[] = []
-  private _mount: Mount
-  public options?: TypeOptions
+  private mount: Mount
 
   constructor($root: string, options?: TypeOptions) {
     super($root)
     assert(isValidSelector($root), "Main Selector Not Found")
-    this.options = options
-    this._mount = new Mount(this.$root)
-    options && this.state.setOptions(this.options!)
+    this.userOptions = options
+    this.mount = new Mount(this.$root)
+    options && this.state.setOptions(this.userOptions!)
   }
 
   public init(): void {
-    this.mount()
-  }
-
-  private mount() {
-    this._mount.init()
+    this.mount.init()
   }
 
   public next() {}

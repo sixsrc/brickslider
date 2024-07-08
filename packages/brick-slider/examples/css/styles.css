@@ -108,6 +108,7 @@ z-index:0;
 
 .slider__track img {
   width: auto;
+ 
   max-width: 100%;
   pointer-events: none;
   border-radius: 20px;
@@ -116,6 +117,7 @@ z-index:0;
 
 .slider__slide {
   width: 100%;
+
   /* flex:  48.24%;*/
   flex-shrink: 0;
   position: relative;
@@ -123,6 +125,7 @@ z-index:0;
   /*margin-right: 20px;*/
   z-index: 15;
   position: relative;
+
 }
 
 .multiple-items .slider__slide {

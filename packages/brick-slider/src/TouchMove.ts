@@ -1,19 +1,13 @@
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
 import { MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
+import { eventX, getAxisX, translate3d } from "./helpers"
 import {
-  animateElement,
-  calcTranslate,
-  eventX,
-  getAxisX,
-  translate3d
-} from "./helpers"
-import {
-  AnimationOptions,
   IndexData,
   IndexKey,
   IndexMap,
   KeyframeAnimation,
+  MouseEventOrTouchEvent,
   PositionSlider
 } from "./types"
 
@@ -40,19 +34,19 @@ export class TouchMove extends BaseSlider {
     this.skipSlide = false
   }
 
-  public init = (event: any): void => {
+  public init(event: MouseEventOrTouchEvent): void {
     const { isDragging } = this.store
 
     if (isDragging) {
       this.updatePosition(event)
       this.handleSwipe()
-      this.setState()
-      this.animate()
+      this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
+      this.animate(this.keyFrames(), this.options(0))
       this.setSkipSlide(false)
     }
   }
 
-  protected updatePosition(event: Event) {
+  protected updatePosition(event: MouseEvent | TouchEvent) {
     this.previousPosition = this.currentPosition
     this.currentPosition = getAxisX(eventX(event as MouseEvent | TouchEvent))
   }
@@ -65,10 +59,23 @@ export class TouchMove extends BaseSlider {
     return position === POSITION.RIGHT ? translate <= limit : translate >= limit
   }
 
-  protected setState(): void {
-    this.state.set(
-      this.skipSlide ? this.infiniteTouchState() : this.mainState()
-    )
+  private mainState(): Partial<StateType> {
+    const { prevTranslate, startPos } = this.store
+    const { currentPosition } = this
+
+    return {
+      isTouch: true,
+      currentTranslate: prevTranslate + currentPosition - startPos!
+    }
+  }
+
+  private infiniteState(): Partial<StateType> {
+    const { currentIndex, translate } = this
+
+    return {
+      slideIndex: currentIndex,
+      prevTranslate: translate
+    }
   }
 
   protected handleSwipe(): boolean | void {
@@ -119,49 +126,11 @@ export class TouchMove extends BaseSlider {
     ])
   }
 
-  protected getTranslateValues() {
-    return {}
-  }
-
-  protected mainState(): Partial<StateType> {
-    const { prevTranslate, startPos } = this.store
-    const { currentPosition } = this
-
-    return {
-      isTouch: true,
-      currentTranslate: prevTranslate + currentPosition - startPos!
-    }
-  }
-
-  protected infiniteTouchState(): Partial<StateType> {
-    const { currentIndex, translate } = this
-
-    return {
-      slideIndex: currentIndex,
-      prevTranslate: translate
-    }
-  }
-
-  private animate(): void {
-    animateElement(this.$children, this.keyFrames(), this.options())
-  }
-
-  private keyFrames(): KeyframeAnimation[] {
-    const { currentTranslate } = this.store
-
-    return [
-      {
-        transform: translate3d(currentTranslate)
-      }
-    ]
-  }
-  private options(): AnimationOptions {
-    return {
-      duration: 0
-    }
-  }
-
   protected setSkipSlide(c: boolean) {
     this.skipSlide = c
   }
 }
+
+/*protected setState(): void {
+    this.state.set(this.skipSlide ? this.infiniteState() : this.mainState())
+  }*/
