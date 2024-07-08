@@ -2,7 +2,7 @@ import { Arrows } from "./Arrows"
 import { BaseSlider } from "./BaseSlider"
 import { Dots } from "./Dots"
 import { Resize } from "./Resize"
-import { Slides } from "./Slides"
+import { CloneSlides } from "./CloneSlides"
 import { StateType } from "./State"
 import { Swipe } from "./Swipe"
 import { EVENTS } from "./constants"
@@ -17,31 +17,24 @@ import {
 } from "./helpers"
 
 export class Mount extends BaseSlider {
-  public clonedSlides: HTMLElement[] = []
+  private clonedSlides: HTMLElement[] = []
   private resize: Resize
-  private _slides: Slides
+  private _cloneSlides: CloneSlides
   private slides: HTMLElement[]
 
   constructor($root: string) {
     super($root)
-    this._slides = new Slides(this.$root)
     this.slides = getSliderNodeList(this.$root)
+    this._cloneSlides = new CloneSlides(this.$root)
     this.resize = new Resize(this.$root)
   }
 
   public init() {
-    this._init()
-  }
-
-  private _init() {
-    const { $children, clonedSlides, store } = this
-    const state = this.mountSlideState()
-
-    this.setState(state)
+    this.setState(this.mountState())
     this.setAcessibility()
     this.cloneSlides()
-    this.appendSlider($children, clonedSlides)
-    this.enableControls(store)
+    this.appendSlider(this.$children, this.clonedSlides)
+    this.setControls(this.store)
     this.handleResize()
     this.updateDOM()
   }
@@ -50,6 +43,12 @@ export class Mount extends BaseSlider {
     this.slides.forEach((slide, index) => {
       setAttributes(slide, this.setAria(index))
     })
+  }
+
+  private cloneSlides() {
+    const { infinite } = this.store
+
+    if (infinite) this._cloneSlides.init()
   }
 
   private setAria(index: number) {
@@ -71,7 +70,7 @@ export class Mount extends BaseSlider {
     })
   }
 
-  private enableControls(this: any, options: any): void {
+  private setControls(this: any, options: any): void {
     const { dots, arrows, touch } = options
     const { $root } = this
 
@@ -80,17 +79,7 @@ export class Mount extends BaseSlider {
     if (touch) new Swipe($root).init()
   }
 
-  private cloneSlides() {
-    const { infinite } = this.store
-
-    if (infinite) this._slides.cloneSlides()
-  }
-
-  protected setState(state: Partial<StateType>): void {
-    this.state.set(state)
-  }
-
-  protected mountSlideState(): Partial<StateType> {
+  protected mountState(): Partial<StateType> {
     const { $children } = this
 
     return {
@@ -99,15 +88,15 @@ export class Mount extends BaseSlider {
     }
   }
 
+  private handleResize(): void {
+    listener([EVENTS.RESIZE], window, () => this.resize.init())
+  }
+
   protected updateDOM() {
     const { infinite, slideIndex, slidesPerPage } = this.store
     const { slides } = this
     const index = infinite ? 0 : slideIndex
 
     toggleClass(slides, index, slidesPerPage)
-  }
-
-  private handleResize(): void {
-    listener([EVENTS.RESIZE], window, () => this.resize.init())
   }
 }

@@ -3,12 +3,7 @@ import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
 import { ANIMATION_OPTIONS, TOUCH_LIMIT } from "./constants"
-import {
-  animateElement,
-  getSliderNodeList,
-  setIndexBypass,
-  translate3d
-} from "./helpers"
+import { getSliderNodeList, reorderIndex, translate3d } from "./helpers"
 import {
   AnimationOptions,
   KeyframeAnimation,
@@ -61,7 +56,7 @@ export class TouchEnd extends BaseSlider {
 
     this.moveSlider = currentTranslate - prevTranslate
 
-    this.setCancelAnimationFrame()
+    this.cancelAnimationFrame()
 
     this.setState(this.prevSlideState(slideIndex))
 
@@ -75,12 +70,12 @@ export class TouchEnd extends BaseSlider {
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
-      this.animate()
+      this.animate(this.keyFrames(), this.options())
       this.setState(this.jumpSlideState())
     }
   }
 
-  private setCancelAnimationFrame(): void {
+  private cancelAnimationFrame(): void {
     const { animationId } = this.store
 
     if (typeof animationId === "number") cancelAnimationFrame(animationId)
@@ -111,8 +106,6 @@ export class TouchEnd extends BaseSlider {
       moveSlider < (-this.sliderWidth! * TOUCH_LIMIT) / 100
     const isNotLastSlide = currentIndex < element.length - 1
 
-    //  console.log("moveSlider", moveSlider)
-
     return isMovedByThreshold && isNotLastSlide
   }
 
@@ -124,11 +117,7 @@ export class TouchEnd extends BaseSlider {
     return isMovedByThreshold && isNotFirstSlide
   }
 
-  private animate(): void {
-    animateElement(this.$children, this.keyFrames(), this.options())
-  }
-
-  private keyFrames(): KeyframeAnimation[] {
+  protected keyFrames(): KeyframeAnimation[] {
     const { currentTranslate } = this.store
     const { moveSlider } = this
 
@@ -139,15 +128,10 @@ export class TouchEnd extends BaseSlider {
       }
     ]
   }
-  private options(): AnimationOptions {
+  protected options(): AnimationOptions {
     return {
-      duration: 0,
       easing: ANIMATION_OPTIONS.EASEOUT
     }
-  }
-
-  protected setState(state: Partial<StateType>) {
-    this.state.set(state)
   }
 
   private setPosition() {
@@ -156,8 +140,6 @@ export class TouchEnd extends BaseSlider {
     const currentTranslate = slideIndex * -sliderWidth!
     const touchIndex = slideIndex
     const from = "touch"
-
-    // console.log("currentTranslate", currentTranslate, slideIndex)
 
     this.setState(this.positionState(currentTranslate))
 
@@ -174,13 +156,12 @@ export class TouchEnd extends BaseSlider {
     const { $root, slider } = this
     const { infinite, slidesPerPage } = this.store
     const countSlides = this.childrenCount
-    const { updateDots } = slider
 
     const index = infinite
-      ? setIndexBypass(touchIndex, countSlides, slidesPerPage)
+      ? reorderIndex(touchIndex, countSlides, slidesPerPage)
       : touchIndex
 
-    if (dots) updateDots(index, $root)
+    if (dots) slider.updateDots(index, $root)
   }
 
   private prevSlideState(slideIndex: number): Partial<StateType> {

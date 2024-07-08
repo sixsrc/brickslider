@@ -358,7 +358,7 @@ export function listener(
   }
 }
 
-export function setIndexBypass(
+export function reorderIndex(
   displayedIndex: number,
   numberOfSlides: number,
   slidesPerPage: number
@@ -367,7 +367,7 @@ export function setIndexBypass(
     ? (numberOfSlides = numberOfSlides - (slidesPerPage + slidesPerPage))
     : numberOfSlides
 
-  const indexBypass =
+  const reorder =
     displayedIndex < 0
       ? numberOfSlides - 1
       : displayedIndex >= numberOfSlides
@@ -378,7 +378,7 @@ export function setIndexBypass(
             ? numberOfSlides - 3
             : displayedIndex - 1
 
-  return indexBypass
+  return reorder
 }
 
 export function toggleClass(
