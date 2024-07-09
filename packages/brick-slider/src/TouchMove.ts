@@ -1,12 +1,11 @@
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
 import { MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
-import { eventX, getAxisX, translate3d } from "./helpers"
+import { eventX, getAxisX } from "./helpers"
 import {
   IndexData,
   IndexKey,
   IndexMap,
-  KeyframeAnimation,
   MouseEventOrTouchEvent,
   PositionSlider
 } from "./types"
@@ -96,9 +95,10 @@ export class TouchMove extends BaseSlider {
 
   private evalSlideConditions(): Partial<StateType> {
     const { slideIndex } = this.store
+    const { childrenCount } = this
     const isFirstCloned = slideIndex === 0
     const isSecondSlide = slideIndex === 1
-    const isLastCloned = slideIndex === 5
+    const isLastCloned = slideIndex === childrenCount - 1
 
     return {
       FIRST: isFirstCloned,
@@ -114,15 +114,24 @@ export class TouchMove extends BaseSlider {
       this.setSkipSlide(true)
       this.currentIndex = IndexesNames[indexData.currentIndex]
       this.translate = indexData.translate
-      this.state.set({ isJumpSlide: true })
+      this.state.set(this.jumpSlideState())
     }
   }
 
+  private jumpSlideState() {
+    return { isJumpSlide: true }
+  }
+
   private mapIndex(): Map<IndexKey, IndexData> {
+    const { childrenCount } = this
+    const penultIndex = this.calcTranslate(childrenCount - 2)
+    const lastIndex = this.calcTranslate(childrenCount - 1)
+    const secondIndex = this.calcTranslate(1)
+
     return new Map([
-      [SLIDE_INDEX.FIRST, { currentIndex: "Third", translate: -2352 }],
-      [SLIDE_INDEX.SECOND, { currentIndex: "Last", translate: -2940 }],
-      [SLIDE_INDEX.LAST, { currentIndex: "Second", translate: -588 }]
+      [SLIDE_INDEX.FIRST, { currentIndex: "Third", translate: penultIndex }],
+      [SLIDE_INDEX.SECOND, { currentIndex: "Last", translate: lastIndex }],
+      [SLIDE_INDEX.LAST, { currentIndex: "Second", translate: secondIndex }]
     ])
   }
 
@@ -130,7 +139,3 @@ export class TouchMove extends BaseSlider {
     this.skipSlide = c
   }
 }
-
-/*protected setState(): void {
-    this.state.set(this.skipSlide ? this.infiniteState() : this.mainState())
-  }*/

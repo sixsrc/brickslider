@@ -53,9 +53,8 @@ export class CloneSlides extends BaseSlider {
   }
 
   private slidePositionState() {
-    const { $children } = this
     const { slideIndex } = this.store
-    const translate = this.calcTranslate($children)
+    const translate = this.calcTranslate()
 
     return {
       currentTranslate: translate,
@@ -64,8 +63,9 @@ export class CloneSlides extends BaseSlider {
     }
   }
 
-  private calcTranslate($children: HTMLElement) {
+  protected calcTranslate() {
     const { slideIndex, spacing } = this.store
+    const { $children } = this
 
     return calcTranslate($children!, spacing, slideIndex + 1)
   }

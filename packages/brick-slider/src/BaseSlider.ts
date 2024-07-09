@@ -2,6 +2,7 @@ import { State, StateType } from "./State"
 import { ANIMATION_OPTIONS } from "./constants"
 import {
   animateElement,
+  calcTranslate,
   getChildren,
   getChildrenCount,
   getRootSelector,
@@ -39,6 +40,13 @@ export class BaseSlider {
     options: AnimationOptions
   ): void {
     animateElement(this.$children, keyFrames, options)
+  }
+
+  protected calcTranslate(index = this.store.slideIndex): number {
+    const { spacing } = this.store
+    const { $children } = this
+
+    return calcTranslate($children, spacing, index)
   }
 
   protected options(duration = 0): AnimationOptions {

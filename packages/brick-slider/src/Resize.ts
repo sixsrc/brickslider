@@ -1,8 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
-import { ANIMATION_OPTIONS } from "./constants"
-import { calcTranslate, getSliderWidth, translate3d } from "./helpers"
-import { AnimationOptions, KeyframeAnimation } from "./types"
+import { getSliderWidth } from "./helpers"
 
 export class Resize extends BaseSlider {
   constructor($root: string) {
@@ -25,21 +23,4 @@ export class Resize extends BaseSlider {
       currentTranslate: translate
     }
   }
-
-  private calcTranslate() {
-    const { spacing, slideIndex } = this.store
-    const { $children } = this
-
-    return calcTranslate($children, spacing, slideIndex)
-  }
-
-  /*private keyFrames(): KeyframeAnimation[] {
-    const { currentTranslate } = this.store
-
-    return [
-      {
-        transform: translate3d(currentTranslate)
-      }
-    ]
-  }*/
 }
