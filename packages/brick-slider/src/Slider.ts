@@ -64,11 +64,13 @@ export class Slider extends BaseSlider {
     requestAnimationFrame(this.animation.init)
   }
 
-  private calcTranslate() {
+  protected calcTranslate(): number {
     const { spacing } = this.store
     const { $children, currentIndex } = this
 
     this.translate = calcTranslate($children!, spacing, currentIndex)
+
+    return this.translate
   }
 
   private mainState(): Partial<StateType> {

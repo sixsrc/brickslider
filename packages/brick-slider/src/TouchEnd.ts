@@ -54,6 +54,8 @@ export class TouchEnd extends BaseSlider {
       prevTranslate
     } = this.store
 
+    console.log("slideINdex", slideIndex)
+
     this.moveSlider = currentTranslate - prevTranslate
 
     this.cancelAnimationFrame()
@@ -128,6 +130,7 @@ export class TouchEnd extends BaseSlider {
       }
     ]
   }
+
   protected options(): AnimationOptions {
     return {
       easing: ANIMATION_OPTIONS.EASEOUT

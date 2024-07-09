@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { ANIMATION_DELAY, ANIMATION_OPTIONS } from "./constants"
+import { ANIMATION_DELAY, ANIMATION_OPTIONS, TIMES } from "./constants"
 import { translate3d } from "./helpers"
 import {
   AnimationCondition,
@@ -19,6 +19,7 @@ export class AnimationFrame extends BaseSlider {
 
   private setAnimationFrame(): void {
     const { isDragging } = this.store
+
     if (isDragging) requestAnimationFrame(this.init)
   }
 
@@ -26,12 +27,14 @@ export class AnimationFrame extends BaseSlider {
     const { currentTranslate } = this.store
     const found = this.evalSlideConditions()
 
-    // if (found) return found.k
+    if (found) return found.k
 
     return [{ transform: translate3d(currentTranslate) }]
   }
 
-  protected options(time: number = 800): AnimationOptions {
+  protected options(
+    time: number = TIMES.DEFAULT_TRANSITION_TIME
+  ): AnimationOptions {
     const { isDragging, isJumpSlide } = this.store
     const duration = isDragging || isJumpSlide ? 0 : time
     const actualDuration = duration - ANIMATION_DELAY
@@ -65,9 +68,13 @@ export class AnimationFrame extends BaseSlider {
   }
 
   private getSlideKeyFrames(): AnimationCondition[] {
+    const { childrenCount } = this
+    const penultIndex = this.calcTranslate(childrenCount - 2)
+    const secondIndex = this.calcTranslate(1)
+
     return [
-      this.getKeyFrameForSlide(0, -2352),
-      this.getKeyFrameForSlide(5, -588)
+      this.getKeyFrameForSlide(0, penultIndex),
+      this.getKeyFrameForSlide(childrenCount - 1, secondIndex)
     ]
   }
 }
