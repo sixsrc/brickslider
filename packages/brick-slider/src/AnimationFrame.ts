@@ -36,7 +36,7 @@ export class AnimationFrame extends BaseSlider {
     time: number = TIMES.DEFAULT_TRANSITION_TIME
   ): AnimationOptions {
     const { isDragging, isJumpSlide } = this.store
-    const duration = isDragging || isJumpSlide ? 0 : time
+    const duration = /*isDragging ||*/ isJumpSlide ? 0 : time
     const actualDuration = duration - ANIMATION_DELAY
 
     return {
@@ -48,14 +48,14 @@ export class AnimationFrame extends BaseSlider {
   }
 
   private evalSlideConditions() {
-    const found = this.getSlideKeyFrames().find(
+    const found = this.foundSlideKeyFrame().find(
       (item: AnimationCondition) => item.c
     )
 
     return found
   }
 
-  private getKeyFrameForSlide(
+  private setSlideKeyFrame(
     slideIndex: number,
     transform: number
   ): AnimationCondition {
@@ -67,14 +67,14 @@ export class AnimationFrame extends BaseSlider {
     }
   }
 
-  private getSlideKeyFrames(): AnimationCondition[] {
+  private foundSlideKeyFrame(): AnimationCondition[] {
     const { childrenCount } = this
     const penultIndex = this.calcTranslate(childrenCount - 2)
     const secondIndex = this.calcTranslate(1)
 
     return [
-      this.getKeyFrameForSlide(0, penultIndex),
-      this.getKeyFrameForSlide(childrenCount - 1, secondIndex)
+      this.setSlideKeyFrame(0, penultIndex),
+      this.setSlideKeyFrame(childrenCount - 1, secondIndex)
     ]
   }
 }

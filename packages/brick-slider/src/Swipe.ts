@@ -41,6 +41,7 @@ export class Swipe extends BaseSlider {
     const touchMoveEvents = [EVENTS.TOUCHMOVE, EVENTS.MOUSEMOVE]
 
     listener(touchStartEvents, element, touchStart)
+
     listener(touchEndEvents, element, touchEnd)
     listener(touchMoveEvents, element, touchMove)
   }

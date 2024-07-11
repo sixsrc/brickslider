@@ -52,6 +52,7 @@ export class BaseSlider {
   protected options(duration = 0): AnimationOptions {
     return {
       duration,
+      easing: ANIMATION_OPTIONS.EASEOUT,
       fill: ANIMATION_OPTIONS.FORWARDS
     }
   }
