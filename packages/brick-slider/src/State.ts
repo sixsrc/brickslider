@@ -45,7 +45,9 @@ export type StateType = {
   [State_Keys.SlidesPerPage]: number
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
-  [State_Keys.SliderReady]: boolean
+  startX: number
+  startY: number
+  [State_Keys.SliderReady]: boolean | null
   [State_Keys.IsTouch]: boolean
   [State_Keys.isDragging]: boolean
   [State_Keys.IsJumpSlide]: boolean
@@ -73,6 +75,8 @@ export type TypeOptions = Partial<{
   [State_Keys.Autoplay]: boolean
   [State_Keys.AutoplaySpeed]: number
   [State_Keys.Dots]: boolean
+  startX: number
+  startY: number
   [State_Keys.Arrows]: boolean
   [State_Keys.Touch]: boolean
   [State_Keys.Infinite]: boolean
@@ -106,11 +110,13 @@ class State {
     State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
     State.state[this.key][State_Keys.NumberOfSlides] = 0
     State.state[this.key][State_Keys.SliderWidth] = 0
-    State.state[this.key][State_Keys.SliderReady] = true
+    State.state[this.key][State_Keys.SliderReady] = null
     State.state[this.key][State_Keys.IsTouch] = false
     State.state[this.key][State_Keys.isDragging] = false
     State.state[this.key][State_Keys.IsJumpSlide] = false
     State.state[this.key][State_Keys.StartPos] = 0
+    State.state[this.key]["startX"] = 0
+    State.state[this.key]["startY"] = 0
     State.state[this.key][State_Keys.PrevTranslate] = 0
     State.state[this.key][State_Keys.CurrentTranslate] = 0
     State.state[this.key][State_Keys.StartTime] = 0

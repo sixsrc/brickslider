@@ -1,7 +1,8 @@
+import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
 import { MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
-import { eventX, getAxisX } from "./helpers"
+import { eventX, getAxisX, waitFor } from "./helpers"
 import {
   IndexData,
   IndexKey,
@@ -23,6 +24,7 @@ export class TouchMove extends BaseSlider {
   private skipSlide: boolean
   private currentIndex: number
   private translate: number
+  animation: AnimationFrame
 
   constructor($root: string) {
     super($root)
@@ -31,6 +33,7 @@ export class TouchMove extends BaseSlider {
     this.currentIndex = 0
     this.translate = 0
     this.skipSlide = false
+    this.animation = new AnimationFrame($root)
   }
 
   public init(event: MouseEventOrTouchEvent): void {
@@ -40,7 +43,8 @@ export class TouchMove extends BaseSlider {
       this.updatePosition(event)
       this.handleSwipe()
       this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
-      this.animate(this.keyFrames(), this.options(0))
+      //requestAnimationFrame(this.animation.init)
+      //this.animate(this.keyFrames(), this.options(0))
       this.setSkipSlide(false)
     }
   }
@@ -64,6 +68,7 @@ export class TouchMove extends BaseSlider {
 
     return {
       isTouch: true,
+      isMouseLeave: false,
       currentTranslate: prevTranslate + currentPosition - startPos!
     }
   }
@@ -96,6 +101,7 @@ export class TouchMove extends BaseSlider {
   private evalSlideConditions(): Partial<StateType> {
     const { slideIndex } = this.store
     const { childrenCount } = this
+
     const isFirstCloned = slideIndex === 0
     const isSecondSlide = slideIndex === 1
     const isLastCloned = slideIndex === childrenCount - 1
@@ -113,6 +119,8 @@ export class TouchMove extends BaseSlider {
     if (indexData) {
       this.setSkipSlide(true)
       this.currentIndex = IndexesNames[indexData.currentIndex]
+
+      console.log("currentIndex", this.currentIndex)
       this.translate = indexData.translate
       this.state.set(this.jumpSlideState())
     }
@@ -139,3 +147,11 @@ export class TouchMove extends BaseSlider {
     this.skipSlide = c
   }
 }
+
+/*
+
+if (this.skipSlide) {
+        duration = 0
+        waitFor(0, () => (duration = 400))
+      }
+*/

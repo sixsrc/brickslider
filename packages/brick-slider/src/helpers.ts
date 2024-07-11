@@ -134,6 +134,27 @@ export function getSliderWidth(
   if (el) return el.offsetWidth
 }
 
+export function getFastInteraction(doubleTapMs: number) {
+  let timeout: number | NodeJS.Timeout = 0
+  let lastTap = 0
+
+  return function handleFastInteraction(event: any) {
+    const currentTime = new Date().getTime()
+    const tapLength = currentTime - lastTap
+    if (0 < tapLength && tapLength < doubleTapMs) {
+      event.preventDefault()
+      const doubleTap = new CustomEvent("doubletap", {
+        bubbles: true,
+        detail: event
+      })
+      event.target.dispatchEvent(doubleTap)
+    } else {
+      timeout = setTimeout(() => clearTimeout(timeout), doubleTapMs)
+    }
+    lastTap = currentTime
+  }
+}
+
 export function getTouchDirection(
   currentPosition: number,
   startPos: number

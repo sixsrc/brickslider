@@ -1,17 +1,30 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { adjustIndex, getAxisX } from "./helpers"
+import { ANIMATION_OPTIONS } from "./constants"
+import { adjustIndex, getAxisX, listener, translate3d } from "./helpers"
 import { MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
   private animation: AnimationFrame
+  private lastEventTime: number
+  private eventCount: number
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame($root)
+    this.lastEventTime = 0
+    this.eventCount = 0
   }
 
   public init(event: MouseEventOrTouchEvent): void {
+    const element = event?.target as HTMLElement
+
+    var rect = element?.getBoundingClientRect()
+
+    var x = event.clientX - rect.left
+
+    console.log(x)
+
     this.setState(this.mainState(event))
   }
 
@@ -30,13 +43,3 @@ export class TouchStart extends BaseSlider {
     }
   }
 }
-
-/*
- protected eventX: null | TouchEvent | MouseEvent
-     this.eventX = null
-  this.handleTouchStart(event)
-  private handleTouchStart(event: TouchEvent | MouseEvent) {
-    this.eventX = eventX(event as MouseEvent | TouchEvent)
-  }
-
-*/

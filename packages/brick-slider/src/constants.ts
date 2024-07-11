@@ -72,7 +72,7 @@ export const ANIMATION_OPTIONS = {
 
 export const TOUCH_LIMIT = 40
 
-export const MOVE_TO_LIMIT = 5
+export const MOVE_TO_LIMIT = 0.1
 
 export const POSITION = {
   RIGHT: "right",

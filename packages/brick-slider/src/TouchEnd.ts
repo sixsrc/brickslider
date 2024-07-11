@@ -2,8 +2,15 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { ANIMATION_OPTIONS, TOUCH_LIMIT } from "./constants"
-import { getSliderNodeList, reorderIndex, translate3d } from "./helpers"
+import { ANIMATION_OPTIONS, TIMES, TOUCH_LIMIT } from "./constants"
+import {
+  getFastInteraction,
+  getSliderNodeList,
+  listener,
+  reorderIndex,
+  translate3d,
+  waitFor
+} from "./helpers"
 import {
   AnimationOptions,
   KeyframeAnimation,
@@ -15,6 +22,7 @@ export class TouchEnd extends BaseSlider {
   protected animation: AnimationFrame
   private slider: Slider
   private moveSlider: number
+  isFastInteraction: boolean
 
   constructor($root: string) {
     super($root)
@@ -22,24 +30,43 @@ export class TouchEnd extends BaseSlider {
     this.slides = getSliderNodeList(this.$root)
     this.animation = new AnimationFrame(this.$root)
     this.moveSlider = 0
+    this.isFastInteraction = false
   }
 
-  public init = (): void => {
-    this.handleTouchMove()
-    this.setState(this.mainState())
+  public init = (event: any): void => {
+    var rect = event.target.getBoundingClientRect()
+    var x = event.clientX - rect.left
+
+    console.log(x)
+
+    if (this.store.slideIndex === 0) {
+      this.state.set({
+        slideIndex: 4,
+        currentTranslate: -2352,
+        prevTranslate: -2352
+      })
+      this.animate([{ transform: translate3d(this.store.currentTranslate) }], {
+        duration: 0,
+
+        fill: ANIMATION_OPTIONS.FORWARDS
+      })
+    } else {
+      this.handleTouchMove()
+      this.setState(this.mainState())
+    }
   }
 
   private mainState(): Partial<StateType> {
     return {
       isDragging: false,
       isMouseLeave: true,
-      isTouch: false,
-      endTime: new Date().getMilliseconds()
+      isTouch: false
     }
   }
 
   private positionState(currentTranslate: number): Partial<StateType> {
     return {
+      sliderReady: true,
       currentTranslate,
       prevTranslate: currentTranslate
     }
@@ -49,16 +76,25 @@ export class TouchEnd extends BaseSlider {
     const {
       isMouseLeave,
       isTouch,
+      sliderReady,
       slideIndex,
       currentTranslate,
       prevTranslate
     } = this.store
 
-    console.log("slideINdex", slideIndex)
-
     this.moveSlider = currentTranslate - prevTranslate
 
     this.cancelAnimationFrame()
+
+    /*const handleFastInteraction = getFastInteraction(500)
+
+    listener(["pointerup"], this.$children, event => {
+      handleFastInteraction(event)
+    })
+
+    listener(["doubletap"], this.$children, () => {
+      console.log("doubletap")
+    })*/
 
     this.setState(this.prevSlideState(slideIndex))
 
@@ -72,9 +108,15 @@ export class TouchEnd extends BaseSlider {
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
-      this.animate(this.keyFrames(), this.options())
+      // this.animate(this.keyFrames(), this.options(0))
       this.setState(this.jumpSlideState())
     }
+  }
+
+  protected getSpeedInteraction() {
+    const { startTime, endTime } = this.store
+
+    return Math.abs(startTime - endTime)
   }
 
   private cancelAnimationFrame(): void {
@@ -129,12 +171,6 @@ export class TouchEnd extends BaseSlider {
         transform: translate3d(currentTranslate + moveSlider)
       }
     ]
-  }
-
-  protected options(): AnimationOptions {
-    return {
-      easing: ANIMATION_OPTIONS.EASEOUT
-    }
   }
 
   private setPosition() {

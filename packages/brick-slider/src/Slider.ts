@@ -1,7 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
-import { CLASS_VALUES, TAGS } from "./constants"
+import { CLASS_VALUES, TAGS, TIMES } from "./constants"
 import {
   addClass,
   calcTranslate,
@@ -37,7 +37,7 @@ export class Slider extends BaseSlider {
     this.calcTranslate()
     this.setState(this.mainState())
     this.updateDOM()
-    // this.animate(this.keyFrames(), this.options())
+    /// this.animate(this.keyFrames(), this.options(TIMES.DEFAULT_TRANSITION_TIME))
   }
 
   private setIndexBased(params: TypeTargetSlideParams): void {
