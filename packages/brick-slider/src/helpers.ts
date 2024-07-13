@@ -2,6 +2,7 @@ import { CLASS_VALUES, DOM_ELEMENTS } from "./constants"
 import {
   AnimationOptions,
   DirectionType,
+  MouseEventOrTouchEvent,
   TypeIndexBaseSliderdBy
 } from "./types"
 
@@ -256,7 +257,7 @@ export function calcIndex(
   index = i + 1
   sliderCount = numberOfSlides
 
- 
+
 
   if (infinite) {
     index = setIndexBypass(i, numberOfSlides, slidesPerPage) + 1
@@ -303,8 +304,14 @@ export function calcTranslate(
   return translate
 }
 
-export const eventX = (event: MouseEvent | TouchEvent) =>
-  event.type.includes("mouse") ? (event as MouseEvent) : (event as TouchEvent)
+export function eventX(event: MouseEventOrTouchEvent): MouseEvent | Touch {
+  if (event.type.includes("mouse")) {
+    return event as MouseEvent
+  } else {
+    const touchEvent = event as TouchEvent
+    return touchEvent.touches[0]
+  }
+}
 
 export function getAxisX(event: MouseEvent | TouchEvent): number {
   if (event.type.includes("mouse")) {

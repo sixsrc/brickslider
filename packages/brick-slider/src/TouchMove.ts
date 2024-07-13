@@ -41,11 +41,17 @@ export class TouchMove extends BaseSlider {
 
     if (isDragging) {
       this.updatePosition(event)
+
       this.handleSwipe()
+      this.setState(this.eventTargetState())
       this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
-      //requestAnimationFrame(this.animation.init)
-      //this.animate(this.keyFrames(), this.options(0))
       this.setSkipSlide(false)
+    }
+  }
+
+  private eventTargetState(): Partial<StateType> {
+    return {
+      currentEventType: "touchMove"
     }
   }
 
@@ -57,8 +63,10 @@ export class TouchMove extends BaseSlider {
   protected movingTo(position: PositionSlider): boolean {
     const { currentTranslate } = this.store
     const translate = Math.abs(currentTranslate)
-    const limit = (this.sliderWidth! * MOVE_TO_LIMIT) / 100 - this.sliderWidth!
-
+    const limit = Math.abs(
+      (this.sliderWidth! * MOVE_TO_LIMIT) / 100 - this.sliderWidth!
+    )
+    //console.log("asas", translate, limit)
     return position === POSITION.RIGHT ? translate <= limit : translate >= limit
   }
 
@@ -66,10 +74,13 @@ export class TouchMove extends BaseSlider {
     const { prevTranslate, startPos } = this.store
     const { currentPosition } = this
 
+    // console.log("currentTRanslate", this.store.currentTranslate)
+
     return {
       isTouch: true,
       isMouseLeave: false,
       currentTranslate: prevTranslate + currentPosition - startPos!
+      // animationID: requestAnimationFrame(this.animation.init)
     }
   }
 
@@ -107,8 +118,8 @@ export class TouchMove extends BaseSlider {
     const isLastCloned = slideIndex === childrenCount - 1
 
     return {
-      FIRST: isFirstCloned,
-      SECOND: this.movingTo(POSITION.RIGHT) && isSecondSlide,
+      FIRST: this.movingTo(POSITION.RIGHT) && isFirstCloned,
+      // SECOND: this.movingTo(POSITION.RIGHT) && isSecondSlide,
       LAST: this.movingTo(POSITION.LEFT) && isLastCloned
     }
   }

@@ -1,7 +1,8 @@
+import { CurrentEventType } from "./types"
+
 export enum State_Keys {
   IsLoadPage = "isLoadPage",
   Counter = "counter",
-  MoveTrack = "moveTrack",
   Velocity = "velocity",
   Seconds = "seconds",
   PrevSlideIndex = "prevSlideIndex",
@@ -10,6 +11,8 @@ export enum State_Keys {
   SlidesPerPage = "slidesPerPage",
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
+  StartX = "startX",
+  EndX = "endX",
   SliderReady = "sliderReady",
   IsTouch = "isTouch",
   isDragging = "isDragging",
@@ -17,6 +20,7 @@ export enum State_Keys {
   StartPos = "startPos",
   PrevTranslate = "prevTranslate",
   CurrentTranslate = "currentTranslate",
+  CurrentEventType = "currentEventType",
   StartTime = "startTime",
   EndTime = "endTime",
   IsMouseLeave = "isMouseLeave",
@@ -37,7 +41,6 @@ export type StateType = {
   [State_Keys.IsLoadPage]: boolean
   [State_Keys.Counter]: number
   [State_Keys.Seconds]: number
-  [State_Keys.MoveTrack]: number
   [State_Keys.Velocity]: number
   [State_Keys.PrevSlideIndex]: number
   [State_Keys.SlideIndex]: number
@@ -45,8 +48,8 @@ export type StateType = {
   [State_Keys.SlidesPerPage]: number
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
-  startX: number
-  startY: number
+  [State_Keys.StartX]: number
+  [State_Keys.EndX]: number
   [State_Keys.SliderReady]: boolean | null
   [State_Keys.IsTouch]: boolean
   [State_Keys.isDragging]: boolean
@@ -54,6 +57,7 @@ export type StateType = {
   [State_Keys.StartPos]: number
   [State_Keys.PrevTranslate]: number
   [State_Keys.CurrentTranslate]: number
+  [State_Keys.CurrentEventType]: CurrentEventType
   [State_Keys.StartTime]: number
   [State_Keys.EndTime]: number
   [State_Keys.IsMouseLeave]: boolean
@@ -76,7 +80,7 @@ export type TypeOptions = Partial<{
   [State_Keys.AutoplaySpeed]: number
   [State_Keys.Dots]: boolean
   startX: number
-  startY: number
+  endX: number
   [State_Keys.Arrows]: boolean
   [State_Keys.Touch]: boolean
   [State_Keys.Infinite]: boolean
@@ -102,11 +106,9 @@ class State {
     State.state[this.key][State_Keys.IsLoadPage] = true
     State.state[this.key][State_Keys.Counter] = 0
     State.state[this.key][State_Keys.Velocity] = 0
-    State.state[this.key][State_Keys.MoveTrack] = 0
-    State.state[this.key][State_Keys.Seconds] = 0
     State.state[this.key][State_Keys.PrevSlideIndex] = 0
     State.state[this.key][State_Keys.SlideIndex] = 0
-    State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 300
+    State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0
     State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
     State.state[this.key][State_Keys.NumberOfSlides] = 0
     State.state[this.key][State_Keys.SliderWidth] = 0
@@ -115,10 +117,11 @@ class State {
     State.state[this.key][State_Keys.isDragging] = false
     State.state[this.key][State_Keys.IsJumpSlide] = false
     State.state[this.key][State_Keys.StartPos] = 0
-    State.state[this.key]["startX"] = 0
-    State.state[this.key]["startY"] = 0
+    State.state[this.key][State_Keys.StartX] = 0
+    State.state[this.key][State_Keys.EndX] = 0
     State.state[this.key][State_Keys.PrevTranslate] = 0
     State.state[this.key][State_Keys.CurrentTranslate] = 0
+    State.state[this.key][State_Keys.CurrentEventType] = null
     State.state[this.key][State_Keys.StartTime] = 0
     State.state[this.key][State_Keys.EndTime] = 0
     State.state[this.key][State_Keys.IsMouseLeave] = true

@@ -36,8 +36,9 @@ export const ATTRIBUTES = {
   CLASS: "class",
   ARIA_HIDDEN: "aria-hidden",
   ROLE: "role",
-  DIRECTION: "data-direction"
-}
+  DIRECTION: "data-direction",
+  DRAGGABLE: "draggable"
+} as const
 
 export const TIMES = {
   DEFAULT_TRANSITION_TIME: 400
@@ -60,6 +61,8 @@ export const EVENTS = {
   TRANSITIONSTART: "transitionstart",
   TRANSITIONEND: "transitionend",
   TRANSITIONCANCEL: "transitioncancel",
+  DRAGSTART: "dragstart",
+  DRAGOVER: "dragover",
   DRAGEND: "dragend"
 }
 
@@ -72,7 +75,7 @@ export const ANIMATION_OPTIONS = {
 
 export const TOUCH_LIMIT = 40
 
-export const MOVE_TO_LIMIT = 0.1
+export const MOVE_TO_LIMIT = 20
 
 export const POSITION = {
   RIGHT: "right",
