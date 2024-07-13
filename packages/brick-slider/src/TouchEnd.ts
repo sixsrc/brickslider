@@ -2,20 +2,9 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { ANIMATION_OPTIONS, TIMES, TOUCH_LIMIT } from "./constants"
-import {
-  getFastInteraction,
-  getSliderNodeList,
-  listener,
-  reorderIndex,
-  translate3d,
-  waitFor
-} from "./helpers"
-import {
-  AnimationOptions,
-  KeyframeAnimation,
-  UpdateSlideIndexType
-} from "./types"
+import { ANIMATION_OPTIONS, TOUCH_LIMIT } from "./constants"
+import { getSliderNodeList, reorderIndex, translate3d } from "./helpers"
+import { KeyframeAnimation, UpdateSlideIndexType } from "./types"
 
 export class TouchEnd extends BaseSlider {
   private slides: HTMLElement[]
@@ -32,27 +21,44 @@ export class TouchEnd extends BaseSlider {
     this.moveSlider = 0
     this.isFastInteraction = false
   }
-
+  // const { startX, endX } = this.store
+  //
   public init = (event: any): void => {
-    var rect = event.target.getBoundingClientRect()
-    var x = event.clientX - rect.left
-
-    console.log(x)
+    const target = this.defineTarget(event)
 
     if (this.store.slideIndex === 0) {
       this.state.set({
+        isTouch: false,
         slideIndex: 4,
         currentTranslate: -2352,
         prevTranslate: -2352
       })
-      this.animate([{ transform: translate3d(this.store.currentTranslate) }], {
-        duration: 0,
-
-        fill: ANIMATION_OPTIONS.FORWARDS
-      })
+      this.animate(this.keyFrames(), this.options(0))
     } else {
+      //this.setState(this.eventTargetState())
+
+      this.setState(this.endXState(target.clientX(), target.rect()))
       this.handleTouchMove()
       this.setState(this.mainState())
+    }
+  }
+
+  protected shouldPreventNextAction() {
+    const { currentEventType } = this.store
+    return currentEventType === "touchMove"
+  }
+
+  private eventTargetState(): Partial<StateType> {
+    return {
+      currentEventType: this.shouldPreventNextAction()
+        ? "touchEnd"
+        : "notMapped"
+    }
+  }
+
+  private endXState(clientX: number, rect: DOMRect) {
+    return {
+      endX: clientX - rect.left
     }
   }
 
@@ -76,7 +82,6 @@ export class TouchEnd extends BaseSlider {
     const {
       isMouseLeave,
       isTouch,
-      sliderReady,
       slideIndex,
       currentTranslate,
       prevTranslate
@@ -85,16 +90,6 @@ export class TouchEnd extends BaseSlider {
     this.moveSlider = currentTranslate - prevTranslate
 
     this.cancelAnimationFrame()
-
-    /*const handleFastInteraction = getFastInteraction(500)
-
-    listener(["pointerup"], this.$children, event => {
-      handleFastInteraction(event)
-    })
-
-    listener(["doubletap"], this.$children, () => {
-      console.log("doubletap")
-    })*/
 
     this.setState(this.prevSlideState(slideIndex))
 
@@ -108,9 +103,16 @@ export class TouchEnd extends BaseSlider {
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
-      // this.animate(this.keyFrames(), this.options(0))
+      this.animate(this.keyFrames(), this.options(400))
       this.setState(this.jumpSlideState())
     }
+  }
+
+  protected keyFrames(): KeyframeAnimation[] {
+    const { currentTranslate } = this.store
+    const { moveSlider } = this
+
+    return [{ transform: translate3d(currentTranslate) }]
   }
 
   protected getSpeedInteraction() {
@@ -161,18 +163,6 @@ export class TouchEnd extends BaseSlider {
     return isMovedByThreshold && isNotFirstSlide
   }
 
-  protected keyFrames(): KeyframeAnimation[] {
-    const { currentTranslate } = this.store
-    const { moveSlider } = this
-
-    return [
-      { transform: translate3d(currentTranslate) },
-      {
-        transform: translate3d(currentTranslate + moveSlider)
-      }
-    ]
-  }
-
   private setPosition() {
     const { $root, sliderWidth } = this
     const { slideIndex, dots } = this.store
@@ -213,3 +203,18 @@ export class TouchEnd extends BaseSlider {
     return { isJumpSlide: false }
   }
 }
+// console.log("resultado", startX, endX)
+
+/*  if (this.store.slideIndex === 0) {
+  this.state.set({
+    slideIndex: 4,
+    currentTranslate: -2352,
+    prevTranslate: -2352
+  })
+  this.animate([{ transform: translate3d(this.store.currentTranslate) }], {
+    duration: 0,
+
+    fill: ANIMATION_OPTIONS.FORWARDS
+  })
+  return
+  }*/

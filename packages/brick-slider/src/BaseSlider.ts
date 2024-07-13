@@ -3,6 +3,7 @@ import { ANIMATION_OPTIONS } from "./constants"
 import {
   animateElement,
   calcTranslate,
+  eventX,
   getChildren,
   getChildrenCount,
   getRootSelector,
@@ -10,7 +11,11 @@ import {
   getTrackChildren,
   translate3d
 } from "./helpers"
-import { AnimationOptions, KeyframeAnimation } from "./types"
+import {
+  AnimationOptions,
+  KeyframeAnimation,
+  MouseEventOrTouchEvent
+} from "./types"
 
 export class BaseSlider {
   protected $root: string
@@ -33,7 +38,17 @@ export class BaseSlider {
     this.sliderWidth = getSliderWidth(this.$children)
   }
 
-  protected handleEvents(_event?: Event) {}
+  protected defineTarget(event: MouseEventOrTouchEvent) {
+    const element = event?.target as HTMLElement
+    const rect = element?.getBoundingClientRect()
+
+    const clientX = eventX(event).clientX
+
+    return {
+      clientX: () => clientX,
+      rect: () => rect
+    }
+  }
 
   protected animate(
     keyFrames: KeyframeAnimation[],

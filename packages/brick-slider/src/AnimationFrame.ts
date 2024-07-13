@@ -13,14 +13,17 @@ export class AnimationFrame extends BaseSlider {
   }
 
   public init = (): void => {
-    this.animate(this.keyFrames(), this.options())
-    this.setAnimationFrame()
+    const { isDragging } = this.store
+    if (isDragging) {
+      this.animate(this.keyFrames(), this.options())
+
+      this.setAnimationFrame()
+    }
   }
 
   private setAnimationFrame(): void {
-    const { isDragging } = this.store
-
-    if (isDragging) requestAnimationFrame(this.init)
+    console.log("animationframe")
+    requestAnimationFrame(this.init)
   }
 
   protected keyFrames(): KeyframeAnimation[] {

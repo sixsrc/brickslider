@@ -14,6 +14,15 @@ export type AnimationOptions = {
   iterationStart?: number
 }
 
+export type CurrentEventType =
+  | "dots"
+  | "arrows"
+  | "dragStart"
+  | "touchMove"
+  | "touchEnd"
+  | "notMapped"
+  | null
+
 export type EvalConditionsTouchMove = { [key: string]: boolean }
 
 export type IndexMap = Record<IndexKey, IndexData>

@@ -1,31 +1,51 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { ANIMATION_OPTIONS } from "./constants"
-import { adjustIndex, getAxisX, listener, translate3d } from "./helpers"
+import { Draggable } from "./Draggable"
+import { adjustIndex, eventX, getAxisX, waitFor } from "./helpers"
+import { StateType } from "./State"
 import { MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
   private animation: AnimationFrame
-  private lastEventTime: number
-  private eventCount: number
+  private clientX: number
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame($root)
-    this.lastEventTime = 0
-    this.eventCount = 0
+    this.clientX = 0
+    this.handleEvents()
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    const element = event?.target as HTMLElement
+    const target = this.defineTarget(event)
+    // / this.setState(this.startXState(target.clientX(), target.rect()))
+    //
 
-    var rect = element?.getBoundingClientRect()
-
-    var x = event.clientX - rect.left
-
-    console.log(x)
-
+    //    console.log("toucStart", event)
+    console.log("touchStart", target.clientX())
+    this.setState(this.eventTargetState())
     this.setState(this.mainState(event))
+  }
+
+  private handleEvents() {
+    return new Draggable(this.$root).init()
+  }
+
+  protected shouldPreventNextAction() {
+    const { currentEventType } = this.store
+    return currentEventType === "notMapped"
+  }
+
+  private eventTargetState(): Partial<StateType> {
+    return {
+      currentEventType: "touchStart"
+    }
+  }
+
+  private startXState(clientX: number, rect: DOMRect) {
+    return {
+      startX: clientX - rect.left
+    }
   }
 
   protected mainState(event: TouchEvent | MouseEvent) {
@@ -37,9 +57,10 @@ export class TouchStart extends BaseSlider {
       startTime: new Date().getMilliseconds(),
       slideIndex: index,
       startPos: getAxisX(event),
-      isDragging: true,
-      isMouseLeave: false,
-      animationID: requestAnimationFrame(this.animation.init)
+      //isDragging: false,
+      //isDragging: true,
+      isMouseLeave: false
+      //animationID: requestAnimationFrame(this.animation.init)
     }
   }
 }
