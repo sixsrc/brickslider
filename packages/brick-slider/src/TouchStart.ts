@@ -1,51 +1,27 @@
-import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
+import { ContextMenu } from "./ContextMenu"
 import { Draggable } from "./Draggable"
-import { adjustIndex, getAxisX, listener } from "./helpers"
-import { StateType } from "./State"
+import { adjustIndex, getAxisX } from "./helpers"
 import { MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
-  private animation: AnimationFrame
-  private clientX: number
+  private _draggable: Draggable
+  private _contextMenu: ContextMenu
 
   constructor($root: string) {
     super($root)
-    this.animation = new AnimationFrame($root)
-    this.clientX = 0
-    this.handleEvents()
+    this._draggable = new Draggable($root)
+    this._contextMenu = new ContextMenu($root)
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    //const target = this.defineTarget(event)
-    //console.log("touchStart", target.clientX())
-    this.setState(this.eventTargetState())
     this.setState(this.mainState(event))
+    this.handleEvents()
   }
 
   private handleEvents() {
-    //const initHandler = this.init.bind(this)
-
-    ///listener(["dragabble"], this.getRootSelector as EventTarget, initHandler)
-
-    new Draggable(this.$root).init()
-  }
-
-  protected shouldPreventNextAction() {
-    const { currentEventType } = this.store
-    return currentEventType === "notMapped"
-  }
-
-  private eventTargetState(): Partial<StateType> {
-    return {
-      currentEventType: "touchStart"
-    }
-  }
-
-  private startXState(clientX: number, rect: DOMRect) {
-    return {
-      startX: clientX - rect.left
-    }
+    this._draggable.init()
+    this._contextMenu.init()
   }
 
   protected mainState(event: TouchEvent | MouseEvent) {

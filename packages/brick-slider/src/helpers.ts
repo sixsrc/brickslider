@@ -90,6 +90,10 @@ export function createNewElement(tagName: string): HTMLElement {
   return document.createElement(tagName)
 }
 
+export function delayOf<T>(ms: number, value: T) {
+    return new Promise<T>((resolve) => setTimeout(resolve, ms, value));
+}
+
 export function getAllElements<T extends Element>(
   selector: string,
   parent: Document | Element = document
@@ -304,7 +308,9 @@ export function calcTranslate(
   return translate
 }
 
-export function eventX(event: MouseEventOrTouchEvent): MouseEvent | Touch {
+export function getEventType(
+  event: MouseEventOrTouchEvent
+): MouseEvent | Touch {
   if (event.type.includes("mouse")) {
     return event as MouseEvent
   } else {
