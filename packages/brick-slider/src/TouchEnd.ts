@@ -24,7 +24,7 @@ export class TouchEnd extends BaseSlider {
   // const { startX, endX } = this.store
   //
   public init = (event: any): void => {
-    const target = this.defineTarget(event)
+    //const target = this.defineTarget(event)
 
     if (this.store.slideIndex === 0) {
       this.state.set({
@@ -37,7 +37,7 @@ export class TouchEnd extends BaseSlider {
     } else {
       //this.setState(this.eventTargetState())
 
-      this.setState(this.endXState(target.clientX(), target.rect()))
+      //  this.setState(this.endXState(target.clientX(), target.rect()))
       this.handleTouchMove()
       this.setState(this.mainState())
     }

@@ -39,7 +39,7 @@ export class AnimationFrame extends BaseSlider {
     time: number = TIMES.DEFAULT_TRANSITION_TIME
   ): AnimationOptions {
     const { isDragging, isJumpSlide } = this.store
-    const duration = /*isDragging ||*/ isJumpSlide ? 0 : time
+    const duration = isDragging || isJumpSlide ? 0 : time
     const actualDuration = duration - ANIMATION_DELAY
 
     return {

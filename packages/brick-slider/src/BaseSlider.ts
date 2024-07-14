@@ -11,11 +11,7 @@ import {
   getTrackChildren,
   translate3d
 } from "./helpers"
-import {
-  AnimationOptions,
-  KeyframeAnimation,
-  MouseEventOrTouchEvent
-} from "./types"
+import { AnimationOptions, KeyframeAnimation } from "./types"
 
 export class BaseSlider {
   protected $root: string
@@ -38,7 +34,7 @@ export class BaseSlider {
     this.sliderWidth = getSliderWidth(this.$children)
   }
 
-  protected defineTarget(event: MouseEventOrTouchEvent) {
+  /*protected defineTarget(event: MouseEventOrTouchEvent) {
     const element = event?.target as HTMLElement
     const rect = element?.getBoundingClientRect()
 
@@ -48,7 +44,7 @@ export class BaseSlider {
       clientX: () => clientX,
       rect: () => rect
     }
-  }
+  }*/
 
   protected animate(
     keyFrames: KeyframeAnimation[],
