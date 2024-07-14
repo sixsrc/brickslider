@@ -1,7 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Draggable } from "./Draggable"
-import { adjustIndex, eventX, getAxisX, waitFor } from "./helpers"
+import { adjustIndex, getAxisX, listener } from "./helpers"
 import { StateType } from "./State"
 import { MouseEventOrTouchEvent } from "./types"
 
@@ -17,18 +17,18 @@ export class TouchStart extends BaseSlider {
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    const target = this.defineTarget(event)
-    // / this.setState(this.startXState(target.clientX(), target.rect()))
-    //
-
-    //    console.log("toucStart", event)
-    console.log("touchStart", target.clientX())
+    //const target = this.defineTarget(event)
+    //console.log("touchStart", target.clientX())
     this.setState(this.eventTargetState())
     this.setState(this.mainState(event))
   }
 
   private handleEvents() {
-    return new Draggable(this.$root).init()
+    //const initHandler = this.init.bind(this)
+
+    ///listener(["dragabble"], this.getRootSelector as EventTarget, initHandler)
+
+    new Draggable(this.$root).init()
   }
 
   protected shouldPreventNextAction() {
@@ -57,10 +57,7 @@ export class TouchStart extends BaseSlider {
       startTime: new Date().getMilliseconds(),
       slideIndex: index,
       startPos: getAxisX(event),
-      //isDragging: false,
-      //isDragging: true,
       isMouseLeave: false
-      //animationID: requestAnimationFrame(this.animation.init)
     }
   }
 }

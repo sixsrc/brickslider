@@ -57,7 +57,7 @@ export class TouchMove extends BaseSlider {
 
   protected updatePosition(event: MouseEvent | TouchEvent) {
     this.previousPosition = this.currentPosition
-    this.currentPosition = getAxisX(eventX(event as MouseEvent | TouchEvent))
+    this.currentPosition = getAxisX(event)
   }
 
   protected movingTo(position: PositionSlider): boolean {
