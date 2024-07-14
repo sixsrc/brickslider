@@ -23,6 +23,10 @@ export type CurrentEventType =
   | "notMapped"
   | null
 
+export type DragabbleListenersParams = {
+  element: HTMLElement
+  dragStart: any
+}
 export type EvalConditionsTouchMove = { [key: string]: boolean }
 
 export type IndexMap = Record<IndexKey, IndexData>

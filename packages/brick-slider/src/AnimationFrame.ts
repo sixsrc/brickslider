@@ -13,16 +13,16 @@ export class AnimationFrame extends BaseSlider {
   }
 
   public init = (): void => {
-    const { isDragging } = this.store
-    if (isDragging) {
-      this.animate(this.keyFrames(), this.options())
+    const { isDragging, isTouch } = this.store
+    this.animate(this.keyFrames(), this.options())
 
-      this.setAnimationFrame()
+    //this.setAnimationFrame()
+    if (isDragging || isTouch) {
     }
   }
 
   private setAnimationFrame(): void {
-    console.log("animationframe")
+    // console.log("animationframe")
     requestAnimationFrame(this.init)
   }
 
@@ -39,14 +39,14 @@ export class AnimationFrame extends BaseSlider {
     time: number = TIMES.DEFAULT_TRANSITION_TIME
   ): AnimationOptions {
     const { isDragging, isJumpSlide } = this.store
-    const duration = isDragging || isJumpSlide ? 0 : time
-    const actualDuration = duration - ANIMATION_DELAY
+    const duration = isJumpSlide ? 0 : time
+    const actualDuration = duration // - ANIMATION_DELAY
 
     return {
       duration: actualDuration > 0 ? actualDuration : 0,
       easing: ANIMATION_OPTIONS.EASEOUT,
-      fill: ANIMATION_OPTIONS.FORWARDS,
-      delay: ANIMATION_DELAY
+      fill: ANIMATION_OPTIONS.FORWARDS
+      // delay: ANIMATION_DELAY
     }
   }
 

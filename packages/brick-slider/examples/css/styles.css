@@ -72,7 +72,7 @@ body {
     flex-direction: row;
     gap: 20px;
     will-change: transform;
-    /*touch-action: pan-y;*/
+    touch-action: pan-x;
     /* padding-bottom: 1.7rem;*/
     margin: 0;
     z-index: 0;

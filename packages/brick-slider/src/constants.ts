@@ -58,6 +58,7 @@ export const EVENTS = {
   MOUSEUP: "mouseup",
   MOUSELEAVE: "mouseleave",
   MOUSEMOVE: "mousemove",
+  CONTEXTMENU: "contextmenu",
   TRANSITIONSTART: "transitionstart",
   TRANSITIONEND: "transitionend",
   TRANSITIONCANCEL: "transitioncancel",
@@ -66,7 +67,7 @@ export const EVENTS = {
   DRAGEND: "dragend"
 }
 
-export const ANIMATION_DELAY = 80
+export const ANIMATION_DELAY = 100
 
 export const ANIMATION_OPTIONS = {
   FORWARDS: "forwards",

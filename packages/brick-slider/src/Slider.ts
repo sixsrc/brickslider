@@ -61,6 +61,8 @@ export class Slider extends BaseSlider {
   }
 
   private animationFrame() {
+    console.log("minhapica!!!")
+    //this.animate(this.keyFrames(), this.options(400))
     requestAnimationFrame(this.animation.init)
   }
 

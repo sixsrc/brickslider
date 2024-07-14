@@ -3,7 +3,13 @@ import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
 import { ANIMATION_OPTIONS, TOUCH_LIMIT } from "./constants"
-import { getSliderNodeList, reorderIndex, translate3d } from "./helpers"
+import {
+  delayOf,
+  getSliderNodeList,
+  reorderIndex,
+  translate3d,
+  waitFor
+} from "./helpers"
 import { KeyframeAnimation, UpdateSlideIndexType } from "./types"
 
 export class TouchEnd extends BaseSlider {
@@ -26,21 +32,17 @@ export class TouchEnd extends BaseSlider {
   public init = (event: any): void => {
     //const target = this.defineTarget(event)
 
-    if (this.store.slideIndex === 0) {
-      this.state.set({
-        isTouch: false,
-        slideIndex: 4,
-        currentTranslate: -2352,
-        prevTranslate: -2352
-      })
-      this.animate(this.keyFrames(), this.options(0))
-    } else {
-      //this.setState(this.eventTargetState())
-
-      //  this.setState(this.endXState(target.clientX(), target.rect()))
+    const action = () => {
       this.handleTouchMove()
       this.setState(this.mainState())
     }
+
+    if (event.type === "mouseleave") {
+      waitFor(100, action)
+      return
+    }
+
+    action()
   }
 
   protected shouldPreventNextAction() {
@@ -103,7 +105,10 @@ export class TouchEnd extends BaseSlider {
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
-      this.animate(this.keyFrames(), this.options(400))
+
+      requestAnimationFrame(this.animation.init)
+
+      //this.animate(this.keyFrames(), this.options(400))
       this.setState(this.jumpSlideState())
     }
   }
@@ -218,3 +223,7 @@ export class TouchEnd extends BaseSlider {
   })
   return
   }*/
+
+/*
+
+  */
