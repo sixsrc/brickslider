@@ -20,7 +20,6 @@ export type CurrentEventType =
   | "dragStart"
   | "touchMove"
   | "touchEnd"
-  | "notMapped"
   | null
 
 export type DragabbleListenersParams = {
