@@ -8,22 +8,42 @@ import {
 } from "./types"
 
 export class AnimationFrame extends BaseSlider {
+  private debounceTimeout: number = 200 // tempo de debounce em milissegundos
+  private debounceInit: () => void
+
   constructor($root: string) {
     super($root)
+    this.debounceInit = this.debounce(this.init, this.debounceTimeout)
   }
 
   public init = (): void => {
-    const { isDragging, isTouch } = this.store
+    const { isDragging, isTouch, currentTranslate } = this.store
+    console.log("animationframe")
+
     this.animate(this.keyFrames(), this.options())
 
-    //this.setAnimationFrame()
+    //this.setAnimationFrame();
     if (isDragging || isTouch) {
+      // Lógica adicional se necessário
+    }
+  }
+
+  private debounce(func: () => void, wait: number): () => void {
+    let timeout: NodeJS.Timeout | null
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+      timeout = setTimeout(() => {
+        timeout = null
+        func()
+      }, wait)
     }
   }
 
   private setAnimationFrame(): void {
-    // console.log("animationframe")
-    requestAnimationFrame(this.init)
+    // console.log("animationframe");
+    requestAnimationFrame(this.debounceInit)
   }
 
   protected keyFrames(): KeyframeAnimation[] {
@@ -38,8 +58,9 @@ export class AnimationFrame extends BaseSlider {
   protected options(
     time: number = TIMES.DEFAULT_TRANSITION_TIME
   ): AnimationOptions {
-    const { isDragging, isJumpSlide } = this.store
-    const duration = isJumpSlide ? 0 : time
+    const { isDragging, isJumpSlide, currentEventType } = this.store
+    const isTouchMove = currentEventType === "touchMove"
+    const duration = isJumpSlide || isTouchMove ? 0 : time
     const actualDuration = duration // - ANIMATION_DELAY
 
     return {

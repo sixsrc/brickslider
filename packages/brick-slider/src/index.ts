@@ -1,4 +1,9 @@
-//;(window as any).BrickSlider = BrickSlider
+//export { BrickSlider } from "./BrickSlider"
+
+/*
+export { BrickSlider }
+;(window as any).BrickSlider = BrickSlider
+*/
 
 import { BrickSlider } from "./BrickSlider"
 

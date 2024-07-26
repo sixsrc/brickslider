@@ -2,7 +2,7 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
 import { MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
-import { eventX, getAxisX, waitFor } from "./helpers"
+import { getAxisX } from "./helpers"
 import {
   IndexData,
   IndexKey,
@@ -38,10 +38,9 @@ export class TouchMove extends BaseSlider {
 
   public init(event: MouseEventOrTouchEvent): void {
     const { isDragging } = this.store
-
+    console.log("touchmove")
     if (isDragging) {
       this.updatePosition(event)
-
       this.handleSwipe()
       this.setState(this.eventTargetState())
       this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
@@ -79,8 +78,8 @@ export class TouchMove extends BaseSlider {
     return {
       isTouch: true,
       isMouseLeave: false,
-      currentTranslate: prevTranslate + currentPosition - startPos!
-      // animationID: requestAnimationFrame(this.animation.init)
+      currentTranslate: prevTranslate + currentPosition - startPos!,
+      animationID: requestAnimationFrame(this.animation.init)
     }
   }
 

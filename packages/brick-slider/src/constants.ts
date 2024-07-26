@@ -41,7 +41,7 @@ export const ATTRIBUTES = {
 } as const
 
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 400
+  DEFAULT_TRANSITION_TIME: 600
 }
 
 export const TRANSITIONS = {
@@ -71,12 +71,14 @@ export const ANIMATION_DELAY = 100
 
 export const ANIMATION_OPTIONS = {
   FORWARDS: "forwards",
-  EASEOUT: "ease-out"
+  EASEOUT: "ease"
 } as const
 
-export const TOUCH_LIMIT = 40
+//velocidade maior sem sair do elemento diminui tolencia TOUCH_LIMIT = 10 MOVE_TO_LIMIT = 5
+//velocidade maior diminui saindo do elemento tolencia TOUCH_LIMIT = 50 MOVE_TO_LIMIT = 55
+export const TOUCH_LIMIT = 20 //5
 
-export const MOVE_TO_LIMIT = 20
+export const MOVE_TO_LIMIT = 3
 
 export const POSITION = {
   RIGHT: "right",

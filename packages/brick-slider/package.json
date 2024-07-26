@@ -31,12 +31,9 @@
     "cjs": "./dist/brick-slider.cjs"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --host",
     "test": "vitest",
     "lint": "eslint --ext .ts {src,__tests__}/**.ts",
     "build": "tsc --noEmit && vite build"
-  },
-  "dependencies": {
-    "bezier-easing": "^2.1.0"
   }
 }
