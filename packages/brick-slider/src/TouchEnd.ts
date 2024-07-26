@@ -2,7 +2,7 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { ANIMATION_OPTIONS, TOUCH_LIMIT } from "./constants"
+import { TOUCH_LIMIT } from "./constants"
 import {
   delayOf,
   getSliderNodeList,
@@ -31,8 +31,9 @@ export class TouchEnd extends BaseSlider {
   //
   public init = (event: any): void => {
     //const target = this.defineTarget(event)
-
+    console.log("touchend")
     const action = () => {
+      this.setState(this.eventTargetState())
       this.handleTouchMove()
       this.setState(this.mainState())
     }
@@ -48,14 +49,6 @@ export class TouchEnd extends BaseSlider {
   protected shouldPreventNextAction() {
     const { currentEventType } = this.store
     return currentEventType === "touchMove"
-  }
-
-  private eventTargetState(): Partial<StateType> {
-    return {
-      currentEventType: this.shouldPreventNextAction()
-        ? "touchEnd"
-        : "notMapped"
-    }
   }
 
   private endXState(clientX: number, rect: DOMRect) {
@@ -106,7 +99,7 @@ export class TouchEnd extends BaseSlider {
     if (isTouch && !isMouseLeave) {
       this.setPosition()
 
-      requestAnimationFrame(this.animation.init)
+      //requestAnimationFrame(this.animation.init)
 
       //this.animate(this.keyFrames(), this.options(400))
       this.setState(this.jumpSlideState())
@@ -207,8 +200,13 @@ export class TouchEnd extends BaseSlider {
   private jumpSlideState(): Partial<StateType> {
     return { isJumpSlide: false }
   }
+  private eventTargetState(): Partial<StateType> {
+    return {
+      currentEventType: "touchEnd"
+    }
+  }
+  //
 }
-// console.log("resultado", startX, endX)
 
 /*  if (this.store.slideIndex === 0) {
   this.state.set({

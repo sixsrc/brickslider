@@ -9,7 +9,7 @@ export class Draggable extends BaseSlider {
 
   constructor($root: string) {
     super($root)
-    this.getRootSelector!.setAttribute(ATTRIBUTES.DRAGGABLE, "true")
+    // this.getRootSelector!.setAttribute(ATTRIBUTES.DRAGGABLE, "true")
     this.animation = new AnimationFrame($root)
   }
 
@@ -54,11 +54,13 @@ export class Draggable extends BaseSlider {
           : moveEvent.touches[0].clientY
 
       if (!isDragging) {
-        if (Math.abs(moveX - startX) > 5 || Math.abs(moveY - startY) > 5) {
-          console.log(this.store.isMouseLeave)
-          this.state.set({ isDragging: true })
-          this.animate(this.keyFrames(), this.options())
-          //  requestAnimationFrame(this.animation.init)
+        if (Math.abs(moveX - startX) > 5 || Math.abs(moveY - startY) > 2) {
+          this.state.set({
+            /// animationID: requestAnimationFrame(this.animation.init),
+            isDragging: true
+          })
+          //this.animate(this.keyFrames(), this.options())
+          //requestAnimationFrame(this.animation.init)
         } else {
           return
         }
