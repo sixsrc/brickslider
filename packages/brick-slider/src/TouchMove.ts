@@ -38,7 +38,7 @@ export class TouchMove extends BaseSlider {
 
   public init(event: MouseEventOrTouchEvent): void {
     const { isDragging } = this.store
-    console.log("touchmove")
+    //console.log("touchmove")
     if (isDragging) {
       this.updatePosition(event)
       this.handleSwipe()
@@ -130,7 +130,7 @@ export class TouchMove extends BaseSlider {
       this.setSkipSlide(true)
       this.currentIndex = IndexesNames[indexData.currentIndex]
 
-      console.log("currentIndex", this.currentIndex)
+      //console.log("currentIndex", this.currentIndex)
       this.translate = indexData.translate
       this.state.set(this.jumpSlideState())
     }

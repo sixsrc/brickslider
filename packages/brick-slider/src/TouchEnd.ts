@@ -4,7 +4,6 @@ import { Slider } from "./Slider"
 import { StateType } from "./State"
 import { TOUCH_LIMIT } from "./constants"
 import {
-  delayOf,
   getSliderNodeList,
   reorderIndex,
   translate3d,
@@ -27,23 +26,62 @@ export class TouchEnd extends BaseSlider {
     this.moveSlider = 0
     this.isFastInteraction = false
   }
-  // const { startX, endX } = this.store
-  //
+
   public init = (event: any): void => {
-    //const target = this.defineTarget(event)
-    console.log("touchend")
-    const action = () => {
-      this.setState(this.eventTargetState())
-      this.handleTouchMove()
-      this.setState(this.mainState())
-    }
+    this._init(event)
+  }
 
-    if (event.type === "mouseleave") {
-      waitFor(100, action)
-      return
-    }
+  private _init(event: any) {
+    const target = this.shouldBeEqual(event) as string
+    const isNotSwipe = this.shouldNotBeSwipe()
+    const isEqual = this.shouldBeEqual(event)
 
-    action()
+    if (isNotSwipe) return
+
+    if (isEqual) {
+      console.log(isEqual)
+      this.setTargetCondition()[target]
+    } else {
+      this.action()
+    }
+  }
+
+  private shouldBeEqual(event?: any) {
+    const isEqual = Object.keys(this.evalSwipeConditions(event)).find(
+      key => this.evalSwipeConditions(event)[key]
+    )
+
+    return isEqual
+  }
+
+  private evalSwipeConditions(event: any): Partial<StateType> {
+    const isMouseLeave = event.type === "mouseleave"
+    const isMouseLeaveAndSpeedInteraction =
+      !isMouseLeave && this.getSpeedInteraction() <= 100
+
+    return {
+      FIRST: isMouseLeave
+      // SECOND: isMouseLeaveAndSpeedInteraction
+    }
+  }
+
+  private setTargetCondition(): any {
+    return {
+      FIRST: waitFor(100, () => this.action()),
+      SECOND: waitFor(0, () => this.action())
+    }
+  }
+
+  protected action() {
+    this.setState(this.eventTargetState())
+    this.handleTouchMove()
+    this.setState(this.mainState())
+  }
+
+  protected shouldNotBeSwipe() {
+    const { currentEventType } = this.store
+
+    return currentEventType !== "touchMove"
   }
 
   protected shouldPreventNextAction() {
@@ -51,14 +89,9 @@ export class TouchEnd extends BaseSlider {
     return currentEventType === "touchMove"
   }
 
-  private endXState(clientX: number, rect: DOMRect) {
-    return {
-      endX: clientX - rect.left
-    }
-  }
-
   private mainState(): Partial<StateType> {
     return {
+      endTime: new Date().getMilliseconds(),
       isDragging: false,
       isMouseLeave: true,
       isTouch: false
@@ -98,17 +131,12 @@ export class TouchEnd extends BaseSlider {
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
-
-      //requestAnimationFrame(this.animation.init)
-
-      //this.animate(this.keyFrames(), this.options(400))
       this.setState(this.jumpSlideState())
     }
   }
 
   protected keyFrames(): KeyframeAnimation[] {
     const { currentTranslate } = this.store
-    const { moveSlider } = this
 
     return [{ transform: translate3d(currentTranslate) }]
   }
@@ -223,5 +251,22 @@ export class TouchEnd extends BaseSlider {
   }*/
 
 /*
+    //requestAnimationFrame(this.animation.init)
 
+      //this.animate(this.keyFrames(), this.options(400))
+
+        //const target = this.defineTarget(event)
   */
+
+/* if (event.type === "mouseleave") {
+      waitFor(100, () => this.action())
+      return
+    } else if (
+      event.type !== "mouseleave" &&
+      this.getSpeedInteraction() <= 100
+    ) {
+      console.log("ta rapido demais fdp")
+      waitFor(0, () => this.action())
+      return
+    }
+    */

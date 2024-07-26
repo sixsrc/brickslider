@@ -8,42 +8,24 @@ import {
 } from "./types"
 
 export class AnimationFrame extends BaseSlider {
-  private debounceTimeout: number = 200 // tempo de debounce em milissegundos
-  private debounceInit: () => void
-
   constructor($root: string) {
     super($root)
-    this.debounceInit = this.debounce(this.init, this.debounceTimeout)
   }
 
   public init = (): void => {
     const { isDragging, isTouch, currentTranslate } = this.store
-    console.log("animationframe")
+    // console.log("animationframe")
 
     this.animate(this.keyFrames(), this.options())
 
-    //this.setAnimationFrame();
+    //this.setAnimationFrame()
     if (isDragging || isTouch) {
-      // Lógica adicional se necessário
-    }
-  }
-
-  private debounce(func: () => void, wait: number): () => void {
-    let timeout: NodeJS.Timeout | null
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout)
-      }
-      timeout = setTimeout(() => {
-        timeout = null
-        func()
-      }, wait)
     }
   }
 
   private setAnimationFrame(): void {
-    // console.log("animationframe");
-    requestAnimationFrame(this.debounceInit)
+    // console.log("animationframe")
+    requestAnimationFrame(this.init)
   }
 
   protected keyFrames(): KeyframeAnimation[] {
@@ -68,6 +50,7 @@ export class AnimationFrame extends BaseSlider {
       easing: ANIMATION_OPTIONS.EASEOUT,
       fill: ANIMATION_OPTIONS.FORWARDS
       // delay: ANIMATION_DELAY
+      //delay: 200
     }
   }
 
