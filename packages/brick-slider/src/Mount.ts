@@ -77,7 +77,6 @@ export class Mount extends BaseSlider {
 
     if (dots) new Dots($root).init()
     if (arrows) new Arrows($root).init()
-    //if (touch) new Draggable($root).init()
     if (touch) new Swipe($root).init()
   }
 

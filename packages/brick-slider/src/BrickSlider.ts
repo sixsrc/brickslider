@@ -1,12 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { Mount } from "./Mount"
 import { TypeOptions } from "./State"
-import {
-  assert,
-  getFastInteraction,
-  isValidSelector,
-  listener
-} from "./helpers"
+import { assert, isValidSelector } from "./helpers"
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: TypeOptions

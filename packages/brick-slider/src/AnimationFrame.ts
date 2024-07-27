@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { ANIMATION_DELAY, ANIMATION_OPTIONS, TIMES } from "./constants"
+import { ANIMATION_OPTIONS, TIMES } from "./constants"
 import { translate3d } from "./helpers"
 import {
   AnimationCondition,
@@ -13,19 +13,7 @@ export class AnimationFrame extends BaseSlider {
   }
 
   public init = (): void => {
-    const { isDragging, isTouch, currentTranslate } = this.store
-    // console.log("animationframe")
-
     this.animate(this.keyFrames(), this.options())
-
-    //this.setAnimationFrame()
-    if (isDragging || isTouch) {
-    }
-  }
-
-  private setAnimationFrame(): void {
-    // console.log("animationframe")
-    requestAnimationFrame(this.init)
   }
 
   protected keyFrames(): KeyframeAnimation[] {
@@ -40,17 +28,15 @@ export class AnimationFrame extends BaseSlider {
   protected options(
     time: number = TIMES.DEFAULT_TRANSITION_TIME
   ): AnimationOptions {
-    const { isDragging, isJumpSlide, currentEventType } = this.store
+    const { isJumpSlide, currentEventType } = this.store
     const isTouchMove = currentEventType === "touchMove"
     const duration = isJumpSlide || isTouchMove ? 0 : time
-    const actualDuration = duration // - ANIMATION_DELAY
+    const actualDuration = duration > 0 ? duration : 0
 
     return {
-      duration: actualDuration > 0 ? actualDuration : 0,
+      duration: actualDuration,
       easing: ANIMATION_OPTIONS.EASEOUT,
       fill: ANIMATION_OPTIONS.FORWARDS
-      // delay: ANIMATION_DELAY
-      //delay: 200
     }
   }
 
@@ -85,3 +71,14 @@ export class AnimationFrame extends BaseSlider {
     ]
   }
 }
+
+/*
+if (isDragging || isTouch) {
+    }
+
+      private setAnimationFrame(): void {
+    requestAnimationFrame(this.init)
+  }
+
+    const actualDuration = duration // - ANIMATION_DELAY
+*/

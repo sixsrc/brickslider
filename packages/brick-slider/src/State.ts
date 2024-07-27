@@ -12,6 +12,7 @@ export enum State_Keys {
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   StartX = "startX",
+  StartY = "startY",
   EndX = "endX",
   SliderReady = "sliderReady",
   IsTouch = "isTouch",
@@ -49,6 +50,7 @@ export type StateType = {
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
   [State_Keys.StartX]: number
+  [State_Keys.StartY]: number
   [State_Keys.EndX]: number
   [State_Keys.SliderReady]: boolean | null
   [State_Keys.IsTouch]: boolean
@@ -118,6 +120,7 @@ class State {
     State.state[this.key][State_Keys.IsJumpSlide] = false
     State.state[this.key][State_Keys.StartPos] = 0
     State.state[this.key][State_Keys.StartX] = 0
+    State.state[this.key][State_Keys.StartY] = 0
     State.state[this.key][State_Keys.EndX] = 0
     State.state[this.key][State_Keys.PrevTranslate] = 0
     State.state[this.key][State_Keys.CurrentTranslate] = 0

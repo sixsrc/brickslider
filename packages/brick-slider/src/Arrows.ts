@@ -91,10 +91,3 @@ export class Arrows extends BaseSlider {
     }
   }
 }
-
-/*
- this.state.set({ [State_Keys.StartTime]: Date.now() })
-this.state.set({ [State_Keys.SliderReady]: false })
-
-      setStyle(this.$children, STYLES.TRANSITION, TRANSITIONS.TRANSFORM_EASE)
-*/

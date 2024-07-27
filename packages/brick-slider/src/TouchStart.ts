@@ -2,30 +2,30 @@ import { BaseSlider } from "./BaseSlider"
 import { ContextMenu } from "./ContextMenu"
 import { Draggable } from "./Draggable"
 import { adjustIndex, getAxisX } from "./helpers"
+import { StateType } from "./State"
 import { MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
-  private _draggable: Draggable
-  private _contextMenu: ContextMenu
+  private draggable: Draggable
+  private contextMenu: ContextMenu
 
   constructor($root: string) {
     super($root)
-    this._draggable = new Draggable($root)
-    this._contextMenu = new ContextMenu($root)
+    this.draggable = new Draggable($root)
+    this.contextMenu = new ContextMenu($root)
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    // console.log("touchstart")
     this.setState(this.mainState(event))
     this.handleEvents()
   }
 
-  private handleEvents() {
-    this._draggable.init()
-    this._contextMenu.init()
+  private handleEvents(): void {
+    this.draggable.init()
+    this.contextMenu.init()
   }
 
-  protected mainState(event: TouchEvent | MouseEvent) {
+  protected mainState(event: TouchEvent | MouseEvent): Partial<StateType> {
     const { slideIndex, slidesPerPage } = this.store
     const isTrue = slidesPerPage <= 1
     const index = isTrue ? adjustIndex(slideIndex, slidesPerPage) : slideIndex

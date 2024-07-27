@@ -1,15 +1,15 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { ATTRIBUTES, EVENTS } from "./constants"
-import { listener } from "./helpers"
-import { DragabbleListenersParams } from "./types"
+import { EVENTS } from "./constants"
+import { listener, removeListener } from "./helpers"
+import { StateType } from "./State"
+import { DragabbleListenersParams, MouseEventOrTouchEvent } from "./types"
 
 export class Draggable extends BaseSlider {
   animation: AnimationFrame
 
   constructor($root: string) {
     super($root)
-    // this.getRootSelector!.setAttribute(ATTRIBUTES.DRAGGABLE, "true")
     this.animation = new AnimationFrame($root)
   }
 
@@ -29,66 +29,58 @@ export class Draggable extends BaseSlider {
   private setDragListeners(params: DragabbleListenersParams): void {
     const { dragStart } = params
     const $root = this.getRootSelector!
+
     listener([EVENTS.MOUSEDOWN, EVENTS.TOUCHSTART], $root, dragStart)
   }
 
-  /*  const startX =
-    event instanceof MouseEvent ? event.clientX : event.touches[0].clientX
-  const startY =
-    event instanceof MouseEvent ? event.clientY : event.touches[0].clientY
-    */
-
-  private dragStart(event: MouseEvent | TouchEvent): void {
-    const { isDragging } = this.store
+  private dragStart(event: MouseEventOrTouchEvent): void {
     const startX = this.defineEventTarget(event).clientX
     const startY = this.defineEventTarget(event).clientY
+    const handleMoveEvents = [EVENTS.MOUSEMOVE, EVENTS.TOUCHMOVE]
+    const handleEndEvents = [EVENTS.MOUSEUP, EVENTS.TOUCHEND]
 
-    const handleMove = (moveEvent: MouseEvent | TouchEvent) => {
-      const moveX =
-        moveEvent instanceof MouseEvent
-          ? moveEvent.clientX
-          : moveEvent.touches[0].clientX
-      const moveY =
-        moveEvent instanceof MouseEvent
-          ? moveEvent.clientY
-          : moveEvent.touches[0].clientY
+    this.setState(this.axisState(startX, startY))
 
-      if (!isDragging) {
-        if (Math.abs(moveX - startX) > 5 || Math.abs(moveY - startY) > 2) {
-          this.state.set({
-            /// animationID: requestAnimationFrame(this.animation.init),
-            isDragging: true
-          })
-          //this.animate(this.keyFrames(), this.options())
-          //requestAnimationFrame(this.animation.init)
-        } else {
-          return
-        }
-      }
-    }
-
-    const handleEnd = () => {
-      document.removeEventListener("mousemove", handleMove)
-      document.removeEventListener("touchmove", handleMove)
-      document.removeEventListener("mouseup", handleEnd)
-      document.removeEventListener("touchend", handleEnd)
-      this.state.set({ isDragging: false })
-    }
-
-    document.addEventListener("mousemove", handleMove)
-    document.addEventListener("touchmove", handleMove)
-    document.addEventListener("mouseup", handleEnd)
-    document.addEventListener("touchend", handleEnd)
+    listener(handleMoveEvents, document, this.handleMove as any)
+    listener(handleEndEvents, document, this.handleEnd)
 
     event.preventDefault()
   }
-}
-/*const customDragEvent = new CustomEvent("draggable", {
-  detail: { startX, startY, moveX, moveY, originalEvent: moveEvent },
-  bubbles: true,
-  cancelable: true
-  })*/
 
-//this.getRootSelector!.dispatchEvent(customDragEvent)
-// let isDragging = false
-// //  isDragging = true
+  private handleMove = (event: MouseEventOrTouchEvent): void => {
+    const { isDragging, startX, startY } = this.store
+    const moveX = this.defineEventTarget(event).clientX
+    const moveY = this.defineEventTarget(event).clientY
+
+    if (!isDragging) {
+      if (Math.abs(moveX - startX) > 5 || Math.abs(moveY - startY) > 2) {
+        this.setState(this.draggingState(true))
+      } /*else {
+        return
+      }*/
+    }
+  }
+
+  private handleEnd = (): void => {
+    const handleMoveEvents = [EVENTS.MOUSEMOVE, EVENTS.TOUCHMOVE]
+    const handleEndEvents = [EVENTS.MOUSEUP, EVENTS.TOUCHEND]
+
+    removeListener(handleMoveEvents, document, this.handleMove as any)
+    removeListener(handleEndEvents, document, this.handleEnd)
+
+    this.setState(this.draggingState(false))
+  }
+
+  private axisState(startX: number, startY: number): Partial<StateType> {
+    return {
+      startX,
+      startY
+    }
+  }
+
+  private draggingState(condition: boolean) {
+    return {
+      isDragging: condition
+    }
+  }
+}

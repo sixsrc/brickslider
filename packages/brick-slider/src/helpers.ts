@@ -91,7 +91,7 @@ export function createNewElement(tagName: string): HTMLElement {
 }
 
 export function delayOf<T>(ms: number, value: T) {
-    return new Promise<T>((resolve) => setTimeout(resolve, ms, value));
+  return new Promise<T>(resolve => setTimeout(resolve, ms, value))
 }
 
 export function getAllElements<T extends Element>(
@@ -388,6 +388,18 @@ export function listener(
   if (Array.isArray(events)) {
     events.forEach(event => {
       target.addEventListener(event, callback)
+    })
+  }
+}
+
+export function removeListener(
+  events: string[],
+  target: EventTarget,
+  callback: EventListenerOrEventListenerObject
+): void {
+  if (Array.isArray(events)) {
+    events.forEach(event => {
+      target.removeEventListener(event, callback)
     })
   }
 }

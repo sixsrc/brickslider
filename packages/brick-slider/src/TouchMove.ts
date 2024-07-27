@@ -38,7 +38,7 @@ export class TouchMove extends BaseSlider {
 
   public init(event: MouseEventOrTouchEvent): void {
     const { isDragging } = this.store
-    //console.log("touchmove")
+
     if (isDragging) {
       this.updatePosition(event)
       this.handleSwipe()
@@ -65,15 +65,12 @@ export class TouchMove extends BaseSlider {
     const limit = Math.abs(
       (this.sliderWidth! * MOVE_TO_LIMIT) / 100 - this.sliderWidth!
     )
-    //console.log("asas", translate, limit)
     return position === POSITION.RIGHT ? translate <= limit : translate >= limit
   }
 
   private mainState(): Partial<StateType> {
     const { prevTranslate, startPos } = this.store
     const { currentPosition } = this
-
-    // console.log("currentTRanslate", this.store.currentTranslate)
 
     return {
       isTouch: true,
@@ -113,7 +110,6 @@ export class TouchMove extends BaseSlider {
     const { childrenCount } = this
 
     const isFirstCloned = slideIndex === 0
-    const isSecondSlide = slideIndex === 1
     const isLastCloned = slideIndex === childrenCount - 1
 
     return {
@@ -130,7 +126,6 @@ export class TouchMove extends BaseSlider {
       this.setSkipSlide(true)
       this.currentIndex = IndexesNames[indexData.currentIndex]
 
-      //console.log("currentIndex", this.currentIndex)
       this.translate = indexData.translate
       this.state.set(this.jumpSlideState())
     }

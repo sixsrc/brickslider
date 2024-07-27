@@ -69,15 +69,4 @@ export class CloneSlides extends BaseSlider {
 
     return calcTranslate($children!, spacing, slideIndex + 1)
   }
-
-  /*private keyFrames(): KeyframeAnimation[] {
-    const { currentTranslate } = this.store
-
-    return [{ transform: translate3d(currentTranslate) }]
-  }*/
-  /*protected options(): Partial<AnimationOptions> {
-    return {
-      fill: ANIMATION_OPTIONS.FORWARDS
-    }
-  }*/
 }

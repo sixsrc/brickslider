@@ -32,12 +32,12 @@ export class Slider extends BaseSlider {
     this.setIndexBased(params)
 
     if (this.mapSlideIndex()) return
-
-    this.animationFrame()
-    this.calcTranslate()
-    this.setState(this.mainState())
-    this.updateDOM()
-    /// this.animate(this.keyFrames(), this.options(TIMES.DEFAULT_TRANSITION_TIME))
+    else {
+      this.animationFrame()
+      this.calcTranslate()
+      this.setState(this.mainState())
+      this.updateDOM()
+    }
   }
 
   private setIndexBased(params: TypeTargetSlideParams): void {
@@ -61,7 +61,6 @@ export class Slider extends BaseSlider {
   }
 
   private animationFrame() {
-    //this.animate(this.keyFrames(), this.options(400))
     requestAnimationFrame(this.animation.init)
   }
 
@@ -120,3 +119,7 @@ export class Slider extends BaseSlider {
       easing: ANIMATION_OPTIONS.EASEOUT
     }
   }*/
+
+/*
+      /// this.animate(this.keyFrames(), this.options(TIMES.DEFAULT_TRANSITION_TIME))
+    */

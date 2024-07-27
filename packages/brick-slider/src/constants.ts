@@ -74,8 +74,6 @@ export const ANIMATION_OPTIONS = {
   EASEOUT: "ease"
 } as const
 
-//velocidade maior sem sair do elemento diminui tolencia TOUCH_LIMIT = 10 MOVE_TO_LIMIT = 5
-//velocidade maior diminui saindo do elemento tolencia TOUCH_LIMIT = 50 MOVE_TO_LIMIT = 55
 export const TOUCH_LIMIT = 20 //5
 
 export const MOVE_TO_LIMIT = 3

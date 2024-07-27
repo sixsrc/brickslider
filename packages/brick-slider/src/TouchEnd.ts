@@ -28,22 +28,17 @@ export class TouchEnd extends BaseSlider {
   }
 
   public init = (event: any): void => {
-    this._init(event)
+    this.nextAction(event)
   }
 
-  private _init(event: any) {
+  private nextAction(event: any) {
     const target = this.shouldBeEqual(event) as string
     const isNotSwipe = this.shouldNotBeSwipe()
     const isEqual = this.shouldBeEqual(event)
 
     if (isNotSwipe) return
-
-    if (isEqual) {
-      console.log(isEqual)
-      this.setTargetCondition()[target]
-    } else {
-      this.action()
-    }
+    if (isEqual) this.setTargetCondition()[target]
+    else this.action()
   }
 
   private shouldBeEqual(event?: any) {
@@ -54,14 +49,19 @@ export class TouchEnd extends BaseSlider {
     return isEqual
   }
 
+  protected shouldNotBeSwipe() {
+    const { currentEventType } = this.store
+
+    return currentEventType !== "touchMove"
+  }
+
   private evalSwipeConditions(event: any): Partial<StateType> {
     const isMouseLeave = event.type === "mouseleave"
-    const isMouseLeaveAndSpeedInteraction =
-      !isMouseLeave && this.getSpeedInteraction() <= 100
+    const isMouseLeaveAndSpeedInteraction = this.getSpeedInteraction() <= 150
 
     return {
       FIRST: isMouseLeave
-      // SECOND: isMouseLeaveAndSpeedInteraction
+      // SECOND: !isMouseLeave && isMouseLeaveAndSpeedInteraction
     }
   }
 
@@ -76,12 +76,6 @@ export class TouchEnd extends BaseSlider {
     this.setState(this.eventTargetState())
     this.handleTouchMove()
     this.setState(this.mainState())
-  }
-
-  protected shouldNotBeSwipe() {
-    const { currentEventType } = this.store
-
-    return currentEventType !== "touchMove"
   }
 
   protected shouldPreventNextAction() {
@@ -233,40 +227,4 @@ export class TouchEnd extends BaseSlider {
       currentEventType: "touchEnd"
     }
   }
-  //
 }
-
-/*  if (this.store.slideIndex === 0) {
-  this.state.set({
-    slideIndex: 4,
-    currentTranslate: -2352,
-    prevTranslate: -2352
-  })
-  this.animate([{ transform: translate3d(this.store.currentTranslate) }], {
-    duration: 0,
-
-    fill: ANIMATION_OPTIONS.FORWARDS
-  })
-  return
-  }*/
-
-/*
-    //requestAnimationFrame(this.animation.init)
-
-      //this.animate(this.keyFrames(), this.options(400))
-
-        //const target = this.defineTarget(event)
-  */
-
-/* if (event.type === "mouseleave") {
-      waitFor(100, () => this.action())
-      return
-    } else if (
-      event.type !== "mouseleave" &&
-      this.getSpeedInteraction() <= 100
-    ) {
-      console.log("ta rapido demais fdp")
-      waitFor(0, () => this.action())
-      return
-    }
-    */
