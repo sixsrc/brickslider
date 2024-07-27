@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { ANIMATION_OPTIONS, TIMES } from "./constants"
+import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./constants"
 import { translate3d } from "./helpers"
 import {
   AnimationCondition,
@@ -29,7 +29,7 @@ export class AnimationFrame extends BaseSlider {
     time: number = TIMES.DEFAULT_TRANSITION_TIME
   ): AnimationOptions {
     const { isJumpSlide, currentEventType } = this.store
-    const isTouchMove = currentEventType === "touchMove"
+    const isTouchMove = currentEventType === EVENTS.TOUCHMOVE
     const duration = isJumpSlide || isTouchMove ? 0 : time
     const actualDuration = duration > 0 ? duration : 0
 
@@ -71,14 +71,3 @@ export class AnimationFrame extends BaseSlider {
     ]
   }
 }
-
-/*
-if (isDragging || isTouch) {
-    }
-
-      private setAnimationFrame(): void {
-    requestAnimationFrame(this.init)
-  }
-
-    const actualDuration = duration // - ANIMATION_DELAY
-*/

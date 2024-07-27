@@ -15,7 +15,6 @@ import {
   setAttributes,
   toggleClass
 } from "./helpers"
-import { Draggable } from "./Draggable"
 
 export class Mount extends BaseSlider {
   private clonedSlides: HTMLElement[] = []
