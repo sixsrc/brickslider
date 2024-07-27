@@ -12,6 +12,7 @@ import {
   addClass,
   appendToParent,
   calcNumberOfSlides,
+  calcTranslate,
   createNewElement,
   getAllElements,
   listener,
@@ -24,11 +25,13 @@ export class Dots extends BaseSlider {
   private slider: Slider
   private containerDots: HTMLElement
   private from: TypeTargetSlideParams["from"]
+  private realIndex: number | null
 
   constructor($root: string) {
     super($root)
     this.slider = new Slider(this.$root)
     this.containerDots = createNewElement(TAGS.UL)
+    this.realIndex = null
     this.from = "dots"
   }
 
@@ -65,18 +68,23 @@ export class Dots extends BaseSlider {
 
   private dotHandler(): void {
     const { from, $root } = this
-    const { infinite, slideIndex, prevSlideIndex, startPos } = this.store
-    const isPrevFirstSlide = infinite && startPos > 0
-    const isPrevLastSlide = prevSlideIndex === 5 || prevSlideIndex === 0
+    const { slideIndex } = this.store
     const touchIndex = slideIndex
 
     this.slider.updateDots(slideIndex, $root)
 
-    isPrevFirstSlide && isPrevLastSlide
-      ? this.handleJumpSlide()
-      : this.slider.setSlideTarget({ from, touchIndex, $root })
+    if (this.shouldBeTrue()) this.handleJumpSlide()
+    else this.slider.setSlideTarget({ from, touchIndex, $root })
 
     this.setState(this.startPosState())
+  }
+
+  private shouldBeTrue() {
+    const { infinite, prevSlideIndex, startPos } = this.store
+    const isStartPos = infinite && startPos > 0
+    const isPrevSlide = prevSlideIndex === 4 || prevSlideIndex === 1
+
+    return isStartPos && isPrevSlide
   }
 
   private eventMount() {
@@ -88,29 +96,37 @@ export class Dots extends BaseSlider {
   }
 
   private handleJumpSlide(): void {
-    const { from, $root } = this
+    const { slideIndex } = this.store
 
-    this.setState(this.jumpSlideState(true))
+    this.realIndex = slideIndex
 
-    this.slider.setSlideTarget({ from, $root })
+    this.setState(this.slideState())
+
+    this.animate(this.keyFrames(), this.options(0))
 
     this.waitForAction()
   }
 
   private waitForAction() {
     const { from, $root } = this
-    const { slideIndex } = this.store
+    const touchIndex = this.realIndex as number
 
     const action = () => {
       this.setState(this.jumpSlideState(false))
-      this.slider.setSlideTarget({ from, touchIndex: slideIndex, $root })
+      this.slider.setSlideTarget({
+        from,
+        touchIndex,
+        $root
+      })
     }
+
     waitFor(0, action)
   }
 
   private handleClick(dot: HTMLElement, index: number): void {
     listener([EVENTS.CLICK], dot, () => {
       this.setState(this.slideIndexState(index))
+
       this.dotHandler()
     })
   }
@@ -128,13 +144,46 @@ export class Dots extends BaseSlider {
     }
   }
 
-  protected jumpSlideState(condition: boolean) {
+  private setTranslate(): Record<any, number> {
+    const { $children } = this
+    const { infinite, slidesPerPage } = this.store
+    const numOfSlides = calcNumberOfSlides(infinite, slidesPerPage, $children)
+    const [FIRST, LAST] = [numOfSlides, numOfSlides - numOfSlides + 1]
+
+    return {
+      FIRST,
+      LAST
+    }
+  }
+
+  private slideState(): Partial<StateType> {
+    const { prevSlideIndex, spacing } = this.store
+    const { $children } = this
+    const isFirst = prevSlideIndex === this.setTranslate().FIRST
+    let index = null
+
+    isFirst
+      ? (index = this.setTranslate().LAST)
+      : (index = this.setTranslate().FIRST)
+
+    const translate = calcTranslate($children, spacing, index)
+
+    console.log(prevSlideIndex, this.setTranslate().FIRST)
+
+    return {
+      isJumpSlide: true,
+      currentTranslate: translate,
+      prevTranslate: translate
+    }
+  }
+
+  private jumpSlideState(condition: boolean): Partial<StateType> {
     return {
       isJumpSlide: condition
     }
   }
 
-  protected startPosState() {
+  private startPosState(): Partial<StateType> {
     return {
       startPos: 0
     }

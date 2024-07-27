@@ -80,9 +80,3 @@ export class BaseSlider {
     this.state.set(state)
   }
 }
-
-/*
-const element = event?.target as HTMLElement
-const rect = element?.getBoundingClientRect()
- rect: () => rect
-*/
