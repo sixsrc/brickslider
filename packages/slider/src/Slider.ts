@@ -30,18 +30,18 @@ export class Slider extends BaseSlider {
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
     this.setIndexBased(params)
+    this.mapSlideIndex() ? null : this.nextAction()
+  }
 
-    if (this.mapSlideIndex()) return
-    else {
-      this.animationFrame()
-      this.calcTranslate()
-      this.setState(this.mainState())
-      this.updateDOM()
-    }
+  private nextAction() {
+    this.animationFrame()
+    this.calcTranslate()
+    this.setState(this.mainState())
+    this.updateDOM()
   }
 
   private setIndexBased(params: TypeTargetSlideParams): void {
-    const { slideIndex, infinite } = this.store
+    let { slideIndex, infinite } = this.store
 
     let { touchIndex, from } = params!
 
@@ -52,6 +52,8 @@ export class Slider extends BaseSlider {
     }
 
     this.currentIndex = indexBasedBy({ from, slideIndex, touchIndex })
+
+    console.log(" this.currentIndex", this.currentIndex)
   }
 
   private mapSlideIndex(): boolean {
@@ -94,6 +96,8 @@ export class Slider extends BaseSlider {
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
     const selectedIndex = index ?? 0
 
+    console.log("selectedIndex", selectedIndex)
+
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
         removeClass(dot, CLASS_VALUES.SELECTED)
@@ -102,24 +106,3 @@ export class Slider extends BaseSlider {
     })
   }
 }
-
-/* private keyFrames(): KeyframeAnimation[] {
-    const { currentTranslate } = this.store
-
-    return [
-      {
-        transform: translate3d(currentTranslate)
-      }
-    ]
-  }*/
-
-/*private options(): AnimationOptions {
-    return {
-      duration: 0,
-      easing: ANIMATION_OPTIONS.EASEOUT
-    }
-  }*/
-
-/*
-      /// this.animate(this.keyFrames(), this.options(TIMES.DEFAULT_TRANSITION_TIME))
-    */

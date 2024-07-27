@@ -1,5 +1,5 @@
 {
-  "name": "brick-slider",
+  "name": "@brickslider/slider",
   "author": "@malopestorres",
   "description": "Simple slider plugin, made to be lightweight and practical and with tailwind classes support.",
   "license": "MIT",

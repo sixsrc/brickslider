@@ -45,9 +45,7 @@ export class Dots extends BaseSlider {
     appendToParent(this.getRootSelector, this.containerDots)
 
     this.setState(this.numberOfSlidesState())
-
     this.createDots()
-
     this.eventMount()
   }
 
@@ -59,7 +57,6 @@ export class Dots extends BaseSlider {
       const liDots = createNewElement(TAGS.LI)
 
       appendToParent(containerDots, liDots)
-
       addClass([liDots], CLASS_VALUES.SLIDER_DOT)
 
       if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
@@ -99,25 +96,23 @@ export class Dots extends BaseSlider {
     const { slideIndex } = this.store
 
     this.realIndex = slideIndex
-
     this.setState(this.slideState())
-
     this.animate(this.keyFrames(), this.options(0))
-
     this.waitForAction()
   }
 
   private waitForAction() {
     const { from, $root } = this
     const touchIndex = this.realIndex as number
+    const props = {
+      from,
+      touchIndex,
+      $root
+    }
 
     const action = () => {
       this.setState(this.jumpSlideState(false))
-      this.slider.setSlideTarget({
-        from,
-        touchIndex,
-        $root
-      })
+      this.slider.setSlideTarget(props)
     }
 
     waitFor(0, action)
@@ -126,7 +121,6 @@ export class Dots extends BaseSlider {
   private handleClick(dot: HTMLElement, index: number): void {
     listener([EVENTS.CLICK], dot, () => {
       this.setState(this.slideIndexState(index))
-
       this.dotHandler()
     })
   }
@@ -167,8 +161,6 @@ export class Dots extends BaseSlider {
       : (index = this.setTranslate().FIRST)
 
     const translate = calcTranslate($children, spacing, index)
-
-    console.log(prevSlideIndex, this.setTranslate().FIRST)
 
     return {
       isJumpSlide: true,

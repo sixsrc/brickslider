@@ -4,7 +4,6 @@ import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TAGS } from "./constants"
 import {
   addClass,
   createNewElement,
-  getChildrenCount,
   getElementAttribute,
   getRootSelector,
   listener,
@@ -18,12 +17,10 @@ export class Arrows extends BaseSlider {
   public $root: string
   private slider: Slider
   private buttons: HTMLElement[] = []
-  private getChildrenCount: number
 
   constructor($root: string) {
     super($root)
     this.$root = $root
-    this.getChildrenCount = getChildrenCount(this.$children)
     this.slider = new Slider(this.$root)
   }
 
@@ -50,9 +47,7 @@ export class Arrows extends BaseSlider {
       )
 
       addClass([button], DOM_ELEMENTS.BRICK_ARROWS)
-
       setInnerHTML(button, isGreaterThanZero ? "next" : "prev")
-
       this.buttons.push(button)
     }
 
@@ -73,7 +68,7 @@ export class Arrows extends BaseSlider {
   }
 
   private arrowHandler(button: Element, $root: string): () => void {
-    const { slideIndex, slidesPerPage, infinite, dots } = this.store
+    const countSlides = this.childrenCount
 
     return () => {
       const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
@@ -83,8 +78,15 @@ export class Arrows extends BaseSlider {
         $root
       })
 
+      /*
+      
+      infinite
+        ? reorderIndex(slideIndex, countSlides, slidesPerPage)
+      */
+      const { slideIndex, slidesPerPage, infinite, dots } = this.store
+
       const index = infinite
-        ? reorderIndex(slideIndex, this.getChildrenCount, slidesPerPage)
+        ? reorderIndex(slideIndex, countSlides, slidesPerPage)
         : slideIndex
 
       if (dots) this.slider.updateDots(index, $root)
