@@ -2,14 +2,18 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { TOUCH_LIMIT } from "./constants"
+import { EVENTS, TOUCH_LIMIT } from "./constants"
 import {
   getSliderNodeList,
   reorderIndex,
   translate3d,
   waitFor
 } from "./helpers"
-import { KeyframeAnimation, UpdateSlideIndexType } from "./types"
+import {
+  CurrentEventType,
+  KeyframeAnimation,
+  UpdateSlideIndexType
+} from "./types"
 
 export class TouchEnd extends BaseSlider {
   private slides: HTMLElement[]
@@ -52,7 +56,7 @@ export class TouchEnd extends BaseSlider {
   protected shouldNotBeSwipe() {
     const { currentEventType } = this.store
 
-    return currentEventType !== "touchMove"
+    return currentEventType !== "touchmove"
   }
 
   private evalSwipeConditions(event: any): Partial<StateType> {
@@ -76,11 +80,6 @@ export class TouchEnd extends BaseSlider {
     this.setState(this.eventTargetState())
     this.handleTouchMove()
     this.setState(this.mainState())
-  }
-
-  protected shouldPreventNextAction() {
-    const { currentEventType } = this.store
-    return currentEventType === "touchMove"
   }
 
   private mainState(): Partial<StateType> {
@@ -188,12 +187,10 @@ export class TouchEnd extends BaseSlider {
     const { slideIndex, dots } = this.store
     const currentTranslate = slideIndex * -sliderWidth!
     const touchIndex = slideIndex
-    const from = "touch"
 
     this.setState(this.positionState(currentTranslate))
 
     this.slider.setSlideTarget({
-      from,
       touchIndex,
       $root
     })
@@ -224,7 +221,7 @@ export class TouchEnd extends BaseSlider {
   }
   private eventTargetState(): Partial<StateType> {
     return {
-      currentEventType: "touchEnd"
+      currentEventType: EVENTS.TOUCHEND
     }
   }
 }

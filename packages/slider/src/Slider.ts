@@ -1,7 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
-import { CLASS_VALUES, TAGS, TIMES } from "./constants"
+import { CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
   calcTranslate,
@@ -41,9 +41,10 @@ export class Slider extends BaseSlider {
   }
 
   private setIndexBased(params: TypeTargetSlideParams): void {
-    let { slideIndex, infinite } = this.store
+    const { slideIndex, infinite, currentEventType } = this.store
+    const from = currentEventType as string
 
-    let { touchIndex, from } = params!
+    let { touchIndex } = params!
 
     if (touchIndex !== undefined) {
       if (infinite && from === "dots") {
@@ -52,8 +53,6 @@ export class Slider extends BaseSlider {
     }
 
     this.currentIndex = indexBasedBy({ from, slideIndex, touchIndex })
-
-    console.log(" this.currentIndex", this.currentIndex)
   }
 
   private mapSlideIndex(): boolean {
@@ -95,8 +94,6 @@ export class Slider extends BaseSlider {
   public updateDots(index: number, $root: string): void {
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
     const selectedIndex = index ?? 0
-
-    console.log("selectedIndex", selectedIndex)
 
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))

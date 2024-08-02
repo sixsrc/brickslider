@@ -1,4 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
+import { HandleInfinite } from "./HandleInfinite"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
 import {
@@ -12,27 +13,22 @@ import {
   addClass,
   appendToParent,
   calcNumberOfSlides,
-  calcTranslate,
   createNewElement,
   getAllElements,
   listener,
-  setAttribute,
-  waitFor
+  setAttribute
 } from "./helpers"
-import { TypeTargetSlideParams } from "./types"
 
 export class Dots extends BaseSlider {
   private slider: Slider
   private containerDots: HTMLElement
-  private from: TypeTargetSlideParams["from"]
-  private realIndex: number | null
+  private handleInfinite: HandleInfinite
 
   constructor($root: string) {
     super($root)
-    this.slider = new Slider(this.$root)
+    this.slider = new Slider($root)
     this.containerDots = createNewElement(TAGS.UL)
-    this.realIndex = null
-    this.from = "dots"
+    this.handleInfinite = new HandleInfinite($root)
   }
 
   public init(): void {
@@ -64,24 +60,17 @@ export class Dots extends BaseSlider {
   }
 
   private dotHandler(): void {
-    const { from, $root } = this
+    const { $root, handleInfinite } = this
     const { slideIndex } = this.store
     const touchIndex = slideIndex
+    const handleJumpSlide = () => handleInfinite.handleJumpSlide()
 
     this.slider.updateDots(slideIndex, $root)
 
-    if (this.shouldBeTrue()) this.handleJumpSlide()
-    else this.slider.setSlideTarget({ from, touchIndex, $root })
+    if (handleInfinite.shouldBeTrue()) handleJumpSlide()
+    else this.slider.setSlideTarget({ touchIndex, $root })
 
     this.setState(this.startPosState())
-  }
-
-  private shouldBeTrue() {
-    const { infinite, prevSlideIndex, startPos } = this.store
-    const isStartPos = infinite && startPos > 0
-    const isPrevSlide = prevSlideIndex === 4 || prevSlideIndex === 1
-
-    return isStartPos && isPrevSlide
   }
 
   private eventMount() {
@@ -92,37 +81,18 @@ export class Dots extends BaseSlider {
     })
   }
 
-  private handleJumpSlide(): void {
-    const { slideIndex } = this.store
-
-    this.realIndex = slideIndex
-    this.setState(this.slideState())
-    this.animate(this.keyFrames(), this.options(0))
-    this.waitForAction()
-  }
-
-  private waitForAction() {
-    const { from, $root } = this
-    const touchIndex = this.realIndex as number
-    const props = {
-      from,
-      touchIndex,
-      $root
-    }
-
-    const action = () => {
-      this.setState(this.jumpSlideState(false))
-      this.slider.setSlideTarget(props)
-    }
-
-    waitFor(0, action)
-  }
-
   private handleClick(dot: HTMLElement, index: number): void {
     listener([EVENTS.CLICK], dot, () => {
+      this.setState(this.currentEventType())
       this.setState(this.slideIndexState(index))
       this.dotHandler()
     })
+  }
+
+  protected currentEventType(): Partial<StateType> {
+    return {
+      currentEventType: "dots"
+    }
   }
 
   protected slideIndexState(index: number): Partial<StateType> {
@@ -135,43 +105,6 @@ export class Dots extends BaseSlider {
 
     return {
       numberOfSlides: calcNumberOfSlides(infinite, slidesPerPage, $children)
-    }
-  }
-
-  private setTranslate(): Record<any, number> {
-    const { $children } = this
-    const { infinite, slidesPerPage } = this.store
-    const numOfSlides = calcNumberOfSlides(infinite, slidesPerPage, $children)
-    const [FIRST, LAST] = [numOfSlides, numOfSlides - numOfSlides + 1]
-
-    return {
-      FIRST,
-      LAST
-    }
-  }
-
-  private slideState(): Partial<StateType> {
-    const { prevSlideIndex, spacing } = this.store
-    const { $children } = this
-    const isFirst = prevSlideIndex === this.setTranslate().FIRST
-    let index = null
-
-    isFirst
-      ? (index = this.setTranslate().LAST)
-      : (index = this.setTranslate().FIRST)
-
-    const translate = calcTranslate($children, spacing, index)
-
-    return {
-      isJumpSlide: true,
-      currentTranslate: translate,
-      prevTranslate: translate
-    }
-  }
-
-  private jumpSlideState(condition: boolean): Partial<StateType> {
-    return {
-      isJumpSlide: condition
     }
   }
 

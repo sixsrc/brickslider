@@ -1,10 +1,6 @@
-import { CurrentEventType } from "./types"
+import { CurrentEventType, EventFrom } from "./types"
 
 export enum State_Keys {
-  IsLoadPage = "isLoadPage",
-  Counter = "counter",
-  Velocity = "velocity",
-  Seconds = "seconds",
   PrevSlideIndex = "prevSlideIndex",
   SlideIndex = "slideIndex",
   SlideSpacing = "spacing",
@@ -14,6 +10,7 @@ export enum State_Keys {
   StartX = "startX",
   StartY = "startY",
   EndX = "endX",
+  EventFrom = "eventFrom",
   SliderReady = "sliderReady",
   IsTouch = "isTouch",
   isDragging = "isDragging",
@@ -39,10 +36,6 @@ export enum State_Keys {
 
 export type StateType = {
   [key: string]: string | number | boolean | null | undefined
-  [State_Keys.IsLoadPage]: boolean
-  [State_Keys.Counter]: number
-  [State_Keys.Seconds]: number
-  [State_Keys.Velocity]: number
   [State_Keys.PrevSlideIndex]: number
   [State_Keys.SlideIndex]: number
   [State_Keys.SlideSpacing]: number
@@ -52,6 +45,7 @@ export type StateType = {
   [State_Keys.StartX]: number
   [State_Keys.StartY]: number
   [State_Keys.EndX]: number
+  [State_Keys.EventFrom]: EventFrom
   [State_Keys.SliderReady]: boolean | null
   [State_Keys.IsTouch]: boolean
   [State_Keys.isDragging]: boolean
@@ -105,9 +99,6 @@ class State {
   }
 
   private initializeState(options: TypeOptions): void {
-    State.state[this.key][State_Keys.IsLoadPage] = true
-    State.state[this.key][State_Keys.Counter] = 0
-    State.state[this.key][State_Keys.Velocity] = 0
     State.state[this.key][State_Keys.PrevSlideIndex] = 0
     State.state[this.key][State_Keys.SlideIndex] = 0
     State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0
@@ -122,6 +113,7 @@ class State {
     State.state[this.key][State_Keys.StartX] = 0
     State.state[this.key][State_Keys.StartY] = 0
     State.state[this.key][State_Keys.EndX] = 0
+    State.state[this.key][State_Keys.EventFrom] = null
     State.state[this.key][State_Keys.PrevTranslate] = 0
     State.state[this.key][State_Keys.CurrentTranslate] = 0
     State.state[this.key][State_Keys.CurrentEventType] = null

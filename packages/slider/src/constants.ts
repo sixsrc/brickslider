@@ -4,7 +4,7 @@ export const DOM_ELEMENTS = {
   DOTS_SELECTOR: ".slider__dots ",
   NEXT_BUTTON: "next-button",
   PREV_BUTTON: "prev-button",
-  BRICK_ARROWS: "brick-arrows"
+  BRICK_ARROWS: "slider__arrows"
 }
 
 export const STYLES = {
@@ -65,7 +65,7 @@ export const EVENTS = {
   DRAGSTART: "dragstart",
   DRAGOVER: "dragover",
   DRAGEND: "dragend"
-}
+} as const
 
 export const ANIMATION_DELAY = 100
 
