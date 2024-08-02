@@ -50,7 +50,7 @@ export class TouchMove extends BaseSlider {
 
   private eventTargetState(): Partial<StateType> {
     return {
-      currentEventType: "touchMove"
+      currentEventType: "touchmove"
     }
   }
 

@@ -16,10 +16,11 @@ export type AnimationOptions = {
 
 export type CurrentEventType =
   | "dots"
-  | "arrows"
-  | "dragStart"
-  | "touchMove"
-  | "touchEnd"
+  | "dragstart"
+  | "touchmove"
+  | "touchend"
+  | "next"
+  | "prev"
   | null
 
 export type DragabbleListenersParams = {
@@ -61,8 +62,10 @@ export type DirectionType = Partial<
   Record<Directions, boolean | undefined>
 > | null
 
+export type EventFrom = "dots" | "touch" | "next" | "prev" | null
+
 export type TypeTargetSlideParams = {
-  from: "next" | "prev" | "dots" | "touch"
+  //from: "next" | "prev" | "dots" | "touch"
   touchIndex?: number
   $root: string
 }

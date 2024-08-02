@@ -5,13 +5,13 @@
   "license": "MIT",
   "version": "0.0.0",
   "keywords": [
-    "brick-slider",
+    "brickslider",
     "typescript-slider",
     "vanilla-slider",
     "react-slider",
+    "solid-slider",
     "carousel-slider",
-    "tailwind-slider",
-    "css-mask"
+    "tailwind-slider"
   ],
   "repository": {
     "type": "git",
