@@ -404,6 +404,10 @@ export function removeListener(
   }
 }
 
+export function removeAttribute(el: HTMLElement, attribute: string): void {
+  el.removeAttribute(attribute)
+}
+
 export function reorderIndex(
   displayedIndex: number,
   numberOfSlides: number,

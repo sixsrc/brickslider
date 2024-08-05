@@ -41,7 +41,6 @@ export class HandleInfinite extends BaseSlider {
       : (index = this.ghostIndex().FIRST)
 
     const translate = calcTranslate($children, spacing, index)
-    console.log("INDEX", index)
 
     return {
       slideIndex: index,
@@ -67,6 +66,7 @@ export class HandleInfinite extends BaseSlider {
     const { slideIndex } = this.store
 
     this.indeedIndex = slideIndex
+
     this.setState(this.slideState())
     this.animate(this.keyFrames(), this.options(0))
     this.waitForAction()

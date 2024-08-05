@@ -1,7 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { HandleInfinite } from "./HandleInfinite"
 import { Slider } from "./Slider"
-import { StateType } from "./State"
 import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TAGS } from "./constants"
 import {
   addClass,
@@ -10,6 +9,7 @@ import {
   getRootSelector,
   listener,
   prependChild,
+  removeAttribute,
   reorderIndex,
   setAttribute,
   setInnerHTML
@@ -51,8 +51,10 @@ export class Arrows extends BaseSlider {
       )
 
       addClass([button], DOM_ELEMENTS.BRICK_ARROWS)
+
       setInnerHTML(button, isGreaterThanZero ? "next" : "prev")
       this.buttons.push(button)
+      //removeAttribute(button, ATTRIBUTES.DIRECTION)
     }
 
     return this.buttons
@@ -72,30 +74,30 @@ export class Arrows extends BaseSlider {
   }
 
   private arrowHandler(button: Element, $root: string): void {
-    const { handleInfinite } = this
-    const { infinite, dots, slideIndex: prevSlideIndex } = this.store
+    const { infinite, slideIndex: prevSlideIndex } = this.store
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
     const currentEventType = getAttribute === "prev" ? "prev" : "next"
-    const shouldBeTrue = handleInfinite.shouldBeTrue()
-    const isPrevSlide =
-      (infinite && prevSlideIndex === 0) || (infinite && prevSlideIndex === 5)
-    const handleJumpSlide = () => handleInfinite.handleJumpSlide()
+    const shouldBeTrue = this.handleInfinite.shouldBeTrue()
+    const handleJumpSlide = () => this.handleInfinite.handleJumpSlide()
+    const isPrev = prevSlideIndex === 0 || prevSlideIndex === 5
+    const isPrevSlide = infinite && isPrev && !shouldBeTrue
+    const isTargetSlide = shouldBeTrue || isPrevSlide
 
-    console.log("prevSlideIndex", prevSlideIndex)
     this.setState({ prevSlideIndex, currentEventType })
 
-    if (shouldBeTrue || (isPrevSlide && !shouldBeTrue)) handleJumpSlide()
+    if (isTargetSlide) handleJumpSlide()
     else this.slider.setSlideTarget({ $root })
 
-    this.setState(this.startPosState())
+    let { index } = this.getIndex()
 
-    const { index } = this.getIndex()
+    if (shouldBeTrue) index = index - 1
+    else if (isPrevSlide) index = index + 1
 
-    if (dots) this.slider.updateDots(index, $root)
+    this.slider.updateDots(index, $root)
   }
 
   private getIndex() {
-    const { slideIndex, infinite, slidesPerPage } = this.store
+    const { infinite, slideIndex, slidesPerPage } = this.store
     const countSlides = this.childrenCount
     const index = infinite
       ? reorderIndex(slideIndex, countSlides, slidesPerPage)
@@ -103,11 +105,4 @@ export class Arrows extends BaseSlider {
 
     return { index }
   }
-
-  private startPosState(): Partial<StateType> {
-    return {
-      startPos: Infinity
-    }
-  }
 }
-//this.setState({ isJumpSlide: true })

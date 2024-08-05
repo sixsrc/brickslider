@@ -55,9 +55,7 @@ export class Draggable extends BaseSlider {
     if (!isDragging) {
       if (Math.abs(moveX - startX) > 5 || Math.abs(moveY - startY) > 2) {
         this.setState(this.draggingState(true))
-      } /*else {
-        return
-      }*/
+      }
     }
   }
 
@@ -84,3 +82,6 @@ export class Draggable extends BaseSlider {
     }
   }
 }
+/*else {
+  return
+}*/
