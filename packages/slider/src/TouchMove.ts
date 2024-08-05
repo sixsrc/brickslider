@@ -108,7 +108,6 @@ export class TouchMove extends BaseSlider {
   private evalSlideConditions(): Partial<StateType> {
     const { slideIndex } = this.store
     const { childrenCount } = this
-
     const isFirstCloned = slideIndex === 0
     const isLastCloned = slideIndex === childrenCount - 1
 
@@ -125,7 +124,6 @@ export class TouchMove extends BaseSlider {
     if (indexData) {
       this.setSkipSlide(true)
       this.currentIndex = IndexesNames[indexData.currentIndex]
-
       this.translate = indexData.translate
       this.state.set(this.jumpSlideState())
     }

@@ -12,7 +12,6 @@ export class BrickSlider extends BaseSlider {
     super($root)
     assert(isValidSelector($root), "Main Selector Not Found")
     this.userOptions = options
-
     this.mount = new Mount(this.$root)
     options && this.state.setOptions(this.userOptions!)
   }

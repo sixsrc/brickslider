@@ -43,11 +43,12 @@ export class Slider extends BaseSlider {
   private setIndexBased(params: TypeTargetSlideParams): void {
     const { slideIndex, infinite, currentEventType } = this.store
     const from = currentEventType as string
+    const isTargetFrom = from === "dots" || "next" || "prev"
 
     let { touchIndex } = params!
 
     if (touchIndex !== undefined) {
-      if (infinite && from === "dots") {
+      if (infinite && isTargetFrom) {
         touchIndex = touchIndex + 1
       }
     }
@@ -76,8 +77,14 @@ export class Slider extends BaseSlider {
 
   private mainState(): Partial<StateType> {
     const { currentIndex, translate } = this
+    const { currentEventType, startPos } = this.store
+    const isArrows = currentEventType === "next" || "prev"
+    let position = startPos
+
+    if (isArrows) position = Infinity
 
     return {
+      startPos: position,
       slideIndex: currentIndex,
       prevTranslate: translate,
       currentTranslate: translate
@@ -85,15 +92,20 @@ export class Slider extends BaseSlider {
   }
 
   protected updateDOM(): void {
-    const { slidesPerPage } = this.store
+    const { slidesPerPage, currentEventType } = this.store
     const { $root, currentIndex } = this
 
     toggleClass(getSliderNodeList($root), currentIndex, slidesPerPage)
   }
 
   public updateDots(index: number, $root: string): void {
-    const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
     const selectedIndex = index ?? 0
+    const { dots: isDots } = this.store
+    let dots = null
+
+    if (!isDots) return
+
+    dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
 
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
