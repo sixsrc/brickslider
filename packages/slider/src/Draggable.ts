@@ -82,6 +82,3 @@ export class Draggable extends BaseSlider {
     }
   }
 }
-/*else {
-  return
-}*/
