@@ -43,7 +43,7 @@ export class Slider extends BaseSlider {
   private setIndexBased(params: TypeTargetSlideParams): void {
     const { slideIndex, infinite, currentEventType } = this.store
     const from = currentEventType as string
-    const isTargetFrom = from === "dots" || "next" || "prev"
+    const isTargetFrom = from === "next" || "prev"
 
     let { touchIndex } = params!
 
@@ -77,14 +77,12 @@ export class Slider extends BaseSlider {
 
   private mainState(): Partial<StateType> {
     const { currentIndex, translate } = this
-    const { currentEventType, startPos } = this.store
-    const isArrows = currentEventType === "next" || "prev"
-    let position = startPos
-
-    if (isArrows) position = Infinity
+    const { currentEventType } = this.store
+    const isDotTarget = currentEventType === "dots"
+    const startPos = isDotTarget ? { startPos: 0 } : {}
 
     return {
-      startPos: position,
+      ...startPos,
       slideIndex: currentIndex,
       prevTranslate: translate,
       currentTranslate: translate
@@ -92,7 +90,7 @@ export class Slider extends BaseSlider {
   }
 
   protected updateDOM(): void {
-    const { slidesPerPage, currentEventType } = this.store
+    const { slidesPerPage } = this.store
     const { $root, currentIndex } = this
 
     toggleClass(getSliderNodeList($root), currentIndex, slidesPerPage)
@@ -101,11 +99,9 @@ export class Slider extends BaseSlider {
   public updateDots(index: number, $root: string): void {
     const selectedIndex = index ?? 0
     const { dots: isDots } = this.store
-    let dots = null
+    const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
 
     if (!isDots) return
-
-    dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
 
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))

@@ -85,6 +85,5 @@ export const POSITION = {
 
 export const SLIDE_INDEX = {
   FIRST: "first",
-  SECOND: "second",
   LAST: "last"
 } as const

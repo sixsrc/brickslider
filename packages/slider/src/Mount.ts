@@ -57,7 +57,8 @@ export class Mount extends BaseSlider {
     return {
       "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
       "aria-hidden": "true",
-      role: "group"
+      role: "group",
+      "data-index": index + 1
     }
   }
 

@@ -3,14 +3,9 @@ import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
 import { EVENTS, TOUCH_LIMIT } from "./constants"
+import { getSliderNodeList, reorderIdx, translate3d, waitFor } from "./helpers"
 import {
-  getSliderNodeList,
-  reorderIndex,
-  translate3d,
-  waitFor
-} from "./helpers"
-import {
-  CurrentEventType,
+  CurrentSlideMovement,
   KeyframeAnimation,
   UpdateSlideIndexType
 } from "./types"
@@ -21,6 +16,7 @@ export class TouchEnd extends BaseSlider {
   private slider: Slider
   private moveSlider: number
   isFastInteraction: boolean
+  index: number
 
   constructor($root: string) {
     super($root)
@@ -29,13 +25,14 @@ export class TouchEnd extends BaseSlider {
     this.animation = new AnimationFrame(this.$root)
     this.moveSlider = 0
     this.isFastInteraction = false
+    this.index = 0
   }
 
   public init = (event: any): void => {
     this.nextAction(event)
   }
 
-  private nextAction(event: any) {
+  private nextAction(event: any): void {
     const target = this.shouldBeEqual(event) as string
     const isNotSwipe = this.shouldNotBeSwipe()
     const isEqual = this.shouldBeEqual(event)
@@ -45,7 +42,7 @@ export class TouchEnd extends BaseSlider {
     else this.action()
   }
 
-  private shouldBeEqual(event?: any) {
+  private shouldBeEqual(event?: any): string | undefined {
     const isEqual = Object.keys(this.evalSwipeConditions(event)).find(
       key => this.evalSwipeConditions(event)[key]
     )
@@ -53,7 +50,7 @@ export class TouchEnd extends BaseSlider {
     return isEqual
   }
 
-  protected shouldNotBeSwipe() {
+  protected shouldNotBeSwipe(): boolean {
     const { currentEventType } = this.store
 
     return currentEventType !== "touchmove"
@@ -61,7 +58,7 @@ export class TouchEnd extends BaseSlider {
 
   private evalSwipeConditions(event: any): Partial<StateType> {
     const isMouseLeave = event.type === "mouseleave"
-    const isMouseLeaveAndSpeedInteraction = this.getSpeedInteraction() <= 150
+    const speedInteraction = this.getSpeedInteraction() <= 150
 
     return {
       FIRST: isMouseLeave
@@ -69,14 +66,14 @@ export class TouchEnd extends BaseSlider {
     }
   }
 
-  private setTargetCondition(): any {
+  private setTargetCondition(): Record<any, any> {
     return {
       FIRST: waitFor(100, () => this.action()),
       SECOND: waitFor(0, () => this.action())
     }
   }
 
-  protected action() {
+  protected action(): void {
     this.setState(this.eventTargetState())
     this.handleTouchMove()
     this.setState(this.mainState())
@@ -114,13 +111,11 @@ export class TouchEnd extends BaseSlider {
 
     this.setState(this.prevSlideState(slideIndex))
 
-    if (this.goToNextSlide(this.moveSlider, slideIndex, this.slides)) {
+    if (this.goToNextSlide(this.moveSlider, slideIndex, this.slides))
       this.updateSlideIndex("increment")
-    }
 
-    if (this.goToPrevSlide(this.moveSlider, slideIndex)) {
+    if (this.goToPrevSlide(this.moveSlider, slideIndex))
       this.updateSlideIndex("decrement")
-    }
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
@@ -147,12 +142,20 @@ export class TouchEnd extends BaseSlider {
   }
 
   private updateSlideIndex(action: UpdateSlideIndexType): void {
-    const objState = this.shouldIncrementOrDecrement(action)
+    const incrementOrDecrement = this.incrementOrDecrementState(action)
+    const currentSlideMovement = this.slideMovementState(action)
+    const objState = { ...incrementOrDecrement, ...currentSlideMovement }
 
     this.setState(objState)
   }
 
-  private shouldIncrementOrDecrement(
+  private slideMovementState(action: CurrentSlideMovement): Partial<StateType> {
+    return {
+      currentSlideMovement: action
+    }
+  }
+
+  private incrementOrDecrementState(
     action: UpdateSlideIndexType
   ): Partial<StateType> {
     const { slideIndex } = this.store
@@ -190,24 +193,21 @@ export class TouchEnd extends BaseSlider {
 
     this.setState(this.positionState(currentTranslate))
 
-    this.slider.setSlideTarget({
-      touchIndex,
-      $root
-    })
+    this.slider.setSlideTarget({ touchIndex, $root })
 
     this.updateDots(touchIndex, dots)
   }
 
-  private updateDots(touchIndex: number, dots: boolean) {
+  private updateDots(touchIndex: number, dots: boolean): void {
     const { $root, slider } = this
-    const { infinite, slidesPerPage } = this.store
-    const countSlides = this.childrenCount
+    const { infinite, slidesPerPage: perPage } = this.store
+    const slides = this.childrenCount
 
     const index = infinite
-      ? reorderIndex(touchIndex, countSlides, slidesPerPage)
+      ? reorderIdx(touchIndex, slides, perPage)
       : touchIndex
 
-    if (dots) slider.updateDots(index, $root)
+    slider.updateDots(index, $root)
   }
 
   private prevSlideState(slideIndex: number): Partial<StateType> {

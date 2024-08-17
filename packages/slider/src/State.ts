@@ -1,4 +1,4 @@
-import { CurrentEventType, EventFrom } from "./types"
+import { CurrentEventType, CurrentSlideMovement, EventFrom } from "./types"
 
 export enum State_Keys {
   PrevSlideIndex = "prevSlideIndex",
@@ -19,6 +19,7 @@ export enum State_Keys {
   PrevTranslate = "prevTranslate",
   CurrentTranslate = "currentTranslate",
   CurrentEventType = "currentEventType",
+  CurrentSlideMovement = 'currentSlideMovement',
   StartTime = "startTime",
   EndTime = "endTime",
   IsMouseLeave = "isMouseLeave",
@@ -54,6 +55,7 @@ export type StateType = {
   [State_Keys.PrevTranslate]: number
   [State_Keys.CurrentTranslate]: number
   [State_Keys.CurrentEventType]: CurrentEventType
+  [State_Keys.CurrentSlideMovement]: CurrentSlideMovement
   [State_Keys.StartTime]: number
   [State_Keys.EndTime]: number
   [State_Keys.IsMouseLeave]: boolean
@@ -75,8 +77,8 @@ export type TypeOptions = Partial<{
   [State_Keys.Autoplay]: boolean
   [State_Keys.AutoplaySpeed]: number
   [State_Keys.Dots]: boolean
-  startX: number
-  endX: number
+  [State_Keys.StartX]: number
+  [State_Keys.EndX]: number
   [State_Keys.Arrows]: boolean
   [State_Keys.Touch]: boolean
   [State_Keys.Infinite]: boolean
@@ -117,6 +119,7 @@ class State {
     State.state[this.key][State_Keys.PrevTranslate] = 0
     State.state[this.key][State_Keys.CurrentTranslate] = 0
     State.state[this.key][State_Keys.CurrentEventType] = null
+    State.state[this.key][State_Keys.CurrentSlideMovement] = null
     State.state[this.key][State_Keys.StartTime] = 0
     State.state[this.key][State_Keys.EndTime] = 0
     State.state[this.key][State_Keys.IsMouseLeave] = true

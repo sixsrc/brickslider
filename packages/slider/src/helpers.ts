@@ -1,31 +1,19 @@
 import { CLASS_VALUES, DOM_ELEMENTS } from "./constants"
 import {
   AnimationOptions,
-  DirectionType,
   MouseEventOrTouchEvent,
   TypeIndexBaseSliderdBy
 } from "./types"
 
-/*export function addClass(
+export function addClass(
   elements: (HTMLElement | Element)[],
   className: string
 ): void {
   elements.forEach(el => {
     el.classList.add(className)
   })
-}*/
-
-export function addClass(
-  elements: HTMLElement | Element | (HTMLElement | Element)[],
-  className: string
-): void {
-  if (!Array.isArray(elements)) {
-    elements = [elements]
-  }
-  elements.forEach(el => {
-    el.classList.add(className)
-  })
 }
+
 export function animateElement(
   element: HTMLElement | HTMLElement[],
   keyframes: Keyframe[],
@@ -139,34 +127,6 @@ export function getSliderWidth(
   if (el) return el.offsetWidth
 }
 
-export function getFastInteraction(doubleTapMs: number) {
-  let timeout: number | NodeJS.Timeout = 0
-  let lastTap = 0
-
-  return function handleFastInteraction(event: any) {
-    const currentTime = new Date().getTime()
-    const tapLength = currentTime - lastTap
-    if (0 < tapLength && tapLength < doubleTapMs) {
-      event.preventDefault()
-      const doubleTap = new CustomEvent("doubletap", {
-        bubbles: true,
-        detail: event
-      })
-      event.target.dispatchEvent(doubleTap)
-    } else {
-      timeout = setTimeout(() => clearTimeout(timeout), doubleTapMs)
-    }
-    lastTap = currentTime
-  }
-}
-
-export function getTouchDirection(
-  currentPosition: number,
-  startPos: number
-): DirectionType {
-  return currentPosition - startPos > 0 ? { right: true } : { left: true }
-}
-
 export function getTrackChildren(
   rootSelector: string
 ): HTMLElement | undefined {
@@ -248,49 +208,6 @@ export function calcIndex(
   // index = i + 1
   return { index, sliderCount }
 }
-
-/*export function calcIndex(
-  infinite: boolean,
-  i: number,
-  numberOfSlides: number,
-  slidesPerPage: number
-) {
-  let index: number
-  let sliderCount: number
-
-  index = i + 1
-  sliderCount = numberOfSlides
-
-
-
-  if (infinite) {
-    index = setIndexBypass(i, numberOfSlides, slidesPerPage) + 1
-    sliderCount = numberOfSlides
-  }
-
-  return { index, sliderCount }
-}*/
-
-/*export function calcIndex(
-  infinite: boolean,
-  i: number,
-  numberOfSlides: number,
-  slidesPerPage: number
-) {
-  let index: number
-  let sliderCount: number
-
-  index = i + 1
-  sliderCount = numberOfSlides
-
-  if (infinite) {
-    const numberOfRealSlides = numberOfSlides - slidesPerPage * 2
-    index = i + 1
-    sliderCount = numberOfRealSlides
-  }
-
-  return { index, sliderCount }
-}*/
 
 export function calcSliderWidth(spacing: number, sliderWidth: number) {
   return sliderWidth + spacing
@@ -408,7 +325,7 @@ export function removeAttribute(el: HTMLElement, attribute: string): void {
   el.removeAttribute(attribute)
 }
 
-export function reorderIndex(
+export function reorderIdx(
   displayedIndex: number,
   numberOfSlides: number,
   slidesPerPage: number

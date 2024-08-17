@@ -23,6 +23,8 @@ export type CurrentEventType =
   | "prev"
   | null
 
+export type CurrentSlideMovement = "increment" | "decrement" | null
+
 export type DragabbleListenersParams = {
   element: HTMLElement
   dragStart: any
@@ -31,10 +33,10 @@ export type EvalConditionsTouchMove = { [key: string]: boolean }
 
 export type IndexMap = Record<IndexKey, IndexData>
 
-export type IndexKey = "first" | "second" | "last"
+export type IndexKey = "first" | "last"
 
 export type IndexData = {
-  currentIndex: Capitalize<IndexKey> | "Third"
+  currentIndex: IndexKey
   translate: number
 }
 

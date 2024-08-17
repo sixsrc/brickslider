@@ -1,5 +1,4 @@
 import { BaseSlider } from "./BaseSlider"
-import { HandleInfinite } from "./HandleInfinite"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
 import {
@@ -9,26 +8,31 @@ import {
   EVENTS,
   TAGS
 } from "./constants"
+import { Sync } from "./Sync"
 import {
   addClass,
   appendToParent,
   calcNumberOfSlides,
+  calcTranslate,
   createNewElement,
   getAllElements,
+  getSliderNodeList,
   listener,
   setAttribute
 } from "./helpers"
 
 export class Dots extends BaseSlider {
   private slider: Slider
+  private sync: Sync
   private containerDots: HTMLElement
-  private handleInfinite: HandleInfinite
+  public slides: HTMLElement[]
 
   constructor($root: string) {
     super($root)
     this.slider = new Slider($root)
+    this.sync = new Sync($root)
     this.containerDots = createNewElement(TAGS.UL)
-    this.handleInfinite = new HandleInfinite($root)
+    this.slides = getSliderNodeList($root)
   }
 
   public init(): void {
@@ -53,6 +57,7 @@ export class Dots extends BaseSlider {
       const liDots = createNewElement(TAGS.LI)
 
       appendToParent(containerDots, liDots)
+
       addClass([liDots], CLASS_VALUES.SLIDER_DOT)
 
       if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
@@ -60,17 +65,16 @@ export class Dots extends BaseSlider {
   }
 
   private dotHandler(): void {
-    const { $root, handleInfinite } = this
+    const { $root, sync } = this
     const { slideIndex } = this.store
-    const touchIndex = slideIndex
-    const handleJumpSlide = () => handleInfinite.handleJumpSlide()
+    const touchIndex = this.store.slideIndex
 
-    this.slider.updateDots(slideIndex, $root)
+    this.setState(this.currentEventType())
 
-    if (handleInfinite.shouldBeTrue()) handleJumpSlide()
+    if (sync.isLoop()) sync.handleJumpSlide()
     else this.slider.setSlideTarget({ touchIndex, $root })
 
-    this.setState(this.startPosState())
+    this.slider.updateDots(slideIndex, $root)
   }
 
   private eventMount() {
@@ -83,7 +87,6 @@ export class Dots extends BaseSlider {
 
   private handleClick(dot: HTMLElement, index: number): void {
     listener([EVENTS.CLICK], dot, () => {
-      this.setState(this.currentEventType())
       this.setState(this.slideIndexState(index))
       this.dotHandler()
     })
@@ -107,10 +110,11 @@ export class Dots extends BaseSlider {
       numberOfSlides: calcNumberOfSlides(infinite, slidesPerPage, $children)
     }
   }
-
-  private startPosState(): Partial<StateType> {
-    return {
-      startPos: 0
-    }
-  }
 }
+// this.setState(this.currentEventType())
+//this.startPosState()
+/*private startPosState(): Partial<StateType> {
+  return {
+    startPos: 0
+  }
+}*/
