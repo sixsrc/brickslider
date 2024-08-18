@@ -1,17 +1,16 @@
 import { AnimationFrame } from "./AnimationFrame"
-import { BaseSlider } from "./BaseSlider"
+import { HandleMovement } from "./HandleMovement"
 import { StateType } from "./State"
-import { EVENTS, MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
+import { EVENTS, FROM, MOVE_TO_LIMIT, POSITION } from "./constants"
 import { getAxisX } from "./helpers"
 import {
   IndexData,
-  IndexKey,
   IndexMap,
   MouseEventOrTouchEvent,
   PositionSlider
 } from "./types"
 
-export class TouchMove extends BaseSlider {
+export class TouchMove extends HandleMovement {
   private currentPosition: number
   protected previousPosition: number
   private skipSlide: boolean
@@ -30,9 +29,10 @@ export class TouchMove extends BaseSlider {
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    const { isDragging } = this.store
+    const { isDragging, currentEventType } = this.store
+    const isRightClick = currentEventType === FROM.RIGHT_CLICK
 
-    if (isDragging) {
+    if (isDragging && !isRightClick) {
       this.updatePosition(event)
       this.handleMove()
       this.setState(this.eventTargetState())
@@ -46,41 +46,24 @@ export class TouchMove extends BaseSlider {
     this.currentPosition = getAxisX(event)
   }
 
-  protected handleMove(): boolean | void {
-    const { infinite, slidesPerPage } = this.store
-
-    infinite && slidesPerPage <= 1 && this.infiniteMove()
-  }
-
   private eventTargetState(): Partial<StateType> {
     return {
       currentEventType: EVENTS.TOUCHMOVE
     }
   }
 
-  protected infiniteMove(): void {
-    const isEqual = Object.keys(this.evalSlideConditions()).find(
-      key => this.evalSlideConditions()[key]
-    )
-
-    if (isEqual) {
-      this.jumpSlideTo(SLIDE_INDEX[isEqual as keyof typeof SLIDE_INDEX])
-    }
-  }
-
-  private evalSlideConditions(): Partial<StateType> {
+  protected evalSlideConditions(): Partial<StateType> {
     const { slideIndex } = this.store
     const isFirstCloned = slideIndex === 0
     const isLastCloned = slideIndex === this.childrenCount - 1
 
     return {
       FIRST: this.movingTo(POSITION.RIGHT) && isFirstCloned,
-      // SECOND: this.movingTo(POSITION.RIGHT) && isSecondSlide,
       LAST: this.movingTo(POSITION.LEFT) && isLastCloned
     }
   }
 
-  private jumpSlideTo(to: keyof IndexMap): void {
+  protected jumpSlideTo(to: keyof IndexMap): void {
     const indexData = this.mapIndex().get(to)
     const { currentIndex, translate } = indexData as IndexData
 
@@ -95,15 +78,6 @@ export class TouchMove extends BaseSlider {
 
   protected setSkipSlide(c: boolean) {
     this.skipSlide = c
-  }
-
-  private getIndexes(): Record<IndexKey, number> {
-    const { FIRST, LAST } = SLIDE_INDEX
-
-    return {
-      [FIRST]: 1,
-      [LAST]: 4
-    }
   }
 
   private jumpSlideState() {
@@ -139,17 +113,23 @@ export class TouchMove extends BaseSlider {
     )
     return position === POSITION.RIGHT ? translate <= limit : translate >= limit
   }
-
-  private mapIndex(): Map<IndexKey, IndexData> {
-    const penultIndex = this.calcTranslate(this.childrenCount - 2)
-    const secondIndex = this.calcTranslate(1)
-    const { FIRST, LAST } = SLIDE_INDEX
-    // const lastIndex = this.calcTranslate(this.childrenCount - 1)
-
-    return new Map([
-      [FIRST, { currentIndex: LAST, translate: penultIndex }],
-      // [SLIDE_INDEX.SECOND, { currentIndex: "Last", translate: lastIndex }],
-      [LAST, { currentIndex: FIRST, translate: secondIndex }]
-    ])
-  }
 }
+
+/*
+
+   // SECOND: this.movingTo(POSITION.RIGHT) && isSecondSlide,
+protected infiniteMove(): void {
+    const isEqual = Object.keys(this.evalSlideConditions()).find(
+      key => this.evalSlideConditions()[key]
+    )
+
+    if (isEqual) {
+      this.jumpSlideTo(SLIDE_INDEX[isEqual as keyof typeof SLIDE_INDEX])
+    }
+  }*/
+
+/*protected handleMove(): boolean | void {
+    const { infinite, slidesPerPage } = this.store
+
+    infinite && slidesPerPage <= 1 && this.infiniteMove()
+  }*/

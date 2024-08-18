@@ -6,6 +6,7 @@ import {
   CLASS_VALUES,
   DOM_ELEMENTS,
   EVENTS,
+  FROM,
   TAGS
 } from "./constants"
 import { Sync } from "./Sync"
@@ -13,7 +14,6 @@ import {
   addClass,
   appendToParent,
   calcNumberOfSlides,
-  calcTranslate,
   createNewElement,
   getAllElements,
   getSliderNodeList,
@@ -71,7 +71,7 @@ export class Dots extends BaseSlider {
 
     this.setState(this.currentEventType())
 
-    if (sync.isLoop()) sync.handleJumpSlide()
+    if (sync.now()) sync.handleJumpSlide()
     else this.slider.setSlideTarget({ touchIndex, $root })
 
     this.slider.updateDots(slideIndex, $root)
@@ -94,7 +94,7 @@ export class Dots extends BaseSlider {
 
   protected currentEventType(): Partial<StateType> {
     return {
-      currentEventType: "dots"
+      currentEventType: FROM.DOTS
     }
   }
 

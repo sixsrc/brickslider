@@ -1,13 +1,7 @@
-import { BaseSlider } from "./BaseSlider"
+import { HandleMovement } from "./HandleMovement"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import {
-  ATTRIBUTES,
-  DOM_ELEMENTS,
-  EVENTS,
-  SLIDE_INDEX,
-  TAGS
-} from "./constants"
+import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TAGS } from "./constants"
 import {
   addClass,
   createNewElement,
@@ -21,7 +15,7 @@ import {
 } from "./helpers"
 import { IndexData, IndexKey, IndexMap } from "./types"
 
-export class Arrows extends BaseSlider {
+export class Arrows extends HandleMovement {
   public $root: string
   private slider: Slider
   private buttons: HTMLElement[] = []
@@ -69,7 +63,13 @@ export class Arrows extends BaseSlider {
   private arrowHandler(button: Element, $root: string): void {
     const { slideIndex } = this.store
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
-    const currentEventType = getAttribute === "prev" ? "prev" : "next"
+    const eventType = getAttribute === "prev" ? "prev" : "next"
+    const slideMovement = eventType === "next" ? "increment" : "decrement"
+    const currentEventType = eventType
+
+    this.setState({
+      currentSlideMovement: slideMovement
+    })
 
     this.setState(this.startPosState())
 
@@ -84,21 +84,11 @@ export class Arrows extends BaseSlider {
     this.slider.updateDots(index, $root)
   }
 
-  private mapIndex(): Map<IndexKey, IndexData> {
-    const penultIndex = this.calcTranslate(this.childrenCount - 2)
-    const secondIndex = this.calcTranslate(1)
-    const { FIRST, LAST } = SLIDE_INDEX
-
-    return new Map([
-      [FIRST, { currentIndex: LAST, translate: penultIndex }],
-      [LAST, { currentIndex: FIRST, translate: secondIndex }]
-    ])
-  }
-
-  private jumpSlideTo(to: keyof IndexMap): void {
+  protected jumpSlideTo(to: keyof IndexMap): void {
     const indexData = this.mapIndex().get(to)
 
     if (indexData) {
+      console.log("adadads", indexData)
       const indexes = this.getIndexes()
 
       this.setState(this.slideState(indexes, indexData))
@@ -109,31 +99,7 @@ export class Arrows extends BaseSlider {
     }
   }
 
-  private getIndexes(): Record<IndexKey, number> {
-    const { FIRST, LAST } = SLIDE_INDEX
-
-    return {
-      [FIRST]: 1,
-      [LAST]: 4
-    }
-  }
-
-  private handleMove(): void {
-    const { infinite, slidesPerPage } = this.store
-    infinite && slidesPerPage <= 1 && this.infiniteMove()
-  }
-
-  private infiniteMove(): void {
-    const isEqual = Object.keys(this.evalSlideConditions()).find(
-      key => this.evalSlideConditions()[key]
-    )
-
-    if (isEqual) {
-      this.jumpSlideTo(SLIDE_INDEX[isEqual as keyof typeof SLIDE_INDEX])
-    }
-  }
-
-  public evalSlideConditions(): Record<any, boolean> {
+  protected evalSlideConditions(): Record<any, boolean> {
     const { slideIndex } = this.store
     const isFirstCloned = slideIndex === 0
     const isLastCloned = slideIndex === this.childrenCount - 1
@@ -186,3 +152,32 @@ export class Arrows extends BaseSlider {
     return { isJumpSlide: c }
   }
 }
+
+/*
+private handleMove(): void {
+    const { infinite, slidesPerPage } = this.store
+    infinite && slidesPerPage <= 1 && this.infiniteMove()
+  }
+  private mapIndex(): Map<IndexKey, IndexData> {
+    const penultIndex = this.calcTranslate(this.childrenCount - 2)
+    const secondIndex = this.calcTranslate(1)
+    const { FIRST, LAST } = SLIDE_INDEX
+
+    return new Map([
+      [FIRST, { currentIndex: LAST, translate: penultIndex }],
+      [LAST, { currentIndex: FIRST, translate: secondIndex }]
+    ])
+  }
+
+   private infiniteMove(): void {
+    const isEqual = Object.keys(this.evalSlideConditions()).find(
+      key => this.evalSlideConditions()[key]
+    )
+
+    if (isEqual) {
+      this.jumpSlideTo(SLIDE_INDEX[isEqual as keyof typeof SLIDE_INDEX])
+    }
+  }
+
+
+*/

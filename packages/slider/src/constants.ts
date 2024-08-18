@@ -20,6 +20,7 @@ export const TAGS = {
 
 export const FROM = {
   DOTS: "dots",
+  RIGHT_CLICK: "rightClick",
   PREV: "prev",
   NEXT: "next",
   TOUCH: "touch"

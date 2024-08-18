@@ -14,7 +14,7 @@ export class Sync extends BaseSlider {
     this.indeedIndex = 0
   }
 
-  public isLoop() {
+  public now() {
     return this.isStartPos() && this.isTarget()
   }
 

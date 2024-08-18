@@ -16,12 +16,18 @@ export type AnimationOptions = {
 
 export type CurrentEventType =
   | "dots"
-  | "dragstart"
+  | "touchstart"
   | "touchmove"
   | "touchend"
   | "next"
   | "prev"
+  | "rightClick"
   | null
+
+export type ContextMenuListenersParams = {
+  element: HTMLElement
+  rightClick: any
+}
 
 export type CurrentSlideMovement = "increment" | "decrement" | null
 
