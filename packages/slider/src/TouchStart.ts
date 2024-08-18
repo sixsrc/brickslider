@@ -1,4 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
+import { EVENTS } from "./constants"
 import { ContextMenu } from "./ContextMenu"
 import { Draggable } from "./Draggable"
 import { adjustIndex, getAxisX } from "./helpers"
@@ -31,6 +32,7 @@ export class TouchStart extends BaseSlider {
     const index = isTrue ? adjustIndex(slideIndex, slidesPerPage) : slideIndex
 
     return {
+      currentEventType: EVENTS.TOUCHSTART,
       startTime: new Date().getMilliseconds(),
       slideIndex: index,
       startPos: getAxisX(event),

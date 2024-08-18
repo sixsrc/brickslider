@@ -55,7 +55,7 @@ export class BaseSlider {
     animateElement(this.$children, keyFrames, options)
   }
 
-  protected calcTranslate(index = this.store.slideIndex): number {
+  protected calcTranslate(index: number): number {
     const { spacing } = this.store
     const { $children } = this
 
