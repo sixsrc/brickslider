@@ -17,16 +17,25 @@ body {
 }
 
 .container {
+  
     max-width: 568px;
     width: 100%;
     margin: 0 auto 20px;
     box-sizing: border-box;
     position: relative;
+
 }
+
 
 .slider__track {
     position: relative;
+    overflow: hidden;
+padding-left:3.5rem;
+    padding-right:3.5rem;
+    box-sizing: border-box;
+  
 }
+
 
 .slider.brick-slider {
     overflow: hidden;
@@ -60,17 +69,21 @@ body {
 
 .slider__container {
     position: relative;
-    z-index: 0
+    z-index: 0;
+
+
 }
+
+
 
 .teste {
     box-sizing: border-box;
-
+ 
     z-index: 1;
     display: inline-flex;
     flex-wrap: nowrap;
     flex-direction: row;
-    gap: 20px;
+  /*gap: 20px;*/
     will-change: transform;
 
     /* padding-bottom: 1.7rem;*/
@@ -108,7 +121,7 @@ body {
 
 .slider__track img {
     width: auto;
-
+/*height:100%;*/
     max-width: 100%;
     pointer-events: none;
     border-radius: 20px;
@@ -126,13 +139,37 @@ body {
     z-index: 15;
     position: relative;
 
+    
+}
+
+.slider-slide {
+     z-index: 15;
+    position: relative;
+   
 }
 
 .multiple-items .slider__slide {
-    flex: 48.24%;
-    flex-shrink: 0;
+ /*max-width: 50%;*/
+
+/*max-width: calc(50% - 10px);*/
+   
+    box-sizing: border-box;
 }
 
+.multiple-items .slider__slide:nth-child(1) {
+    /*flex: calc(50% - 20px);*/
+   /* max-width:150px;
+    flex-shrink: 0;*/
+}
+
+
+
+
+.multiple-items .slider__slide:nth-child(2) {
+    /*flex: calc(50% - 20px);*/
+  /*  max-width:200px;
+    flex-shrink: 0;*/
+}
 .slider__slide img {
     position: relative;
     z-index: 15;
@@ -208,9 +245,15 @@ body {
 .slider__dots li {
     margin-right: 10px;
     list-style: none;
+    height: 8px;
+    width: 8px;
+    display: inline-block;
+    background: #c6c4c4;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-.slider__dots li::before {
+/*.slider__dots li::before {
     content: "";
     height: 8px;
     width: 8px;
@@ -223,6 +266,11 @@ body {
 
 .slider__dots li.slider__dot--active::before {
     width: 20px;
+    background: blue;
+}*/
+
+.slider__dots li.slider__dot--active {
+  
     background: blue;
 }
 
@@ -246,6 +294,10 @@ body {
 .pointer-events {
     pointer-events: none;
     touch-action: none;
+}
+
+.hide{
+    visibility:hidden!important
 }
 
 /*////   transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);* /

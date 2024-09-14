@@ -45,7 +45,7 @@ export class HandleMovement extends BaseSlider {
     const penultGroupIndex = Math.ceil(this.childrenCount / slidesPerPage) - 2
 
     // Primeiro grupo de slides (considerando slidesPerPage)
-    const firstGroupIndex = 0
+    const firstGroupIndex = 1
 
     // console.log("Children Count:", this.childrenCount)
     // console.log("Penultimate Group Index:", penultGroupIndex)

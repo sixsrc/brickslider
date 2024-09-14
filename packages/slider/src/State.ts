@@ -19,7 +19,8 @@ export enum State_Keys {
   PrevTranslate = "prevTranslate",
   CurrentTranslate = "currentTranslate",
   CurrentEventType = "currentEventType",
-  CurrentSlideMovement = 'currentSlideMovement',
+  CurrentSlideMovement = "currentSlideMovement",
+  CurrentAnimation = "currentAnimation",
   StartTime = "startTime",
   EndTime = "endTime",
   IsMouseLeave = "isMouseLeave",
@@ -36,7 +37,7 @@ export enum State_Keys {
 }
 
 export type StateType = {
-  [key: string]: string | number | boolean | null | undefined
+  [key: string]: string | number | boolean | null | undefined | any[]
   [State_Keys.PrevSlideIndex]: number
   [State_Keys.SlideIndex]: number
   [State_Keys.SlideSpacing]: number
@@ -56,6 +57,7 @@ export type StateType = {
   [State_Keys.CurrentTranslate]: number
   [State_Keys.CurrentEventType]: CurrentEventType
   [State_Keys.CurrentSlideMovement]: CurrentSlideMovement
+  [State_Keys.CurrentAnimation]: any[]
   [State_Keys.StartTime]: number
   [State_Keys.EndTime]: number
   [State_Keys.IsMouseLeave]: boolean
@@ -120,6 +122,7 @@ class State {
     State.state[this.key][State_Keys.CurrentTranslate] = 0
     State.state[this.key][State_Keys.CurrentEventType] = null
     State.state[this.key][State_Keys.CurrentSlideMovement] = null
+    State.state[this.key][State_Keys.CurrentAnimation] = []
     State.state[this.key][State_Keys.StartTime] = 0
     State.state[this.key][State_Keys.EndTime] = 0
     State.state[this.key][State_Keys.IsMouseLeave] = true

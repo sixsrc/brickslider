@@ -1,3 +1,4 @@
+import { Center } from "./Center"
 import { State, StateType } from "./State"
 import { ANIMATION_OPTIONS } from "./constants"
 import {
@@ -26,6 +27,9 @@ export class BaseSlider {
   protected getTrackChildren: HTMLElement | any
   protected childrenCount: number
   protected sliderWidth: number | undefined
+  protected movement: boolean
+  protected dotIndex: number
+  //protected center: any
 
   constructor($root: string) {
     this.$root = $root
@@ -36,6 +40,8 @@ export class BaseSlider {
     this.getTrackChildren = getTrackChildren($root)
     this.childrenCount = getChildrenCount(this.$children)
     this.sliderWidth = getSliderWidth(this.$children)
+    this.movement = false
+    this.dotIndex = 0
   }
 
   protected defineEventTarget(event: MouseEventOrTouchEvent) {
@@ -46,6 +52,17 @@ export class BaseSlider {
       clientX,
       clientY
     }
+  }
+
+  protected setDotsMovement() {
+    const { currentSlideMovement: mov } = this.store
+
+    mov === "increment" ? this.dotIndex++ : this.dotIndex--
+  }
+
+  protected isDotTarget(numberOfSlides: number) {
+    if (this.dotIndex === -1) this.dotIndex = numberOfSlides - 1
+    else if (this.dotIndex === numberOfSlides) this.dotIndex = 0
   }
 
   protected animate(
@@ -70,10 +87,12 @@ export class BaseSlider {
     }
   }
 
-  protected keyFrames(): KeyframeAnimation[] {
+  protected keyFrames(translate?: number): KeyframeAnimation[] {
     const { currentTranslate } = this.store
 
-    return [{ transform: translate3d(currentTranslate) }]
+    return [
+      { transform: translate3d(translate ? translate : currentTranslate) }
+    ]
   }
 
   protected setState(state: Partial<StateType>) {
