@@ -29,14 +29,16 @@ export class TouchMove extends HandleMovement {
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    const { isDragging, currentEventType } = this.store
+    const { isDragging, currentEventType, currentTranslate } = this.store
     const isRightClick = currentEventType === FROM.RIGHT_CLICK
 
     if (isDragging && !isRightClick) {
+      console.log("currentTRanslate", currentTranslate)
       this.updatePosition(event)
       this.handleMove()
       this.setState(this.eventTargetState())
       this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
+
       this.setSkipSlide(false)
     }
   }
@@ -53,10 +55,12 @@ export class TouchMove extends HandleMovement {
   }
 
   protected evalSlideConditions(): Partial<StateType> {
-    const { slideIndex } = this.store
+    const { slideIndex, slidesPerPage } = this.store
     const isFirstCloned = slideIndex === 0
-    const isLastCloned = slideIndex === this.childrenCount - 1
+    const penultIndex = Math.ceil(this.childrenCount / slidesPerPage) - 1
+    const isLastCloned = slideIndex === penultIndex //this.childrenCount - 1
 
+    //
     return {
       FIRST: this.movingTo(POSITION.RIGHT) && isFirstCloned,
       LAST: this.movingTo(POSITION.LEFT) && isLastCloned
@@ -66,6 +70,7 @@ export class TouchMove extends HandleMovement {
   protected jumpSlideTo(to: keyof IndexMap): void {
     const indexData = this.mapIndex().get(to)
     const { currentIndex, translate } = indexData as IndexData
+    //const { currentAnimation } = this.store
 
     if (indexData) {
       const indexes = this.getIndexes()
@@ -73,6 +78,7 @@ export class TouchMove extends HandleMovement {
       this.currentIndex = indexes[currentIndex]
       this.translate = translate
       this.state.set(this.jumpSlideState())
+      //currentAnimation.forEach(animation => animation.cancel())
     }
   }
 

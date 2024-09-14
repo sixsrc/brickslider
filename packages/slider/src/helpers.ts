@@ -14,7 +14,7 @@ export function addClass(
   })
 }
 
-export function animateElement(
+/*export function animateElement(
   element: HTMLElement | HTMLElement[],
   keyframes: Keyframe[],
   options: Partial<AnimationOptions>
@@ -28,6 +28,20 @@ export function animateElement(
   elements.forEach(el => {
     el.animate(keyframes, options)
   })
+}*/
+
+export function animateElement(
+  element: HTMLElement | HTMLElement[],
+  keyframes: Keyframe[],
+  options: Partial<AnimationOptions>
+): Animation[] {
+  if (!element) {
+    throw new Error("Element is required for animation.")
+  }
+
+  const elements = Array.isArray(element) ? element : [element]
+
+  return elements.map(el => el.animate(keyframes, options))
 }
 
 export function appendChildren(
@@ -112,10 +126,10 @@ export function getRootSelector($root: string): HTMLElement | undefined {
   return $(`${$root}`)
 }
 
-export function getSliderNodeList($root: string) {
+export function getSliderNodeList($root: string, cloned: boolean = true) {
   return Array.from(
     getAllElements<HTMLElement>(
-      `${DOM_ELEMENTS.CHILDREN_SELECTOR} > *`,
+      `${DOM_ELEMENTS.CHILDREN_SELECTOR} > *${cloned ? "" : ":not(.cloned)"}`,
       getChildren($root)
     )
   )
@@ -125,6 +139,19 @@ export function getSliderWidth(
   el: HTMLElement | undefined
 ): number | undefined {
   if (el) return el.offsetWidth
+}
+
+export function getPosition(element: HTMLElement) {
+  var xPos = 0,
+    yPos = 0
+
+  while (element) {
+    xPos += element.offsetLeft - element.scrollLeft + element.clientLeft
+    yPos += element.offsetTop - element.scrollTop + element.clientTop
+    element = element.offsetParent as HTMLElement
+  }
+
+  return { x: xPos, y: yPos }
 }
 
 export function getTrackChildren(
@@ -164,6 +191,10 @@ export function setAttributes(element: HTMLElement, attributes: Object): void {
 
 export function setInnerHTML(el: HTMLElement, html: string): void {
   el.innerHTML = html
+}
+
+export function setProperty(element: HTMLElement, prop: string, value: string) {
+  element.style.setProperty(prop, value)
 }
 
 export function setStyle(el: HTMLElement, styleProp: any, value: string): void {
@@ -321,6 +352,10 @@ export function removeListener(
   }
 }
 
+export function removeProperty(element: HTMLElement, prop: string) {
+  element.style.removeProperty(prop)
+}
+
 export function removeAttribute(el: HTMLElement, attribute: string): void {
   el.removeAttribute(attribute)
 }
@@ -347,6 +382,52 @@ export function reorderIdx(
 
   return reorder
 }
+
+export function updateDataIndexes(
+  slides: HTMLElement[],
+  slidesPerPage: number
+) {
+  // Inicializa o índice de grupo
+  let groupIndex = 0
+
+  // Itera sobre os slides e atualiza o data-index
+  slides.forEach((slide, index) => {
+    // Calcula o índice de grupo para o slide atual
+    const isStartOfGroup = index % slidesPerPage === 0
+
+    // Se for o início de um novo grupo, incrementa o groupIndex
+    if (isStartOfGroup && index !== 0) {
+      groupIndex++
+    }
+
+    // Atualiza o atributo data-index do slide
+    slide.setAttribute("data-index", String(groupIndex))
+  })
+}
+
+/*export function reorderIdx(
+  displayedIndex: number,
+  numberOfSlides: number,
+  slidesPerPage: number
+) {
+  // Ajusta o número de slides total considerando que cada grupo de slides por página é tratado como 1 unidade
+  const effectiveSlidesCount =
+    Math.ceil(numberOfSlides / slidesPerPage) * slidesPerPage
+
+  // Calcula o índice do slide após a reordenação
+  const reorder =
+    displayedIndex < 0
+      ? effectiveSlidesCount - 1
+      : displayedIndex >= effectiveSlidesCount
+        ? displayedIndex
+        : displayedIndex === effectiveSlidesCount - 1
+          ? 0
+          : displayedIndex === 0
+            ? effectiveSlidesCount - 1
+            : displayedIndex - 1
+
+  return reorder
+}*/
 
 export function toggleClass(
   slides: HTMLElement[],

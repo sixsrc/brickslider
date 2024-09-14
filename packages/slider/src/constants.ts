@@ -1,5 +1,6 @@
 export const DOM_ELEMENTS = {
   CHILDREN_SELECTOR: ".slider__container",
+  SINGLE_SLIDE: ".slider__slide",
   TRACK_SELECTOR: ".slider__track",
   DOTS_SELECTOR: ".slider__dots ",
   NEXT_BUTTON: "next-button",
@@ -30,7 +31,8 @@ export const CLASS_VALUES = {
   ACTIVE: "active",
   SLIDER_DOT: "slider__dot",
   SELECTED: "slider__dot--active",
-  CLONED: "cloned"
+  CLONED: "cloned",
+  HIDE: "hide"
 }
 
 export const ATTRIBUTES = {
@@ -42,7 +44,7 @@ export const ATTRIBUTES = {
 } as const
 
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 500
+  DEFAULT_TRANSITION_TIME: 600
 }
 
 export const TRANSITIONS = {

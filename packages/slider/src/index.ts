@@ -20,9 +20,9 @@ const slider2 = new BrickSlider("#slide2_container", {
 const slider3 = new BrickSlider("#slide3_container", { spacing: 20 })
 
 const slider4 = new BrickSlider("#slide4_container", {
-  slidesPerPage: 2,
   spacing: 20,
-  infinite: true
+  infinite: true,
+  slidesPerPage: 2
 })
 
 slider.init()

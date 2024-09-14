@@ -8,7 +8,6 @@ import {
   getElementAttribute,
   listener,
   prependChild,
-  reorderIdx,
   setAttribute,
   setInnerHTML,
   waitFor
@@ -44,8 +43,11 @@ export class Arrows extends HandleMovement {
       const attr = isGreaterThanZero ? "next" : "prev"
 
       setAttribute(button, ATTRIBUTES.DIRECTION, attr)
+
       addClass([button], DOM_ELEMENTS.BRICK_ARROWS)
+
       setInnerHTML(button, isGreaterThanZero ? "next" : "prev")
+
       this.buttons.push(button)
     }
 
@@ -61,15 +63,15 @@ export class Arrows extends HandleMovement {
   }
 
   private arrowHandler(button: Element, $root: string): void {
-    const { slideIndex } = this.store
+    const { slideIndex, numberOfSlides } = this.store
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
     const eventType = getAttribute === "prev" ? "prev" : "next"
     const slideMovement = eventType === "next" ? "increment" : "decrement"
     const currentEventType = eventType
 
-    this.setState({
-      currentSlideMovement: slideMovement
-    })
+    this.setState({ currentSlideMovement: slideMovement })
+
+    this.movement = true
 
     this.setState(this.startPosState())
 
@@ -79,16 +81,19 @@ export class Arrows extends HandleMovement {
 
     this.slider.setSlideTarget({ $root })
 
-    let { index } = this.getIndex()
+    if (this.movement) {
+      this.setDotsMovement()
 
-    this.slider.updateDots(index, $root)
+      this.isDotTarget(numberOfSlides)
+
+      this.slider.updateDots(this.dotIndex, $root)
+    }
   }
 
   protected jumpSlideTo(to: keyof IndexMap): void {
     const indexData = this.mapIndex().get(to)
 
     if (indexData) {
-      console.log("adadads", indexData)
       const indexes = this.getIndexes()
 
       this.setState(this.slideState(indexes, indexData))
@@ -100,9 +105,10 @@ export class Arrows extends HandleMovement {
   }
 
   protected evalSlideConditions(): Record<any, boolean> {
-    const { slideIndex } = this.store
+    const { infinite, slideIndex, slidesPerPage } = this.store
     const isFirstCloned = slideIndex === 0
-    const isLastCloned = slideIndex === this.childrenCount - 1
+    const penultIndex = Math.ceil(this.childrenCount / slidesPerPage) - 1
+    const isLastCloned = slideIndex === penultIndex //this.childrenCount - 1
 
     return {
       FIRST: isFirstCloned,
@@ -116,14 +122,6 @@ export class Arrows extends HandleMovement {
     }
 
     waitFor(0, action)
-  }
-
-  private getIndex(): Record<string, number> {
-    const { infinite, slideIndex: idx, slidesPerPage: perPage } = this.store
-    const slides = this.childrenCount
-    const index = infinite ? reorderIdx(idx, slides, perPage) : idx
-
-    return { index }
   }
 
   private slideState(

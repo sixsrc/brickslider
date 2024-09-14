@@ -3,7 +3,7 @@ import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
 import { EVENTS, TOUCH_LIMIT } from "./constants"
-import { getSliderNodeList, reorderIdx, translate3d, waitFor } from "./helpers"
+import { getSliderNodeList, translate3d, waitFor } from "./helpers"
 import {
   CurrentSlideMovement,
   KeyframeAnimation,
@@ -16,7 +16,6 @@ export class TouchEnd extends BaseSlider {
   private slider: Slider
   private moveSlider: number
   isFastInteraction: boolean
-  index: number
 
   constructor($root: string) {
     super($root)
@@ -25,7 +24,6 @@ export class TouchEnd extends BaseSlider {
     this.animation = new AnimationFrame(this.$root)
     this.moveSlider = 0
     this.isFastInteraction = false
-    this.index = 0
   }
 
   public init = (event: any): void => {
@@ -111,16 +109,30 @@ export class TouchEnd extends BaseSlider {
 
     this.setState(this.prevSlideState(slideIndex))
 
-    if (this.goToNextSlide(this.moveSlider, slideIndex, this.slides))
-      this.updateSlideIndex("increment")
+    const { isNext, isPrev } = this.actionsMove()
 
-    if (this.goToPrevSlide(this.moveSlider, slideIndex))
-      this.updateSlideIndex("decrement")
+    if (isNext || isPrev) {
+      this.updateSlideIndex(isNext ? "increment" : "decrement")
+
+      this.movement = true
+    }
 
     if (isTouch && !isMouseLeave) {
       this.setPosition()
+
+      this.movement = false
+
       this.setState(this.jumpSlideState())
     }
+  }
+
+  private actionsMove() {
+    const { slideIndex } = this.store
+    const { moveSlider, slides } = this
+    const isNext = this.goToNextSlide(moveSlider, slideIndex, slides)
+    const isPrev = this.goToPrevSlide(moveSlider, slideIndex)
+
+    return { isNext, isPrev }
   }
 
   protected keyFrames(): KeyframeAnimation[] {
@@ -187,25 +199,33 @@ export class TouchEnd extends BaseSlider {
 
   private setPosition() {
     const { $root, sliderWidth } = this
-    const { slideIndex, dots } = this.store
+    const { slideIndex, numberOfSlides } = this.store
     const currentTranslate = slideIndex * -sliderWidth!
-    const touchIndex = slideIndex
+    //const touchIndex = slideIndex
 
     this.setState(this.positionState(currentTranslate))
 
-    this.slider.setSlideTarget({ touchIndex, $root })
+    this.slider.setSlideTarget({ touchIndex: slideIndex, $root })
 
-    this.updateDots(touchIndex, dots)
+    if (this.movement) {
+      this.setDotsMovement()
+
+      this.isDotTarget(numberOfSlides)
+
+      this.slider.updateDots(this.dotIndex, $root)
+    }
   }
 
   private updateDots(touchIndex: number, dots: boolean): void {
     const { $root, slider } = this
-    const { infinite, slidesPerPage: perPage } = this.store
-    const slides = this.childrenCount
+    // const { infinite, slidesPerPage: perPage } = this.store
+    // const slides = this.childrenCount
 
-    const index = infinite
+    /*const index = infinite
       ? reorderIdx(touchIndex, slides, perPage)
-      : touchIndex
+      : touchIndex*/
+
+    const index = touchIndex
 
     slider.updateDots(index, $root)
   }

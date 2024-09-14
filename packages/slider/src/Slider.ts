@@ -4,6 +4,7 @@ import { StateType } from "./State"
 import { CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
+  animateElement,
   calcTranslate,
   getAllElements,
   getDotsSelector,
@@ -14,18 +15,20 @@ import {
   removeClass,
   toggleClass
 } from "./helpers"
-import { TypeTargetSlideParams } from "./types"
+import { CurrentEventType, TypeTargetSlideParams } from "./types"
 
 export class Slider extends BaseSlider {
   private animation: any
   private currentIndex: number
   private translate: number
+  private currentAnimation: any[]
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame(this.$root)
     this.currentIndex = 0
     this.translate = 0
+    this.currentAnimation = []
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
@@ -42,14 +45,14 @@ export class Slider extends BaseSlider {
 
   private setIndexBased(params: TypeTargetSlideParams): void {
     const { slideIndex, infinite, currentEventType } = this.store
-    const from = currentEventType as string
+    const from = currentEventType as CurrentEventType
     const isTargetFrom = from === "next" || "prev"
 
     let { touchIndex } = params!
 
     if (touchIndex !== undefined) {
       if (infinite && isTargetFrom) {
-        touchIndex = touchIndex + 1
+        //touchIndex = touchIndex + 1
       }
     }
 
@@ -90,8 +93,23 @@ export class Slider extends BaseSlider {
   }
 
   protected updateDOM(): void {
-    const { slidesPerPage } = this.store
+    const { slidesPerPage, slideIndex, numberOfSlides, spacing } = this.store
     const { $root, currentIndex } = this
+    const slides = getSliderNodeList($root, false)
+    const lastSlide = slides[2]
+    const singleTranslate = (this.sliderWidth! + spacing) * numberOfSlides
+
+    if (slideIndex === 0) {
+      /*this.currentAnimation = animateElement(
+        lastSlide,
+        this.keyFrames(-singleTranslate),
+        this.options(0)
+      )
+
+      this.setState({
+        currentAnimation: this.currentAnimation
+      })*/
+    }
 
     toggleClass(getSliderNodeList($root), currentIndex, slidesPerPage)
   }

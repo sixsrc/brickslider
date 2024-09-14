@@ -59,7 +59,7 @@ export type TouchListenersParams = {
 }
 
 export type TypeIndexBaseSliderdBy = {
-  from: string
+  from: string | null
   slideIndex: number
   touchIndex?: number
 }

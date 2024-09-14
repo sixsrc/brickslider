@@ -17,6 +17,7 @@ export class TouchStart extends BaseSlider {
   }
 
   public init(event: MouseEventOrTouchEvent): void {
+    console.log(this.store.currentTranslate)
     this.setState(this.mainState(event))
     this.handleEvents()
   }
