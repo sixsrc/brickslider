@@ -13,10 +13,7 @@ import {
   getSliderWidth,
   listener,
   removeClass,
-  removeProperty,
   setAttributes,
-  setProperty,
-  setStyle,
   toggleClass
 } from "./helpers"
 import { Center } from "./Center"
@@ -41,6 +38,7 @@ export class Mount extends BaseSlider {
     this.setProperties()
     this.cloneSlides()
     this.appendSlider(this.$children, this.clonedSlides)
+
     removeClass(this.getRootSelector!, CLASS_VALUES.HIDE)
     this.setControls(this.store)
     this.slides = getSliderNodeList(this.$root)
@@ -63,16 +61,7 @@ export class Mount extends BaseSlider {
   private setProperties(): void {
     this.slides.forEach((slide, index) => {
       setAttributes(slide, this.setAttr(index))
-      // this.setTempStyle(slide)
-      //this.disableStyle(slide)
     })
-  }
-
-  private setTempStyle(slide: HTMLElement) {
-    const { slidesPerPage } = this.store
-    const isMultipleSlides = slidesPerPage >= 2
-
-    isMultipleSlides && setProperty(slide, "--gap", "20px")
   }
 
   private cloneSlides() {
@@ -108,13 +97,6 @@ export class Mount extends BaseSlider {
     if (dots) new Dots($root).init()
     if (arrows) new Arrows($root).init()
     if (touch) new Swipe($root).init()
-  }
-
-  private disableStyle(slide: HTMLElement) {
-    const { slidesPerPage } = this.store
-    const isMultipleSlides = slidesPerPage >= 2
-
-    isMultipleSlides && removeProperty(slide, "--gap")
   }
 
   protected mountState(): Partial<StateType> {

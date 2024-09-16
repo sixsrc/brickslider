@@ -100,7 +100,7 @@ export class Slider extends BaseSlider {
     const singleTranslate = (this.sliderWidth! + spacing) * numberOfSlides
 
     if (slideIndex === 0) {
-      /*this.currentAnimation = animateElement(
+      this.currentAnimation = animateElement(
         lastSlide,
         this.keyFrames(-singleTranslate),
         this.options(0)
@@ -108,7 +108,7 @@ export class Slider extends BaseSlider {
 
       this.setState({
         currentAnimation: this.currentAnimation
-      })*/
+      })
     }
 
     toggleClass(getSliderNodeList($root), currentIndex, slidesPerPage)

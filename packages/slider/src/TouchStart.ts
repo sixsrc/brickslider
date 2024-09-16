@@ -2,7 +2,12 @@ import { BaseSlider } from "./BaseSlider"
 import { EVENTS } from "./constants"
 import { ContextMenu } from "./ContextMenu"
 import { Draggable } from "./Draggable"
-import { adjustIndex, getAxisX } from "./helpers"
+import {
+  adjustIndex,
+  animateElement,
+  getAxisX,
+  getSliderNodeList
+} from "./helpers"
 import { StateType } from "./State"
 import { MouseEventOrTouchEvent } from "./types"
 
@@ -18,8 +23,25 @@ export class TouchStart extends BaseSlider {
 
   public init(event: MouseEventOrTouchEvent): void {
     console.log(this.store.currentTranslate)
-    this.setState(this.mainState(event))
+    const slides = getSliderNodeList(this.$root, false)
+    const lastSlide = slides[2]
+    const { infinite, slideIndex } = this.store
+    const isTargetSlide = slideIndex === 0
+
+    if (infinite) {
+      if (isTargetSlide) {
+        animateElement(lastSlide, this.keyFrames(0), this.options())
+        this.state.set({
+          currentTranslate: -1904,
+          prevTranslate: -1904,
+          slideIndex: 4
+        })
+        console.log(this.store.currentTranslate)
+        this.animate(this.keyFrames(), this.options())
+      }
+    }
     this.handleEvents()
+    this.setState(this.mainState(event))
   }
 
   private handleEvents(): void {
