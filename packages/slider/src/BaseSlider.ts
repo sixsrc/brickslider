@@ -1,4 +1,3 @@
-import { Center } from "./Center"
 import { State, StateType } from "./State"
 import { ANIMATION_OPTIONS } from "./constants"
 import {
@@ -29,7 +28,6 @@ export class BaseSlider {
   protected sliderWidth: number | undefined
   protected movement: boolean
   protected dotIndex: number
-  //protected center: any
 
   constructor($root: string) {
     this.$root = $root

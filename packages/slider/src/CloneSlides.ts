@@ -32,7 +32,7 @@ export class CloneSlides extends BaseSlider {
     this.loopByClonedSlides(slidesPerPage, sliderCount)
   }
 
-  /*private loopByClonedSlides(slidesPerPage: number, slideCount: number): void {
+  private loopByClonedSlides(slidesPerPage: number, slideCount: number): void {
     const end = [...Array(slidesPerPage).keys()]
     const start = [...Array(slidesPerPage).keys()]
       .map(i => slideCount - i - 1)
@@ -56,9 +56,9 @@ export class CloneSlides extends BaseSlider {
           : $children?.insertBefore(clone, slides![0])
       }
     }
-  }*/
+  }
 
-  private loopByClonedSlides(slidesPerPage: number, slideCount: number): void {
+  /* private loopByClonedSlides(slidesPerPage: number, slideCount: number): void {
     const slidesToClone = slidesPerPage + 1 // Clonar mais um slide que o número de slides por página
 
     // Índices dos últimos slides que serão clonados no início
@@ -78,7 +78,7 @@ export class CloneSlides extends BaseSlider {
     for (const index of end) {
       this.cloneSlide(index, true) // Insere depois do último slide
     }
-  }
+  }*/
 
   // Função auxiliar para clonar os slides
   private cloneSlide(index: number, append: boolean) {

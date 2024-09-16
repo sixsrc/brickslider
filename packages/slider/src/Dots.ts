@@ -50,8 +50,10 @@ export class Dots extends BaseSlider {
   }
 
   private createDots(): void {
-    const { numberOfSlides } = this.store
-    const { containerDots } = this
+    const { slidesPerPage, numberOfSlides } = this.store
+    const { containerDots, $root } = this
+    const slides = getSliderNodeList($root, false)
+    // const numberOfSlides = Math.ceil(slides.length / slidesPerPage)
 
     for (let i = 0; i < numberOfSlides; i++) {
       const liDots = createNewElement(TAGS.LI)
