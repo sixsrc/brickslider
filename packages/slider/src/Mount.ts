@@ -76,8 +76,8 @@ export class Mount extends BaseSlider {
     return {
       "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
       "aria-hidden": "true",
-      role: "group",
-      "data-index": index + 1
+      role: "group"
+      // "data-index": index + 1
     }
   }
 
@@ -115,8 +115,9 @@ export class Mount extends BaseSlider {
   protected updateDOM() {
     const { infinite, slideIndex, slidesPerPage } = this.store
     const { slides } = this
-    const index = infinite ? 0 : slideIndex
+    const index = infinite ? 1 : slideIndex
 
+    console.log("sdafafad", index)
     toggleClass(slides, index, slidesPerPage)
   }
 }
