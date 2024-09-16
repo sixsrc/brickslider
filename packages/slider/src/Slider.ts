@@ -93,13 +93,14 @@ export class Slider extends BaseSlider {
   }
 
   protected updateDOM(): void {
-    const { slidesPerPage, slideIndex, numberOfSlides, spacing } = this.store
+    const { infinite, slidesPerPage, slideIndex, numberOfSlides, spacing } =
+      this.store
     const { $root, currentIndex } = this
     const slides = getSliderNodeList($root, false)
     const lastSlide = slides[2]
     const singleTranslate = (this.sliderWidth! + spacing) * numberOfSlides
 
-    if (slideIndex === 0) {
+    if (infinite && slidesPerPage <= 1 && slideIndex === 0) {
       this.currentAnimation = animateElement(
         lastSlide,
         this.keyFrames(-singleTranslate),
