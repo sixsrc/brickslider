@@ -19,7 +19,7 @@ export class Swipe extends BaseSlider {
   }
 
   public init(): void {
-    this.setTouchListeners(this.params())
+    this.setListeners(this.params())
   }
 
   private params(): TouchListenersParams {
@@ -34,7 +34,7 @@ export class Swipe extends BaseSlider {
     }
   }
 
-  private setTouchListeners(params: TouchListenersParams): void {
+  private setListeners(params: TouchListenersParams): void {
     const { element, touchStart, touchEnd, touchMove } = params
     const touchStartEvents = [EVENTS.TOUCHSTART, EVENTS.MOUSEDOWN]
     const touchEndEvents = [EVENTS.TOUCHEND, EVENTS.MOUSELEAVE, EVENTS.MOUSEUP]

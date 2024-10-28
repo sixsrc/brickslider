@@ -12,8 +12,12 @@ export class AnimationFrame extends BaseSlider {
     super($root)
   }
 
-  public init = (): void => {
-    this.animate(this.keyFrames(), this.options())
+  public init = (): number => {
+    const animationId = requestAnimationFrame(() => {
+      this.animate(this.$children, this.keyFrames(), this.options())
+    })
+
+    return animationId
   }
 
   protected keyFrames(): KeyframeAnimation[] {

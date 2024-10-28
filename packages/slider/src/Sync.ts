@@ -78,7 +78,7 @@ export class Sync extends BaseSlider {
     this.indeedIndex = slideIndex
 
     this.setState(this.slideState())
-    this.animate(this.keyFrames(), this.options(0))
+    this.animate(this.$children, this.keyFrames(), this.options(0))
     this.waitForAction()
   }
 

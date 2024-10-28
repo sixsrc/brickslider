@@ -69,6 +69,15 @@ export function appendToParent(
   }
 }
 
+export function calcWidth(
+  sliderWidth: number,
+  slidesPerPage: number,
+  spacing: number
+): number {
+  const width = sliderWidth / slidesPerPage - spacing / slidesPerPage
+  return width
+}
+
 export function calcNumberOfSlides(
   infinite: boolean,
   slidesPerPage: number,
@@ -447,7 +456,7 @@ export function toggleClass(
   }
 }
 
-export function translate3d(x: number): string {
+export function translate3d(x: number): string | undefined {
   return `translate3d(${x}px, 0px, 0px)`
 }
 

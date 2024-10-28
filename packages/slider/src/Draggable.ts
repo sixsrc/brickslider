@@ -52,8 +52,10 @@ export class Draggable extends BaseSlider {
     const moveX = this.defineEventTarget(event).clientX
     const moveY = this.defineEventTarget(event).clientY
 
+    //|| Math.abs(moveY - startY) > 5
+
     if (!isDragging) {
-      if (Math.abs(moveX - startX) > 5 || Math.abs(moveY - startY) > 2) {
+      if (Math.abs(moveX - startX) > 5) {
         this.setState(this.draggingState(true))
       }
     }

@@ -1,4 +1,10 @@
-import { CurrentEventType, CurrentSlideMovement, EventFrom } from "./types"
+import {
+  CurrentEventType,
+  CurrentSlideMovement,
+  EventFrom,
+  invalidationConditions,
+  shouldInvalidateKey
+} from "./types"
 
 export enum State_Keys {
   PrevSlideIndex = "prevSlideIndex",
@@ -28,6 +34,7 @@ export enum State_Keys {
   Autoplay = "autoplay",
   AutoplaySpeed = "autoplaySpeed",
   Dots = "dots",
+  DotIndex = "dotIndex",
   Arrows = "arrows",
   Touch = "touch",
   Infinite = "infinite",
@@ -65,6 +72,7 @@ export type StateType = {
   [State_Keys.Autoplay]: boolean
   [State_Keys.AutoplaySpeed]: number
   [State_Keys.Dots]: boolean
+  [State_Keys.DotIndex]: number
   [State_Keys.Arrows]: boolean
   [State_Keys.Touch]: boolean
   [State_Keys.Infinite]: boolean
@@ -131,6 +139,7 @@ class State {
     State.state[this.key][State_Keys.AutoplaySpeed] =
       options.autoplaySpeed ?? 3000
     State.state[this.key][State_Keys.Dots] = options.dots ?? true
+    State.state[this.key][State_Keys.DotIndex] = 0
     State.state[this.key][State_Keys.Arrows] = options.arrows ?? true
     State.state[this.key][State_Keys.Touch] = options.touch ?? true
     State.state[this.key][State_Keys.Infinite] = options.infinite ?? false
@@ -147,13 +156,67 @@ class State {
     return State.state[key]
   }
 
+  private invalidationConditions(
+    key: keyof StateType,
+    value: any
+  ): invalidationConditions {
+    return {
+      isPrevOrCurrent:
+        key === State_Keys.PrevTranslate || key === State_Keys.CurrentTranslate,
+      isNumber: typeof value === "number",
+      isNaNValue: isNaN(value as number)
+    }
+  }
+
+  private shouldInvalidateKey(
+    key: keyof StateType,
+    value: any
+  ): shouldInvalidateKey {
+    const { isPrevOrCurrent, isNumber, isNaNValue } =
+      this.invalidationConditions(key, value)
+
+    return {
+      shouldInvalidate: isPrevOrCurrent && isNumber && isNaNValue
+    }
+  }
+
   set(props: { [key in keyof StateType]?: StateType[key] }): void {
     for (const key in props) {
       if (props.hasOwnProperty(key)) {
-        State.state[this.key][key] = props[key]!
+        const { shouldInvalidate } = this.shouldInvalidateKey(key, props[key])
+
+        if (!shouldInvalidate) {
+          State.state[this.key][key] = props[key]
+        }
       }
     }
   }
 }
 
 export { State }
+
+/*set(props: { [key in keyof StateType]?: StateType[key] }): void {
+    for (const key in props) {
+      if (props.hasOwnProperty(key)) {
+        State.state[this.key][key] = props[key]!
+      }
+    }
+  }*/
+
+/*set(props: { [key in keyof StateType]?: StateType[key] }): void {
+    for (const key in props) {
+      if (props.hasOwnProperty(key)) {
+        if (
+          (key === State_Keys.PrevTranslate ||
+            key === State_Keys.CurrentTranslate) &&
+          typeof props[key] === "number" &&
+          isNaN(props[key] as number)
+        ) {
+          continue
+        }
+
+        // Caso contrário, atualiza normalmente
+        State.state[this.key][key] = props[key]!
+      }
+    }
+  }*/

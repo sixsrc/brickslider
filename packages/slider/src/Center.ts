@@ -23,7 +23,7 @@ export class Center extends BaseSlider {
       this.setCenteredTranslate(currentIndex, containerWidth, slidesWidths)
     }
 
-    this.animate(this.keyFrames(), this.options(0))
+    this.animate(this.$children, this.keyFrames(), this.options(0))
     // console.log("visible slides", this.getVisibleSlides())
   }
 
