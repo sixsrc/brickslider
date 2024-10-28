@@ -150,7 +150,9 @@ export class TouchEnd extends BaseSlider {
   private cancelAnimationFrame(): void {
     const { animationId } = this.store
 
-    if (typeof animationId === "number") cancelAnimationFrame(animationId)
+    if (typeof animationId === "number") {
+      cancelAnimationFrame(animationId)
+    }
   }
 
   private updateSlideIndex(action: UpdateSlideIndexType): void {
@@ -199,35 +201,20 @@ export class TouchEnd extends BaseSlider {
 
   private setPosition() {
     const { $root, sliderWidth } = this
-    const { slideIndex, numberOfSlides } = this.store
+    const { slideIndex, numberOfSlides, dotIndex } = this.store
     const currentTranslate = slideIndex * -sliderWidth!
-    //const touchIndex = slideIndex
 
     this.setState(this.positionState(currentTranslate))
 
     this.slider.setSlideTarget({ touchIndex: slideIndex, $root })
 
     if (this.movement) {
-      this.setDotsMovement()
+      this.setDotIndex()
 
-      this.isDotTarget(numberOfSlides)
+      const { dotIndex } = this.store
 
-      this.slider.updateDots(this.dotIndex, $root)
+      this.slider.updateDots(dotIndex, $root)
     }
-  }
-
-  private updateDots(touchIndex: number, dots: boolean): void {
-    const { $root, slider } = this
-    // const { infinite, slidesPerPage: perPage } = this.store
-    // const slides = this.childrenCount
-
-    /*const index = infinite
-      ? reorderIdx(touchIndex, slides, perPage)
-      : touchIndex*/
-
-    const index = touchIndex
-
-    slider.updateDots(index, $root)
   }
 
   private prevSlideState(slideIndex: number): Partial<StateType> {

@@ -12,6 +12,10 @@ export class ContextMenu extends BaseSlider {
     this.setContextListener(this.params())
   }
 
+  private rightClick() {
+    this.setState({ currentEventType: FROM.RIGHT_CLICK })
+  }
+
   private params(): ContextMenuListenersParams {
     const { rightClick } = this
 
@@ -19,10 +23,6 @@ export class ContextMenu extends BaseSlider {
       element: this.getRootSelector!,
       rightClick: rightClick.bind(this) as EventListener
     }
-  }
-
-  private rightClick() {
-    this.setState({ currentEventType: FROM.RIGHT_CLICK })
   }
 
   private setContextListener(params: ContextMenuListenersParams): void {

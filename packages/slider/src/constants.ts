@@ -21,7 +21,7 @@ export const TAGS = {
 
 export const FROM = {
   DOTS: "dots",
-  RIGHT_CLICK: "rightClick",
+  RIGHT_CLICK: "contextmenu",
   PREV: "prev",
   NEXT: "next",
   TOUCH: "touch"

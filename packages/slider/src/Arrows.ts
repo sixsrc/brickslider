@@ -63,7 +63,7 @@ export class Arrows extends HandleMovement {
   }
 
   private arrowHandler(button: Element, $root: string): void {
-    const { slideIndex, numberOfSlides } = this.store
+    const { slideIndex, numberOfSlides, dotIndex } = this.store
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
     const eventType = getAttribute === "prev" ? "prev" : "next"
     const slideMovement = eventType === "next" ? "increment" : "decrement"
@@ -77,16 +77,19 @@ export class Arrows extends HandleMovement {
 
     this.handleMove()
 
-    this.setState({ prevSlideIndex: slideIndex, currentEventType })
+    this.setState({
+      prevSlideIndex: slideIndex,
+      currentEventType
+    })
 
     this.slider.setSlideTarget({ $root })
 
     if (this.movement) {
-      this.setDotsMovement()
+      this.setDotIndex()
 
-      this.isDotTarget(numberOfSlides)
+      const { dotIndex } = this.store
 
-      this.slider.updateDots(this.dotIndex, $root)
+      this.slider.updateDots(dotIndex, $root)
     }
   }
 
@@ -98,7 +101,7 @@ export class Arrows extends HandleMovement {
 
       this.setState(this.slideState(indexes, indexData))
 
-      this.animate(this.keyFrames(), this.options(0))
+      this.animate(this.$children, this.keyFrames(), this.options(0))
 
       this.waitForAction()
     }

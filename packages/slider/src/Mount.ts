@@ -8,6 +8,7 @@ import { Swipe } from "./Swipe"
 import { CLASS_VALUES, EVENTS } from "./constants"
 import {
   appendToParent,
+  calcWidth,
   getChildrenCount,
   getSliderNodeList,
   getSliderWidth,
@@ -16,44 +17,31 @@ import {
   setAttributes,
   toggleClass
 } from "./helpers"
-import { Center } from "./Center"
+
+import { Attributes, KeyframeAnimation } from "./types"
+import { ContextMenu } from "./ContextMenu"
 
 export class Mount extends BaseSlider {
   private clonedSlides: HTMLElement[] = []
   private resize: Resize
-  private _cloneSlides: CloneSlides
+  private clone: CloneSlides
   private slides: HTMLElement[]
-  center: any
+  contextMenu: ContextMenu
 
   constructor($root: string) {
     super($root)
     this.slides = getSliderNodeList(this.$root)
-    this._cloneSlides = new CloneSlides(this.$root)
+    this.clone = new CloneSlides(this.$root)
     this.resize = new Resize(this.$root)
-    this.center = new Center($root)
+    this.contextMenu = new ContextMenu($root)
   }
 
-  public init() {
+  public init(): void {
     this.setState(this.mountState())
     this.setProperties()
     this.cloneSlides()
-    this.appendSlider(this.$children, this.clonedSlides)
-
-    removeClass(this.getRootSelector!, CLASS_VALUES.HIDE)
-    this.setControls(this.store)
-    this.slides = getSliderNodeList(this.$root)
-    const { spacing, slidesPerPage, sliderWidth } = this.store
-    const isMultiplePerPage = slidesPerPage >= 2
-    const calcWidth = sliderWidth / slidesPerPage - spacing / slidesPerPage
-    const slideWidth = isMultiplePerPage ? calcWidth : sliderWidth
-
-    this.slides!.forEach(slide => {
-      slide.animate([{ marginRight: "20px", maxWidth: `${slideWidth}px` }], {
-        duration: 0,
-        fill: "forwards"
-      })
-    })
-
+    this.appendSlider()
+    this.setControls()
     this.handleResize()
     this.updateDOM()
   }
@@ -64,42 +52,66 @@ export class Mount extends BaseSlider {
     })
   }
 
-  private cloneSlides() {
+  private cloneSlides(): void {
     const { infinite } = this.store
 
-    if (infinite) this._cloneSlides.init()
+    if (infinite) {
+      this.clone.init()
+      this.slides = this.clone.getSlides()["slides"]
+    }
   }
 
-  private setAttr(index: number) {
+  private setAttr(index: number): Attributes {
     const { numberOfSlides } = this.store
 
     return {
       "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
       "aria-hidden": "true",
       role: "group"
-      // "data-index": index + 1
     }
   }
 
-  private appendSlider(
-    container: HTMLElement | undefined,
-    children: HTMLElement[]
-  ): void {
-    children.forEach(element => {
-      appendToParent(container, element)
+  private appendSlider(): void {
+    const { $children } = this
+
+    this.clonedSlides.forEach((element: HTMLElement | undefined) => {
+      appendToParent($children, element)
     })
   }
 
-  private setControls(this: any, options: any): void {
-    const { dots, arrows, touch } = options
+  private setControls(): void {
+    const { dots, arrows, touch } = this.store
     const { $root } = this
 
+    if ($root) new ContextMenu($root).init()
     if (dots) new Dots($root).init()
     if (arrows) new Arrows($root).init()
     if (touch) new Swipe($root).init()
   }
 
-  protected mountState(): Partial<StateType> {
+  protected keyFrames(): KeyframeAnimation[] {
+    const { spacing } = this.store
+    const slideWidth = this.getSlideWidth()
+
+    return [
+      {
+        marginLeft: "0px",
+        marginRight: `${spacing}px`,
+        width: `${slideWidth}px`,
+        maxWidth: `${slideWidth}px`
+      }
+    ]
+  }
+
+  private getSlideWidth(): number {
+    const { spacing, slidesPerPage, sliderWidth } = this.store
+    const width = calcWidth(sliderWidth, slidesPerPage, spacing)
+    const isMultipleSlides = slidesPerPage >= 2
+
+    return isMultipleSlides ? width : sliderWidth
+  }
+
+  private mountState(): Partial<StateType> {
     const { $children } = this
 
     return {
@@ -112,66 +124,27 @@ export class Mount extends BaseSlider {
     listener([EVENTS.RESIZE], window, () => this.resize.init())
   }
 
-  protected updateDOM() {
+  private setVisibility(): void {
+    removeClass(this.getRootSelector!, CLASS_VALUES.HIDE)
+  }
+
+  private setToggleClass(): void {
     const { infinite, slideIndex, slidesPerPage } = this.store
     const { slides } = this
     const index = infinite ? 1 : slideIndex
 
-    console.log("sdafafad", index)
     toggleClass(slides, index, slidesPerPage)
   }
-}
 
-/*
-private updateDataIndexes(slides: HTMLElement[], slidesPerPage: number) {
-    let groupIndex = 0
-
-    slides.forEach((slide, index) => {
-      const isStartOfGroup = index % slidesPerPage === 0
-
-      if (slide.classList.contains("cloned")) groupIndex = 0
-
-      if (
-        isStartOfGroup &&
-        index !== 0 &&
-        !slide.classList.contains("cloned")
-      ) {
-        groupIndex++
-      }
-
-      slide.setAttribute("data-index", String(groupIndex))
+  public setWAAPIStyles(): void {
+    this.slides.forEach(slide => {
+      this.animate(slide, this.keyFrames(), this.options())
     })
   }
 
-*/
-
-/*
- if (this.store.slidesPerPage > 1) {
-      const containerWidth: number = this.$children.clientWidth ?? 0
-
-      // Atualize a lista de slides após clonar
-      this.slides = getSliderNodeList(this.$root)
-
-      // Filtrar slides visíveis
-      const visibleSlides = Array.from(this.slides).filter(
-        (slide: HTMLElement) => {
-          const rect = slide.getBoundingClientRect()
-
-          const isVisible =
-            (rect.left >= 0 && rect.left < containerWidth) || // Left está visível
-            (rect.right > 0 && rect.right <= containerWidth) || // Right está visível
-            (rect.left < 0 && rect.right > containerWidth) // Slide cobre todo o container
-
-          return isVisible
-        }
-      )
-
-      // Retornar a quantidade de slides visíveis
-      console.log(`Quantidade de slides visíveis: ${visibleSlides.length}`)
-
-      // Retornar os elementos que estão visíveis
-      console.log("Slides visíveis:", visibleSlides)
-    }
-
-
-*/
+  private updateDOM(): void {
+    this.setVisibility()
+    this.setToggleClass()
+    this.setWAAPIStyles()
+  }
+}

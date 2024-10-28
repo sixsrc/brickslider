@@ -14,6 +14,12 @@ export type AnimationOptions = {
   iterationStart?: number
 }
 
+export type Attributes = {
+  "aria-label": string
+  "aria-hidden": string
+  role: string
+}
+
 export type CurrentEventType =
   | "dots"
   | "touchstart"
@@ -21,7 +27,7 @@ export type CurrentEventType =
   | "touchend"
   | "next"
   | "prev"
-  | "rightClick"
+  | "contextmenu"
   | null
 
 export type ContextMenuListenersParams = {
@@ -46,9 +52,17 @@ export type IndexData = {
   translate: number
 }
 
+export type invalidationConditions = {
+  isPrevOrCurrent: boolean
+  isNumber: boolean
+  isNaNValue: boolean
+}
+
 export type MouseEventOrTouchEvent = TouchEvent | MouseEvent
 
 export type PositionSlider = "right" | "left"
+
+export type shouldInvalidateKey = { shouldInvalidate: boolean }
 
 export type TouchListenersParams = {
   element: HTMLElement
@@ -56,6 +70,7 @@ export type TouchListenersParams = {
   touchStart: any
   touchEnd: any
   touchMove: EventListener
+  // contextMenu: any
 }
 
 export type TypeIndexBaseSliderdBy = {

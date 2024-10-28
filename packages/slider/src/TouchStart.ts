@@ -1,52 +1,47 @@
 import { BaseSlider } from "./BaseSlider"
 import { EVENTS } from "./constants"
-import { ContextMenu } from "./ContextMenu"
 import { Draggable } from "./Draggable"
-import {
-  adjustIndex,
-  animateElement,
-  getAxisX,
-  getSliderNodeList
-} from "./helpers"
+import { adjustIndex, getAxisX, getSliderNodeList } from "./helpers"
 import { StateType } from "./State"
-import { MouseEventOrTouchEvent } from "./types"
+import { CurrentEventType, MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
   private draggable: Draggable
-  private contextMenu: ContextMenu
 
   constructor($root: string) {
     super($root)
     this.draggable = new Draggable($root)
-    this.contextMenu = new ContextMenu($root)
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    console.log(this.store.currentTranslate)
     const slides = getSliderNodeList(this.$root, false)
     const lastSlide = slides[2]
-    const { infinite, slideIndex } = this.store
+    const { infinite, slideIndex, numberOfSlides } = this.store
     const isTargetSlide = slideIndex === 0
+
+    this.setState({ currentEventType: event.type as CurrentEventType })
 
     if (infinite) {
       if (isTargetSlide) {
-        animateElement(lastSlide, this.keyFrames(0), this.options())
+        this.animate(lastSlide, this.keyFrames(), this.options())
+
         this.state.set({
-          currentTranslate: -1904,
-          prevTranslate: -1904,
-          slideIndex: 4
+          currentTranslate: this.calcTranslate(numberOfSlides),
+          prevTranslate: this.calcTranslate(numberOfSlides),
+          slideIndex: numberOfSlides
         })
-        console.log(this.store.currentTranslate)
-        this.animate(this.keyFrames(), this.options())
+
+        this.animate(this.$children, this.keyFrames(), this.options())
       }
     }
+
     this.handleEvents()
+
     this.setState(this.mainState(event))
   }
 
   private handleEvents(): void {
     this.draggable.init()
-    this.contextMenu.init()
   }
 
   protected mainState(event: TouchEvent | MouseEvent): Partial<StateType> {

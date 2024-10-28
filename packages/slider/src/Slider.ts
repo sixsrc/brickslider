@@ -4,7 +4,6 @@ import { StateType } from "./State"
 import { CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
-  animateElement,
   calcTranslate,
   getAllElements,
   getDotsSelector,
@@ -21,14 +20,14 @@ export class Slider extends BaseSlider {
   private animation: any
   private currentIndex: number
   private translate: number
-  private currentAnimation: any[]
+  private slides: HTMLElement[]
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame(this.$root)
     this.currentIndex = 0
     this.translate = 0
-    this.currentAnimation = []
+    this.slides = []
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
@@ -40,19 +39,20 @@ export class Slider extends BaseSlider {
     this.animationFrame()
     this.calcTranslate()
     this.setState(this.mainState())
+    this.setAnimationSlide()
     this.updateDOM()
   }
 
   private setIndexBased(params: TypeTargetSlideParams): void {
     const { slideIndex, infinite, currentEventType } = this.store
     const from = currentEventType as CurrentEventType
-    const isTargetFrom = from === "next" || "prev"
+    const isTargetFrom = from === "dots"
 
     let { touchIndex } = params!
 
     if (touchIndex !== undefined) {
       if (infinite && isTargetFrom) {
-        //touchIndex = touchIndex + 1
+        touchIndex = touchIndex + 1
       }
     }
 
@@ -92,25 +92,22 @@ export class Slider extends BaseSlider {
     }
   }
 
-  protected updateDOM(): void {
+  protected setAnimationSlide() {
+    let { $root } = this
     const { infinite, slidesPerPage, slideIndex, numberOfSlides, spacing } =
       this.store
-    const { $root, currentIndex } = this
-    const slides = getSliderNodeList($root, false)
-    const lastSlide = slides[2]
+    this.slides = getSliderNodeList($root, false)
+    const lastSlide = this.slides[2]
     const singleTranslate = (this.sliderWidth! + spacing) * numberOfSlides
 
     if (infinite && slidesPerPage <= 1 && slideIndex === 0) {
-      this.currentAnimation = animateElement(
-        lastSlide,
-        this.keyFrames(-singleTranslate),
-        this.options(0)
-      )
-
-      this.setState({
-        currentAnimation: this.currentAnimation
-      })
+      this.animate(lastSlide, this.keyFrames(-singleTranslate), this.options(0))
     }
+  }
+
+  protected updateDOM(): void {
+    const { slidesPerPage } = this.store
+    const { $root, currentIndex } = this
 
     toggleClass(getSliderNodeList($root), currentIndex, slidesPerPage)
   }

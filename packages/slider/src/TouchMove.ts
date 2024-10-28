@@ -1,7 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { HandleMovement } from "./HandleMovement"
 import { StateType } from "./State"
-import { EVENTS, FROM, MOVE_TO_LIMIT, POSITION } from "./constants"
+import { EVENTS, MOVE_TO_LIMIT, POSITION } from "./constants"
 import { getAxisX } from "./helpers"
 import {
   IndexData,
@@ -29,18 +29,14 @@ export class TouchMove extends HandleMovement {
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    const { isDragging, currentEventType, currentTranslate } = this.store
-    const isRightClick = currentEventType === FROM.RIGHT_CLICK
+    const { isDragging, currentEventType } = this.store
+    const isRightClick = currentEventType === "contextmenu"
 
-    if (isRightClick) return
-
-    if (isDragging) {
-      console.log("currentTRanslate", currentTranslate)
+    if (isDragging && !isRightClick) {
+      this.setState(this.eventTargetState())
       this.updatePosition(event)
       this.handleMove()
-      this.setState(this.eventTargetState())
       this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
-
       this.setSkipSlide(false)
     }
   }
@@ -48,6 +44,7 @@ export class TouchMove extends HandleMovement {
   protected updatePosition(event: MouseEvent | TouchEvent) {
     this.previousPosition = this.currentPosition
     this.currentPosition = getAxisX(event)
+    this.translate = this.store.currentTranslate
   }
 
   private eventTargetState(): Partial<StateType> {
@@ -62,31 +59,15 @@ export class TouchMove extends HandleMovement {
     const penultIndex = Math.ceil(this.childrenCount / slidesPerPage) - 1
     const isLastCloned = slideIndex === penultIndex //this.childrenCount - 1
 
-    console.log("islast", penultIndex)
     return {
       FIRST: this.movingTo(POSITION.RIGHT) && isFirstCloned,
       LAST: this.movingTo(POSITION.LEFT) && isLastCloned
     }
   }
 
-  /* protected evalSlideConditions(): Partial<StateType> {
-    const { slideIndex, slidesPerPage } = this.store
-    const isFirstCloned = slideIndex === 0
-    const isLastCloned = slideIndex === this.childrenCount - 1
-    const totalRealSlides = Math.ceil(this.childrenCount / slidesPerPage) - 1
-    // const isPenultSlide = slideIndex === totalRealSlides
-
-    return {
-      FIRST: this.movingTo(POSITION.RIGHT) && isFirstCloned,
-      LAST: this.movingTo(POSITION.LEFT) && isLastCloned
-      //PENULT: this.movingTo(POSITION.RIGHT) && isPenultSlide
-    }
-  }*/
-
   protected jumpSlideTo(to: keyof IndexMap): void {
     const indexData = this.mapIndex().get(to)
     const { currentIndex, translate } = indexData as IndexData
-    //const { currentAnimation } = this.store
 
     if (indexData) {
       const indexes = this.getIndexes()
@@ -94,7 +75,6 @@ export class TouchMove extends HandleMovement {
       this.currentIndex = indexes[currentIndex]
       this.translate = translate
       this.state.set(this.jumpSlideState())
-      //currentAnimation.forEach(animation => animation.cancel())
     }
   }
 
@@ -136,6 +116,20 @@ export class TouchMove extends HandleMovement {
     return position === POSITION.RIGHT ? translate <= limit : translate >= limit
   }
 }
+
+/* protected evalSlideConditions(): Partial<StateType> {
+    const { slideIndex, slidesPerPage } = this.store
+    const isFirstCloned = slideIndex === 0
+    const isLastCloned = slideIndex === this.childrenCount - 1
+    const totalRealSlides = Math.ceil(this.childrenCount / slidesPerPage) - 1
+    // const isPenultSlide = slideIndex === totalRealSlides
+
+    return {
+      FIRST: this.movingTo(POSITION.RIGHT) && isFirstCloned,
+      LAST: this.movingTo(POSITION.LEFT) && isLastCloned
+      //PENULT: this.movingTo(POSITION.RIGHT) && isPenultSlide
+    }
+  }*/
 
 /*
 
