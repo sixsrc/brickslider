@@ -49,6 +49,7 @@ export class Mount extends BaseSlider {
   private setProperties(): void {
     this.slides.forEach((slide, index) => {
       setAttributes(slide, this.setAttr(index))
+      //setAttribute("data-index", String(groupIndex))
     })
   }
 
@@ -67,6 +68,7 @@ export class Mount extends BaseSlider {
     return {
       "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
       "aria-hidden": "true",
+      "data-index": index + 1,
       role: "group"
     }
   }

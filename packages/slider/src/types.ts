@@ -17,6 +17,7 @@ export type AnimationOptions = {
 export type Attributes = {
   "aria-label": string
   "aria-hidden": string
+  "data-index": number
   role: string
 }
 

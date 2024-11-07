@@ -63,7 +63,7 @@ export class Arrows extends HandleMovement {
   }
 
   private arrowHandler(button: Element, $root: string): void {
-    const { slideIndex, numberOfSlides, dotIndex } = this.store
+    const { slideIndex } = this.store
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
     const eventType = getAttribute === "prev" ? "prev" : "next"
     const slideMovement = eventType === "next" ? "increment" : "decrement"
@@ -77,20 +77,9 @@ export class Arrows extends HandleMovement {
 
     this.handleMove()
 
-    this.setState({
-      prevSlideIndex: slideIndex,
-      currentEventType
-    })
+    this.setState({ prevSlideIndex: slideIndex, currentEventType })
 
     this.slider.setSlideTarget({ $root })
-
-    if (this.movement) {
-      this.setDotIndex()
-
-      const { dotIndex } = this.store
-
-      this.slider.updateDots(dotIndex, $root)
-    }
   }
 
   protected jumpSlideTo(to: keyof IndexMap): void {
@@ -108,7 +97,7 @@ export class Arrows extends HandleMovement {
   }
 
   protected evalSlideConditions(): Record<any, boolean> {
-    const { infinite, slideIndex, slidesPerPage } = this.store
+    const { slideIndex, slidesPerPage } = this.store
     const isFirstCloned = slideIndex === 0
     const penultIndex = Math.ceil(this.childrenCount / slidesPerPage) - 1
     const isLastCloned = slideIndex === penultIndex //this.childrenCount - 1

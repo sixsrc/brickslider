@@ -16,13 +16,13 @@ export class TouchStart extends BaseSlider {
   public init(event: MouseEventOrTouchEvent): void {
     const slides = getSliderNodeList(this.$root, false)
     const lastSlide = slides[2]
-    const { infinite, slideIndex, numberOfSlides } = this.store
+    const { infinite, slideIndex, numberOfSlides, slidesPerPage } = this.store
     const isTargetSlide = slideIndex === 0
 
     this.setState({ currentEventType: event.type as CurrentEventType })
 
-    if (infinite) {
-      if (isTargetSlide) {
+    if (infinite && slidesPerPage <= 1) {
+      /*  if (isTargetSlide) {
         this.animate(lastSlide, this.keyFrames(), this.options())
 
         this.state.set({
@@ -32,7 +32,7 @@ export class TouchStart extends BaseSlider {
         })
 
         this.animate(this.$children, this.keyFrames(), this.options())
-      }
+       }*/
     }
 
     this.handleEvents()
