@@ -52,31 +52,6 @@ export class BaseSlider {
     }
   }
 
-  protected setDotIndex(): void {
-    let {
-      currentSlideMovement: mov,
-      dotIndex,
-      slideIndex,
-      numberOfSlides,
-      infinite
-    } = this.store
-
-    if (mov === "increment") dotIndex++
-    else dotIndex--
-
-    if (infinite) {
-      if (slideIndex === 0) dotIndex = numberOfSlides - 1
-      if (slideIndex > numberOfSlides) dotIndex = 0
-    } else {
-      if (slideIndex === 0) dotIndex = 0
-      if (slideIndex + 1 === numberOfSlides) dotIndex = slideIndex
-    }
-
-    console.log("slideIndex", slideIndex)
-
-    this.setState({ dotIndex })
-  }
-
   protected isDotTarget(numberOfSlides: number): void {
     if (this.dotIndex === -1) this.dotIndex = numberOfSlides - 1
     else if (this.dotIndex === numberOfSlides) this.dotIndex = 0

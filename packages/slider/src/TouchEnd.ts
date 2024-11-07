@@ -56,7 +56,7 @@ export class TouchEnd extends BaseSlider {
 
   private evalSwipeConditions(event: any): Partial<StateType> {
     const isMouseLeave = event.type === "mouseleave"
-    const speedInteraction = this.getSpeedInteraction() <= 150
+    // const speedInteraction = this.getSpeedInteraction() <= 150
 
     return {
       FIRST: isMouseLeave
@@ -115,6 +115,8 @@ export class TouchEnd extends BaseSlider {
       this.updateSlideIndex(isNext ? "increment" : "decrement")
 
       this.movement = true
+    } else {
+      this.setState({ currentSlideMovement: null })
     }
 
     if (isTouch && !isMouseLeave) {
@@ -201,20 +203,12 @@ export class TouchEnd extends BaseSlider {
 
   private setPosition() {
     const { $root, sliderWidth } = this
-    const { slideIndex, numberOfSlides, dotIndex } = this.store
+    const { slideIndex } = this.store
     const currentTranslate = slideIndex * -sliderWidth!
 
     this.setState(this.positionState(currentTranslate))
 
     this.slider.setSlideTarget({ touchIndex: slideIndex, $root })
-
-    if (this.movement) {
-      this.setDotIndex()
-
-      const { dotIndex } = this.store
-
-      this.slider.updateDots(dotIndex, $root)
-    }
   }
 
   private prevSlideState(slideIndex: number): Partial<StateType> {
