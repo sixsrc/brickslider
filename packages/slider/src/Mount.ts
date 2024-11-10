@@ -49,7 +49,6 @@ export class Mount extends BaseSlider {
   private setProperties(): void {
     this.slides.forEach((slide, index) => {
       setAttributes(slide, this.setAttr(index))
-      //setAttribute("data-index", String(groupIndex))
     })
   }
 

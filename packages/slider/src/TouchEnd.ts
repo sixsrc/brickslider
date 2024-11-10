@@ -113,7 +113,6 @@ export class TouchEnd extends BaseSlider {
 
     if (isNext || isPrev) {
       this.updateSlideIndex(isNext ? "increment" : "decrement")
-
       this.movement = true
     } else {
       this.setState({ currentSlideMovement: null })
