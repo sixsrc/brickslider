@@ -1,5 +1,6 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
+import { Observer } from "./Observer"
 import { StateType } from "./State"
 import { CLASS_VALUES, TAGS } from "./constants"
 import {
@@ -21,6 +22,7 @@ export class Slider extends BaseSlider {
   private currentIndex: number
   private translate: number
   private slides: HTMLElement[]
+  private observer: Observer
 
   constructor($root: string) {
     super($root)
@@ -28,61 +30,88 @@ export class Slider extends BaseSlider {
     this.currentIndex = 0
     this.translate = 0
     this.slides = getSliderNodeList($root)
-
-    this.initializeObserver()
+    this.observer = new Observer($root)
+    this.initObserver()
   }
 
-  private initializeObserver() {
+  private initObserver() {
     const observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "class"
-        ) {
-          const targetSlide = mutation.target as HTMLElement
-          if (hasClass(targetSlide, CLASS_VALUES.ACTIVE)) {
-            this.applyTranslate(targetSlide)
-          } else {
-            this.removeTranslateFromSlide(targetSlide)
-          }
-        }
-      })
+      this.observer.targetSlide(mutations, this.applyTranslate.bind(this))
     })
 
-    this.slides.forEach(slide => {
+    this.forEachSlide(this.slides, slide => {
       observer.observe(slide, { attributes: true })
     })
   }
 
-  private removeTranslateFromInactiveSlides() {
-    this.slides.forEach(slide => {
+  private removeTranslate() {
+    this.forEachSlide(this.slides, slide => {
       if (!hasClass(slide, CLASS_VALUES.ACTIVE)) {
-        this.removeTranslateFromSlide(slide)
+        this.animate(slide, this.keyFrames(0.1), this.options(0))
       }
     })
   }
 
-  private removeTranslateFromSlide(slide: HTMLElement) {
-    slide.style.transform = ""
-  }
-
-  private applyTranslate(slide: HTMLElement) {
-    const { slides } = this
-    const firstActiveSlide = slides.find(slide => {
-      return hasClass(slide, CLASS_VALUES.ACTIVE) && slide === slides[0]
+  private firstActiveSlide(element: HTMLElement[]) {
+    const slide = element.find(slide => {
+      return hasClass(slide, CLASS_VALUES.ACTIVE) && slide === element[0]
     })
 
-    const lastActiveSlide = [...slides]
+    return slide
+  }
+
+  private lastActiveSlide(element: HTMLElement[]) {
+    const slide = [...element]
       .reverse()
       .find(
         slide =>
           hasClass(slide, CLASS_VALUES.ACTIVE) &&
-          slide === slides[slides.length - 1]
+          slide === element[element.length - 1]
       )
 
-    if (slide === firstActiveSlide || slide === lastActiveSlide) {
-      slide.style.transform = `translateX(${this.translate}px)`
+    return slide
+  }
+
+  private applyTranslate(slide: HTMLElement) {
+    const isFirstOrLastActive = this.isFirstOrLastActiveSlide(slide)
+    const index = this.getSlideIndex(slide)
+    const adjacentIndex = this.getAdjacentIndex(index)
+    const translate = this.getTranslateValue()
+
+    if (isFirstOrLastActive) {
+      this.applyTranslateToAdjacent(adjacentIndex, translate)
     }
+  }
+
+  private getSlideIndex(slide: HTMLElement): number {
+    return parseInt(slide.dataset.index as string)
+  }
+
+  private getAdjacentIndex(index: number): number {
+    return this.firstActiveSlide(this.slides) ? index - 1 : index + 1
+  }
+
+  private getTranslateValue(): number {
+    const { numberOfSlides, spacing } = this.store
+    const singleTranslate = (this.sliderWidth! + spacing) * numberOfSlides
+    return this.firstActiveSlide(this.slides)
+      ? -singleTranslate
+      : singleTranslate
+  }
+
+  private applyTranslateToAdjacent(adjacentIndex: number, translate: number) {
+    this.forEachSlide(this.slides, slide => {
+      if (this.getSlideIndex(slide) === adjacentIndex) {
+        this.animate(slide, this.keyFrames(translate), this.options(0))
+      }
+    })
+  }
+
+  private isFirstOrLastActiveSlide(slide: HTMLElement): boolean {
+    return (
+      slide === this.firstActiveSlide(this.slides) ||
+      slide === this.lastActiveSlide(this.slides)
+    )
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
@@ -146,9 +175,10 @@ export class Slider extends BaseSlider {
 
   protected setAnimationSlide() {
     const { infinite, slideIndex } = this.store
+    const slide = this.slides[slideIndex]
+
     if (!infinite) return
 
-    const slide = this.slides[slideIndex]
     if (slide) {
       this.applyTranslate(slide)
     }
@@ -188,7 +218,7 @@ export class Slider extends BaseSlider {
   }
 
   public updateSlider() {
-    this.removeTranslateFromInactiveSlides()
+    this.removeTranslate()
     this.defineDotIndex()
     this.updateDots(this.$root)
   }

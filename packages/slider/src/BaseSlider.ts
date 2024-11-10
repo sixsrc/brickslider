@@ -52,6 +52,13 @@ export class BaseSlider {
     }
   }
 
+  protected forEachSlide(
+    slides: HTMLElement[],
+    callback: (slide: HTMLElement, index: number) => void
+  ): void {
+    slides.forEach((slide, index) => callback(slide, index))
+  }
+
   protected isDotTarget(numberOfSlides: number): void {
     if (this.dotIndex === -1) this.dotIndex = numberOfSlides - 1
     else if (this.dotIndex === numberOfSlides) this.dotIndex = 0
