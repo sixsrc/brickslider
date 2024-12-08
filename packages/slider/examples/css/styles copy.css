@@ -70,8 +70,8 @@ body {
 }
 
 .teste {
-  gap: 20px;
   box-sizing: border-box;
+  scale: 0.8;
   z-index: 1;
   display: inline-flex;
   flex-wrap: nowrap;
@@ -140,8 +140,6 @@ body {
 .slider__slide img {
   position: relative;
   z-index: 15;
-  /* object-fit: cover;
-  height: 100%;*/
 }
 
 .slider__dots {

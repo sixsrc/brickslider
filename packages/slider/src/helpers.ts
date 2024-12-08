@@ -253,6 +253,20 @@ export function calcSliderWidth(spacing: number, sliderWidth: number) {
   return sliderWidth + spacing
 }
 
+export function calcTranslate2(
+  $root: string,
+  movement: "increment" | "decrement",
+  slidesPerView: number,
+  spacing: number
+): number {
+  const slides = getSliderNodeList($root)
+  let translate = 0
+  let val = 0
+  val = movement === "increment" ? val++ : val--
+
+  return translate
+}
+
 export function calcTranslate(
   $children: HTMLElement,
   slideSpacing: number,
@@ -264,6 +278,36 @@ export function calcTranslate(
 
   return translate
 }
+
+/*export function calcTranslate2(
+  $children: HTMLElement, // O contêiner pai que contém os slides
+  slideSpacing: number,
+  slidesPerView: number,
+  targetPosition: number
+): number {
+  let translate = 0
+
+  const slides = Array.from($children.children) as HTMLElement[]
+
+  // Soma a largura real dos slides anteriores ao alvo
+  for (let i = 0; i < targetPosition; i++) {
+    const slideWidth = slides[i].getBoundingClientRect().width
+    translate -= slideWidth + slideSpacing
+  }
+
+  // Garante que o translate não ultrapasse o limite baseado no slidesPerView
+  let visibleWidth = 0
+  for (let i = targetPosition; i < targetPosition + slidesPerView; i++) {
+    if (slides[i]) {
+      visibleWidth += slides[i].getBoundingClientRect().width + slideSpacing
+    }
+  }
+
+  // Ajusta o translate para alinhar os slides dentro do espaço visível
+  translate += visibleWidth
+
+  return translate
+}*/
 
 export function getEventType(
   event: MouseEventOrTouchEvent
@@ -437,6 +481,70 @@ export function updateDataIndexes(
 
   return reorder
 }*/
+
+export function toggleClass2(
+  slides: HTMLElement[],
+  slideIndex: number,
+  slidesPerView: number,
+  slidesPerPage: number,
+  slideMovement: "increment" | "decrement"
+): void {
+  // Valida se slidesPerView não é maior que slidesPerPage
+  if (slidesPerView > slidesPerPage) {
+    slidesPerView = slidesPerPage // Limita ao máximo permitido
+  }
+
+  // Determina o número de slides ativos e onde estão os limites
+  let activeStartIndex = -1
+  let activeEndIndex = -1
+
+  // Encontra os índices de slides atualmente ativos
+  slides.forEach((slide, index) => {
+    if (slide.classList.contains(CLASS_VALUES.ACTIVE)) {
+      if (activeStartIndex === -1) {
+        activeStartIndex = index // Primeiro slide ativo
+      }
+      activeEndIndex = index // Último slide ativo
+    }
+  })
+
+  // Remove todas as classes ativas
+  slides.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
+
+  // Determina o próximo intervalo de slides ativos
+  let targetStartIndex: number
+  if (slideMovement === "increment") {
+    targetStartIndex = activeStartIndex + slidesPerView // Próximo bloco
+  } else {
+    targetStartIndex = activeStartIndex - slidesPerView // Bloco anterior
+  }
+
+  // Garante que os índices estão dentro dos limites válidos
+  targetStartIndex = Math.max(
+    0,
+    Math.min(slides.length - slidesPerPage, targetStartIndex)
+  )
+
+  // Define os novos slides ativos
+  for (let i = 0; i < slidesPerPage; i++) {
+    const index = targetStartIndex + i
+    if (index < slides.length) {
+      addClass([slides[index]], CLASS_VALUES.ACTIVE)
+    }
+  }
+}
+
+/* const startIndex =
+    slideMovement === "increment"
+      ? slideIndex * slidesPerPage
+      : slideIndex * slidesPerPage - slidesPerView
+ 
+  const endIndex = Math.min(startIndex + slidesPerView, slides.length)
+  const validStartIndex = Math.max(0, startIndex)
+
+  for (let i = validStartIndex; i < endIndex; i++) {
+    addClass([slides[i]], CLASS_VALUES.ACTIVE)
+  }*/
 
 export function toggleClass(
   slides: HTMLElement[],

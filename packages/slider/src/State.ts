@@ -11,14 +11,17 @@ export enum State_Keys {
   SlideIndex = "slideIndex",
   SlideSpacing = "spacing",
   SlidesPerPage = "slidesPerPage",
+  SlidesPerView = "slidesPerView",
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
+  SlideSizes = "slideSizes",
   StartX = "startX",
   StartY = "startY",
   EndX = "endX",
   EventFrom = "eventFrom",
   SliderReady = "sliderReady",
   IsTouch = "isTouch",
+  isCompleteGroup = "isCompleteGroup",
   isDragging = "isDragging",
   IsJumpSlide = "isJumpSlide",
   StartPos = "startPos",
@@ -44,19 +47,22 @@ export enum State_Keys {
 }
 
 export type StateType = {
-  [key: string]: string | number | boolean | null | undefined | any[]
+  [key: string]: string | number | boolean | null | undefined | any[] | {}
   [State_Keys.PrevSlideIndex]: number
   [State_Keys.SlideIndex]: number
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
+  [State_Keys.SlidesPerView]: number
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
+  [State_Keys.SlideSizes]: Record<number, string>
   [State_Keys.StartX]: number
   [State_Keys.StartY]: number
   [State_Keys.EndX]: number
   [State_Keys.EventFrom]: EventFrom
   [State_Keys.SliderReady]: boolean | null
   [State_Keys.IsTouch]: boolean
+  [State_Keys.isCompleteGroup]: boolean
   [State_Keys.isDragging]: boolean
   [State_Keys.IsJumpSlide]: boolean
   [State_Keys.StartPos]: number
@@ -84,6 +90,8 @@ export type StateType = {
 export type TypeOptions = Partial<{
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
+  [State_Keys.SlidesPerView]: number
+  [State_Keys.SlideSizes]: Record<number, string>
   [State_Keys.Autoplay]: boolean
   [State_Keys.AutoplaySpeed]: number
   [State_Keys.Dots]: boolean
@@ -115,10 +123,13 @@ class State {
     State.state[this.key][State_Keys.SlideIndex] = 0
     State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0
     State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
+    State.state[this.key][State_Keys.SlidesPerView] = options.slidesPerView ?? 1
     State.state[this.key][State_Keys.NumberOfSlides] = 0
     State.state[this.key][State_Keys.SliderWidth] = 0
+    State.state[this.key][State_Keys.SlideSizes] = options.slideSizes ?? {}
     State.state[this.key][State_Keys.SliderReady] = null
     State.state[this.key][State_Keys.IsTouch] = false
+    State.state[this.key][State_Keys.isCompleteGroup] = true
     State.state[this.key][State_Keys.isDragging] = false
     State.state[this.key][State_Keys.IsJumpSlide] = false
     State.state[this.key][State_Keys.StartPos] = 0
