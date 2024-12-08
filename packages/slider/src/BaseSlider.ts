@@ -28,6 +28,7 @@ export class BaseSlider {
   protected sliderWidth: number | undefined
   protected movement: boolean
   protected dotIndex: number
+  protected incompleteGroup: boolean
 
   constructor($root: string) {
     this.$root = $root
@@ -40,6 +41,7 @@ export class BaseSlider {
     this.sliderWidth = getSliderWidth(this.$children)
     this.movement = false
     this.dotIndex = 0
+    this.incompleteGroup = false
   }
 
   protected defineEventTarget(event: MouseEventOrTouchEvent) {

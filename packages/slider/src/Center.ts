@@ -13,7 +13,7 @@ export class Center extends BaseSlider {
 
   public init(currentIndex: number): void {
     const containerWidth = this.$children.clientWidth
-    console.log(containerWidth)
+
     const slidesWidths = this.slides.map(slide => slide.clientWidth)
     const isFullWidthSlide = slidesWidths[currentIndex] >= containerWidth
 
@@ -76,10 +76,7 @@ export class Center extends BaseSlider {
 
     const adjustment = (containerWidth - visibleWidth) / 3
 
-    console.log("eeee", effectiveVisibleSlides)
     const translate = -(leftPosition - adjustment)
-
-    console.log("translate", translate)
 
     this.setState({
       currentTranslate: translate,

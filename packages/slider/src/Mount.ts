@@ -42,8 +42,23 @@ export class Mount extends BaseSlider {
     this.cloneSlides()
     this.appendSlider()
     this.setControls()
+    const missingSlides = this.getMissingSlides()
+
+    if (missingSlides) {
+      this.setState({
+        isCompleteGroup: true
+      })
+    }
+
     this.handleResize()
     this.updateDOM()
+  }
+
+  private getMissingSlides(): number {
+    const { numberOfSlides, slidesPerPage } = this.store
+    const remainder = numberOfSlides % slidesPerPage
+
+    return remainder === 0 ? 0 : slidesPerPage - remainder
   }
 
   private setProperties(): void {
@@ -92,12 +107,14 @@ export class Mount extends BaseSlider {
 
   protected keyFrames(): KeyframeAnimation[] {
     const { spacing } = this.store
-    const slideWidth = this.getSlideWidth()
+    let slideWidth = this.getSlideWidth()
+
+    slideWidth = slideWidth
 
     return [
       {
-        marginLeft: "0px",
-        marginRight: `${spacing}px`,
+        //marginLeft: "0px",
+        // marginRight: `${spacing}px`,
         width: `${slideWidth}px`,
         maxWidth: `${slideWidth}px`
       }
@@ -106,11 +123,26 @@ export class Mount extends BaseSlider {
 
   private getSlideWidth(): number {
     const { spacing, slidesPerPage, sliderWidth } = this.store
+
+    // Espaço total ocupado pelos gaps
+    const totalSpacing = (slidesPerPage - 1) * spacing
+
+    // Largura disponível para os slides (subtraindo os gaps)
+    const availableWidth = sliderWidth - totalSpacing
+
+    // Largura de cada slide
+    const slideWidth = availableWidth / slidesPerPage
+
+    return Math.max(0, slideWidth) // Garantir que não seja negativo
+  }
+
+  /*private getSlideWidth(): number {
+    const { spacing, slidesPerPage, sliderWidth } = this.store
     const width = calcWidth(sliderWidth, slidesPerPage, spacing)
     const isMultipleSlides = slidesPerPage >= 2
 
     return isMultipleSlides ? width : sliderWidth
-  }
+  }*/
 
   private mountState(): Partial<StateType> {
     const { $children } = this
@@ -132,14 +164,18 @@ export class Mount extends BaseSlider {
   private setToggleClass(): void {
     const { infinite, slideIndex, slidesPerPage } = this.store
     const { slides } = this
-    const index = infinite ? 1 : slideIndex
+    const index = infinite ? 0 : slideIndex
 
     toggleClass(slides, index, slidesPerPage)
   }
 
   public setWAAPIStyles(): void {
+    const { spacing } = this.store
+    const slideWidth = this.getSlideWidth()
     this.slides.forEach(slide => {
       this.animate(slide, this.keyFrames(), this.options())
+      //slide.style.width = `${slideWidth}px`
+      //slide.style.marginRight = `${spacing}px`
     })
   }
 

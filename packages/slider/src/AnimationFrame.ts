@@ -21,12 +21,19 @@ export class AnimationFrame extends BaseSlider {
   }
 
   protected keyFrames(): KeyframeAnimation[] {
-    const { currentTranslate } = this.store
+    const { slidesPerPage, spacing, currentTranslate } = this.store
     const found = this.evalSlideConditions()
+    const sliderWidth = this.sliderWidth! + spacing
+    //const translate = sliderWidth! / slidesPerPage - sliderWidth
+
+    /* this.setState({
+      currentTranslate: currentTranslate zz,
+      prevTranslate: currentTranslate - translate
+    })*/
 
     if (found) return found.k
 
-    return [{ transform: translate3d(currentTranslate) }]
+    return [{ transform: translate3d(currentTranslate / slidesPerPage) }]
   }
 
   protected options(
