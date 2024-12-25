@@ -70,6 +70,7 @@ body {
 }
 
 .teste {
+  scale: 0.8;
   gap: 20px;
   box-sizing: border-box;
   z-index: 1;

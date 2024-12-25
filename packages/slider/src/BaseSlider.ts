@@ -100,4 +100,28 @@ export class BaseSlider {
   protected setState(state: Partial<StateType>) {
     this.state.set(state)
   }
+
+  protected slidePager(
+    slides: HTMLElement[],
+    slidesPerPage: number
+  ): Record<number, number[]> {
+    const slideIndices = slides.map(slide =>
+      parseInt(slide.getAttribute("data-index") || "0", 10)
+    ) // Obtém todos os data-index dos slides
+
+    // Cria o objeto de páginas
+    const slidesByPage: Record<number, number[]> = {}
+
+    slideIndices.forEach((index, idx) => {
+      const pageIndex = Math.floor(idx / slidesPerPage)
+
+      if (!slidesByPage[pageIndex]) {
+        slidesByPage[pageIndex] = [] // Inicializa a página
+      }
+      slidesByPage[pageIndex].push(index) // Adiciona o índice ao grupo da página
+    })
+
+    // console.log("Mapeamento de slides por página:", slidesByPage)
+    return slidesByPage // Retorna o objeto
+  }
 }

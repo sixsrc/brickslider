@@ -20,6 +20,7 @@ export enum State_Keys {
   EndX = "endX",
   EventFrom = "eventFrom",
   SliderReady = "sliderReady",
+  isPagedActive = "isPagedActive",
   IsTouch = "isTouch",
   isCompleteGroup = "isCompleteGroup",
   isDragging = "isDragging",
@@ -62,6 +63,7 @@ export type StateType = {
   [State_Keys.EventFrom]: EventFrom
   [State_Keys.SliderReady]: boolean | null
   [State_Keys.IsTouch]: boolean
+  [State_Keys.isPagedActive]: boolean
   [State_Keys.isCompleteGroup]: boolean
   [State_Keys.isDragging]: boolean
   [State_Keys.IsJumpSlide]: boolean
@@ -129,6 +131,7 @@ class State {
     State.state[this.key][State_Keys.SlideSizes] = options.slideSizes ?? {}
     State.state[this.key][State_Keys.SliderReady] = null
     State.state[this.key][State_Keys.IsTouch] = false
+    State.state[this.key][State_Keys.isPagedActive] = true
     State.state[this.key][State_Keys.isCompleteGroup] = true
     State.state[this.key][State_Keys.isDragging] = false
     State.state[this.key][State_Keys.IsJumpSlide] = false
