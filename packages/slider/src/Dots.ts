@@ -44,31 +44,41 @@ export class Dots extends BaseSlider {
 
     appendToParent(this.getRootSelector, this.containerDots)
 
-    this.setState(this.numberOfSlidesState())
     this.createDots()
+
     this.eventMount()
   }
 
-  private createDots(): void {
-    const { slidesPerPage, numberOfSlides } = this.store
-    const { containerDots, $root } = this
-    const slides = getSliderNodeList($root, false)
-    // const numberOfSlides = Math.ceil(slides.length / slidesPerPage)
+  private calculateDots() {
+    const { slidesPerPage, slidesPerView: view } = this.store
+    const slides = getSliderNodeList(this.$root, false)
+    const pages = Math.ceil(slides.length / slidesPerPage)
 
-    for (let i = 0; i < numberOfSlides; i++) {
+    if (slidesPerPage <= 0 || view <= 0) return 0
+
+    const dots =
+      view === 1 ? pages : Math.max(1, pages - (view - slidesPerPage))
+
+    return dots
+  }
+
+  private createDots(): void {
+    const numberOfDots = this.calculateDots()
+
+    for (let i = 0; i < numberOfDots; i++) {
       const liDots = createNewElement(TAGS.LI)
 
-      appendToParent(containerDots, liDots)
-
+      appendToParent(this.containerDots, liDots)
       addClass([liDots], CLASS_VALUES.SLIDER_DOT)
 
       if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
     }
+
+    this.setState(this.numOfSlidesState(numberOfDots))
   }
 
   private dotHandler(): void {
     const { $root, sync } = this
-    const { slideIndex } = this.store
     const touchIndex = this.store.slideIndex
 
     this.setState(this.currentEventType())
@@ -78,7 +88,13 @@ export class Dots extends BaseSlider {
     if (sync.now()) sync.handleJumpSlide()
     else this.slider.setSlideTarget({ touchIndex, $root })
 
-    this.slider.updateDots(slideIndex, $root)
+    this.slider.updateDots($root)
+  }
+
+  private numOfSlidesState(numberOfSlides: number): Partial<StateType> {
+    return {
+      numberOfSlides
+    }
   }
 
   private eventMount() {
@@ -115,6 +131,73 @@ export class Dots extends BaseSlider {
     }
   }
 }
+
+/* private createDots(): void {
+    const { slidesPerPage, slidesPerView, numberOfSlides } = this.store
+    const { containerDots, $root } = this
+    const slides = getSliderNodeList($root, false)
+    // const numberOfSlides = Math.ceil(slides.length / slidesPerPage)
+
+    for (let i = 0; i < numberOfSlides; i++) {
+      const liDots = createNewElement(TAGS.LI)
+
+      appendToParent(containerDots, liDots)
+
+      addClass([liDots], CLASS_VALUES.SLIDER_DOT)
+
+      if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
+    }
+  }*/
+
+/*private createDots(): void {
+    const { slidesPerPage, slidesPerView, numberOfSlides } = this.store
+    const { containerDots, $root } = this
+
+    // Calcula o número total de páginas baseado nos slides agrupados
+    const numberOfPages = Math.ceil(
+      (numberOfSlides - slidesPerView) / slidesPerPage + 1
+    )
+
+    console.log("numberOfPages", numberOfPages)
+
+    for (let i = 0; i < numberOfPages; i++) {
+      const liDots = createNewElement(TAGS.LI)
+
+      appendToParent(containerDots, liDots)
+      addClass([liDots], CLASS_VALUES.SLIDER_DOT)
+
+      if (i === 0) {
+        addClass([liDots], CLASS_VALUES.SELECTED)
+      }
+    }
+  }
+*/
+
+/*private calculateDots() {
+    // Verifica se os parâmetros são válidos
+    const { slidesPerPage, slidesPerView } = this.store
+    const slides = getSliderNodeList(this.$root, false)
+
+    if (slidesPerPage <= 0 || slidesPerView <= 0) {
+      console.error(
+        "Os valores de slidesPerPage e slidesPerView devem ser maiores que 0."
+      )
+      return 0
+    }
+
+    // Calcula o número de páginas baseado nos slides por página
+    const numberOfPages = Math.ceil(slides.length / slidesPerPage)
+
+    // Ajuste para lidar com número par de slides
+    let numberOfDots = numberOfPages
+
+    if (this.slides.length % 2 !== 0) {
+      // Se o número de slides for ímpar, aplicar o cálculo atual
+      numberOfDots = Math.max(1, numberOfPages - slidesPerView + 1)
+    }
+
+    return numberOfDots
+  }*/
 // this.setState(this.currentEventType())
 //this.startPosState()
 /*private startPosState(): Partial<StateType> {

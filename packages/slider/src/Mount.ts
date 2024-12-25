@@ -42,14 +42,7 @@ export class Mount extends BaseSlider {
     this.cloneSlides()
     this.appendSlider()
     this.setControls()
-    const missingSlides = this.getMissingSlides()
-
-    if (missingSlides) {
-      this.setState({
-        isCompleteGroup: true
-      })
-    }
-
+    //this.mapSlidePager()
     this.handleResize()
     this.updateDOM()
   }
@@ -122,16 +115,16 @@ export class Mount extends BaseSlider {
   }
 
   private getSlideWidth(): number {
-    const { spacing, slidesPerPage, sliderWidth } = this.store
+    const { spacing, slidesPerPage, slidesPerView, sliderWidth } = this.store
 
     // Espaço total ocupado pelos gaps
-    const totalSpacing = (slidesPerPage - 1) * spacing
+    const totalSpacing = (slidesPerView - 1) * spacing
 
     // Largura disponível para os slides (subtraindo os gaps)
     const availableWidth = sliderWidth - totalSpacing
 
     // Largura de cada slide
-    const slideWidth = availableWidth / slidesPerPage
+    const slideWidth = availableWidth / slidesPerView
 
     return Math.max(0, slideWidth) // Garantir que não seja negativo
   }

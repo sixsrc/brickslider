@@ -1,12 +1,12 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
+import { Mutate } from "./Mutate"
 import { Observer } from "./Observer"
 import { StateType } from "./State"
 import { CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
   calcTranslate,
-  calcTranslate2,
   getAllElements,
   getDotsSelector,
   getSliderNodeList,
@@ -14,6 +14,7 @@ import {
   indexBasedBy,
   isNotMapped,
   removeClass,
+  shouldChangePage,
   toggleClass,
   toggleClass2
 } from "./helpers"
@@ -25,6 +26,7 @@ export class Slider extends BaseSlider {
   private translate: number
   private slides: HTMLElement[]
   private observer: Observer
+  mutate: Mutate
 
   constructor($root: string) {
     super($root)
@@ -33,6 +35,7 @@ export class Slider extends BaseSlider {
     this.translate = 0
     this.slides = getSliderNodeList($root)
     this.observer = new Observer($root)
+    this.mutate = new Mutate($root)
     // this.initObserver()
   }
 
@@ -83,6 +86,11 @@ export class Slider extends BaseSlider {
     if (isFirstOrLastActive) {
       this.applyTranslateToAdjacent(adjacentIndex, translate)
     }
+  }
+
+  private getCurrentPage(): number {
+    const { slidesPerPage } = this.store
+    return Math.floor(this.currentIndex / slidesPerPage)
   }
 
   private getSlideIndex(slide: HTMLElement): number {
@@ -153,9 +161,10 @@ export class Slider extends BaseSlider {
     this.animationFrame()
     this.calcTranslate()
     this.setState(this.mainState())
+    this.updateDOM()
     this.updateSlider()
     this.setAnimationSlide()
-    this.updateDOM()
+    // this.updateDOM()
   }
 
   private setIndexBased(params: TypeTargetSlideParams): void {
@@ -169,17 +178,33 @@ export class Slider extends BaseSlider {
       if (infinite && isTargetFrom) touchIndex = touchIndex + 1
     }
 
-    this.currentIndex = indexBasedBy({ from, slideIndex, touchIndex })
+    this.currentIndex = indexBasedBy({
+      from,
+      slideIndex,
+      touchIndex
+    })
   }
 
   private mapSlideIndex(): boolean {
     const { infinite, numberOfSlides } = this.store
-    console.log("", this.store.slideIndex)
-    //return isNotMapped(infinite, this.currentIndex, numberOfSlides)
+    const { currentIndex } = this
+
+    return isNotMapped(infinite, currentIndex, numberOfSlides)
   }
 
   private animationFrame() {
     requestAnimationFrame(this.animation.init)
+  }
+
+  public isLastActiveClass() {
+    const slides = getSliderNodeList(this.$root, false)
+    const lastSlide = slides[slides.length - 1]
+    const { infinite: loop, currentSlideMovement: mov } = this.store
+    const inc = mov === "increment"
+
+    if (slides.length === 0) return false
+
+    return !loop && inc && hasClass(lastSlide, CLASS_VALUES.ACTIVE)
   }
 
   protected calcTranslate(): number {
@@ -195,8 +220,6 @@ export class Slider extends BaseSlider {
     const { currentEventType } = this.store
     const isDotTarget = currentEventType === "dots"
     const startPos = isDotTarget ? { startPos: 0 } : {}
-
-    console.log("mm", currentIndex, translate)
 
     return {
       ...startPos,
@@ -272,8 +295,9 @@ export class Slider extends BaseSlider {
   }
 
   public defineDotIndex(): void {
-    const { currentSlideMovement: mov } = this.store
-    if (mov) {
+    const { currentSlideMovement: mov, isPagedActive } = this.store
+
+    if (mov && isPagedActive) {
       const { dotIndex } = this.defineIncrementOrDecrement()
       this.reorderActiveDot(dotIndex)
     }
@@ -297,7 +321,7 @@ export class Slider extends BaseSlider {
   }
 
   protected defineIncrementOrDecrement() {
-    let { currentSlideMovement: mov, dotIndex } = this.store
+    let { currentSlideMovement: mov, dotIndex, slidesPerView } = this.store
     if (mov === "increment") dotIndex++
     else dotIndex--
 
@@ -315,24 +339,49 @@ export class Slider extends BaseSlider {
       this.store
     const { $root, currentIndex } = this
     //toggleClass(getSliderNodeList($root), currentIndex, slidesPerPage)
-    console.log(currentSlideMovement)
 
-    toggleClass2(
-      getSliderNodeList($root),
-      slideIndex,
-      slidesPerView,
-      slidesPerPage,
-      currentSlideMovement as any
-    )
+    //this.mutate.toggleClass(getSliderNodeList($root))
+    // Cria o objeto de páginas com slides ativos
+    const activeSlidesByPage: Record<number, number[]> = {}
+
+    this.slides.forEach(slide => {
+      if (hasClass(slide, CLASS_VALUES.ACTIVE)) {
+        const dataIndex = Number(slide.dataset.index) || 0
+        const pageIndex = 0 // Apenas a página 0 para os slides ativos
+
+        // Se ainda não existir o array para a página, cria um
+        if (!activeSlidesByPage[pageIndex]) {
+          activeSlidesByPage[pageIndex] = []
+        }
+
+        // Adiciona o dataIndex ao array correspondente da página 0
+        activeSlidesByPage[pageIndex].push(dataIndex)
+      }
+    })
+
+    const allSlides = this.slidePager(this.slides, slidesPerPage)
+    const shouldChange = shouldChangePage(allSlides, activeSlidesByPage)
+
+    /*this.setState({
+      isPagedActive: shouldChange
+    })*/
+
+    /* console.log(
+      "Comparação de grupos",
+      allSlides,
+      activeSlidesByPage,
+      "Hora de mudar de página?",
+      shouldChange
+    )*/
   }
 
-  public updateDots($root: string): void {
+  public updateDots($root: string) {
     const { dotIndex } = this.store
     const selectedIndex = dotIndex ?? 0
     const { dots: isDots } = this.store
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
 
-    if (!isDots) return
+    if (!isDots) return {}
 
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
