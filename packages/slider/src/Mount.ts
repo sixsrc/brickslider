@@ -37,6 +37,8 @@ export class Mount extends BaseSlider {
   }
 
   public init(): void {
+    if (this.store.slidesPerPage > this.store.slidesPerView)
+      this.setState({ slidesPerPage: this.store.slidesPerView })
     this.setState(this.mountState())
     this.setProperties()
     this.cloneSlides()
@@ -115,7 +117,7 @@ export class Mount extends BaseSlider {
   }
 
   private getSlideWidth(): number {
-    const { spacing, slidesPerPage, slidesPerView, sliderWidth } = this.store
+    const { spacing, slidesPerView, sliderWidth } = this.store
 
     // Espaço total ocupado pelos gaps
     const totalSpacing = (slidesPerView - 1) * spacing

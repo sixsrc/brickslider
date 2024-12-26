@@ -196,19 +196,8 @@ export class Slider extends BaseSlider {
     requestAnimationFrame(this.animation.init)
   }
 
-  public isLastActiveClass() {
-    const slides = getSliderNodeList(this.$root, false)
-    const lastSlide = slides[slides.length - 1]
-    const { infinite: loop, currentSlideMovement: mov } = this.store
-    const inc = mov === "increment"
-
-    if (slides.length === 0) return false
-
-    return !loop && inc && hasClass(lastSlide, CLASS_VALUES.ACTIVE)
-  }
-
   protected calcTranslate(): number {
-    const { spacing, slidesPerView } = this.store
+    const { spacing } = this.store
     const { $children, currentIndex } = this
     this.translate = calcTranslate($children!, spacing, currentIndex)
 
@@ -228,6 +217,20 @@ export class Slider extends BaseSlider {
       currentTranslate: translate
     }
   }
+
+  /*
+  
+  public isLastActiveClass() {
+    const slides = getSliderNodeList(this.$root, false)
+    const lastSlide = slides[slides.length - 1]
+    const { infinite: loop, currentSlideMovement: mov } = this.store
+    const inc = mov === "increment"
+
+    if (slides.length === 0) return false
+
+    return !loop && inc && hasClass(lastSlide, CLASS_VALUES.ACTIVE)
+  }
+  */
 
   /*private mainState(): Partial<StateType> {
     const { currentIndex, translate } = this
