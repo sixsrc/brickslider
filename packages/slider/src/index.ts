@@ -15,7 +15,7 @@ const slider = new BrickSlider("#slide1_container", {
 const slider2 = new BrickSlider("#slide2_container", {
   arrows: true,
   spacing: 20,
-  slidesPerPage: 1,
+  slidesPerPage: 3,
   slidesPerView: 3
 })
 
@@ -23,8 +23,9 @@ const slider3 = new BrickSlider("#slide3_container", { spacing: 20 })
 
 const slider4 = new BrickSlider("#slide4_container", {
   spacing: 20,
+  slidesPerView: 2,
   slidesPerPage: 1,
-  slidesPerView: 2
+  infinite: true
 })
 
 slider.init()

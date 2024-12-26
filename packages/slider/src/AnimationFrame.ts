@@ -1,6 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./constants"
-import { translate3d } from "./helpers"
+import { getSliderWidth, translate3d } from "./helpers"
 import {
   AnimationCondition,
   AnimationOptions,
@@ -20,13 +20,25 @@ export class AnimationFrame extends BaseSlider {
     return animationId
   }
 
+  private translateAmount() {
+    const { slidesPerPage, slidesPerView, currentTranslate, spacing } =
+      this.store
+    const sliderWidth = getSliderWidth(this.$children)! + spacing
+    const calcTranslate = sliderWidth - sliderWidth / slidesPerPage
+    let translateAmount = currentTranslate - calcTranslate
+
+    if (slidesPerPage === 1) translateAmount = currentTranslate / slidesPerView
+    else if (slidesPerPage === slidesPerView) translateAmount = currentTranslate
+
+    return translateAmount
+  }
+
   protected keyFrames(): KeyframeAnimation[] {
-    const { slidesPerView, currentTranslate } = this.store
     const found = this.evalSlideConditions()
 
     if (found) return found.k
 
-    return [{ transform: translate3d(currentTranslate / slidesPerView) }]
+    return [{ transform: translate3d(this.translateAmount()) }]
   }
 
   protected options(
@@ -75,3 +87,22 @@ export class AnimationFrame extends BaseSlider {
     ]
   }
 }
+
+/*
+
+  private getSlideWidth(): number {
+    const { spacing, slidesPerPage, slidesPerView, sliderWidth } = this.store
+
+    // Espaço total ocupado pelos gaps
+    const totalSpacing = (slidesPerView - 1) * spacing
+
+    // Largura disponível para os slides (subtraindo os gaps)
+    const availableWidth = sliderWidth - totalSpacing
+
+    // Largura de cada slide
+    const slideWidth = availableWidth / slidesPerView
+
+    return Math.max(0, slideWidth) // Garantir que não seja negativo
+  }
+
+*/

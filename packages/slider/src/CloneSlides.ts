@@ -23,20 +23,20 @@ export class CloneSlides extends BaseSlider {
 
   private duplicateSlides(): HTMLElement[] | undefined {
     const { $root, childrenCount } = this
-    let { slidesPerPage } = this.store
+    let { slidesPerView } = this.store
 
     this.setSlides($root)
 
-    if (childrenCount < slidesPerPage) return
+    if (childrenCount < slidesPerView) return
 
-    slidesPerPage = Math.min(slidesPerPage, childrenCount)
+    slidesPerView = Math.min(slidesPerView, childrenCount)
 
-    this.loopByClonedSlides(slidesPerPage, childrenCount)
+    this.loopByClonedSlides(slidesPerView, childrenCount)
   }
 
-  private loopByClonedSlides(slidesPerPage: number, slideCount: number): void {
-    const end = [...Array(slidesPerPage).keys()]
-    const start = [...Array(slidesPerPage).keys()]
+  private loopByClonedSlides(slidesPerView: number, slideCount: number): void {
+    const end = [...Array(slidesPerView).keys()]
+    const start = [...Array(slidesPerView).keys()]
       .map(i => slideCount - i - 1)
       .reverse()
     const { $root } = this
@@ -50,7 +50,7 @@ export class CloneSlides extends BaseSlider {
 
         addClass(clonedSlides, CLASS_VALUES.CLONED)
 
-        index < slidesPerPage
+        index < slidesPerView
           ? $children?.appendChild(clone)
           : $children?.insertBefore(clone, slides![0])
 
