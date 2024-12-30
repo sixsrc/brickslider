@@ -197,24 +197,35 @@ export class Slider extends BaseSlider {
   }
 
   protected calcTranslate(): number {
-    const { spacing } = this.store
+    const { spacing, slidesPerPage } = this.store
     const { $children, currentIndex } = this
-    this.translate = calcTranslate($children!, spacing, currentIndex)
+    //this.translate = calcTranslate($children!, spacing, currentIndex)
+
+    this.translate = this.getSlidesForTranslation(
+      currentIndex,
+      spacing,
+      slidesPerPage
+    ) as number
 
     return this.translate
   }
 
   private mainState(): Partial<StateType> {
     const { currentIndex, translate } = this
-    const { currentEventType } = this.store
+    const {
+      currentEventType,
+      currentTranslate,
+      slideIndex,
+      currentSlideMovement: mov
+    } = this.store
     const isDotTarget = currentEventType === "dots"
     const startPos = isDotTarget ? { startPos: 0 } : {}
 
     return {
       ...startPos,
       slideIndex: currentIndex,
-      prevTranslate: translate,
-      currentTranslate: translate
+      prevTranslate: -translate,
+      currentTranslate: -translate
     }
   }
 
