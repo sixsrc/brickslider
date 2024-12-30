@@ -1,6 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./constants"
-import { getSliderWidth, translate3d } from "./helpers"
+import { translate3d } from "./helpers"
 import {
   AnimationCondition,
   AnimationOptions,
@@ -20,25 +20,13 @@ export class AnimationFrame extends BaseSlider {
     return animationId
   }
 
-  private translateAmount() {
-    const { slidesPerPage, slidesPerView, currentTranslate, spacing } =
-      this.store
-    const sliderWidth = getSliderWidth(this.$children)! + spacing
-    const calcTranslate = sliderWidth - sliderWidth / slidesPerPage
-    let translateAmount = currentTranslate - calcTranslate
-
-    if (slidesPerPage === 1) translateAmount = currentTranslate / slidesPerView
-    else if (slidesPerPage === slidesPerView) translateAmount = currentTranslate
-
-    return translateAmount
-  }
-
   protected keyFrames(): KeyframeAnimation[] {
     const found = this.evalSlideConditions()
+    const { currentTranslate } = this.store
 
     if (found) return found.k
 
-    return [{ transform: translate3d(this.translateAmount()) }]
+    return [{ transform: translate3d(currentTranslate) }]
   }
 
   protected options(

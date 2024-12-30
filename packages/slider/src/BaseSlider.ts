@@ -1,5 +1,5 @@
 import { State, StateType } from "./State"
-import { ANIMATION_OPTIONS } from "./constants"
+import { ANIMATION_OPTIONS, CLASS_VALUES } from "./constants"
 import {
   animateElement,
   calcTranslate,
@@ -9,7 +9,9 @@ import {
   getRootSelector,
   getSliderWidth,
   getTrackChildren,
-  translate3d
+  translate3d,
+  hasClass,
+  getSliderNodeList
 } from "./helpers"
 import {
   AnimationOptions,
@@ -29,10 +31,12 @@ export class BaseSlider {
   protected movement: boolean
   protected dotIndex: number
   protected incompleteGroup: boolean
+  private activeSlides: HTMLElement[]
 
   constructor($root: string) {
     this.$root = $root
     this.getRootSelector = getRootSelector($root)
+    this.activeSlides = getSliderNodeList($root)
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
     this.$children = getChildren(this.$root) as HTMLElement
@@ -79,6 +83,60 @@ export class BaseSlider {
     const { $children } = this
 
     return calcTranslate($children, spacing, index)
+  }
+
+  private getActiveSlides() {
+    const activeSlides = this.activeSlides.filter(el =>
+      hasClass(el, CLASS_VALUES.ACTIVE)
+    )
+    const lastActiveSlide = activeSlides.at(-1) || null
+    const activeIndex = parseInt(lastActiveSlide?.dataset.index as string)
+
+    return { lastActiveSlide, activeIndex }
+  }
+
+  private activeSlidesLoop(
+    currentIndex: number,
+    slidesPerPage: number,
+    activeIndex: number,
+    spacing: number
+  ) {
+    let translate = 0
+    let selectedSlides = null
+    let slideWidth = 0
+    let nextSlideIndex = 0
+
+    for (let i = 0; i < slidesPerPage; i++) {
+      nextSlideIndex = activeIndex + i
+
+      selectedSlides = Array.from(this.activeSlides).find(
+        slide => parseInt(slide.dataset.index as string) === nextSlideIndex
+      )
+
+      if (selectedSlides) {
+        slideWidth = (selectedSlides.offsetWidth + spacing) as any
+        translate += slideWidth
+      }
+    }
+
+    return translate * currentIndex
+  }
+
+  protected getSlidesForTranslation(
+    currentIndex: number,
+    spacing: number,
+    slidesPerPage: number
+  ): number | undefined {
+    const { lastActiveSlide, activeIndex } = this.getActiveSlides()
+
+    if (!lastActiveSlide) return
+
+    return this.activeSlidesLoop(
+      currentIndex,
+      slidesPerPage,
+      activeIndex,
+      spacing
+    )
   }
 
   protected options(duration = 0): AnimationOptions {
