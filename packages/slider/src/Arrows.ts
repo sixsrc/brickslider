@@ -1,3 +1,4 @@
+import { BaseSlider } from "./BaseSlider"
 import { HandleMovement } from "./HandleMovement"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
@@ -14,7 +15,7 @@ import {
 } from "./helpers"
 import { IndexData, IndexKey, IndexMap } from "./types"
 
-export class Arrows extends HandleMovement {
+export class Arrows extends BaseSlider {
   public $root: string
   private slider: Slider
   private buttons: HTMLElement[] = []
@@ -75,7 +76,7 @@ export class Arrows extends HandleMovement {
 
     this.setState(this.startPosState())
 
-    this.handleMove()
+    // this.handleMove()
 
     this.setState({ prevSlideIndex: slideIndex, currentEventType })
 
@@ -83,17 +84,14 @@ export class Arrows extends HandleMovement {
   }
 
   protected jumpSlideTo(to: keyof IndexMap): void {
-    const indexData = this.mapIndex().get(to)
-
-    if (indexData) {
-      const indexes = this.getIndexes()
-
-      this.setState(this.slideState(indexes, indexData))
-
-      this.animate(this.$children, this.keyFrames(), this.options(0))
-
-      this.waitForAction()
-    }
+    // const indexData = this.mapIndex().get(to)
+    //if (indexData) {
+    //const indexes = this.getIndexes()
+    // this.setState(this.slideState(indexes, indexData))
+    //this.animate(this.$children, this.keyFrames(), this.options(0))
+    //
+    // this.waitForAction()
+    //}
   }
 
   protected evalSlideConditions(): Record<any, boolean> {
@@ -124,7 +122,7 @@ export class Arrows extends HandleMovement {
     const { currentIndex, translate } = indexData
 
     return {
-      isJumpSlide: true,
+      //isJumpSlide: true,
       prevSlideIndex: slideIndex,
       slideIndex: indexes[currentIndex],
       prevTranslate: translate,

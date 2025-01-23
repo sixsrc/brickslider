@@ -16,10 +16,16 @@ export class TouchStart extends BaseSlider {
   public init(event: MouseEventOrTouchEvent): void {
     const slides = getSliderNodeList(this.$root, false)
     const lastSlide = slides[2]
-    const { infinite, slideIndex, numberOfSlides, slidesPerPage } = this.store
+    const {
+      infinite,
+      slideIndex,
+      numberOfSlides,
+      currentTranslate,
+      slidesPerPage
+    } = this.store
     const isTargetSlide = slideIndex === 0
-    console.log(this.store.currentTranslate)
-    this.setState({ currentEventType: event.type as CurrentEventType })
+
+    console.log("currentTranslate", this.store.currentTranslate)
 
     if (infinite && slidesPerPage <= 1) {
       /*  if (isTargetSlide) {

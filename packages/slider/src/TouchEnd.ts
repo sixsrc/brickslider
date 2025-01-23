@@ -15,7 +15,7 @@ export class TouchEnd extends BaseSlider {
   protected animation: AnimationFrame
   private slider: Slider
   private moveSlider: number
-  isFastInteraction: boolean
+  private isFastInteraction: boolean
 
   constructor($root: string) {
     super($root)
@@ -105,8 +105,6 @@ export class TouchEnd extends BaseSlider {
 
     this.moveSlider = currentTranslate - prevTranslate
 
-    this.cancelAnimationFrame()
-
     this.setState(this.prevSlideState(slideIndex))
 
     const { isNext, isPrev } = this.actionsMove()
@@ -115,15 +113,17 @@ export class TouchEnd extends BaseSlider {
       this.updateSlideIndex(isNext ? "increment" : "decrement")
       this.movement = true
     } else {
+      console.log("beberrão")
       this.setState({ currentSlideMovement: null })
     }
 
     if (isTouch && !isMouseLeave) {
+      console.log("beberrão2")
       this.setPosition()
 
       this.movement = false
 
-      this.setState(this.jumpSlideState())
+      // this.setState(this.jumpSlideState())
     }
   }
 
@@ -197,16 +197,39 @@ export class TouchEnd extends BaseSlider {
       moveSlider > (this.sliderWidth! * TOUCH_LIMIT) / 100
     const isNotFirstSlide = currentIndex > 0
 
+    console.log(" isMovedByThreshold", isMovedByThreshold)
+
     return isMovedByThreshold && isNotFirstSlide
   }
 
   private setPosition() {
     const { $root, sliderWidth } = this
-    const { slideIndex } = this.store
-    const currentTranslate = slideIndex * -sliderWidth!
+    const {
+      slideIndex,
+      prevTranslate,
+      currentTranslate,
 
-    this.setState(this.positionState(currentTranslate))
+      currentSlideMovement: mov
+    } = this.store
+    //const currentTranslate = slideIndex * -sliderWidth!
 
+    this.setState(this.positionState(-(882 - 294)))
+
+    console.log("touchend currentranslate", currentTranslate)
+
+    if (!mov) {
+      this.setState({
+        currentTranslate: prevTranslate,
+        prevTranslate: prevTranslate
+      })
+
+      const animate = new AnimationFrame(this.$root)
+
+      animate.init()
+      return
+    }
+
+    console.log("touchIndex", slideIndex)
     this.slider.setSlideTarget({ touchIndex: slideIndex, $root })
   }
 

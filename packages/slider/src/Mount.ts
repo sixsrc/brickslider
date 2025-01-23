@@ -37,8 +37,8 @@ export class Mount extends BaseSlider {
   }
 
   public init(): void {
-    if (this.store.slidesPerPage > this.store.slidesPerView)
-      this.setState({ slidesPerPage: this.store.slidesPerView })
+    //if (this.store.slidesPerPage > this.store.slidesPerView)
+    //this.setState({ slidesPerPage: this.store.slidesPerView })
     this.setState(this.mountState())
     this.setProperties()
     this.cloneSlides()
@@ -144,7 +144,8 @@ export class Mount extends BaseSlider {
 
     return {
       sliderWidth: getSliderWidth($children!),
-      numberOfSlides: getChildrenCount($children)
+      numberOfSlides: getChildrenCount($children),
+      isInitialRender: true
     }
   }
 

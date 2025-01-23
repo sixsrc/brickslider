@@ -6,7 +6,6 @@ import { StateType } from "./State"
 import { CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
-  calcTranslate,
   getAllElements,
   getDotsSelector,
   getSliderNodeList,
@@ -36,7 +35,7 @@ export class Slider extends BaseSlider {
     this.slides = getSliderNodeList($root)
     this.observer = new Observer($root)
     this.mutate = new Mutate($root)
-    // this.initObserver()
+    //this.initObserver()
   }
 
   private initObserver() {
@@ -52,7 +51,7 @@ export class Slider extends BaseSlider {
   private removeTranslate() {
     this.forEachSlide(this.slides, slide => {
       if (!hasClass(slide, CLASS_VALUES.ACTIVE)) {
-        this.animate(slide, this.keyFrames(0.1), this.options(0))
+        //this.animate(slide, this.keyFrames(0.1), this.options(0))
       }
     })
   }
@@ -84,7 +83,7 @@ export class Slider extends BaseSlider {
     const translate = this.getTranslateValue()
 
     if (isFirstOrLastActive) {
-      this.applyTranslateToAdjacent(adjacentIndex, translate)
+      //this.applyTranslateToAdjacent(adjacentIndex, translate)
     }
   }
 
@@ -163,8 +162,7 @@ export class Slider extends BaseSlider {
     this.setState(this.mainState())
     this.updateDOM()
     this.updateSlider()
-    this.setAnimationSlide()
-    // this.updateDOM()
+    //this.setAnimationSlide()
   }
 
   private setIndexBased(params: TypeTargetSlideParams): void {
@@ -196,30 +194,39 @@ export class Slider extends BaseSlider {
     requestAnimationFrame(this.animation.init)
   }
 
-  protected calcTranslate(): number {
-    const { spacing, slidesPerPage } = this.store
-    const { $children, currentIndex } = this
-    //this.translate = calcTranslate($children!, spacing, currentIndex)
+  private checkCurrentIndex(currentIndex: number) {
+    const { infinite, slidesPerPage } = this.store
 
-    this.translate = this.getSlidesForTranslation(
-      currentIndex,
-      spacing,
-      slidesPerPage
-    ) as number
+    if (infinite && slidesPerPage <= 1) {
+      currentIndex += 1
+    }
+
+    return currentIndex
+  }
+
+  protected calcTranslate(): number {
+    let { currentIndex } = this
+    currentIndex = this.checkCurrentIndex(currentIndex)
+
+    this.translate = this.getSlidesSizes(currentIndex) as number
 
     return this.translate
   }
 
   private mainState(): Partial<StateType> {
-    const { currentIndex, translate } = this
-    const {
-      currentEventType,
-      currentTranslate,
-      slideIndex,
-      currentSlideMovement: mov
-    } = this.store
+    let { currentIndex, translate } = this
+    const { currentEventType, currentSlideMovement: mov } = this.store
     const isDotTarget = currentEventType === "dots"
     const startPos = isDotTarget ? { startPos: 0 } : {}
+
+    translate =
+      mov === "increment"
+        ? translate + Math.abs(this.store.currentTranslate)
+        : Math.abs(this.store.currentTranslate) - translate
+
+    if (currentIndex <= 0) {
+      // translate = 0
+    }
 
     return {
       ...startPos,
@@ -229,74 +236,6 @@ export class Slider extends BaseSlider {
     }
   }
 
-  /*
-  
-  public isLastActiveClass() {
-    const slides = getSliderNodeList(this.$root, false)
-    const lastSlide = slides[slides.length - 1]
-    const { infinite: loop, currentSlideMovement: mov } = this.store
-    const inc = mov === "increment"
-
-    if (slides.length === 0) return false
-
-    return !loop && inc && hasClass(lastSlide, CLASS_VALUES.ACTIVE)
-  }
-  */
-
-  /*private mainState(): Partial<StateType> {
-    const { currentIndex, translate } = this
-    const {
-      currentEventType,
-      currentSlideMovement: mov,
-      currentTranslate,
-      slidesPerView,
-      slidesPerPage,
-      spacing
-    } = this.store
-
-    const isDotTarget = currentEventType === "dots"
-    const startPos = isDotTarget ? { startPos: 0 } : {}
-
-    const activeSlides = this.slides.filter(slide =>
-      hasClass(slide, CLASS_VALUES.ACTIVE)
-    )
-
-    // Determina o sentido do movimento (increment ou decrement)
-    let totalWidth = 0
-    if (mov === "increment") {
-      console.log("increment")
-      // Calcula a largura dos slides à frente
-      totalWidth = this.slides
-        .slice(currentIndex, currentIndex + slidesPerView)
-        .reduce((acc, slide) => {
-          const slideWidth = slide.getBoundingClientRect().width + spacing
-          return acc + slideWidth
-        }, currentTranslate)
-      console.log(totalWidth)
-    } else if (mov === "decrement") {
-      // Calcula a largura dos slides para trás
-      totalWidth = this.slides
-        .slice(Math.max(0, currentIndex - slidesPerView), currentIndex)
-        .reduce((acc, slide) => {
-          const slideWidth = slide.getBoundingClientRect().width + spacing
-          return acc + slideWidth
-        }, currentTranslate)
-    }
-
-    // Adiciona ou subtrai o totalWidth dependendo do movimento
-    const calculatedTranslate =
-      mov === "increment" ? translate + totalWidth : translate - totalWidth
-
-    console.log("calc", calculatedTranslate)
-
-    return {
-      ...startPos,
-      slideIndex: currentIndex,
-      prevTranslate: slidesPerPage > 1 ? calculatedTranslate : translate,
-      currentTranslate: slidesPerPage > 1 ? calculatedTranslate : translate
-    }
-  }
-*/
   protected setAnimationSlide() {
     const { infinite, slideIndex } = this.store
     const slide = this.slides[slideIndex]
@@ -304,7 +243,7 @@ export class Slider extends BaseSlider {
     if (!infinite) return
 
     if (slide) {
-      this.applyTranslate(slide)
+      // this.applyTranslate(slide)
     }
   }
 
@@ -335,7 +274,7 @@ export class Slider extends BaseSlider {
   }
 
   protected defineIncrementOrDecrement() {
-    let { currentSlideMovement: mov, dotIndex, slidesPerView } = this.store
+    let { currentSlideMovement: mov, dotIndex } = this.store
     if (mov === "increment") dotIndex++
     else dotIndex--
 
@@ -343,50 +282,17 @@ export class Slider extends BaseSlider {
   }
 
   public updateSlider() {
-    this.removeTranslate()
+    // this.removeTranslate()
     this.defineDotIndex()
     this.updateDots(this.$root)
   }
 
   protected updateDOM(): void {
-    const { slidesPerPage, slidesPerView, currentSlideMovement, slideIndex } =
-      this.store
+    const { slidesPerPage } = this.store
     const { $root, currentIndex } = this
-    //toggleClass(getSliderNodeList($root), currentIndex, slidesPerPage)
+    const index = this.checkCurrentIndex(currentIndex)
 
-    //this.mutate.toggleClass(getSliderNodeList($root))
-    // Cria o objeto de páginas com slides ativos
-    const activeSlidesByPage: Record<number, number[]> = {}
-
-    this.slides.forEach(slide => {
-      if (hasClass(slide, CLASS_VALUES.ACTIVE)) {
-        const dataIndex = Number(slide.dataset.index) || 0
-        const pageIndex = 0 // Apenas a página 0 para os slides ativos
-
-        // Se ainda não existir o array para a página, cria um
-        if (!activeSlidesByPage[pageIndex]) {
-          activeSlidesByPage[pageIndex] = []
-        }
-
-        // Adiciona o dataIndex ao array correspondente da página 0
-        activeSlidesByPage[pageIndex].push(dataIndex)
-      }
-    })
-
-    const allSlides = this.slidePager(this.slides, slidesPerPage)
-    const shouldChange = shouldChangePage(allSlides, activeSlidesByPage)
-
-    /*this.setState({
-      isPagedActive: shouldChange
-    })*/
-
-    /* console.log(
-      "Comparação de grupos",
-      allSlides,
-      activeSlidesByPage,
-      "Hora de mudar de página?",
-      shouldChange
-    )*/
+    toggleClass(getSliderNodeList($root), index, slidesPerPage)
   }
 
   public updateDots($root: string) {
@@ -405,67 +311,3 @@ export class Slider extends BaseSlider {
     })
   }
 }
-
-/* 
- private mainState(): Partial<StateType> {
-    const { currentIndex, translate } = this
-    const {
-      currentEventType,
-      currentSlideMovement: mov,
-      slidesPerView,
-      slidesPerPage,
-      spacing
-    } = this.store
-
-    // Ajusta slidesPerView caso seja maior que slidesPerPage
-    const adjustedSlidesPerView = Math.min(slidesPerView, slidesPerPage)
-
-    // Verifica se o evento atual é "dots"
-    const isDotTarget = currentEventType === "dots"
-    const startPos = isDotTarget ? { startPos: 0 } : {}
-
-    // Filtra slides ativos
-    const activeSlides = this.slides.filter(slide =>
-      hasClass(slide, CLASS_VALUES.ACTIVE)
-    )
-
-    // Determina a direção e calcula o totalWidth com base no slidesPerView
-    let totalWidth = 0
-
-    if (adjustedSlidesPerView === 1) {
-      // Para slidesPerView = 1, calcula apenas o próximo ou o anterior
-      const nextSlideIndex = Math.min(this.slides.length - 1, currentIndex + 1) // Próximo slide
-      const prevSlideIndex = Math.max(0, currentIndex - 1) // Anterior
-
-      const targetIndex = mov === "increment" ? nextSlideIndex : prevSlideIndex
-
-      const targetSlide = this.slides[targetIndex]
-      totalWidth = targetSlide.getBoundingClientRect().width + spacing // Calcula a largura do slide alvo
-    } else {
-      // Para slidesPerView > 1, soma os tamanhos dos slides conforme necessário
-      const direction = mov === "increment" ? 1 : -1
-      const targetSlides = activeSlides.slice(0, adjustedSlidesPerView)
-
-      totalWidth = targetSlides.reduce((acc, slide) => {
-        const slideWidth = slide.getBoundingClientRect().width + spacing
-        return acc + slideWidth
-      }, 0)
-
-      totalWidth *= direction
-    }
-
-    // Calcula o novo translate
-    const calculatedTranslate = translate + totalWidth
-
-    console.log(calculatedTranslate)
-
-    // Retorna o estado atualizado
-    return {
-      ...startPos,
-      slideIndex: currentIndex,
-      prevTranslate: slidesPerPage > 1 ? calculatedTranslate : translate,
-      currentTranslate: slidesPerPage > 1 ? calculatedTranslate : translate
-    }
-  }
-
-*/

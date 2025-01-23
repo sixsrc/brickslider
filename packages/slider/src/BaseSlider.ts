@@ -32,6 +32,7 @@ export class BaseSlider {
   protected dotIndex: number
   protected incompleteGroup: boolean
   private activeSlides: HTMLElement[]
+  protected previousTranslate: number
 
   constructor($root: string) {
     this.$root = $root
@@ -44,6 +45,7 @@ export class BaseSlider {
     this.childrenCount = getChildrenCount(this.$children)
     this.sliderWidth = getSliderWidth(this.$children)
     this.movement = false
+    this.previousTranslate = 0
     this.dotIndex = 0
     this.incompleteGroup = false
   }
@@ -95,12 +97,10 @@ export class BaseSlider {
     return { lastActiveSlide, activeIndex }
   }
 
-  private activeSlidesLoop(
-    currentIndex: number,
-    slidesPerPage: number,
-    activeIndex: number,
-    spacing: number
-  ) {
+  /*private activeSlidesLoop(activeIndex: number) {
+    const { slidesPerPage, spacing, currentSlideMovement:mov } = this.store
+    const inc = mov === 'increment'
+
     let translate = 0
     let selectedSlides = null
     let slideWidth = 0
@@ -113,30 +113,73 @@ export class BaseSlider {
         slide => parseInt(slide.dataset.index as string) === nextSlideIndex
       )
 
+      console.log("selectedSlides", nextSlideIndex)
+
       if (selectedSlides) {
         slideWidth = (selectedSlides.offsetWidth + spacing) as any
         translate += slideWidth
       }
     }
 
-    return translate * currentIndex
+    return translate
+  }*/
+
+  private activeSlidesLoop(activeIndex: number) {
+    const { slidesPerPage, spacing, currentSlideMovement: mov } = this.store
+    const isIncrement = mov === "increment"
+
+    let translate = 0
+
+    // Converta os slides para array
+    const slidesArray = Array.from(this.activeSlides)
+
+    // Localize o último slide ativo
+    const activeSlides = slidesArray.filter(slide =>
+      slide.classList.contains("active")
+    )
+    const lastActiveSlide = activeSlides[activeSlides.length - 1]
+
+    if (!lastActiveSlide) {
+      console.warn("Nenhum slide ativo encontrado!")
+      return 0
+    }
+
+    // Pegue o índice do último slide ativo no array
+    const lastActiveIndex = slidesArray.indexOf(lastActiveSlide)
+
+    // Determine os slides-alvo com base no movimento
+    let targetSlides: HTMLElement[]
+    if (isIncrement) {
+      // Pegue os próximos slides com base no slidesPerPage
+      targetSlides = slidesArray.slice(
+        lastActiveIndex + 1,
+        lastActiveIndex + 1 + slidesPerPage
+      )
+      console.log(targetSlides)
+    } else {
+      // Pegue os slides anteriores com base no slidesPerPage
+      targetSlides = slidesArray.slice(
+        Math.max(0, lastActiveIndex - slidesPerPage),
+        lastActiveIndex
+      )
+    }
+
+    // Calcule o deslocamento (translate)
+    targetSlides.forEach(slide => {
+      translate += slide.offsetWidth + spacing
+    })
+
+    console.log("translate", translate)
+
+    return translate
   }
 
-  protected getSlidesForTranslation(
-    currentIndex: number,
-    spacing: number,
-    slidesPerPage: number
-  ): number | undefined {
+  protected getSlidesSizes(currentIndex: number): number | undefined {
     const { lastActiveSlide, activeIndex } = this.getActiveSlides()
 
     if (!lastActiveSlide) return
 
-    return this.activeSlidesLoop(
-      currentIndex,
-      slidesPerPage,
-      activeIndex,
-      spacing
-    )
+    return this.activeSlidesLoop(currentIndex)
   }
 
   protected options(duration = 0): AnimationOptions {

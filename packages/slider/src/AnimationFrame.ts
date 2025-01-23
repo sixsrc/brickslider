@@ -24,7 +24,7 @@ export class AnimationFrame extends BaseSlider {
     const found = this.evalSlideConditions()
     const { currentTranslate } = this.store
 
-    if (found) return found.k
+    // if (found) return found.k
 
     return [{ transform: translate3d(currentTranslate) }]
   }
