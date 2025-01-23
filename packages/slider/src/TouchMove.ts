@@ -35,7 +35,7 @@ export class TouchMove extends HandleMovement {
     if (isDragging && !isRightClick) {
       this.setState(this.eventTargetState())
       this.updatePosition(event)
-      this.handleMove()
+      //this.handleMove()
       this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
       this.setSkipSlide(false)
     }

@@ -669,7 +669,6 @@ export function toggleClass2(
   const activeSlidesMap = new Map<number, number[]>() // Map para armazenar os índices
   const activeIndices: number[] = [] // Array temporário para armazenar os índices ativos
 
-  console.log("asdasdas", slidesPerView)
   for (let i = 0; i < 2; i++) {
     const index = targetStartIndex + i
     if (index < slides.length) {
