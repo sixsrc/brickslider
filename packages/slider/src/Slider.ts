@@ -13,8 +13,6 @@ import {
   indexBasedBy,
   isNotMapped,
   removeClass,
-  shouldChangePage,
-  toggleClass,
   toggleClass2
 } from "./helpers"
 import { CurrentEventType, TypeTargetSlideParams } from "./types"
@@ -108,13 +106,6 @@ export class Slider extends BaseSlider {
       : singleTranslate
   }
 
-  private getMissingSlides(): number {
-    const { numberOfSlides, slidesPerPage } = this.store
-    const remainder = numberOfSlides % slidesPerPage
-
-    return remainder === 0 ? 0 : slidesPerPage - remainder
-  }
-
   private applyTranslateToAdjacent(adjacentIndex: number, translate: number) {
     this.forEachSlide(this.slides, slide => {
       if (this.getSlideIndex(slide) === adjacentIndex) {
@@ -122,27 +113,6 @@ export class Slider extends BaseSlider {
       }
     })
   }
-
-  /* private applyTranslateToAdjacent(adjacentIndex: number, translate: number) {
-    const lastSlide = this.slides[this.slides.length - 1]
-    const lastSlideIndex = parseInt(lastSlide.dataset.index as string)
-    const missingSlides = this.getMissingSlides()
-    const slideWidthWithMargin = lastSlide.offsetWidth + this.store.spacing
-
-    const adjustedTranslate = translate - slideWidthWithMargin
-    const targetIndex = lastSlideIndex + 1
-
-    this.forEachSlide(this.slides, slide => {
-      if (this.getSlideIndex(slide) === targetIndex) {
-        // Aplica o translate ajustado ao slide que seria o "próximo"
-
-        this.animate(slide, this.keyFrames(adjustedTranslate), this.options(0))
-      } else if (this.getSlideIndex(slide) === adjacentIndex) {
-        // Aplica o translate normal para os outros slides adjacentes
-        this.animate(slide, this.keyFrames(translate), this.options(0))
-      }
-    })
-  }*/
 
   private isFirstOrLastActiveSlide(slide: HTMLElement): boolean {
     return (
@@ -195,10 +165,10 @@ export class Slider extends BaseSlider {
   }
 
   private checkCurrentIndex(currentIndex: number) {
-    const { infinite, slidesPerPage } = this.store
+    const { infinite, slidesPerView } = this.store
 
-    if (infinite && slidesPerPage <= 1) {
-      currentIndex += 1
+    if (infinite && slidesPerView >= 2) {
+      //currentIndex += 1
     }
 
     return currentIndex
@@ -208,7 +178,7 @@ export class Slider extends BaseSlider {
     let { currentIndex } = this
     currentIndex = this.checkCurrentIndex(currentIndex)
 
-    this.translate = this.getSlidesSizes(currentIndex) as number
+    this.translate = this.getSlidesSizes() as number
 
     return this.translate
   }
@@ -288,11 +258,17 @@ export class Slider extends BaseSlider {
   }
 
   protected updateDOM(): void {
-    const { slidesPerPage } = this.store
+    const { slidesPerPage, slidesPerView, currentSlideMovement } = this.store
     const { $root, currentIndex } = this
     const index = this.checkCurrentIndex(currentIndex)
 
-    toggleClass(getSliderNodeList($root), index, slidesPerPage)
+    toggleClass2(
+      getSliderNodeList($root),
+      index,
+      slidesPerView,
+      slidesPerPage,
+      currentSlideMovement
+    )
   }
 
   public updateDots($root: string) {
@@ -311,3 +287,24 @@ export class Slider extends BaseSlider {
     })
   }
 }
+
+/* private applyTranslateToAdjacent(adjacentIndex: number, translate: number) {
+    const lastSlide = this.slides[this.slides.length - 1]
+    const lastSlideIndex = parseInt(lastSlide.dataset.index as string)
+    const missingSlides = this.getMissingSlides()
+    const slideWidthWithMargin = lastSlide.offsetWidth + this.store.spacing
+
+    const adjustedTranslate = translate - slideWidthWithMargin
+    const targetIndex = lastSlideIndex + 1
+
+    this.forEachSlide(this.slides, slide => {
+      if (this.getSlideIndex(slide) === targetIndex) {
+        // Aplica o translate ajustado ao slide que seria o "próximo"
+
+        this.animate(slide, this.keyFrames(adjustedTranslate), this.options(0))
+      } else if (this.getSlideIndex(slide) === adjacentIndex) {
+        // Aplica o translate normal para os outros slides adjacentes
+        this.animate(slide, this.keyFrames(translate), this.options(0))
+      }
+    })
+  }*/

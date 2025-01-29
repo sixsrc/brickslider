@@ -1,6 +1,7 @@
 import { CLASS_VALUES, DOM_ELEMENTS } from "./constants"
 import {
   AnimationOptions,
+  CurrentSlideMovement,
   MouseEventOrTouchEvent,
   TypeIndexBaseSliderdBy
 } from "./types"
@@ -627,7 +628,7 @@ export function toggleClass2(
   slideIndex: number,
   slidesPerView: number,
   slidesPerPage: number,
-  slideMovement: "increment" | "decrement"
+  slideMovement: CurrentSlideMovement
 ): Map<number, number[]> {
   // Valida se slidesPerView não é maior que slidesPerPage
   if (slidesPerView > slidesPerPage) {
@@ -669,7 +670,7 @@ export function toggleClass2(
   const activeSlidesMap = new Map<number, number[]>() // Map para armazenar os índices
   const activeIndices: number[] = [] // Array temporário para armazenar os índices ativos
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < slidesPerPage; i++) {
     const index = targetStartIndex + i
     if (index < slides.length) {
       addClass([slides[index]], CLASS_VALUES.ACTIVE)

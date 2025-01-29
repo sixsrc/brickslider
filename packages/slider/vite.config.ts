@@ -2,6 +2,7 @@ import { defineConfig } from "vite"
 import { resolve } from "path"
 import dts from "vite-plugin-dts"
 import { ViteMinifyPlugin } from "vite-plugin-minify"
+import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig({
   resolve: {
@@ -21,5 +22,5 @@ export default defineConfig({
       fileName: "brick-slider"
     }
   },
-  plugins: [dts(), ViteMinifyPlugin()]
+  plugins: [dts(), tailwindcss(), ViteMinifyPlugin()]
 })

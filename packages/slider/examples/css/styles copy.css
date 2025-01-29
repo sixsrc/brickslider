@@ -1,3 +1,4 @@
+@import "tailwindcss";
 body {
   font-family:
     ui-sans-serif,
@@ -27,7 +28,7 @@ body {
 .slider__track {
   position: relative;
   overflow: hidden;
-
+  touch-action: pan-y pinch-zoom;
   box-sizing: border-box;
 }
 
@@ -60,18 +61,10 @@ body {
 }
 
 .slider__container {
-  /*position: relative;
-    z-index: 0;
-    display:flex;*/
-  position: relative;
-  display: inline-flex;
-  flex-wrap: nowrap;
   white-space: nowrap;
-}
-
-.teste {
-  box-sizing: border-box;
   scale: 0.8;
+  gap: 20px;
+  box-sizing: border-box;
   z-index: 1;
   display: inline-flex;
   flex-wrap: nowrap;
@@ -81,6 +74,12 @@ body {
   z-index: 0;
   position: relative;
   width: 100%;
+}
+
+img {
+}
+
+.teste {
 }
 
 .layer {
@@ -140,6 +139,8 @@ body {
 .slider__slide img {
   position: relative;
   z-index: 15;
+  /* object-fit: cover;
+  height: 100%;*/
 }
 
 .slider__dots {

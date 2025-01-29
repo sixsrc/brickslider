@@ -57,6 +57,8 @@ export class Dots extends BaseSlider {
 
     if (slidesPerPage <= 0 || view <= 0) return 0
 
+    if (loop) return pages
+
     const dots =
       view === 1 ? pages : Math.max(1, pages - (view - slidesPerPage))
 
