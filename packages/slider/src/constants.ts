@@ -5,7 +5,7 @@ export const DOM_ELEMENTS = {
   DOTS_SELECTOR: ".slider__dots ",
   NEXT_BUTTON: "next-button",
   PREV_BUTTON: "prev-button",
-  BRICK_ARROWS: "slider__arrows"
+  BRICK_ARROWS: ".slider__arrows"
 }
 
 export const STYLES = {
@@ -74,10 +74,10 @@ export const ANIMATION_DELAY = 100
 
 export const ANIMATION_OPTIONS = {
   FORWARDS: "forwards",
-  EASEOUT: "ease"
+  EASEOUT: "ease-in-out"
 } as const
 
-export const TOUCH_LIMIT = 20 //5
+export const TOUCH_LIMIT = 5 //5
 
 export const MOVE_TO_LIMIT = 3
 

@@ -26,14 +26,25 @@
   "main": "dist/brick-slider.cjs",
   "module": "./dist/brick-slider.js",
   "exports": {
-    "import": "./dist/brick-slider.js",
-    "umd": "./dist/brick-slider.umd.cjs",
-    "cjs": "./dist/brick-slider.cjs"
+    ".": {
+      "import": "./dist/brick-slider.js",
+      "require": "./dist/brick-slider.cjs",
+      "default": "./dist/brick-slider.js"
+    },
+    "./tailwind": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    },
+    "./umd": "./dist/brick-slider.umd.cjs"
   },
   "scripts": {
     "start": "vite --host",
     "test": "vitest",
     "lint": "eslint --ext .ts {src,__tests__}/**.ts",
     "build": "tsc --noEmit && vite build"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.0.0"
   }
 }

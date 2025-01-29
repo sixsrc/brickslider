@@ -25,7 +25,7 @@ export class TouchStart extends BaseSlider {
     } = this.store
     const isTargetSlide = slideIndex === 0
 
-    console.log("currentTranslate", this.store.currentTranslate)
+    //console.log("currentTranslate", this.store.currentTranslate)
 
     if (infinite && slidesPerPage <= 1) {
       /*  if (isTargetSlide) {

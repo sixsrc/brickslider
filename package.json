@@ -35,6 +35,8 @@
     }
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "tailwindcss": "^4.0.0",
     "vite-plugin-minify": "^1.5.2"
   }
 }

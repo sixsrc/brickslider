@@ -7,36 +7,96 @@
     <title>Brick Slider - Default Example</title>
   </head>
   <body>
-    <div class="container">
-      <div
-        id="slide4_container"
-        class="hide multiple-items slider brick-slider"
-      >
-        <div class="slider__track">
-          <div class="slider__container teste">
-            <div class="slider__slide">
-              <img src="./examples/images/image1.jpg" />
+    <div
+      class="max-w-[588px] h-[270px] w-full mx-auto mb-5 box-border relative"
+    >
+      <div id="slide4_container" class="hide h-full flex items-center">
+        <div class="slider__track w-full overflow-hidden touch-pan-y">
+          <button
+            data-direction="prev"
+            class="slider__arrows absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-6 w-6"
+            >
+              <path d="M15 6l-6 6 6 6"></path>
+            </svg>
+          </button>
+
+          <!-- Botão "Next" -->
+          <button
+            data-direction="next"
+            class="slider__arrows absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-6 w-6"
+            >
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </button>
+
+          <div class="slider__container box-border gap-[20px]">
+            <div class="relative">
+              <span
+                class="w-full h-full flex justify-center items-center bg-purple-200"
+                >01</span
+              >
             </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image2.jpg" />
+            <div class="relative">
+              <span
+                class="w-full h-full flex justify-center items-center bg-purple-200"
+                >02</span
+              >
             </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image3.jpg" />
+            <div class="relative">
+              <span
+                class="w-full h-full flex justify-center items-center bg-purple-200"
+                >03</span
+              >
             </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image4.jpg" />
+            <div class="relative">
+              <span
+                class="w-full h-full flex justify-center items-center bg-purple-200"
+                >04</span
+              >
             </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image3.jpg" />
+            <div class="relative">
+              <span
+                class="w-full h-full flex justify-center items-center bg-purple-200"
+                >05</span
+              >
             </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image4.jpg" />
+            <div class="relative">
+              <span
+                class="w-full h-full flex justify-center items-center bg-purple-200"
+                >06</span
+              >
             </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image1.jpg" />
+            <div class="relative">
+              <span
+                class="w-full h-full flex justify-center items-center bg-purple-200"
+                >07</span
+              >
             </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image4.jpg" />
+            <div class="relative">
+              <span
+                class="w-full h-full flex justify-center items-center bg-purple-200"
+                >08</span
+              >
             </div>
           </div>
         </div>
@@ -46,7 +106,7 @@
     <div class="container">
       <div id="slide1_container" class="hide slider brick-slider">
         <div class="slider__track">
-          <div class="slider__container teste">
+          <div class="slider__container">
             <div class="slider__slide">
               <img src="./examples/images/image1.jpg" />
             </div>
@@ -65,9 +125,12 @@
     </div>
 
     <div class="container">
-      <div id="slide2_container" class="multiple-items slider brick-slider">
+      <div
+        id="slide2_container"
+        class="hide multiple-items slider brick-slider"
+      >
         <div class="slider__track">
-          <div class="slider__container teste">
+          <div class="slider__container">
             <div class="slider__slide">
               <img src="./examples/images/image01.jpeg" />
             </div>
@@ -95,6 +158,30 @@
             <div class="slider__slide">
               <img src="./examples/images/image09.jpeg" />
             </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image08.jpeg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image09.jpeg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image08.jpeg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image09.jpeg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image08.jpeg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image09.jpeg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image08.jpeg" />
+            </div>
+            <div class="slider__slide">
+              <img src="./examples/images/image09.jpeg" />
+            </div>
           </div>
         </div>
       </div>
@@ -103,7 +190,7 @@
     <div class="container">
       <div id="slide3_container" class="slider brick-slider">
         <div class="slider__track">
-          <div class="slider__container teste">
+          <div class="slider__container">
             <div class="slider__slide">
               <img src="./examples/images/image4.jpg" />
             </div>
