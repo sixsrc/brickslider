@@ -14,8 +14,7 @@ import {
   listener,
   removeClass,
   setAttributes,
-  toggleClass,
-  waitFor
+  toggleClass
 } from "./helpers"
 
 import { Attributes, KeyframeAnimation } from "./types"
@@ -92,7 +91,6 @@ export class Mount extends BaseSlider {
 
   protected keyFrames(): KeyframeAnimation[] {
     let slideWidth = this.getSlideWidth()
-
     slideWidth = slideWidth
 
     return [
@@ -105,11 +103,8 @@ export class Mount extends BaseSlider {
 
   private getSlideWidth(): number {
     const { spacing, slidesPerView, sliderWidth } = this.store
-
     const totalSpacing = (slidesPerView - 1) * spacing
-
     const availableWidth = sliderWidth - totalSpacing
-
     const slideWidth = availableWidth / slidesPerView
 
     return Math.max(0, slideWidth) // Garantir que não seja negativo

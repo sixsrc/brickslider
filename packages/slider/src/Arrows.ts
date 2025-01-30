@@ -31,9 +31,7 @@ export class Arrows extends BaseSlider {
     //const buttons = this.appendButtons(createButtons)
 
     const buttons = Array.from(
-      document.querySelectorAll(
-        `${this.$root} ${DOM_ELEMENTS.TRACK_SELECTOR} ${DOM_ELEMENTS.BRICK_ARROWS}`
-      )
+      document.querySelectorAll(`${this.$root}  ${DOM_ELEMENTS.BRICK_ARROWS}`)
     )
 
     buttons.forEach(button => {
