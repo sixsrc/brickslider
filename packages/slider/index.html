@@ -4,97 +4,102 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./examples/css/styles.css" />
-    <title>Brick Slider - Default Example</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Brick Slider - Examples</title>
   </head>
-  <body>
-    <div
-      class="max-w-[588px] h-[270px] w-full mx-auto mb-5 box-border relative"
-    >
-      <div id="slide4_container" class="hide h-full flex items-center">
-        <div class="slider__track w-full overflow-hidden touch-pan-y">
-          <button
-            data-direction="prev"
-            class="slider__arrows absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 cursor-pointer"
+  <body class="bg-violet-50">
+    <div class="max-w-[588px] h-[270px] w-full mx-auto mt-10 mb-5 box-border">
+      <div id="slide4_container" class="hide h-full flex items-center relative">
+        <button
+          data-direction="prev"
+          class="slider__arrows absolute flex items-center justify-center -left-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-6 w-6"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-6 w-6"
-            >
-              <path d="M15 6l-6 6 6 6"></path>
-            </svg>
-          </button>
+            <path d="M15 6l-6 6 6 6"></path>
+          </svg>
+        </button>
 
-          <!-- Botão "Next" -->
-          <button
-            data-direction="next"
-            class="slider__arrows absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 cursor-pointer"
+        <button
+          data-direction="next"
+          class="slider__arrows absolute flex items-center justify-center -right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-6 w-6"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-6 w-6"
-            >
-              <path d="M9 6l6 6-6 6"></path>
-            </svg>
-          </button>
+            <path d="M9 6l6 6-6 6"></path>
+          </svg>
+        </button>
 
-          <div class="slider__container box-border gap-[20px]">
-            <div class="relative">
+        <div class="slider__track pb-8">
+          <div
+            class="slider__container box-border gap-[20px] font-medium text-7xl text-purple-100"
+          >
+            <div class="slider__slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200"
+                class="w-full h-full pr-5 flex justify-end items-end bg-purple-200 rounded-lg"
                 >01</span
               >
             </div>
-            <div class="relative">
+            <div class="slider__slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200"
+                class="w-full h-full pr-5 flex justify-end items-end bg-purple-200 rounded-lg"
                 >02</span
               >
             </div>
-            <div class="relative">
+            <div class="slider__slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200"
+                class="w-full h-full pr-5 flex justify-end items-end bg-purple-200 rounded-lg"
                 >03</span
               >
             </div>
-            <div class="relative">
+            <div class="slider__slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200"
+                class="w-full h-full pr-5 flex justify-end items-end bg-purple-200 rounded-lg"
                 >04</span
               >
             </div>
-            <div class="relative">
+            <div class="slider__slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200"
+                class="w-full h-full pr-5 flex justify-end items-end bg-purple-200 rounded-lg"
                 >05</span
               >
             </div>
-            <div class="relative">
+            <div class="slider__slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200"
+                class="w-full h-full pr-5 flex justify-end items-end bg-purple-200 rounded-lg"
                 >06</span
               >
             </div>
-            <div class="relative">
+            <div class="slider__slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200"
+                class="w-full h-full pr-5 flex justify-end items-end bg-purple-200 rounded-lg"
                 >07</span
               >
             </div>
-            <div class="relative">
+            <div class="slider__slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200"
+                class="w-full h-full pr-5 flex justify-end items-end bg-purple-200 rounded-lg"
                 >08</span
               >
             </div>

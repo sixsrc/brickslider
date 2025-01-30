@@ -2,6 +2,7 @@ import { defineConfig } from "vite"
 import { resolve } from "path"
 import dts from "vite-plugin-dts"
 import { ViteMinifyPlugin } from "vite-plugin-minify"
+// @ts-ignore
 import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig({
