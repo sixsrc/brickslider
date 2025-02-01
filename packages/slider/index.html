@@ -12,7 +12,7 @@
     />
     <title>Brick Slider - Examples</title>
   </head>
-  <body class="bg-violet-50">
+  <body">
     <div class="max-w-[588px] h-[270px] w-full mx-auto mt-10 mb-5 box-border">
       <div id="slide4_container" class="hide h-full flex items-center relative">
         <button
@@ -51,7 +51,7 @@
           </svg>
         </button>
 
-        <div class="slider__track pb-8">
+        <div class="slider__track">
           <div
             class="slider__container box-border gap-[20px] font-medium text-7xl text-purple-100"
           >
@@ -105,107 +105,14 @@
             </div>
           </div>
         </div>
+        <ul class="slider__dots top-72 pt-1.5">
+          <li
+            class="slider__dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+          ></li>
+        </ul>
       </div>
     </div>
 
-    <div class="container">
-      <div id="slide1_container" class="hide slider brick-slider">
-        <div class="slider__track">
-          <div class="slider__container">
-            <div class="slider__slide">
-              <img src="./examples/images/image1.jpg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image2.jpg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image3.jpg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image4.jpg" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <div
-        id="slide2_container"
-        class="hide multiple-items slider brick-slider"
-      >
-        <div class="slider__track">
-          <div class="slider__container">
-            <div class="slider__slide">
-              <img src="./examples/images/image01.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image02.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image03.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image04.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image05.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image06.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image07.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image08.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image09.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image08.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image09.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image08.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image09.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image08.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image09.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image08.jpeg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image09.jpeg" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <div id="slide3_container" class="slider brick-slider">
-        <div class="slider__track">
-          <div class="slider__container">
-            <div class="slider__slide">
-              <img src="./examples/images/image4.jpg" />
-            </div>
-            <div class="slider__slide">
-              <img src="./examples/images/image3.jpg" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <script type="module" src="/src/index.ts"></script>
   </body>

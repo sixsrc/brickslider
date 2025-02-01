@@ -16,7 +16,6 @@ import {
   calcNumberOfSlides,
   createNewElement,
   getAllElements,
-  getDotsContainer,
   getSliderNodeList,
   listener,
   setAttribute
@@ -25,26 +24,25 @@ import {
 export class Dots extends BaseSlider {
   private slider: Slider
   private sync: Sync
-  private containerDots: HTMLElement | undefined
+  private containerDots: HTMLElement
   public slides: HTMLElement[]
 
   constructor($root: string) {
     super($root)
     this.slider = new Slider($root)
     this.sync = new Sync($root)
-    //this.containerDots = createNewElement(TAGS.UL)
-    this.containerDots = getDotsContainer($root)
+    this.containerDots = createNewElement(TAGS.UL)
     this.slides = getSliderNodeList($root)
   }
 
   public init(): void {
-    /*setAttribute(
+    setAttribute(
       this.containerDots,
       ATTRIBUTES.CLASS,
       DOM_ELEMENTS.DOTS_SELECTOR.replace(".", "")
     )
 
-    appendToParent(this.getRootSelector, this.containerDots)*/
+    appendToParent(this.getRootSelector, this.containerDots)
 
     this.createDots()
 
@@ -67,7 +65,7 @@ export class Dots extends BaseSlider {
     return dots
   }
 
-  /* private createDots(): void {
+  private createDots(): void {
     const numberOfDots = this.calculateDots()
 
     for (let i = 0; i < numberOfDots; i++) {
@@ -78,47 +76,6 @@ export class Dots extends BaseSlider {
 
       if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
     }
-
-    this.setState(this.numOfSlidesState(numberOfDots))
-  }*/
-
-  private createDots(): void {
-    // Verifica se existe ao menos um dot no HTML inicial
-    const existingDots = getAllElements<HTMLElement>(
-      TAGS.LI,
-      this.containerDots
-    )
-
-    console.log("existingDots", existingDots)
-
-    if (existingDots.length === 0) {
-      console.error(
-        "O HTML inicial deve conter pelo menos um dot para estilização."
-      )
-      return
-    }
-
-    // Pega o primeiro dot como modelo
-    const templateDot = existingDots[0]
-    const numberOfDots = this.calculateDots()
-
-    // Remove todos os dots existentes no HTML, exceto o template
-    Array.from(existingDots).forEach((dot, index) => {
-      if (index > 0) dot.remove()
-    })
-
-    // Duplica o dot template conforme necessário
-    for (let i = 1; i < numberOfDots; i++) {
-      const clonedDot = templateDot.cloneNode(true) as HTMLElement
-      appendToParent(this.containerDots, clonedDot)
-    }
-
-    // Adiciona a classe `slider__dot--active` ao primeiro dot
-    const allDots = getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
-    allDots.forEach((dot, index) => {
-      if (index === 0) addClass([dot], CLASS_VALUES.SELECTED)
-      else dot.classList.remove(CLASS_VALUES.SELECTED)
-    })
 
     this.setState(this.numOfSlidesState(numberOfDots))
   }

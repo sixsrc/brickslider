@@ -113,12 +113,18 @@ export function getAllElements<T extends Element>(
   return parent.querySelectorAll(selector) as NodeListOf<T>
 }
 
+export function getDotsContainer(
+  rootSelector: string
+): HTMLElement | undefined {
+  return $(`${rootSelector}  ${DOM_ELEMENTS.DOTS_SELECTOR}`)
+}
+
 export function getChildren(rootSelector: string): HTMLElement | undefined {
   return $(`${rootSelector}  ${DOM_ELEMENTS.CHILDREN_SELECTOR}`)
 }
 
 export function getChildrenCount(el: HTMLElement | undefined): number {
-  return el!.children.length
+  return el ? el!.children.length : 0
 }
 
 export function getDotsSelector($root: string): HTMLElement | undefined {
