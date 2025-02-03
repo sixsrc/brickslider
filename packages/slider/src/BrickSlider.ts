@@ -1,33 +1,38 @@
 import { BaseSlider } from "./BaseSlider"
+import { Messages } from "./Messages"
 import { Mount } from "./Mount"
 import { TypeOptions } from "./State"
+import { Validation } from "./Validation"
 import { isValidSelector } from "./helpers"
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: TypeOptions
-  public clonedSlides: HTMLElement[] = []
   private mount: Mount | null = null
-  private el1: any
+  private validate: Validation
+  private message: Messages
 
   constructor($root: string, options?: TypeOptions) {
     super($root)
-    this.el1 = document.querySelector(`${$root} .slider__track`)
-
-    if (isValidSelector($root) && this.el1) {
-      this.userOptions = options
-      this.mount = new Mount(this.$root)
-      options && this.state.setOptions(this.userOptions!)
-    } else {
-      console.error(`Main selector ${$root} not found.`)
-    }
+    this.validate = new Validation($root)
+    this.message = new Messages($root)
+    this.validation($root, options)
   }
 
-  private validation() {}
+  private validation($root: string, options?: TypeOptions) {
+    const isValid = isValidSelector($root) && this.validate.isValid()
+
+    if (isValid) this.defineConfigs($root, options)
+    else this.message.setMessage()
+  }
+
+  private defineConfigs($root: string, options?: TypeOptions) {
+    this.userOptions = options
+    this.mount = new Mount($root)
+    options && this.state.setOptions(this.userOptions!)
+  }
 
   public init(): void {
-    if (isValidSelector(this.$root) && this.el1) {
-      this.mount?.init()
-    }
+    this.mount?.init()
   }
 
   public next() {}
@@ -44,3 +49,4 @@ export class BrickSlider extends BaseSlider {
 
   public destroy() {}
 }
+//public clonedSlides: HTMLElement[] = []

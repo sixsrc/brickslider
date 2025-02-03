@@ -7,31 +7,21 @@ export { BrickSlider }
 
 import { BrickSlider } from "./BrickSlider"
 
-const slider = new BrickSlider("#slide1_container", {
-  infinite: true,
-  spacing: 20
-})
-
-const slider2 = new BrickSlider("#slide2_container", {
-  arrows: true,
-  spacing: 20,
-  slidesPerPage: 1,
-  slidesPerView: 3,
-  infinite: true
-})
-
-const slider3 = new BrickSlider("#slide3_container", { spacing: 20 })
-
-const slider4 = new BrickSlider("#slide4_container", {
+const slider1 = new BrickSlider("#slider1", {
   spacing: 20,
   slidesPerView: 2,
   slidesPerPage: 1,
   infinite: true
 })
 
-slider.init()
+const slider2 = new BrickSlider("#slider2", {
+  spacing: 20,
+  slidesPerView: 1,
+  slidesPerPage: 1,
+  infinite: true
+})
+
+slider1.init()
 slider2.init()
-slider3.init()
-slider4.init()
 
 export { BrickSlider }
