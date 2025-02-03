@@ -89,8 +89,6 @@ export class Dots extends BaseSlider {
       this.containerDots
     )
 
-    console.log("existingDots", existingDots)
-
     if (existingDots.length === 0) {
       console.error(
         "O HTML inicial deve conter pelo menos um dot para estilização."

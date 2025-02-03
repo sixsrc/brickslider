@@ -84,22 +84,6 @@ body {
   margin: 0;
 }
 
-.slider__dots li {
-  /* margin-right: 10px;
-  list-style: none;
-  height: 8px;
-  width: 8px;
-  display: inline-block;
-  background: #c6c4c4;
-  border-radius: 8px;
-  cursor: pointer;*/
-}
-
-.slider__dots li.slider__dot--active {
-  /* background: blue;
-  border: blue;*/
-}
-
 .slider__dot--active {
   @apply bg-violet-800 border border-violet-800;
 }
