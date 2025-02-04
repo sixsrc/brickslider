@@ -9,9 +9,8 @@ import { BrickSlider } from "./BrickSlider"
 
 const slider1 = new BrickSlider("#slider1", {
   spacing: 20,
-  slidesPerView: 2,
-  slidesPerPage: 1,
-  infinite: true
+  slidesPerView: 7,
+  slidesPerPage: 1
 })
 
 const slider2 = new BrickSlider("#slider2", {

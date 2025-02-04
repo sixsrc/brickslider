@@ -193,7 +193,7 @@ export class BaseSlider {
     const remainder = numberOfSlides % slidesPerPage
     const totalSlides = getChildrenCount(this.$children)
     const leftOver = totalSlides % slidesPerPage
-    console.log("sobrando", leftOver) // Resultado: 1
+    //console.log("sobrando", leftOver) // Resultado: 1
 
     // return remainder === 0 ? 0 : slidesPerPage - remainder
 
