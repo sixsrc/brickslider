@@ -1,137 +1,184 @@
-import { DOM_ELEMENTS } from "./constants"
-import { $, getChildren, getRootSelector, getTrackChildren } from "./helpers"
+import { DOM_ELEMENTS, TAGS } from "./constants"
+import {
+  $,
+  getAllElements,
+  getChildren,
+  getRootSelector,
+  getTrackChildren,
+  hasClass,
+  removePart
+} from "./helpers"
 
 export class Validation {
-  $root: string
+  private $root: string
+  private ids: Set<string> = new Set<string>()
+  private arrElements: HTMLCollection | undefined
+  private fixedOrder: string[]
+
   constructor($root: string) {
     this.$root = $root
+    this.arrElements = this.getRoot()?.children
+    this.fixedOrder = this.getSliderClasses()
   }
 
-  private getRoot($root: string): HTMLElement | undefined {
+  private getSliderClasses() {
+    const { TRACK_SELECTOR, CHILDREN_SELECTOR, SINGLE_SLIDE } = DOM_ELEMENTS
+
+    return [
+      removePart(TRACK_SELECTOR, 1),
+      removePart(CHILDREN_SELECTOR, 1),
+      removePart(SINGLE_SLIDE, 1)
+    ]
+  }
+
+  private getRoot(): HTMLElement | undefined {
     return getRootSelector(this.$root)
   }
 
-  protected elements(): (HTMLElement | undefined)[] {
-    const elements = [
-      this.hasRootContainer(),
-      this.hasTrackContainer(),
-      this.hasChildrenContainer(),
-      this.hasSlide()
+  private getElementClasses(
+    arrayElements: HTMLCollection | undefined
+  ): string[] {
+    const firstSlideClass = this.getSliderClasses()[0]
+
+    if (!arrayElements) return []
+
+    return Array.from(arrayElements).flatMap(element => {
+      if (hasClass(element as HTMLElement, firstSlideClass))
+        return this.getTrackClasses(element)
+
+      return [element.classList[0]]
+    })
+  }
+
+  private getTrackClasses(element: Element): string[] {
+    const { SINGLE_SLIDE } = DOM_ELEMENTS
+    const firstChild = element.children[0]
+    const firstSlide = firstChild?.querySelector(SINGLE_SLIDE)
+
+    if (!firstSlide) return []
+
+    return [
+      element.classList[0],
+      firstChild.classList[0],
+      firstSlide.classList[0]
     ]
-    return elements
+  }
+
+  private getButtonElements(): Element[] {
+    return Array.from(this.arrElements || []).slice(
+      0,
+      this.getBeforeTrack().length
+    )
+  }
+
+  private getBeforeTrack(): string[] {
+    const elementClasses = this.getElementClasses(this.arrElements)
+    const trackIndex = elementClasses.indexOf(this.getSliderClasses()[0])
+    const arr = this.getElementClasses(this.arrElements)
+
+    return removePart(arr, 0, trackIndex)
+  }
+
+  private areArraysEqual(arr1: string[], arr2: string[]): boolean {
+    return (
+      arr1.length === arr2.length &&
+      arr1.every((value, index) => value === arr2[index])
+    )
   }
 
   public isValid(): boolean {
     return (
-      this.elements().every(this.hasAllElements()) &&
+      this.hasAllElements() &&
       this.hasAllElementsInOrder() &&
-      !this.hasDuplicateElements()
+      !this.hasDuplicateClasses()
     )
   }
 
-  protected hasRootContainer(): HTMLElement | undefined {
-    const element = getRootSelector(this.$root)
-
-    return element
+  private hasAllElements(): boolean {
+    return [
+      this.hasRootContainer(),
+      this.hasTrackContainer(),
+      this.hasChildrenContainer(),
+      this.hasSlide()
+    ].every(element => element !== undefined)
   }
 
-  protected hasTrackContainer() {
-    const element = getTrackChildren(this.$root)
+  private isInvalidBeforeTrack(): boolean {
+    const beforeTrack = this.getBeforeTrack()
+    const buttons = this.getButtonElements()
+    const { BRICK_ARROWS } = DOM_ELEMENTS
+    const slider__arrows = removePart(BRICK_ARROWS, 1)
 
-    return element
-  }
-
-  protected hasChildrenContainer() {
-    const element = getChildren(this.$root)
-
-    return element
-  }
-
-  protected hasSlide() {
-    const element = $(
-      `${this.$root} ${DOM_ELEMENTS.CHILDREN_SELECTOR} > ${DOM_ELEMENTS.SINGLE_SLIDE}`
+    return (
+      beforeTrack.length > 2 ||
+      !beforeTrack.every(className => className === slider__arrows) ||
+      !buttons.every(el => el.tagName.toLowerCase() === TAGS.BUTTON)
     )
-
-    return element
   }
 
-  private hasAllElements() {
-    const elements = (element: HTMLElement | undefined): boolean =>
-      element !== undefined
+  private hasAllElementsInOrder(): boolean {
+    const elementClasses = this.getElementClasses(this.arrElements)
+    const trackIndex = elementClasses.indexOf(this.getSliderClasses()[0])
 
-    return elements
+    const endArr = removePart(elementClasses, trackIndex, trackIndex + 3)
+
+    if (this.isInvalidBeforeTrack()) return false
+
+    return this.areArraysEqual(endArr, this.fixedOrder)
   }
 
-  protected hasAllElementsInOrder() {
-    const arrayElements = this.getRoot(this.$root)?.children
-    const fixedOrder = ["slider__track", "slider__container", "slider__slide"]
-
-    const classesArray = Array.from(arrayElements || [])
-      .map(element => {
-        if (element.classList[0] === "slider__track") {
-          const firstChild = element.children[0]
-          const firstSlide = firstChild?.querySelector(".slider__slide")
-
-          // Se não encontrar slider__slide, retorna array vazio para invalidar
-          if (!firstSlide) return []
-
-          return [
-            element.classList[0],
-            firstChild?.classList[0],
-            firstSlide?.classList[0]
-          ]
-        }
-        return element.classList[0]
-      })
-      .flat()
-
-    const trackIndex = classesArray.indexOf("slider__track")
-    if (trackIndex === -1) return false
-
-    const beforeTrack = classesArray.slice(0, trackIndex)
-    if (beforeTrack.length > 2) return false
-
-    if (beforeTrack.length > 0) {
-      const allArrows = beforeTrack.every(
-        className => className === "slider__arrows"
-      )
-      if (!allArrows) return false
-
-      const arrowElements = Array.from(arrayElements || []).slice(
-        0,
-        beforeTrack.length
-      )
-      const allButtons = arrowElements.every(
-        element => element.tagName.toLowerCase() === "button"
-      )
-      if (!allButtons) return false
-    }
-
-    const finalArray = classesArray.slice(trackIndex, trackIndex + 3)
-    return JSON.stringify(finalArray) === JSON.stringify(fixedOrder)
-  }
-
-  protected hasDuplicateElements(): boolean {
-    // Obtem o elemento root
-    const root = this.getRoot(this.$root)
-    if (!root) return false
-
-    // Classes que precisamos verificar
-    const classesToCheck = ["slider__track", "slider__container"]
-
-    // Contador para ocorrências das classes
+  private hasDuplicateClasses(): boolean {
     const classCounts: Record<string, number> = {}
+    const arrClasses = [this.getSliderClasses()[0], this.getSliderClasses()[1]]
 
-    // Itera sobre todos os elementos filhos dentro do root
-    root.querySelectorAll("*").forEach(element => {
-      classesToCheck.forEach(className => {
-        if (element.classList.contains(className)) {
-          classCounts[className] = (classCounts[className] || 0) + 1
-        }
+    getAllElements(this.$root).forEach(el => {
+      arrClasses.forEach(className => {
+        hasClass(el as HTMLElement, className)
       })
     })
 
-    // Retorna true se qualquer uma das classes tiver mais de uma ocorrência
     return Object.values(classCounts).some(count => count > 1)
   }
+
+  public runValidations(): void {
+    const validations = [
+      { c: () => !this.hasRootContainer(), id: "NO_ROOT" },
+      { c: () => !this.hasTrackContainer(), id: "NO_TRACK" },
+      { c: () => !this.hasChildrenContainer(), id: "NO_CHILDREN" },
+      { c: () => !this.hasSlide(), id: "NO_SLIDES" },
+      { c: () => this.hasDuplicateClasses(), id: "DUPLICATE_ELEMENTS" },
+      { c: () => !this.hasAllElementsInOrder(), id: "INVALID_ORDER" }
+    ]
+
+    this.ids.clear()
+
+    const failedValidation = validations.find(({ c }) => c())
+
+    if (failedValidation) this.ids.add(failedValidation.id)
+  }
+
+  public getIds(): string[] {
+    return Array.from(this.ids)
+  }
+
+  protected hasRootContainer(): HTMLElement | undefined {
+    return this.getRoot()
+  }
+
+  protected hasTrackContainer(): HTMLElement | undefined {
+    return getTrackChildren(this.$root)
+  }
+
+  protected hasChildrenContainer(): HTMLElement | undefined {
+    return getChildren(this.$root)
+  }
+
+  protected hasSlide(): HTMLElement | undefined {
+    return $(
+      `${this.$root} ${DOM_ELEMENTS.CHILDREN_SELECTOR} > ${DOM_ELEMENTS.SINGLE_SLIDE}`
+    )
+  }
 }
+
+// //if ()
+//el.classList.contains(className)

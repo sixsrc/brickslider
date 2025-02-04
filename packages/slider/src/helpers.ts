@@ -190,6 +190,13 @@ export function prependChild(
 export function removeClass(el: HTMLElement, className: string): void {
   el.classList.remove(className)
 }
+export function removePart<T extends string | any[]>(
+  input: T,
+  start?: number,
+  end?: number
+): T {
+  return input.slice(start, end) as T
+}
 
 export function setAttribute(
   el: HTMLElement,

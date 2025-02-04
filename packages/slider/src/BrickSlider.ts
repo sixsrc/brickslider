@@ -1,7 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { Messages } from "./Messages"
 import { Mount } from "./Mount"
-import { TypeOptions } from "./State"
+import { StateType, TypeOptions } from "./State"
 import { Validation } from "./Validation"
 import { isValidSelector } from "./helpers"
 
@@ -22,12 +22,16 @@ export class BrickSlider extends BaseSlider {
     const isValid = isValidSelector($root) && this.validate.isValid()
 
     if (isValid) this.defineConfigs($root, options)
-    else this.message.setMessage()
+    else this.message.displayMessage()
   }
 
   private defineConfigs($root: string, options?: TypeOptions) {
     this.userOptions = options
     this.mount = new Mount($root)
+    this.setOptions(options)
+  }
+
+  private setOptions(options: Partial<StateType> | undefined) {
     options && this.state.setOptions(this.userOptions!)
   }
 
