@@ -137,6 +137,7 @@ export class Mount extends BaseSlider {
   }
 
   public setWAAPIStyles(): void {
+    this.animate(this.$children, { scale: 0.8 }, this.options())
     this.slides.forEach(slide => {
       this.animate(slide, this.keyFrames(), this.options())
     })

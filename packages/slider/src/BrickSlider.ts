@@ -54,3 +54,7 @@ export class BrickSlider extends BaseSlider {
   public destroy() {}
 }
 //public clonedSlides: HTMLElement[] = []
+
+//style peek
+
+//https://github.com/nolimits4web/swiper/issues/5236

@@ -31,7 +31,7 @@ export class CloneSlides extends BaseSlider {
 
     slidesPerView = Math.min(slidesPerView, childrenCount)
 
-    this.loopByClonedSlides(slidesPerView + 1, childrenCount)
+    this.loopByClonedSlides(slidesPerView, childrenCount)
   }
 
   private loopByClonedSlides(slidesPerView: number, slideCount: number): void {
@@ -39,28 +39,22 @@ export class CloneSlides extends BaseSlider {
     const start = [...Array(slidesPerView).keys()]
       .map(i => slideCount - i - 1)
       .reverse()
+    const { $root } = this
 
-    this.mountClonedSlides(slidesPerView, end, start)
-  }
-
-  private mountClonedSlides(
-    slidesPerView: number,
-    end: number[],
-    start: number[]
-  ): void {
     for (const indices of [end, start]) {
       for (const index of indices) {
-        const clone = this.slides![index].cloneNode(true) as HTMLElement
+        const { $children, slides, clonedSlides } = this
+        const clone = slides![index].cloneNode(true) as HTMLElement
 
-        this.clonedSlides.push(clone)
+        clonedSlides.push(clone)
 
-        addClass(this.clonedSlides, CLASS_VALUES.CLONED)
+        addClass(clonedSlides, CLASS_VALUES.CLONED)
 
         index < slidesPerView
-          ? this.$children?.appendChild(clone)
-          : this.$children?.insertBefore(clone, this.slides![0])
+          ? $children?.appendChild(clone)
+          : $children?.insertBefore(clone, slides![0])
 
-        this.mount = new Mount(this.$root)
+        this.mount = new Mount($root)
 
         this.mount.setWAAPIStyles()
       }

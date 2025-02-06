@@ -1,5 +1,5 @@
 {
-  "name": "@bricksoftware/brickslider",
+  "name": "@sixsrc/brickslider",
   "author": "@malopestorres",
   "description": "Simple slider plugin, made to be lightweight and practical and with tailwind classes support.",
   "license": "MIT",
@@ -8,14 +8,12 @@
     "brickslider",
     "typescript-slider",
     "vanilla-slider",
-    "react-slider",
-    "solid-slider",
     "carousel-slider",
     "tailwind-slider"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bricksoftware/brick-slider.git"
+    "url": "git+https://github.com/sixsrc/brickslider.git"
   },
   "type": "module",
   "typings": "dist/index.d.ts",

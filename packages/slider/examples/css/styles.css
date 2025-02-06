@@ -38,6 +38,7 @@ body {
 }
 
 .slider__container {
+  /*scale: 0.8;*/
   display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: row;
@@ -59,7 +60,6 @@ body {
   max-width: 100%;
   pointer-events: none;
   border-radius: 20px;
-  transition: all 0.3s ease;
 }
 
 .slider-slide {
@@ -84,10 +84,10 @@ body {
   margin: 0;
 }
 
-.slider__dot--active {
-  @apply bg-violet-800 border border-violet-800;
-}
-
 .hide {
   visibility: hidden !important;
+}
+
+.slider__dot--active {
+  @apply bg-violet-800 border border-violet-800;
 }
