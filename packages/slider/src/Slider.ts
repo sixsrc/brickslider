@@ -20,38 +20,17 @@ import { CurrentEventType, TypeTargetSlideParams } from "./types"
 export class Slider extends BaseSlider {
   private animation: AnimationFrame
   private currentIndex: number
-  private translate: number
+  //private translate: number
   private slides: HTMLElement[]
-  private observer: Observer
   mutate: Mutate
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame(this.$root)
     this.currentIndex = 0
-    this.translate = 0
+    // this.translate = 0
     this.slides = getSliderNodeList($root)
-    this.observer = new Observer($root)
     this.mutate = new Mutate($root)
-    //this.initObserver()
-  }
-
-  private initObserver() {
-    const observer = new MutationObserver(mutations => {
-      this.observer.targetSlide(mutations, this.applyTranslate.bind(this))
-    })
-
-    this.forEachSlide(this.slides, slide => {
-      observer.observe(slide, { attributes: true })
-    })
-  }
-
-  private removeTranslate() {
-    this.forEachSlide(this.slides, slide => {
-      if (!hasClass(slide, CLASS_VALUES.ACTIVE)) {
-        //this.animate(slide, this.keyFrames(0.1), this.options(0))
-      }
-    })
   }
 
   private firstActiveSlide(element: HTMLElement[]) {
@@ -74,44 +53,8 @@ export class Slider extends BaseSlider {
     return slide
   }
 
-  private applyTranslate(slide: HTMLElement) {
-    const isFirstOrLastActive = this.isFirstOrLastActiveSlide(slide)
-    const index = this.getSlideIndex(slide)
-    const adjacentIndex = this.getAdjacentIndex(index)
-    const translate = this.getTranslateValue()
-
-    if (isFirstOrLastActive) {
-      //this.applyTranslateToAdjacent(adjacentIndex, translate)
-    }
-  }
-
-  private getCurrentPage(): number {
-    const { slidesPerPage } = this.store
-    return Math.floor(this.currentIndex / slidesPerPage)
-  }
-
   private getSlideIndex(slide: HTMLElement): number {
     return parseInt(slide.dataset.index as string)
-  }
-
-  private getAdjacentIndex(index: number): number {
-    return this.firstActiveSlide(this.slides) ? index - 1 : index + 1
-  }
-
-  private getTranslateValue(): number {
-    const { numberOfSlides, spacing } = this.store
-    const singleTranslate = (this.sliderWidth! + spacing) * numberOfSlides
-    return this.firstActiveSlide(this.slides)
-      ? -singleTranslate
-      : singleTranslate
-  }
-
-  private applyTranslateToAdjacent(adjacentIndex: number, translate: number) {
-    this.forEachSlide(this.slides, slide => {
-      if (this.getSlideIndex(slide) === adjacentIndex) {
-        this.animate(slide, this.keyFrames(translate), this.options(0))
-      }
-    })
   }
 
   private isFirstOrLastActiveSlide(slide: HTMLElement): boolean {
@@ -132,7 +75,6 @@ export class Slider extends BaseSlider {
     this.setState(this.mainState())
     this.updateDOM()
     this.updateSlider()
-    //this.setAnimationSlide()
   }
 
   private setIndexBased(params: TypeTargetSlideParams): void {
@@ -164,24 +106,14 @@ export class Slider extends BaseSlider {
     requestAnimationFrame(this.animation.init)
   }
 
-  private checkCurrentIndex(currentIndex: number) {
-    const { infinite, slidesPerView } = this.store
-
-    if (infinite && slidesPerView >= 2) {
-      //currentIndex += 1
-    }
-
-    return currentIndex
-  }
-
-  protected calcTranslate(): number {
-    let { currentIndex } = this
-    currentIndex = this.checkCurrentIndex(currentIndex)
+  /* protected calcTranslate(): number {
+    // let { currentIndex } = this
+    // currentIndex = this.checkCurrentIndex(currentIndex)
 
     this.translate = this.getSlidesSizes() as number
 
     return this.translate
-  }
+  }*/
 
   private mainState(): Partial<StateType> {
     let { currentIndex, translate } = this
@@ -194,26 +126,11 @@ export class Slider extends BaseSlider {
         ? translate + Math.abs(this.store.currentTranslate)
         : Math.abs(this.store.currentTranslate) - translate
 
-    if (currentIndex <= 0) {
-      // translate = 0
-    }
-
     return {
       ...startPos,
       slideIndex: currentIndex,
       prevTranslate: -translate,
       currentTranslate: -translate
-    }
-  }
-
-  protected setAnimationSlide() {
-    const { infinite, slideIndex } = this.store
-    const slide = this.slides[slideIndex]
-
-    if (!infinite) return
-
-    if (slide) {
-      // this.applyTranslate(slide)
     }
   }
 
@@ -252,7 +169,6 @@ export class Slider extends BaseSlider {
   }
 
   public updateSlider() {
-    // this.removeTranslate()
     this.defineDotIndex()
     this.updateDots(this.$root)
   }
@@ -260,11 +176,10 @@ export class Slider extends BaseSlider {
   protected updateDOM(): void {
     const { slidesPerPage, slidesPerView, currentSlideMovement } = this.store
     const { $root, currentIndex } = this
-    const index = this.checkCurrentIndex(currentIndex)
 
     toggleClass2(
       getSliderNodeList($root),
-      index,
+      currentIndex,
       slidesPerView,
       slidesPerPage,
       currentSlideMovement
@@ -288,6 +203,16 @@ export class Slider extends BaseSlider {
   }
 }
 
+/*
+
+ if (currentIndex <= 0) {
+      // translate = 0
+    }
+
+if (infinite && slidesPerView >= 2) {
+      //currentIndex += 1
+    }
+*/
 /* private applyTranslateToAdjacent(adjacentIndex: number, translate: number) {
     const lastSlide = this.slides[this.slides.length - 1]
     const lastSlideIndex = parseInt(lastSlide.dataset.index as string)

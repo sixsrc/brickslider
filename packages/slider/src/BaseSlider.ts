@@ -2,7 +2,6 @@ import { State, StateType } from "./State"
 import { ANIMATION_OPTIONS, CLASS_VALUES } from "./constants"
 import {
   animateElement,
-  calcTranslate,
   getEventType,
   getChildren,
   getChildrenCount,
@@ -32,6 +31,7 @@ export class BaseSlider {
   protected movement: boolean
   protected dotIndex: number
   private activeSlides: HTMLElement[]
+  protected translate: number
   protected previousTranslate: number
 
   constructor($root: string) {
@@ -45,6 +45,7 @@ export class BaseSlider {
     this.childrenCount = getChildrenCount(this.$children)
     this.sliderWidth = getSliderWidth(this.$children)
     this.movement = false
+    this.translate = 0
     this.previousTranslate = 0
     this.dotIndex = 0
   }
@@ -79,11 +80,10 @@ export class BaseSlider {
     animateElement(element, keyFrames, options)
   }
 
-  protected calcTranslate(index: number): number {
-    const { spacing } = this.store
-    const { $children } = this
+  protected calcTranslate(): number {
+    this.translate = this.getSlidesSizes() as number
 
-    return calcTranslate($children, spacing, index)
+    return this.translate
   }
 
   private getActiveSlides() {
@@ -95,35 +95,6 @@ export class BaseSlider {
 
     return { lastActiveSlide, activeIndex }
   }
-
-  /*private activeSlidesLoop(activeIndex: number) {
-    const { slidesPerPage, spacing, currentSlideMovement:mov } = this.store
-    const inc = mov === 'increment'
-
-    let translate = 0
-    let selectedSlides = null
-    let slideWidth = 0
-    let nextSlideIndex = 0
-
-    for (let i = 0; i < slidesPerPage; i++) {
-      nextSlideIndex = activeIndex + i
-
-      selectedSlides = Array.from(this.activeSlides).find(
-        slide => parseInt(slide.dataset.index as string) === nextSlideIndex
-      )
-
-      console.log("selectedSlides", nextSlideIndex)
-
-      if (selectedSlides) {
-        slideWidth = (selectedSlides.offsetWidth + spacing) as any
-        translate += slideWidth
-      }
-    }
-
-    return translate
-  }*/
-
-  //console.log(getSliderNodeList(this.$root).length)
 
   private activeSlidesLoop() {
     const {
@@ -228,3 +199,39 @@ export class BaseSlider {
     this.state.set(state)
   }
 }
+
+/* protected calcTranslate(index: number): number {
+    const { spacing } = this.store
+    const { $children } = this
+
+    return calcTranslate($children, spacing, index)
+  }*/
+
+/*private activeSlidesLoop(activeIndex: number) {
+    const { slidesPerPage, spacing, currentSlideMovement:mov } = this.store
+    const inc = mov === 'increment'
+
+    let translate = 0
+    let selectedSlides = null
+    let slideWidth = 0
+    let nextSlideIndex = 0
+
+    for (let i = 0; i < slidesPerPage; i++) {
+      nextSlideIndex = activeIndex + i
+
+      selectedSlides = Array.from(this.activeSlides).find(
+        slide => parseInt(slide.dataset.index as string) === nextSlideIndex
+      )
+
+      console.log("selectedSlides", nextSlideIndex)
+
+      if (selectedSlides) {
+        slideWidth = (selectedSlides.offsetWidth + spacing) as any
+        translate += slideWidth
+      }
+    }
+
+    return translate
+  }*/
+
+//console.log(getSliderNodeList(this.$root).length)
