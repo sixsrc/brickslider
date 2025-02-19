@@ -132,7 +132,7 @@ class State {
     State.state[this.key][State_Keys.SliderWidth] = 0
     State.state[this.key][State_Keys.SlideSizes] = options.slideSizes ?? {}
     State.state[this.key][State_Keys.SliderReady] = null
-    State.state[this.key][State_Keys.isInitialRender] = false
+    State.state[this.key][State_Keys.isInitialRender] = true
     State.state[this.key][State_Keys.IsTouch] = false
     State.state[this.key][State_Keys.isPagedActive] = true
     State.state[this.key][State_Keys.isCompleteGroup] = true
@@ -181,29 +181,27 @@ class State {
       isPrevOrCurrent:
         key === State_Keys.PrevTranslate || key === State_Keys.CurrentTranslate,
       isNumber: typeof value === "number",
-      isNaNValue: isNaN(value as number)
+      isNaNValue: typeof value === "number" && isNaN(value),
+      isUndefined: value === undefined
     }
   }
 
-  private shouldInvalidateKey(
-    key: keyof StateType,
-    value: any
-  ): shouldInvalidateKey {
-    const { isPrevOrCurrent, isNumber, isNaNValue } =
+  private shouldInvalidateKey(key: keyof StateType, value: any): boolean {
+    const { isPrevOrCurrent, isNumber, isNaNValue, isUndefined } =
       this.invalidationConditions(key, value)
 
-    return {
-      shouldInvalidate: isPrevOrCurrent && isNumber && isNaNValue
-    }
+    // Se for um campo específico e o valor for inválido
+    return (isPrevOrCurrent && isNaNValue) || isUndefined
   }
 
   set(props: { [key in keyof StateType]?: StateType[key] }): void {
     for (const key in props) {
       if (props.hasOwnProperty(key)) {
-        const { shouldInvalidate } = this.shouldInvalidateKey(key, props[key])
+        const value = props[key]
+        const shouldInvalidate = this.shouldInvalidateKey(key, value)
 
         if (!shouldInvalidate) {
-          State.state[this.key][key] = props[key]
+          State.state[this.key][key] = value
         }
       }
     }

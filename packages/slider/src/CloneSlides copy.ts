@@ -56,7 +56,7 @@ export class CloneSlides extends BaseSlider {
 
         this.mount = new Mount($root)
 
-        this.mount.setWAAPIStyles()
+        this.mount.setSlidesWidth()
       }
     }
   }

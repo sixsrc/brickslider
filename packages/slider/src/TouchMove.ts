@@ -15,7 +15,7 @@ export class TouchMove extends HandleMovement {
   protected previousPosition: number
   private skipSlide: boolean
   private currentIndex: number
-  private translate: number
+  // private translate: number
   animation: AnimationFrame
 
   constructor($root: string) {

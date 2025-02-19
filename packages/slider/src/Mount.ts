@@ -5,7 +5,7 @@ import { Resize } from "./Resize"
 import { CloneSlides } from "./CloneSlides"
 import { StateType } from "./State"
 import { Swipe } from "./Swipe"
-import { CLASS_VALUES, EVENTS } from "./constants"
+import { CLASS_VALUES, EVENTS, STYLES } from "./constants"
 import {
   appendToParent,
   getChildrenCount,
@@ -19,6 +19,7 @@ import {
 
 import { Attributes, KeyframeAnimation } from "./types"
 import { ContextMenu } from "./ContextMenu"
+import { Slider } from "./Slider"
 
 export class Mount extends BaseSlider {
   private clonedSlides: HTMLElement[] = []
@@ -42,7 +43,7 @@ export class Mount extends BaseSlider {
     this.appendSlider()
     this.setControls()
     this.handleResize()
-    this.updateDOM()
+    this.endMount()
   }
 
   private setProperties(): void {
@@ -56,7 +57,8 @@ export class Mount extends BaseSlider {
 
     if (infinite) {
       this.clone.init()
-      this.slides = this.clone.getSlides()["slides"]
+      //this.slides = this.clone.getSlides()["slides"]
+      this.slides = Slider.getSlides(this.$root)
     }
   }
 
@@ -83,7 +85,9 @@ export class Mount extends BaseSlider {
     const { dots, arrows, touch } = this.store
     const { $root } = this
 
-    if ($root) new ContextMenu($root).init()
+    if ($root) {
+    }
+    new ContextMenu($root).init()
     if (dots) new Dots($root).init()
     if (arrows) new Arrows($root).init()
     if (touch) new Swipe($root).init()
@@ -115,8 +119,8 @@ export class Mount extends BaseSlider {
 
     return {
       sliderWidth: getSliderWidth($children!),
-      numberOfSlides: getChildrenCount($children),
-      isInitialRender: true
+      numberOfSlides: getChildrenCount($children)
+      //isInitialRender: true
     }
   }
 
@@ -136,16 +140,20 @@ export class Mount extends BaseSlider {
     toggleClass(slides, index, slidesPerPage)
   }
 
-  public setWAAPIStyles(): void {
-    this.animate(this.$children, { scale: 0.8 }, this.options())
+  public setSlidesWidth(): void {
     this.slides.forEach(slide => {
       this.animate(slide, this.keyFrames(), this.options())
     })
   }
 
-  private updateDOM(): void {
+  private setPeekStyle(): void {
+    this.animate(this.$children, { scale: STYLES.PEEK } as any, this.options())
+  }
+
+  private endMount(): void {
     this.setToggleClass()
-    this.setWAAPIStyles()
+    this.setPeekStyle()
+    this.setSlidesWidth()
     this.setVisibility()
   }
 }

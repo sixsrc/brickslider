@@ -113,12 +113,10 @@ export class TouchEnd extends BaseSlider {
       this.updateSlideIndex(isNext ? "increment" : "decrement")
       this.movement = true
     } else {
-      console.log("beberrão")
       this.setState({ currentSlideMovement: null })
     }
 
     if (isTouch && !isMouseLeave) {
-      console.log("beberrão2")
       this.setPosition()
 
       this.movement = false
@@ -218,15 +216,15 @@ export class TouchEnd extends BaseSlider {
     console.log("touchend currentranslate", currentTranslate)
 
     if (!mov) {
-      this.setState({
+      /* this.setState({
         currentTranslate: prevTranslate,
         prevTranslate: prevTranslate
       })
 
       const animate = new AnimationFrame(this.$root)
 
-      animate.init()
-      return
+      animate.init()*/
+      //ß return
     }
 
     console.log("touchIndex", slideIndex)

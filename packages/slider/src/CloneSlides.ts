@@ -1,18 +1,25 @@
 import { BaseSlider } from "./BaseSlider"
 import { CLASS_VALUES } from "./constants"
-import { addClass, calcTranslate, getSliderNodeList } from "./helpers"
+import { addClass } from "./helpers"
 import { Mount } from "./Mount"
+import { Slider } from "./Slider"
 import { StateType } from "./State"
 
 export class CloneSlides extends BaseSlider {
   private slides: HTMLElement[]
   private clonedSlides: any[]
   private mount: Mount | undefined
+  private dataIndex: string
+  private totalWidthBefore: number
+  private slidesBefore: HTMLElement[] = []
 
   constructor($root: string) {
     super($root)
     this.slides = []
     this.clonedSlides = []
+    this.dataIndex = "0"
+    this.totalWidthBefore = 0
+    this.slidesBefore = []
   }
 
   public init(): void {
@@ -25,7 +32,7 @@ export class CloneSlides extends BaseSlider {
     const { $root, childrenCount } = this
     let { slidesPerView } = this.store
 
-    this.setSlides($root)
+    this.slides = Slider.getSlides($root)
 
     if (childrenCount < slidesPerView) return
 
@@ -62,7 +69,7 @@ export class CloneSlides extends BaseSlider {
 
         this.mount = new Mount(this.$root)
 
-        this.mount.setWAAPIStyles()
+        this.mount.setSlidesWidth()
       }
     }
   }
@@ -74,18 +81,34 @@ export class CloneSlides extends BaseSlider {
     return {
       currentTranslate: translate,
       prevTranslate: translate,
-      slideIndex: slideIndex + 1
+      slideIndex: slideIndex + 1,
+      isInitialRender: false
     }
   }
 
   protected calcTranslate() {
-    const { slideIndex, spacing } = this.store
-    const { $children } = this
+    const slides = Slider.getSlides(this.$root)
+    const allSlides = Array.from(slides)
+    const { spacing } = this.store
 
-    return calcTranslate($children!, spacing, slideIndex + 1)
+    for (const slide of allSlides) {
+      this.dataIndex = slide.getAttribute("data-index") as string
+      if (this.dataIndex !== "1") this.slidesBefore.push(slide)
+      else break
+    }
+    this.totalWidthBefore = this.slidesBefore.reduce((acc, slide) => {
+      return acc + slide.offsetWidth + spacing
+    }, 0)
+
+    return -this.totalWidthBefore
   }
 
-  private setSlides($root: string) {
+  private setTranslate() {
+    this.animate(this.$children, this.keyFrames(), this.options())
+  }
+}
+
+/* private setSlides($root: string) {
     this.slides = getSliderNodeList($root)
   }
 
@@ -93,9 +116,10 @@ export class CloneSlides extends BaseSlider {
     const { slides } = this
 
     return { slides }
-  }
+  }*/
+/* protected calcTranslate() {
+    const { slideIndex, spacing } = this.store
+    const { $children } = this
 
-  private setTranslate() {
-    this.animate(this.$children, this.keyFrames(), this.options())
-  }
-}
+    return calcTranslate($children!, spacing, slideIndex + 1)
+  }*/

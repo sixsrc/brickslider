@@ -13,16 +13,18 @@ export class AnimationFrame extends BaseSlider {
   }
 
   public init = (): number => {
-    const animationId = requestAnimationFrame(() => {
-      this.animate(this.$children, this.keyFrames(), this.options())
-    })
+    const animationId = requestAnimationFrame(() => {})
+
+    this.animate(this.$children, this.keyFrames(), this.options())
 
     return animationId
   }
 
   protected keyFrames(): KeyframeAnimation[] {
     const found = this.evalSlideConditions()
-    const { currentTranslate } = this.store
+    const { currentTranslate, prevTranslate } = this.store
+
+    let value = currentTranslate ? currentTranslate : prevTranslate
 
     // if (found) return found.k
 
