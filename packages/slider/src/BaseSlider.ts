@@ -77,6 +77,13 @@ export class BaseSlider {
     keyFrames: KeyframeAnimation[],
     options: AnimationOptions
   ): void {
+    console.log(
+      "asdasd",
+      this.store["currentTranslate"],
+      this.store["prevTranslate"],
+      this.translate
+    )
+
     animateElement(element, keyFrames, options)
   }
 
@@ -128,8 +135,6 @@ export class BaseSlider {
         targetSlides[targetSlides.length - 1]
       )
       isAtRightBoundary = lastTargetIndex === slidesArray.length - 1
-
-      console.log("target", targetSlides)
 
       if (isAtRightBoundary && isMissingSlides)
         targetSlides.splice(-1, leftOverSlides)

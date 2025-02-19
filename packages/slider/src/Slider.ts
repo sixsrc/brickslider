@@ -23,6 +23,7 @@ export class Slider extends BaseSlider {
   //private translate: number
   private slides: HTMLElement[]
   mutate: Mutate
+  static slides: any
 
   constructor($root: string) {
     super($root)
@@ -31,6 +32,10 @@ export class Slider extends BaseSlider {
     // this.translate = 0
     this.slides = getSliderNodeList($root)
     this.mutate = new Mutate($root)
+  }
+
+  public static getSlides($root: string) {
+    return getSliderNodeList($root)
   }
 
   private firstActiveSlide(element: HTMLElement[]) {
@@ -105,15 +110,6 @@ export class Slider extends BaseSlider {
   private animationFrame() {
     requestAnimationFrame(this.animation.init)
   }
-
-  /* protected calcTranslate(): number {
-    // let { currentIndex } = this
-    // currentIndex = this.checkCurrentIndex(currentIndex)
-
-    this.translate = this.getSlidesSizes() as number
-
-    return this.translate
-  }*/
 
   private mainState(): Partial<StateType> {
     let { currentIndex, translate } = this
@@ -232,4 +228,12 @@ if (infinite && slidesPerView >= 2) {
         this.animate(slide, this.keyFrames(translate), this.options(0))
       }
     })
+  }*/
+/* protected calcTranslate(): number {
+    // let { currentIndex } = this
+    // currentIndex = this.checkCurrentIndex(currentIndex)
+
+    this.translate = this.getSlidesSizes() as number
+
+    return this.translate
   }*/

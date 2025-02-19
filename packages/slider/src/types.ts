@@ -22,6 +22,7 @@ export type Attributes = {
 }
 
 export type CurrentEventType =
+  | "loadDOM"
   | "dots"
   | "touchstart"
   | "touchmove"
@@ -57,6 +58,7 @@ export type invalidationConditions = {
   isPrevOrCurrent: boolean
   isNumber: boolean
   isNaNValue: boolean
+  isUndefined: boolean
 }
 
 export type MouseEventOrTouchEvent = TouchEvent | MouseEvent
