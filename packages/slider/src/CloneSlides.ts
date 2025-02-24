@@ -91,16 +91,25 @@ export class CloneSlides extends BaseSlider {
     const allSlides = Array.from(slides)
     const { spacing } = this.store
 
+    this.checkDataIndex(allSlides)
+    this.setTotalWidth(spacing)
+
+    return -this.totalWidthBefore
+  }
+
+  private checkDataIndex(allSlides: HTMLElement[]) {
     for (const slide of allSlides) {
       this.dataIndex = slide.getAttribute("data-index") as string
+
       if (this.dataIndex !== "1") this.slidesBefore.push(slide)
       else break
     }
+  }
+
+  private setTotalWidth(spacing: number) {
     this.totalWidthBefore = this.slidesBefore.reduce((acc, slide) => {
       return acc + slide.offsetWidth + spacing
     }, 0)
-
-    return -this.totalWidthBefore
   }
 
   private setTranslate() {

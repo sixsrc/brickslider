@@ -3,7 +3,7 @@ import { EVENTS } from "./constants"
 import { Draggable } from "./Draggable"
 import { adjustIndex, getAxisX, getSliderNodeList } from "./helpers"
 import { StateType } from "./State"
-import { CurrentEventType, MouseEventOrTouchEvent } from "./types"
+import { MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
   private draggable: Draggable
@@ -44,6 +44,11 @@ export class TouchStart extends BaseSlider {
     this.handleEvents()
 
     this.setState(this.mainState(event))
+
+    console.log({
+      slideIndex,
+      currentTranslate
+    })
   }
 
   private handleEvents(): void {

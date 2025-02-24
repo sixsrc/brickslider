@@ -1,11 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./constants"
 import { translate3d } from "./helpers"
-import {
-  AnimationCondition,
-  AnimationOptions,
-  KeyframeAnimation
-} from "./types"
+import { AnimationOptions, KeyframeAnimation } from "./types"
 
 export class AnimationFrame extends BaseSlider {
   constructor($root: string) {
@@ -13,20 +9,15 @@ export class AnimationFrame extends BaseSlider {
   }
 
   public init = (): number => {
-    const animationId = requestAnimationFrame(() => {})
-
-    this.animate(this.$children, this.keyFrames(), this.options())
+    const animationId = requestAnimationFrame(() => {
+      this.animate(this.$children, this.keyFrames(), this.options())
+    })
 
     return animationId
   }
 
   protected keyFrames(): KeyframeAnimation[] {
-    const found = this.evalSlideConditions()
-    const { currentTranslate, prevTranslate } = this.store
-
-    let value = currentTranslate ? currentTranslate : prevTranslate
-
-    // if (found) return found.k
+    const { currentTranslate } = this.store
 
     return [{ transform: translate3d(currentTranslate) }]
   }
@@ -44,37 +35,6 @@ export class AnimationFrame extends BaseSlider {
       easing: ANIMATION_OPTIONS.EASEOUT,
       fill: ANIMATION_OPTIONS.FORWARDS
     }
-  }
-
-  private evalSlideConditions() {
-    const found = this.foundSlideKeyFrame().find(
-      (item: AnimationCondition) => item.c
-    )
-
-    return found
-  }
-
-  private setSlideKeyFrame(
-    slideIndex: number,
-    transform: number
-  ): AnimationCondition {
-    const { isJumpSlide, prevSlideIndex } = this.store
-
-    return {
-      c: isJumpSlide && prevSlideIndex === slideIndex,
-      k: [{ transform: translate3d(transform) }]
-    }
-  }
-
-  private foundSlideKeyFrame(): AnimationCondition[] {
-    const { childrenCount } = this
-    const penultIndex = this.calcTranslate(childrenCount - 2)
-    const secondIndex = this.calcTranslate(1)
-
-    return [
-      this.setSlideKeyFrame(0, penultIndex),
-      this.setSlideKeyFrame(childrenCount - 1, secondIndex)
-    ]
   }
 }
 

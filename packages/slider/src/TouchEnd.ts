@@ -211,7 +211,7 @@ export class TouchEnd extends BaseSlider {
     } = this.store
     //const currentTranslate = slideIndex * -sliderWidth!
 
-    this.setState(this.positionState(-(882 - 294)))
+    // this.setState(this.positionState(-(882 - 294)))
 
     console.log("touchend currentranslate", currentTranslate)
 
