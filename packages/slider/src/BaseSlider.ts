@@ -50,6 +50,10 @@ export class BaseSlider {
     this.dotIndex = 0
   }
 
+  public static getSlides($root: string, cloned?: boolean) {
+    return getSliderNodeList($root, cloned)
+  }
+
   protected defineEventTarget(event: MouseEventOrTouchEvent) {
     const clientX = getEventType(event).clientX
     const clientY = getEventType(event).clientY
@@ -77,13 +81,6 @@ export class BaseSlider {
     keyFrames: KeyframeAnimation[],
     options: AnimationOptions
   ): void {
-    console.log(
-      "asdasd",
-      this.store["currentTranslate"],
-      this.store["prevTranslate"],
-      this.translate
-    )
-
     animateElement(element, keyFrames, options)
   }
 
@@ -105,6 +102,7 @@ export class BaseSlider {
 
   private activeSlidesLoop() {
     const {
+      infinite,
       slidesPerPage,
       spacing,
       slideIndex,
@@ -123,6 +121,7 @@ export class BaseSlider {
     let targetSlides: HTMLElement[]
     let isAtRightBoundary = false
     let isAtLeftBoundary = false
+    let activeRightBoundary = false
 
     if (!lastActiveSlide) return 0
 
@@ -136,8 +135,12 @@ export class BaseSlider {
       )
       isAtRightBoundary = lastTargetIndex === slidesArray.length - 1
 
-      if (isAtRightBoundary && isMissingSlides)
-        targetSlides.splice(-1, leftOverSlides)
+      if (isAtRightBoundary && isMissingSlides) {
+        activeRightBoundary = true
+        console.log("teste", activeRightBoundary)
+      } else if (infinite && isAtRightBoundary && isMissingSlides) {
+        targetSlides.splice(-leftOverSlides, leftOverSlides)
+      }
     } else {
       targetSlides = slidesArray.slice(
         Math.max(0, lastActiveIndex - slidesPerPage),
@@ -152,9 +155,9 @@ export class BaseSlider {
       //const firstTargetIndex = slidesArray.indexOf(targetSlides[0])
       isAtLeftBoundary = slideIndex === 1
 
-      if (isAtLeftBoundary && isMissingSlides)
-        targetSlides.splice(-leftOverSlides)
-      console.log("target", targetSlides)
+      if (isAtLeftBoundary && isMissingSlides) {
+        // targetSlides.splice(-leftOverSlides)
+      }
     }
 
     targetSlides.forEach(slide => {
@@ -165,11 +168,12 @@ export class BaseSlider {
   }
 
   private getMissingSlides(): getMissingSlides {
-    const { numberOfSlides, slidesPerPage } = this.store
-    const remainder = numberOfSlides % slidesPerPage
-    const totalSlides = getChildrenCount(this.$children)
+    const { slidesPerPage, infinite } = this.store
+    const slides = BaseSlider.getSlides(this.$root, false).length
+    const totalSlides = infinite ? slides : slides
+    const remainder = totalSlides % slidesPerPage
     const leftOver = totalSlides % slidesPerPage
-    //console.log("sobrando", leftOver) // Resultado: 1
+    console.log("sobrando", leftOver, totalSlides) // Resultado: 1
 
     // return remainder === 0 ? 0 : slidesPerPage - remainder
 

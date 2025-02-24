@@ -36,7 +36,8 @@ export class TouchMove extends HandleMovement {
       this.setState(this.eventTargetState())
       this.updatePosition(event)
       //this.handleMove()
-      this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
+      //this.skipSlide ? this.infiniteState() :
+      this.setState(this.mainState())
       this.setSkipSlide(false)
     }
   }

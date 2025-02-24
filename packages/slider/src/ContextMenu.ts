@@ -13,7 +13,6 @@ export class ContextMenu extends BaseSlider {
   }
 
   private rightClick() {
-    this.translate = this.store["currentTranslate"]
     this.setState({ currentEventType: FROM.RIGHT_CLICK })
   }
 

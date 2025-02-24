@@ -13,27 +13,27 @@ import {
   getSliderWidth,
   listener,
   removeClass,
-  setAttributes,
-  toggleClass
+  setAttributes
 } from "./helpers"
 
 import { Attributes, KeyframeAnimation } from "./types"
 import { ContextMenu } from "./ContextMenu"
 import { Slider } from "./Slider"
+import { Mutate } from "./Mutate"
 
 export class Mount extends BaseSlider {
   private clonedSlides: HTMLElement[] = []
   private resize: Resize
   private clone: CloneSlides
   private slides: HTMLElement[]
-  contextMenu: ContextMenu
+  private mutate: Mutate
 
   constructor($root: string) {
     super($root)
     this.slides = getSliderNodeList(this.$root)
     this.clone = new CloneSlides(this.$root)
     this.resize = new Resize(this.$root)
-    this.contextMenu = new ContextMenu($root)
+    this.mutate = new Mutate($root)
   }
 
   public init(): void {
@@ -58,7 +58,7 @@ export class Mount extends BaseSlider {
     if (infinite) {
       this.clone.init()
       //this.slides = this.clone.getSlides()["slides"]
-      this.slides = Slider.getSlides(this.$root)
+      this.slides = BaseSlider.getSlides(this.$root)
     }
   }
 
@@ -120,7 +120,6 @@ export class Mount extends BaseSlider {
     return {
       sliderWidth: getSliderWidth($children!),
       numberOfSlides: getChildrenCount($children)
-      //isInitialRender: true
     }
   }
 
@@ -132,12 +131,8 @@ export class Mount extends BaseSlider {
     removeClass(this.getRootSelector!, CLASS_VALUES.HIDE)
   }
 
-  private setToggleClass(): void {
-    const { infinite, slideIndex, slidesPerPage } = this.store
-    const { slides } = this
-    const index = infinite ? 0 : slideIndex
-
-    toggleClass(slides, index, slidesPerPage)
+  private setActiveSlides(): void {
+    this.mutate.setActiveSlides(this.slides)
   }
 
   public setSlidesWidth(): void {
@@ -151,7 +146,7 @@ export class Mount extends BaseSlider {
   }
 
   private endMount(): void {
-    this.setToggleClass()
+    this.setActiveSlides()
     this.setPeekStyle()
     this.setSlidesWidth()
     this.setVisibility()

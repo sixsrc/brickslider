@@ -34,10 +34,6 @@ export class Slider extends BaseSlider {
     this.mutate = new Mutate($root)
   }
 
-  public static getSlides($root: string) {
-    return getSliderNodeList($root)
-  }
-
   private firstActiveSlide(element: HTMLElement[]) {
     const slide = element.find(slide => {
       return hasClass(slide, CLASS_VALUES.ACTIVE) && slide === element[0]
