@@ -87,6 +87,8 @@ export class TouchEnd extends BaseSlider {
   }
 
   private positionState(currentTranslate: number): Partial<StateType> {
+    console.log("teste")
+
     return {
       sliderReady: true,
       currentTranslate: currentTranslate,
@@ -210,21 +212,23 @@ export class TouchEnd extends BaseSlider {
       currentSlideMovement: mov
     } = this.store
     //const currentTranslate = slideIndex * -sliderWidth!
+    //-(912 - 294)
+    //-(Math.abs(this.store["prevTranslate"]) + this.getSlidesSizes()!
 
-    // this.setState(this.positionState(-(882 - 294)))
+    this.setState(this.positionState(prevTranslate))
 
-    console.log("touchend currentranslate", currentTranslate)
+    //console.log("touchend currentranslate", currentTranslate)
 
     if (!mov) {
-      /* this.setState({
+      this.setState({
         currentTranslate: prevTranslate,
         prevTranslate: prevTranslate
       })
 
       const animate = new AnimationFrame(this.$root)
 
-      animate.init()*/
-      //ß return
+      animate.init()
+      return
     }
 
     console.log("touchIndex", slideIndex)

@@ -33,6 +33,7 @@ export class BaseSlider {
   private activeSlides: HTMLElement[]
   protected translate: number
   protected previousTranslate: number
+  protected activeBoundary: HTMLElement[]
 
   constructor($root: string) {
     this.$root = $root
@@ -48,6 +49,7 @@ export class BaseSlider {
     this.translate = 0
     this.previousTranslate = 0
     this.dotIndex = 0
+    this.activeBoundary = []
   }
 
   public static getSlides($root: string, cloned?: boolean) {
@@ -117,11 +119,11 @@ export class BaseSlider {
     const lastActiveSlide = activeSlides[activeSlides.length - 1]
     const { isMissing: isMissingSlides, leftOverSlides } =
       this.getMissingSlides()
+
     const lastActiveIndex = slidesArray.indexOf(lastActiveSlide)
     let targetSlides: HTMLElement[]
     let isAtRightBoundary = false
     let isAtLeftBoundary = false
-    let activeRightBoundary = false
 
     if (!lastActiveSlide) return 0
 
@@ -136,8 +138,11 @@ export class BaseSlider {
       isAtRightBoundary = lastTargetIndex === slidesArray.length - 1
 
       if (isAtRightBoundary && isMissingSlides) {
-        activeRightBoundary = true
-        console.log("teste", activeRightBoundary)
+        this.activeBoundary = targetSlides
+
+        targetSlides.splice(leftOverSlides)
+        console.log("targetSlides", targetSlides)
+        //console.log("teste", activeRightBoundary)
       } else if (infinite && isAtRightBoundary && isMissingSlides) {
         targetSlides.splice(-leftOverSlides, leftOverSlides)
       }
@@ -147,6 +152,10 @@ export class BaseSlider {
         lastActiveIndex
       )
 
+      if (this.activeBoundary.length > 0) {
+        targetSlides = this.activeBoundary
+        this.activeBoundary = []
+      }
       //targetSlides = slidesArray.slice(
       // Math.max(0, lastActiveIndex - slidesPerPage - 1),
       // lastActiveIndex - 1
