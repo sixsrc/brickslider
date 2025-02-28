@@ -9,8 +9,8 @@ export class Resize extends BaseSlider {
   }
 
   init(): void {
-    this.setState(this.resizeState())
-    this.animate(this.$children, this.keyFrames(), this.options())
+    // this.setState(this.resizeState())
+    // this.animate(this.$children, this.keyFrames(), this.options())
   }
 
   private resizeState(): Partial<StateType> {
