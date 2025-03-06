@@ -1,5 +1,6 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
+
 import { Slider } from "./Slider"
 import { StateType } from "./State"
 import { EVENTS, TOUCH_LIMIT } from "./constants"
@@ -36,8 +37,9 @@ export class TouchEnd extends BaseSlider {
     const isEqual = this.shouldBeEqual(event)
 
     if (isNotSwipe) return
-    if (isEqual) this.setTargetCondition()[target]
-    else this.action()
+    this.action()
+    //if (isEqual) this.setTargetCondition()[target]
+    // else
   }
 
   private shouldBeEqual(event?: any): string | undefined {
@@ -112,6 +114,7 @@ export class TouchEnd extends BaseSlider {
     const { isNext, isPrev } = this.actionsMove()
 
     if (isNext || isPrev) {
+      console.log("isNext", isNext, "isPrev", isPrev)
       this.updateSlideIndex(isNext ? "increment" : "decrement")
       this.movement = true
     } else {
@@ -157,6 +160,10 @@ export class TouchEnd extends BaseSlider {
   }
 
   private updateSlideIndex(action: UpdateSlideIndexType): void {
+    const { slideIndex } = this.incrementOrDecrementState(action)
+
+    if (slideIndex === this.store["numberOfSlides"]) return
+
     const incrementOrDecrement = this.incrementOrDecrementState(action)
     const currentSlideMovement = this.slideMovementState(action)
     const objState = { ...incrementOrDecrement, ...currentSlideMovement }
@@ -204,11 +211,12 @@ export class TouchEnd extends BaseSlider {
 
   private setPosition() {
     const { $root, sliderWidth } = this
-    const {
+    let {
       slideIndex,
       prevTranslate,
       currentTranslate,
-
+      numberOfSlides,
+      infinite,
       currentSlideMovement: mov
     } = this.store
     //const currentTranslate = slideIndex * -sliderWidth!
@@ -218,12 +226,23 @@ export class TouchEnd extends BaseSlider {
     this.setState(this.positionState(prevTranslate))
 
     //console.log("touchend currentranslate", currentTranslate)
+    if (slideIndex >= numberOfSlides) {
+    }
 
-    if (!mov) {
+    const { isNext, isPrev } = this.actionsMove()
+
+    if (mov === null || slideIndex === numberOfSlides) {
       this.setState({
+        // slideIndex: numberOfSlides,
         currentTranslate: prevTranslate,
         prevTranslate: prevTranslate
       })
+
+      if (slideIndex > numberOfSlides) {
+        // this.setState({
+        /// slideIndex: numberOfSlides
+        // })
+      }
 
       const animate = new AnimationFrame(this.$root)
 
@@ -231,8 +250,24 @@ export class TouchEnd extends BaseSlider {
       return
     }
 
-    console.log("touchIndex", slideIndex)
+    if (slideIndex >= numberOfSlides) {
+      /* slideIndex = numberOfSlides - 1
+      this.setState({
+        slideIndex: numberOfSlides - 1
+      })*/
+    }
+
     this.slider.setSlideTarget({ touchIndex: slideIndex, $root })
+
+    console.log(
+      "slideIndex",
+      slideIndex,
+      mov,
+      "isNext",
+      isNext,
+      "isPrev",
+      isPrev
+    )
   }
 
   private prevSlideState(slideIndex: number): Partial<StateType> {

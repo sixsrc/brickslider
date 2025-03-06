@@ -90,7 +90,11 @@ export type DirectionType = Partial<
 
 export type EventFrom = "dots" | "touch" | "next" | "prev" | null
 
-export type getMissingSlides = { isMissing: number; leftOverSlides: number }
+export type getMissingSlides = {
+  isMissing: boolean
+  leftOver: number
+  isBlankSpace: boolean
+}
 
 export type TypeTargetSlideParams = {
   //from: "next" | "prev" | "dots" | "touch"

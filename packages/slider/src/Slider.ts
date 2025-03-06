@@ -167,15 +167,16 @@ export class Slider extends BaseSlider {
 
   protected updateDOM(): void {
     const { slidesPerPage, slidesPerView, currentSlideMovement } = this.store
-    const { $root, currentIndex } = this
+    const { $root } = this
 
-    toggleClass2(
+    this.mutate.updateActiveSlides(currentSlideMovement as string)
+
+    /* toggleClass2(
       getSliderNodeList($root),
-      currentIndex,
       slidesPerView,
       slidesPerPage,
       currentSlideMovement
-    )
+    )*/
   }
 
   public updateDots($root: string) {

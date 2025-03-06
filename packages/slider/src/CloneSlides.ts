@@ -63,6 +63,12 @@ export class CloneSlides extends BaseSlider {
 
         addClass(this.clonedSlides, CLASS_VALUES.CLONED)
 
+        if (index < slidesPerView) {
+          addClass([clone], "end") // Passando o clone dentro de um array
+        } else {
+          addClass([clone], "start") // Passando o clone dentro de um array
+        }
+
         index < slidesPerView
           ? this.$children?.appendChild(clone)
           : this.$children?.insertBefore(clone, this.slides![0])
