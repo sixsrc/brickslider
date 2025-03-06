@@ -39,6 +39,7 @@ export class TouchMove extends HandleMovement {
       //this.skipSlide ? this.infiniteState() :
       this.setState(this.mainState())
       this.setSkipSlide(false)
+      console.log("currentTranslate", this.store["currentTranslate"])
     }
   }
 

@@ -1,4 +1,3 @@
-import { Mutate } from "./Mutate"
 import { State, StateType } from "./State"
 import { ANIMATION_OPTIONS, CLASS_VALUES } from "./constants"
 import {
@@ -121,78 +120,48 @@ export class BaseSlider {
     const { slidesPerPage, currentSlideMovement } = this.store
     const isIncrement = currentSlideMovement === "increment"
 
+    const slidesToUse = this.isAtRightBoundary
+      ? this.slidesArr.filter(slide => !hasClass(slide, CLASS_VALUES.CLONED))
+      : this.slidesArr
+
+    console.log("slidestouse", slidesToUse)
     if (isIncrement) {
-      this.incrementTargetSlides(slidesPerPage)
-      this.setRightBoundary()
+      this.incrementTargetSlides(slidesToUse, slidesPerPage)
+      this.setRightBoundary(slidesToUse)
     } else {
-      this.decrementTargetSlides(slidesPerPage)
+      this.decrementTargetSlides(slidesToUse, slidesPerPage)
       this.setSlidesArrBoundary()
     }
   }
 
-  private incrementTargetSlides(slidesPerPage: number) {
-    this.targetSlides = this.slidesArr.slice(
+  private incrementTargetSlides(slides: HTMLElement[], slidesPerPage: number) {
+    this.targetSlides = slides.slice(
       this.getLastIndex() + 1,
       this.getLastIndex() + 1 + slidesPerPage
     )
-
-    console.log("targete", this.targetSlides)
-
-    this.lastIndex = this.slidesArr.indexOf(
+    this.lastIndex = slides.indexOf(
       this.targetSlides[this.targetSlides.length - 1]
     )
-
-    console.log(
-      "last",
-      this.slidesArr.indexOf(this.targetSlides[this.targetSlides.length - 1])
-    )
+    console.log("lastIndex", this.lastIndex)
   }
 
-  private removeClonedSlidesRight(slides: HTMLElement[]): HTMLElement[] {
-    const clonedSlidesRight = slides.filter(
-      slide => hasClass(slide, CLASS_VALUES.CLONED) && hasClass(slide, "end")
-    )
-
-    return slides.filter(slide => !clonedSlidesRight.includes(slide))
-  }
-
-  private withClonedSlidesRight(slides: HTMLElement[]): HTMLElement[] {
-    const clonedSlidesRight = slides.filter(
-      slide => hasClass(slide, CLASS_VALUES.CLONED) && hasClass(slide, "start")
-    )
-
-    return slides.filter(slide => !clonedSlidesRight.includes(slide))
-  }
-
-  private setRightBoundary() {
+  private setRightBoundary(slides: HTMLElement[]) {
     const { isMissing, leftOver } = this.getMissingSlides()
-    const { infinite, slidesPerView } = this.store
-    const withoutClonedRight = this.removeClonedSlidesRight(this.slidesArr)
-    const withClonedRight = this.withClonedSlidesRight(this.slidesArr)
 
-    this.isAtRightBoundary = this.lastIndex === this.slidesArr.length - 1
+    this.isAtRightBoundary = this.lastIndex === slides.length - 1
 
-    console.log("target", isMissing)
-    //&& isMissing
-    if (infinite) {
-      this.slidesArr = [...withoutClonedRight]
-    }
-    //&& isMissing
-
-    if (this.isAtRightBoundary) {
+    if (this.isAtRightBoundary && isMissing) {
       this.slidesArrBoundary = this.targetSlides
-
-      if (this.targetSlides.length < slidesPerView) {
-        this.setState({ leftOverSlides: this.targetSlides.length })
-        //this.targetSlides.splice(0, 1)
-      }
-
-      if (infinite) this.slidesArr = [...withClonedRight, ...withoutClonedRight]
+      console.log("targetSlides", this.activeSlides)
+      this.targetSlides.splice(leftOver)
     }
   }
 
-  private decrementTargetSlides(slidesPerPage: number): void {
-    this.targetSlides = this.slidesArr.slice(
+  private decrementTargetSlides(
+    slides: HTMLElement[],
+    slidesPerPage: number
+  ): void {
+    this.targetSlides = slides.slice(
       Math.max(0, this.getLastIndex() - slidesPerPage),
       this.getLastIndex()
     )
@@ -218,32 +187,14 @@ export class BaseSlider {
     return translate
   }
 
-  // if (!lastActiveSlide) return 0
-  //    const { lastActiveSlide } = this.getLastActiveSlide()
-  /*
-   this.targetSlides.forEach(slide => {
-      translate += slide.offsetWidth + spacing
-    })
-  */
+  private getMissingSlides(): getMissingSlides {
+    const { slidesPerPage, infinite } = this.store
+    const slides = BaseSlider.getSlides(this.$root, false).length
+    const totalSlides = infinite ? slides : slides
+    const remainder = totalSlides % slidesPerPage
+    const leftOver = totalSlides % slidesPerPage
 
-  protected getMissingSlides(): getMissingSlides {
-    const { slidesPerPage, slidesPerView, infinite } = this.store
-    const slides = BaseSlider.getSlides(this.$root, !infinite).length
-    const calcs = [slides % slidesPerPage, slides % slidesPerView]
-    const leftOver = calcs.filter(index => index > 0)
-    const isMissing = slides % slidesPerPage
-    const isBlankSpace = slides % slidesPerPage > 0
-
-    //const remainder = totalSlides % slidesPerPage
-    //const leftOver = totalSlides % slidesPerPage
-    /*
-        const leftOver = infinite
-      ? totalSlides % slidesPerPage
-      : totalSlides % slidesPerView
-      */
-    console.log("calcs", slides) // Resultado: 1
-
-    return { isMissing, leftOver: leftOver[0] ?? 0, isBlankSpace }
+    return { isMissing: remainder, leftOver }
   }
 
   protected getSlidesSizes(): number | undefined {

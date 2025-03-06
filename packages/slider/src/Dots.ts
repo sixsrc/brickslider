@@ -53,19 +53,20 @@ export class Dots extends BaseSlider {
 
   private calculateDots() {
     const { slidesPerPage, slidesPerView: view, infinite: loop } = this.store
-    const slides = getSliderNodeList(this.$root, false)
+    const slides = BaseSlider.getSlides(this.$root, false)
     const pages = Math.ceil(slides.length / slidesPerPage)
-    let calcValue = loop ? pages : Math.max(1, pages - (view - slidesPerPage))
 
     if (slidesPerPage <= 0 || view <= 0) return 0
-
     if (loop) return pages
 
-    const dots =
-      view === 1 ? pages : Math.max(1, pages - (view - slidesPerPage))
+    // let dots = pages // view === 1 ? pages : Math.max(1, pages - (view - slidesPerPage))
 
-    return dots
+    // dots = isBlankSpace ? dots - 1 : dots
+
+    return pages
   }
+
+  //let calcValue = loop ? pages : Math.max(1, pages - (view - slidesPerPage))
 
   /* private createDots(): void {
     const numberOfDots = this.calculateDots()

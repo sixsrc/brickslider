@@ -2,8 +2,7 @@ import {
   CurrentEventType,
   CurrentSlideMovement,
   EventFrom,
-  invalidationConditions,
-  shouldInvalidateKey
+  invalidationConditions
 } from "./types"
 
 export enum State_Keys {
@@ -15,6 +14,7 @@ export enum State_Keys {
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   SlideSizes = "slideSizes",
+  LeftOverSlides = "leftOverSlides",
   StartX = "startX",
   StartY = "startY",
   EndX = "endX",
@@ -58,6 +58,7 @@ export type StateType = {
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
   [State_Keys.SlideSizes]: Record<number, string>
+  [State_Keys.LeftOverSlides]: number
   [State_Keys.StartX]: number
   [State_Keys.StartY]: number
   [State_Keys.EndX]: number
@@ -131,6 +132,7 @@ class State {
     State.state[this.key][State_Keys.NumberOfSlides] = 0
     State.state[this.key][State_Keys.SliderWidth] = 0
     State.state[this.key][State_Keys.SlideSizes] = options.slideSizes ?? {}
+    State.state[this.key][State_Keys.LeftOverSlides] = 0
     State.state[this.key][State_Keys.SliderReady] = null
     State.state[this.key][State_Keys.isInitialRender] = true
     State.state[this.key][State_Keys.IsTouch] = false

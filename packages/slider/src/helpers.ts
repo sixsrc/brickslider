@@ -638,60 +638,54 @@ export function shouldChangePage(
 }
 export function toggleClass2(
   slides: HTMLElement[],
-  slideIndex: number,
   slidesPerView: number,
   slidesPerPage: number,
   slideMovement: CurrentSlideMovement
 ): Map<number, number[]> {
-  // Valida se slidesPerView não é maior que slidesPerPage
   if (slidesPerView > slidesPerPage) {
-    slidesPerView = slidesPerPage // Limita ao máximo permitido
+    slidesPerView = slidesPerPage
   }
 
-  // Determina o número de slides ativos e onde estão os limites
   let activeStartIndex = -1
   let activeEndIndex = -1
 
-  // Encontra os índices de slides atualmente ativos
   slides.forEach((slide, index) => {
     if (slide.classList.contains(CLASS_VALUES.ACTIVE)) {
       if (activeStartIndex === -1) {
-        activeStartIndex = index // Primeiro slide ativo
+        activeStartIndex = index
       }
-      activeEndIndex = index // Último slide ativo
+      activeEndIndex = index
     }
   })
 
-  // Remove todas as classes ativas
   slides.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
 
-  // Determina o próximo intervalo de slides ativos
   let targetStartIndex: number
+
   if (slideMovement === "increment") {
-    targetStartIndex = activeStartIndex + slidesPerView // Próximo bloco
+    targetStartIndex = activeStartIndex + slidesPerView
   } else {
-    targetStartIndex = activeStartIndex - slidesPerView // Bloco anterior
+    targetStartIndex = activeStartIndex - slidesPerView
   }
 
-  // Garante que os índices estão dentro dos limites válidos
   targetStartIndex = Math.max(
     0,
     Math.min(slides.length - slidesPerPage, targetStartIndex)
   )
 
-  // Define os novos slides ativos e cria o Map de retorno
-  const activeSlidesMap = new Map<number, number[]>() // Map para armazenar os índices
-  const activeIndices: number[] = [] // Array temporário para armazenar os índices ativos
+  console.log("targetStartIndex", targetStartIndex)
+
+  const activeSlidesMap = new Map<number, number[]>()
+  const activeIndices: number[] = []
 
   for (let i = 0; i < slidesPerPage; i++) {
     const index = targetStartIndex + i
     if (index < slides.length) {
       addClass([slides[index]], CLASS_VALUES.ACTIVE)
-      activeIndices.push(index) // Adiciona o índice ativo
+      activeIndices.push(index)
     }
   }
 
-  // Preenche o Map com a página como chave e os índices como valor
   const currentPage = Math.floor(targetStartIndex / slidesPerPage) + 1
   activeSlidesMap.set(currentPage, activeIndices)
 
