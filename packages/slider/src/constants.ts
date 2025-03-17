@@ -33,7 +33,9 @@ export const CLASS_VALUES = {
   SLIDER_DOT: "slider__dot",
   SELECTED: "slider__dot--active",
   CLONED: "cloned",
-  HIDE: "hide"
+  HIDE: "hide",
+  START: "start",
+  END: "end"
 }
 
 export const ATTRIBUTES = {
