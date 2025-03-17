@@ -11,8 +11,8 @@ export class Mutate extends BaseSlider {
   public updateActiveSlides(slideMovement: string | null = null): void {
     const slides = Slider.getSlides(this.$root)
     const startIndex = this.calculateStartIndex(slides, slideMovement)
-    this.resetActiveClasses(slides)
 
+    this.resetActiveClasses(slides)
     this.activateSlides(slides, startIndex)
   }
 
@@ -20,18 +20,9 @@ export class Mutate extends BaseSlider {
     slides: HTMLElement[],
     slideMovement: string | null
   ): number {
-    const { infinite, slideIndex, slidesPerPage } = this.store
-
-    // Localiza o índice do slide com data-index="1"
     const baseIndex = slides.findIndex(slide => slide.dataset.index === "1")
 
-    // console.log("baseIndex", baseIndex)
-
-    if (!slideMovement) {
-      // Calcula a posição inicial a partir do baseIndex
-      // console.log("asdasd", baseIndex + slideIndex * slidesPerPage)
-      return baseIndex //+ slideIndex * slidesPerPage
-    }
+    if (!slideMovement) return baseIndex
 
     return this.setTargetIndex(slides, slideMovement, baseIndex)
   }
@@ -45,7 +36,6 @@ export class Mutate extends BaseSlider {
     const adjustedSlidesPerView = Math.min(slidesPerView, slidesPerPage)
     const isIncrement = slideMovement === "increment"
 
-    // Localiza o índice atual relativo ao baseIndex
     let currentIdx = slides.findIndex(slide =>
       hasClass(slide, CLASS_VALUES.ACTIVE)
     )
@@ -53,23 +43,15 @@ export class Mutate extends BaseSlider {
     if (!isIncrement && leftOverSlides > 0) {
       currentIdx = currentIdx + (slidesPerPage - leftOverSlides)
 
-      this.setState({
-        leftOverSlides: 0
-      })
+      this.setState({ leftOverSlides: 0 })
     }
-
-    console.log("teste", baseIndex, currentIdx)
 
     const relativeIdx = currentIdx - baseIndex
 
-    // Calcula o novo índice alvo relativo ao baseIndex
     let targetIdx =
       relativeIdx +
       (isIncrement ? adjustedSlidesPerView : -adjustedSlidesPerView)
 
-    console.log("targetIdx", targetIdx)
-
-    // Garante que o índice fique dentro dos limites
     return Math.max(
       baseIndex,
       Math.min(slides.length - slidesPerPage, baseIndex + targetIdx)

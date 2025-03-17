@@ -18,7 +18,7 @@ import {
 
 import { Attributes, KeyframeAnimation } from "./types"
 import { ContextMenu } from "./ContextMenu"
-import { Slider } from "./Slider"
+
 import { Mutate } from "./Mutate"
 import { BaseSlider } from "./BaseSlider"
 
@@ -108,7 +108,6 @@ export class Mount extends BaseSlider {
 
   private getSlideWidth(): number {
     const { spacing, slidesPerView, sliderWidth } = this.store
-    console.log("sliderWidth", sliderWidth)
     const totalSpacing = (slidesPerView - 1) * spacing
     const availableWidth = sliderWidth - totalSpacing
     const slideWidth = availableWidth / slidesPerView
