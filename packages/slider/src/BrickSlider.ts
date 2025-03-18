@@ -36,6 +36,8 @@ export class BrickSlider extends BaseSlider {
   }
 
   public init(): void {
+    const { isMissing, leftOver } = this.getMissingSlides()
+    console.log(isMissing, leftOver)
     this.mount?.init()
   }
 
