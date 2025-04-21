@@ -4,16 +4,21 @@ import { addClass, hasClass, removeClass } from "./helpers"
 import { Slider } from "./Slider"
 
 export class Mutate extends BaseSlider {
+  activeIndex: number
+
   constructor($root: string) {
     super($root)
+    this.activeIndex = 0
   }
 
   public updateActiveSlides(slideMovement: string | null = null): void {
     const slides = Slider.getSlides(this.$root)
     const startIndex = this.calculateStartIndex(slides, slideMovement)
 
+    this.activeIndex = startIndex // Atualiza o índice ativo
+
     this.resetActiveClasses(slides)
-    this.activateSlides(slides, startIndex)
+    this.activateSlides(slides, this.activeIndex)
   }
 
   private calculateStartIndex(
@@ -32,25 +37,47 @@ export class Mutate extends BaseSlider {
     slideMovement: string,
     baseIndex: number
   ): number {
-    const { slidesPerPage, slidesPerView, leftOverSlides } = this.store
+    const { slidesPerPage, slidesPerView, leftOverSlides, infinite } =
+      this.store
     const adjustedSlidesPerView = Math.min(slidesPerView, slidesPerPage)
     const isIncrement = slideMovement === "increment"
 
-    let currentIdx = slides.findIndex(slide =>
+    /*let currentIdx = slides.findIndex(slide =>
       hasClass(slide, CLASS_VALUES.ACTIVE)
-    )
+    )*/
+    //let currentIdx = this.activeIndex
 
+    // console.log("slideMOvement", isIncrement, leftOverSlides)
+
+    if (isIncrement && leftOverSlides > 0) {
+      //this.activeIndex = 8
+      //currentIdx = currentIdx - (slidesPerPage - leftOverSlides)
+    }
     if (!isIncrement && leftOverSlides > 0) {
-      currentIdx = currentIdx + (slidesPerPage - leftOverSlides)
-
+      //this.activeIndex = this.activeIndex + (slidesPerPage - 0)
+      this.activeIndex = this.activeIndex + 1
+      console.log("roy khan", leftOverSlides)
       this.setState({ leftOverSlides: 0 })
+      // currentIdx = currentIdx + (slidesPerPage - leftOverSlides)
+      //this.setState({ leftOverSlides: 0 })
     }
 
-    const relativeIdx = currentIdx - baseIndex
+    //const relativeIdx = currentIdx - baseIndex
+    const relativeIdx = this.activeIndex - baseIndex
 
     let targetIdx =
       relativeIdx +
       (isIncrement ? adjustedSlidesPerView : -adjustedSlidesPerView)
+
+    if (isIncrement && !infinite && leftOverSlides > 0) {
+      targetIdx = targetIdx - 1
+    }
+    if (!isIncrement && leftOverSlides > 0) {
+      //targetIdx = targetIdx + 1
+      //this.setState({ leftOverSlides: 0 })
+    }
+
+    //console.log("targetIdx", targetIdx)
 
     return Math.max(
       baseIndex,
@@ -67,7 +94,9 @@ export class Mutate extends BaseSlider {
 
     Array.from({ length: slidesPerPage }).forEach((_, i) => {
       const index = startIndex + i
-      if (index < slides.length) addClass([slides[index]], CLASS_VALUES.ACTIVE)
+      if (index < slides.length) {
+        addClass([slides[index]], CLASS_VALUES.ACTIVE)
+      }
     })
   }
 }

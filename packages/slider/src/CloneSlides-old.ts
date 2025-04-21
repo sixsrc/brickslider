@@ -52,28 +52,32 @@ export class CloneSlides extends BaseSlider {
 
   private mountClonedSlides(
     slidesPerView: number,
-    end: number[], // slides do início para clonar no final
-    start: number[] // slides do final para clonar no início
+    end: number[],
+    start: number[]
   ): void {
-    // Primeiro adicionamos clones no início (do final do array original)
-    for (const index of start) {
-      const clone = this.slides[index].cloneNode(true) as HTMLElement
-      addClass([clone], CLASS_VALUES.CLONED) // Fixado para passar um array
-      this.$children?.insertBefore(clone, this.slides[0])
-      this.clonedSlides.push(clone)
-    }
+    for (const indices of [end, start]) {
+      for (const index of indices) {
+        const clone = this.slides![index].cloneNode(true) as HTMLElement
 
-    // Depois adicionamos clones no final (do início do array original)
-    for (const index of end) {
-      const clone = this.slides[index].cloneNode(true) as HTMLElement
-      addClass([clone], CLASS_VALUES.CLONED) // Fixado para passar um array
-      this.$children?.appendChild(clone)
-      this.clonedSlides.push(clone)
-    }
+        this.clonedSlides.push(clone)
 
-    // Configuramos o tamanho dos slides APENAS UMA VEZ após todas as clonagens
-    this.mount = new Mount(this.$root)
-    this.mount.setSlidesWidth()
+        addClass(this.clonedSlides, CLASS_VALUES.CLONED)
+
+        if (index < slidesPerView) {
+          addClass([clone], "end") // Passando o clone dentro de um array
+        } else {
+          addClass([clone], "start") // Passando o clone dentro de um array
+        }
+
+        index < slidesPerView
+          ? this.$children?.appendChild(clone)
+          : this.$children?.insertBefore(clone, this.slides![0])
+
+        this.mount = new Mount(this.$root)
+
+        this.mount.setSlidesWidth()
+      }
+    }
   }
 
   private slidePositionState(): Partial<StateType> {
