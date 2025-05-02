@@ -8,10 +8,11 @@ import {
 export enum State_Keys {
   PrevSlideIndex = "prevSlideIndex",
   SlideIndex = "slideIndex",
-  ActiveIndex = "activeIndex",
+  ActivePage = "activePage",
   SlideSpacing = "spacing",
   SlidesPerPage = "slidesPerPage",
   SlidesPerView = "slidesPerView",
+  NumberOfPages = "numberOfPages",
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   SlideSizes = "slideSizes",
@@ -53,10 +54,11 @@ export type StateType = {
   [key: string]: string | number | boolean | null | undefined | any[] | {}
   [State_Keys.PrevSlideIndex]: number
   [State_Keys.SlideIndex]: number
-  [State_Keys.ActiveIndex]: number
+  [State_Keys.ActivePage]: number
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
   [State_Keys.SlidesPerView]: number
+  [State_Keys.NumberOfPages]: number
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
   [State_Keys.SlideSizes]: Record<number, string>
@@ -127,11 +129,12 @@ class State {
 
   private initializeState(options: TypeOptions): void {
     State.state[this.key][State_Keys.PrevSlideIndex] = 0
-    State.state[this.key][State_Keys.ActiveIndex] = 0
+    State.state[this.key][State_Keys.ActivePage] = 0
     State.state[this.key][State_Keys.SlideIndex] = 0
     State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0
     State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
     State.state[this.key][State_Keys.SlidesPerView] = options.slidesPerView ?? 1
+    State.state[this.key][State_Keys.NumberOfPages] = 0
     State.state[this.key][State_Keys.NumberOfSlides] = 0
     State.state[this.key][State_Keys.SliderWidth] = 0
     State.state[this.key][State_Keys.SlideSizes] = options.slideSizes ?? {}

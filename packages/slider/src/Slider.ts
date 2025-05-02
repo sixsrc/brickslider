@@ -3,7 +3,7 @@ import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 import { Observer } from "./Observer"
 import { StateType } from "./State"
-import { CLASS_VALUES, TAGS } from "./constants"
+import { CLASS_VALUES, TAGS, TIMES } from "./constants"
 import {
   addClass,
   getAllElements,
@@ -13,7 +13,8 @@ import {
   indexBasedBy,
   isNotMapped,
   removeClass,
-  toggleClass2
+  toggleClass2,
+  waitFor
 } from "./helpers"
 import { CurrentEventType, TypeTargetSlideParams } from "./types"
 
@@ -163,6 +164,36 @@ export class Slider extends BaseSlider {
   public updateSlider() {
     this.defineDotIndex()
     this.updateDots(this.$root)
+
+    waitFor(TIMES.DEFAULT_TRANSITION_TIME, () => {
+      const { activePage, infinite, currentSlideMovement: mov } = this.store
+      console.log("activePage", activePage)
+      if (infinite && activePage === 1 && mov === "decrement") {
+        console.log("teste")
+        let translate = 0
+        const { spacing } = this.store
+        const clonedIndex = this.slidesArr.findIndex(slide => {
+          return (
+            slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+          )
+        })
+
+        const slides = [...this.slidesArr]
+
+        this.targetSlides = this.slidesArr.slice(0, 15)
+
+        this.forEachSlide(this.targetSlides, slide => {
+          translate += slide.offsetWidth + spacing
+        })
+
+        this.setState({
+          currentTranslate: -translate,
+          prevTranslate: -translate,
+          currentSlideMovement: "increment"
+        })
+        this.animate(this.$children, this.keyFrames(), this.options(0))
+      }
+    })
   }
 
   protected updateDOM(): void {
@@ -191,8 +222,15 @@ export class Slider extends BaseSlider {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
         removeClass(dot, CLASS_VALUES.SELECTED)
 
-      if (i === selectedIndex) addClass([dot], CLASS_VALUES.SELECTED)
+      if (i === selectedIndex) {
+        addClass([dot], CLASS_VALUES.SELECTED)
+        this.setState({ activePage: i })
+      }
     })
+
+    const { activePage } = this.store
+
+    console.log("selectedIndex", activePage)
   }
 }
 
