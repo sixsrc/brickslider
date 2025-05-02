@@ -11,7 +11,8 @@ import {
   getTrackChildren,
   translate3d,
   hasClass,
-  getSliderNodeList
+  getSliderNodeList,
+  waitFor
 } from "./helpers"
 import type {
   AnimationOptions,
@@ -35,7 +36,7 @@ export class BaseSlider {
   protected previousTranslate: number
   protected slidesArrBoundary: HTMLElement[]
   protected slidesArr: HTMLElement[]
-  private targetSlides: HTMLElement[]
+  protected targetSlides: HTMLElement[]
   private isAtRightBoundary: boolean
   protected lastIndex: number
   prevSlides: HTMLElement[]
@@ -141,27 +142,49 @@ export class BaseSlider {
   }
 
   private incrementTargetSlides(slidesPerPage: number) {
-    const { leftOverSlides } = this.store
+    const { leftOverSlides, activePage } = this.store
 
     this.targetSlides = this.slidesArr.slice(
       this.getLastIndex() + 1,
       this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
     )
 
-    //console.log("leftOverSlides", leftOverSlides)
+    console.log("target", this.targetSlides)
 
     this.lastIndex = this.slidesArr.indexOf(
       this.targetSlides[this.targetSlides.length - 1]
     )
+
+    console.log("lastIndex", this.getLastIndex())
+
+    // console.log("activePage", activePage)
   }
 
   private decrementTargetSlides(slidesPerPage: number): void {
-    const { leftOverSlides } = this.store
+    const {
+      infinite,
+      slidesPerView,
+      leftOverSlides,
+      activePage,
+      currentSlideMovement: mov
+    } = this.store
+    const isLimitLeft = infinite && mov === "decrement" && activePage === 0
+
+    console.log("vamos ver", this.slidesArr)
+
+    if (isLimitLeft) {
+    }
 
     this.targetSlides = this.slidesArr.slice(
-      Math.max(0, this.getLastIndex() - (slidesPerPage - leftOverSlides)),
+      Math.max(
+        0,
+        this.getLastIndex() -
+          (isLimitLeft ? slidesPerView : slidesPerPage - leftOverSlides)
+      ),
       this.getLastIndex()
     )
+
+    console.log("lastIndex", isLimitLeft)
 
     if (leftOverSlides > 0) {
       this.decrementCount++
@@ -196,7 +219,8 @@ export class BaseSlider {
 
     if (infinite) {
       if (slideIndex > numberOfSlides - 1)
-        this.handleInfiniteBoundary(isMissing)
+        // this.handleInfiniteBoundary(isMissing)
+        this.handleNonInfiniteBoundary(isMissing, slidesPerView, leftOver)
     } else {
       this.handleNonInfiniteBoundary(isMissing, slidesPerView, leftOver)
     }
@@ -256,10 +280,32 @@ export class BaseSlider {
   }
 
   private activeSlidesLoop(): number {
-    const { spacing } = this.store
+    const { spacing, slidesPerPage } = this.store
     let translate = 0
 
     this.setTargetSlides()
+
+    const hasClonedSlides = this.targetSlides.some(slide =>
+      hasClass(slide, CLASS_VALUES.CLONED)
+    )
+
+    if (hasClonedSlides) {
+      waitFor(600, () => {
+        const baseIndex = this.slidesArr.findIndex(
+          slide =>
+            slide.dataset.index === "1" &&
+            slide.classList.contains(CLASS_VALUES.CLONED)
+        )
+        // this.targetSlides = this.slidesArr.slice(0, 29)
+
+        /* this.lastIndex = this.slidesArr.indexOf(
+          this.targetSlides[this.targetSlides.length - 1]
+        )*/
+
+        console.log("targetSlides", this.targetSlides)
+      })
+      //return this.sliderWidth! + spacing
+    }
 
     this.forEachSlide(this.targetSlides, slide => {
       translate += slide.offsetWidth + spacing
@@ -282,11 +328,9 @@ export class BaseSlider {
   }*/
 
   protected getMissingSlides(): { isMissing: boolean; leftOver: number } {
-    const { slidesPerPage, slidesPerView } = this.store // Configurações do slider
-    const totalSlides = BaseSlider.getSlides(this.$root, false).length // Total de slides disponíveis
-    // Quantidade de slides na última página
+    const { slidesPerPage, slidesPerView } = this.store
+    const totalSlides = BaseSlider.getSlides(this.$root, false).length
     const lastPageSlides = totalSlides % slidesPerPage || slidesPerPage
-    // Quantidade de slides faltando para preencher a visualização
     const leftOver = Math.max(0, slidesPerView - lastPageSlides)
 
     return { isMissing: leftOver > 0, leftOver }

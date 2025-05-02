@@ -121,6 +121,8 @@ export class Dots extends BaseSlider {
     const templateDot = existingDots[0]
     const numberOfDots = this.calculateDots()
 
+    this.setState({ numberOfPages: numberOfDots })
+
     // Remove todos os dots existentes no HTML, exceto o template
     Array.from(existingDots).forEach((dot, index) => {
       if (index > 0) dot.remove()
