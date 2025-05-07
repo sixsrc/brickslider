@@ -213,6 +213,8 @@ export class BaseSlider {
 
       // this.setState({ leftOverSlides: 0 })
     }
+
+    console.log("targetSlides", this.targetSlides)
   }
 
   private removeClonedSlidesRight(slides: HTMLElement[]): HTMLElement[] {
