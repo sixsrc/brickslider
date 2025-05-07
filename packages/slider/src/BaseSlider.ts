@@ -1,5 +1,4 @@
-import { c } from "vite/dist/node/types.d-aGj9QkWt"
-import { State, State_Keys, type StateType } from "./State"
+import { State, type StateType } from "./State"
 import { ANIMATION_OPTIONS, CLASS_VALUES } from "./constants"
 import {
   animateElement,
@@ -34,7 +33,7 @@ export class BaseSlider {
   // private activeSlides: HTMLElement[]
   protected translate: number
   protected previousTranslate: number
-  protected slidesArrBoundary: HTMLElement[]
+  protected slidesArrBoundary: boolean
   protected slidesArr: HTMLElement[]
   protected targetSlides: HTMLElement[]
   private isAtRightBoundary: boolean
@@ -64,7 +63,7 @@ export class BaseSlider {
     this.previousTranslate = 0
     this.dotIndex = 0
     this.lastIndex = 0
-    this.slidesArrBoundary = []
+    this.slidesArrBoundary = false
     this.decrementCount = 0
   }
 
@@ -114,8 +113,6 @@ export class BaseSlider {
     )
     const lastActiveSlide = activeSlides[activeSlides.length - 1]
 
-    console.log("o ativo é", lastActiveSlide)
-
     return { lastActiveSlide }
   }
 
@@ -142,22 +139,41 @@ export class BaseSlider {
   }
 
   private incrementTargetSlides(slidesPerPage: number) {
-    const { leftOverSlides, activePage } = this.store
+    const {
+      infinite,
+      leftOverSlides,
+      currentSlideMovement: mov,
+      activePage,
+      numberOfPages,
+      slidesPerView
+    } = this.store
+
+    const isLeftOver = this.slidesArr.length % slidesPerView !== 1
+    const isLimitRight =
+      infinite && mov === "increment" && activePage === numberOfPages - 1
+
+    if (isLimitRight) {
+      this.slidesArrBoundary = true
+    } else {
+      this.slidesArrBoundary = false
+    }
+
+    const index = this.slidesArr.findIndex(slide => {
+      return slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+    })
 
     this.targetSlides = this.slidesArr.slice(
       this.getLastIndex() + 1,
-      this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
+      isLimitRight && isLeftOver
+        ? index + slidesPerPage
+        : this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
     )
 
-    console.log("target", this.targetSlides)
+    /// this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
 
     this.lastIndex = this.slidesArr.indexOf(
       this.targetSlides[this.targetSlides.length - 1]
     )
-
-    console.log("lastIndex", this.getLastIndex())
-
-    // console.log("activePage", activePage)
   }
 
   private decrementTargetSlides(slidesPerPage: number): void {
@@ -168,27 +184,33 @@ export class BaseSlider {
       activePage,
       currentSlideMovement: mov
     } = this.store
+    const isLeftOver = this.slidesArr.length % slidesPerView !== 1
     const isLimitLeft = infinite && mov === "decrement" && activePage === 0
 
-    console.log("vamos ver", this.slidesArr)
-
-    if (isLimitLeft) {
+    if (infinite && mov === "decrement" && activePage === 0) {
+      this.slidesArrBoundary = true
+    } else {
+      this.slidesArrBoundary = false
     }
 
     this.targetSlides = this.slidesArr.slice(
       Math.max(
         0,
         this.getLastIndex() -
-          (isLimitLeft ? slidesPerView : slidesPerPage - leftOverSlides)
+          (isLimitLeft && isLeftOver
+            ? slidesPerView
+            : slidesPerPage - leftOverSlides)
       ),
       this.getLastIndex()
     )
 
-    console.log("lastIndex", isLimitLeft)
+    //console.log("targetSlides", this.targetSlides)
+
+    console.log("this.lastIndex", this.lastIndex)
 
     if (leftOverSlides > 0) {
       this.decrementCount++
-      console.log("aaa", this.store.leftOverSlides, this.decrementCount)
+
       // this.setState({ leftOverSlides: 0 })
     }
   }
@@ -219,8 +241,8 @@ export class BaseSlider {
 
     if (infinite) {
       if (slideIndex > numberOfSlides - 1)
-        // this.handleInfiniteBoundary(isMissing)
-        this.handleNonInfiniteBoundary(isMissing, slidesPerView, leftOver)
+        this.handleInfiniteBoundary(isMissing)
+      //this.handleNonInfiniteBoundary(isMissing, slidesPerView, leftOver)
     } else {
       this.handleNonInfiniteBoundary(isMissing, slidesPerView, leftOver)
     }
@@ -256,14 +278,10 @@ export class BaseSlider {
       return index > lastIndex //this.lastIndex + 1
     })
 
-    console.log("lastIndex", this.lastIndex + 1, lastIndex)
-
     if (filteredSlides.length < slidesPerView) {
       //this.slidesArrBoundary = this.targetSlides
       ///this.slidesArrBoundary = filteredSlides
       this.setState({ leftOverSlides: 1 })
-
-      console.log("passou de novo aquiii", filteredSlides)
 
       if (filteredSlides.length > 1) {
         //console.log("filteredSlides", filteredSlides.pop())
@@ -273,10 +291,10 @@ export class BaseSlider {
   }
 
   private resetSlidesArrBoundary(): void {
-    if (this.slidesArrBoundary.length > 0) {
-      //  this.targetSlides = this.slidesArrBoundary
-      // this.slidesArrBoundary = []
-    }
+    // if (this.slidesArrBoundary.length > 0) {
+    //  this.targetSlides = this.slidesArrBoundary
+    // this.slidesArrBoundary = []
+    // }
   }
 
   private activeSlidesLoop(): number {
@@ -302,7 +320,7 @@ export class BaseSlider {
           this.targetSlides[this.targetSlides.length - 1]
         )*/
 
-        console.log("targetSlides", this.targetSlides)
+        // console.log("targetSlides", this.targetSlides)
       })
       //return this.sliderWidth! + spacing
     }
@@ -362,37 +380,3 @@ export class BaseSlider {
     this.state.set(state)
   }
 }
-
-// if (!lastActiveSlide) return 0
-//    const { lastActiveSlide } = this.getLastActiveSlide()
-/*
-   this.targetSlides.forEach(slide => {
-      translate += slide.offsetWidth + spacing
-    })
-  */
-/*private setRightBoundary() {
-    const { isMissing, leftOver } = this.getMissingSlides()
-    const { infinite, slidesPerView } = this.store
-    const withoutClonedRight = this.removeClonedSlidesRight(this.slidesArr)
-    const withClonedRight = this.withClonedSlidesRight(this.slidesArr)
-
-    this.isAtRightBoundary = this.lastIndex === this.slidesArr.length - 1
-
-    if (infinite) this.slidesArr = [...withoutClonedRight]
-
-    if (isMissing && this.isAtRightBoundary) {
-      if (!infinite) {
-        this.slidesArrBoundary = this.targetSlides
-
-        if (this.targetSlides.length < slidesPerView) {
-          this.setState({ leftOverSlides: this.targetSlides.length })
-
-          if (this.targetSlides.length > 1) {
-            this.targetSlides.splice(0, leftOver)
-          }
-        }
-      } else {
-        this.slidesArr = [...withClonedRight, ...withoutClonedRight]
-      }
-    }
-  }*/

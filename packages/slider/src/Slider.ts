@@ -1,3 +1,4 @@
+import { c } from "vite/dist/node/types.d-aGj9QkWt"
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
@@ -154,9 +155,15 @@ export class Slider extends BaseSlider {
   }
 
   protected defineIncrementOrDecrement() {
-    let { currentSlideMovement: mov, dotIndex } = this.store
+    let { currentSlideMovement: mov, dotIndex, numberOfPages } = this.store
+
+    console.log("dotIndex", dotIndex, numberOfPages)
+
     if (mov === "increment") dotIndex++
     else dotIndex--
+
+    if (dotIndex < 0) dotIndex = Math.abs(dotIndex)
+    else if (dotIndex > numberOfPages - 1) dotIndex = 0
 
     return { dotIndex }
   }
@@ -166,21 +173,44 @@ export class Slider extends BaseSlider {
     this.updateDots(this.$root)
 
     waitFor(TIMES.DEFAULT_TRANSITION_TIME, () => {
-      const { activePage, infinite, currentSlideMovement: mov } = this.store
-      console.log("activePage", activePage)
-      if (infinite && activePage === 1 && mov === "decrement") {
-        console.log("teste")
+      const { infinite, slidesPerPage, currentSlideMovement: mov } = this.store
+      const slideDataset = String(slidesPerPage + 1)
+
+      if (infinite && this.slidesArrBoundary && mov === "decrement") {
+        const container = document.querySelector("#slider3 .slider__container")
+        const plides = document.querySelectorAll("#slider3  .slider__slide")
+
+        const containerRect = container?.getBoundingClientRect()
+
+        /* plides.forEach(slide => {
+          const slideRect = slide.getBoundingClientRect()
+
+          // Verifica se o slide está visível na área do container
+          const isVisible =
+            slideRect.right > containerRect.left &&
+            slideRect.left < containerRect.right &&
+            slideRect.bottom > containerRect.top &&
+            slideRect.top < containerRect.bottom
+
+          console.log("slide visivel", slide)
+
+          // slide.setAttribute("teste", isVisible ? "true" : "false")
+        })
+
         let translate = 0
         const { spacing } = this.store
         const clonedIndex = this.slidesArr.findIndex(slide => {
           return (
-            slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+            slide.dataset.index === slideDataset &&
+            !hasClass(slide, CLASS_VALUES.CLONED)
           )
         })
 
+        console.log("clonedIndex", clonedIndex)
+
         const slides = [...this.slidesArr]
 
-        this.targetSlides = this.slidesArr.slice(0, 15)
+        this.targetSlides = this.slidesArr.slice(0, clonedIndex)
 
         this.forEachSlide(this.targetSlides, slide => {
           translate += slide.offsetWidth + spacing
@@ -190,6 +220,28 @@ export class Slider extends BaseSlider {
           currentTranslate: -translate,
           prevTranslate: -translate,
           currentSlideMovement: "increment"
+        })
+        this.animate(this.$children, this.keyFrames(), this.options(0))
+*/
+      } else if (infinite && this.slidesArrBoundary && mov === "increment") {
+        let translate = 0
+        const { spacing } = this.store
+        const clonedIndex = this.slidesArr.findIndex(slide => {
+          return (
+            slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+          )
+        })
+
+        this.targetSlides = this.slidesArr.slice(0, 10)
+
+        this.forEachSlide(this.targetSlides, slide => {
+          translate += slide.offsetWidth + spacing
+        })
+
+        this.setState({
+          currentTranslate: -translate,
+          prevTranslate: -translate,
+          currentSlideMovement: "decrement"
         })
         this.animate(this.$children, this.keyFrames(), this.options(0))
       }
@@ -212,7 +264,7 @@ export class Slider extends BaseSlider {
 
   public updateDots($root: string) {
     const { dotIndex } = this.store
-    const selectedIndex = dotIndex ?? 0
+    let selectedIndex = dotIndex ?? 0
     const { dots: isDots } = this.store
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
 
@@ -222,15 +274,11 @@ export class Slider extends BaseSlider {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
         removeClass(dot, CLASS_VALUES.SELECTED)
 
-      if (i === selectedIndex) {
+      if (i === Math.abs(selectedIndex)) {
         addClass([dot], CLASS_VALUES.SELECTED)
         this.setState({ activePage: i })
       }
     })
-
-    const { activePage } = this.store
-
-    console.log("selectedIndex", activePage)
   }
 }
 
