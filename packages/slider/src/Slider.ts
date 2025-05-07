@@ -26,22 +26,57 @@ export class Slider extends BaseSlider {
   private slides: HTMLElement[]
   mutate: Mutate
   static slides: any
+  targetDataIndex: null | string
 
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame(this.$root)
     this.currentIndex = 0
+    this.targetDataIndex = null
     // this.translate = 0
     this.slides = getSliderNodeList($root)
     this.mutate = new Mutate($root)
   }
 
-  private firstActiveSlide(element: HTMLElement[]) {
-    const slide = element.find(slide => {
-      return hasClass(slide, CLASS_VALUES.ACTIVE) && slide === element[0]
-    })
+  private getVisibleSlidesAfterDecrement(
+    totalSlides,
+    slidesPerView,
+    slidesPerPage,
+    currentIndex,
+    slideElements
+  ) {
+    // Calcula qual será o novo índice inicial após um decrement
+    let newFirstIndex = currentIndex - slidesPerPage
 
-    return slide
+    // Se o slider for infinito, ajusta índices negativos
+    if (newFirstIndex <= 0) {
+      newFirstIndex = totalSlides + newFirstIndex
+    }
+
+    // Array para armazenar todos os elementos dos slides visíveis
+    const visibleSlideElements = []
+
+    // Calcula os índices de todos os slides que ficarão visíveis
+    for (let i = 0; i < slidesPerView; i++) {
+      let slideIndex = newFirstIndex + i
+
+      // Ajusta se o índice ultrapassar o total de slides (loop infinito)
+      if (slideIndex > totalSlides) {
+        slideIndex = slideIndex - totalSlides
+      }
+
+      // Encontra o elemento do slide correspondente
+      const slideElement = Array.from(slideElements).find(
+        slide => parseInt(slide.getAttribute("data-index")) === slideIndex
+      )
+
+      // Adiciona o elemento ao array de slides visíveis
+      if (slideElement) {
+        visibleSlideElements.push(slideElement)
+      }
+    }
+
+    return visibleSlideElements
   }
 
   private lastActiveSlide(element: HTMLElement[]) {
@@ -62,12 +97,32 @@ export class Slider extends BaseSlider {
 
   private isFirstOrLastActiveSlide(slide: HTMLElement): boolean {
     return (
-      slide === this.firstActiveSlide(this.slides) ||
+      // slide === this.firstActiveSlide(this.slides) ||
       slide === this.lastActiveSlide(this.slides)
     )
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
+    const {
+      slidesPerPage,
+      slidesPerView,
+      infinite,
+      currentSlideMovement: mov,
+      activePage
+    } = this.store
+    //const firstActiveIndex = this.firstActiveSlideIndex(this.slidesArr)
+    const isLeftOver = this.slidesArr.length % slidesPerView !== 1
+    const isLimitLeft = infinite && mov === "decrement" && activePage === 0
+
+    const result = this.getVisibleSlidesAfterDecrement(
+      14,
+      slidesPerView,
+      isLeftOver && isLimitLeft ? slidesPerView : slidesPerPage,
+      1,
+      this.slidesArr
+    )
+    this.targetDataIndex = (result[0] as HTMLElement).dataset.index as string
+    console.log("result", result)
     this.setIndexBased(params)
     this.mapSlideIndex() ? null : this.nextAction()
   }
@@ -162,8 +217,8 @@ export class Slider extends BaseSlider {
     if (mov === "increment") dotIndex++
     else dotIndex--
 
-    if (dotIndex < 0) dotIndex = Math.abs(dotIndex)
-    else if (dotIndex > numberOfPages - 1) dotIndex = 0
+    if (dotIndex === -1) dotIndex = numberOfPages - 1
+    //   else if (dotIndex > numberOfPages - 1) dotIndex = 0
 
     return { dotIndex }
   }
@@ -172,43 +227,26 @@ export class Slider extends BaseSlider {
     this.defineDotIndex()
     this.updateDots(this.$root)
 
-    waitFor(TIMES.DEFAULT_TRANSITION_TIME, () => {
-      const { infinite, slidesPerPage, currentSlideMovement: mov } = this.store
-      const slideDataset = String(slidesPerPage + 1)
+    waitFor(TIMES.DEFAULT_TRANSITION_TIME - 100, () => {
+      const {
+        infinite,
+        slidesPerPage,
+        slidesPerView,
+        currentSlideMovement: mov,
+        spacing
+      } = this.store
 
       if (infinite && this.slidesArrBoundary && mov === "decrement") {
-        const container = document.querySelector("#slider3 .slider__container")
-        const plides = document.querySelectorAll("#slider3  .slider__slide")
-
-        const containerRect = container?.getBoundingClientRect()
-
-        /* plides.forEach(slide => {
-          const slideRect = slide.getBoundingClientRect()
-
-          // Verifica se o slide está visível na área do container
-          const isVisible =
-            slideRect.right > containerRect.left &&
-            slideRect.left < containerRect.right &&
-            slideRect.bottom > containerRect.top &&
-            slideRect.top < containerRect.bottom
-
-          console.log("slide visivel", slide)
-
-          // slide.setAttribute("teste", isVisible ? "true" : "false")
-        })
-
         let translate = 0
-        const { spacing } = this.store
+
+        console.log("aaaa", this.targetDataIndex)
+
         const clonedIndex = this.slidesArr.findIndex(slide => {
           return (
-            slide.dataset.index === slideDataset &&
+            slide.dataset.index === this.targetDataIndex &&
             !hasClass(slide, CLASS_VALUES.CLONED)
           )
         })
-
-        console.log("clonedIndex", clonedIndex)
-
-        const slides = [...this.slidesArr]
 
         this.targetSlides = this.slidesArr.slice(0, clonedIndex)
 
@@ -222,7 +260,6 @@ export class Slider extends BaseSlider {
           currentSlideMovement: "increment"
         })
         this.animate(this.$children, this.keyFrames(), this.options(0))
-*/
       } else if (infinite && this.slidesArrBoundary && mov === "increment") {
         let translate = 0
         const { spacing } = this.store
@@ -267,6 +304,8 @@ export class Slider extends BaseSlider {
     let selectedIndex = dotIndex ?? 0
     const { dots: isDots } = this.store
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
+
+    console.log("dotIndex", dotIndex)
 
     if (!isDots) return {}
 

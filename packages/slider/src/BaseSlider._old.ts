@@ -165,6 +165,8 @@ export class BaseSlider {
       Math.max(0, this.getLastIndex() - slidesPerPage),
       this.getLastIndex()
     )
+
+    console.log("targetSlides", this.targetSlides)
   }
 
   private setSlidesArrBoundary(): void {
