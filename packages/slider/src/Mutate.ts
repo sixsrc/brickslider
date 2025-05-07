@@ -13,7 +13,7 @@ export class Mutate extends BaseSlider {
 
   public updateActiveSlides(slideMovement: string | null = null): void {
     //atenção aqui infinite com false.
-    const slides = Slider.getSlides(this.$root, false)
+    const slides = Slider.getSlides(this.$root)
     const startIndex = this.calculateStartIndex(slides, slideMovement)
 
     this.activeIndex = startIndex // Atualiza o índice ativo
@@ -44,7 +44,7 @@ export class Mutate extends BaseSlider {
       slidesPerView,
       leftOverSlides,
       infinite,
-
+      numberOfPages,
       currentSlideMovement: mov
     } = this.store
     const adjustedSlidesPerView = Math.min(slidesPerView, slidesPerPage)
@@ -64,7 +64,7 @@ export class Mutate extends BaseSlider {
     if (!isIncrement && leftOverSlides > 0) {
       //this.activeIndex = this.activeIndex + (slidesPerPage - 0)
       this.activeIndex = this.activeIndex + 1
-      console.log("roy khan", leftOverSlides)
+
       this.setState({ leftOverSlides: 0 })
       // currentIdx = currentIdx + (slidesPerPage - leftOverSlides)
       //this.setState({ leftOverSlides: 0 })
@@ -86,15 +86,19 @@ export class Mutate extends BaseSlider {
     }
 
     if (infinite && mov === "decrement" && activePage === 0) {
-      return Math.max(
-        baseIndex,
+      return 15
+      /*return Math.max(
+        baseIndex
         Math.min(slides.length - slidesPerPage, baseIndex + targetIdx) +
           slidesPerView +
           1
-      )
+      )*/
+    }
+    if (infinite && mov === "increment" && activePage === numberOfPages - 1) {
+      //return 0
     }
 
-    console.log("targetIdx", targetIdx)
+    // console.log("targetIdx", targetIdx)
 
     return Math.max(
       baseIndex,
