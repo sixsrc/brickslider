@@ -2,7 +2,7 @@ import { BaseSlider } from "./BaseSlider"
 import { HandleMovement } from "./HandleMovement"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TAGS } from "./constants"
+import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TAGS, TIMES } from "./constants"
 import {
   addClass,
   createNewElement,
@@ -19,6 +19,7 @@ export class Arrows extends BaseSlider {
   public $root: string
   private slider: Slider
   private buttons: HTMLElement[] = []
+  private isAnimating: boolean = false // Controle de animação
 
   constructor($root: string) {
     super($root)
@@ -73,6 +74,14 @@ export class Arrows extends BaseSlider {
     const eventType = getAttribute === "prev" ? "prev" : "next"
     const slideMovement = eventType === "next" ? "increment" : "decrement"
     const currentEventType = eventType
+
+    if (this.isAnimating) return
+
+    this.isAnimating = true
+
+    waitFor(TIMES.DEFAULT_TRANSITION_TIME - 100, () => {
+      this.isAnimating = false
+    })
 
     this.setState({ currentSlideMovement: slideMovement })
 
