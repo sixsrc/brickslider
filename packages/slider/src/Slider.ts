@@ -121,8 +121,12 @@ export class Slider extends BaseSlider {
       1,
       this.slidesArr
     )
-    this.targetDataIndex = (result[0] as HTMLElement).dataset.index as string
-    console.log("result", result)
+
+    if (infinite) {
+      this.targetDataIndex = (result[0] as HTMLElement).dataset.index as string
+      console.log("result", result)
+    }
+
     this.setIndexBased(params)
     this.mapSlideIndex() ? null : this.nextAction()
   }
