@@ -10,7 +10,7 @@ export const DOM_ELEMENTS = {
 
 export const STYLES = {
   TRANSITION: "transition",
-  PEEK: 0.8
+  PEEK: 0.9
 }
 
 export const TAGS = {
@@ -47,7 +47,7 @@ export const ATTRIBUTES = {
 } as const
 
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 500
+  DEFAULT_TRANSITION_TIME: 800
 }
 
 export const TRANSITIONS = {
@@ -80,7 +80,7 @@ export const ANIMATION_OPTIONS = {
   EASEOUT: "ease-in-out"
 } as const
 
-export const TOUCH_LIMIT = 5 //5
+export const TOUCH_LIMIT = 0 //5
 
 export const MOVE_TO_LIMIT = 3
 

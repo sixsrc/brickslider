@@ -41,7 +41,7 @@ export class BaseSlider {
   prevSlides: HTMLElement[]
   subTranslate: number
   protected decrementCount: number
-
+  protected isAnimating: boolean = false
   constructor($root: string) {
     this.$root = $root
     this.getRootSelector = getRootSelector($root)
@@ -215,26 +215,6 @@ export class BaseSlider {
     }
 
     console.log("targetSlides", this.targetSlides)
-  }
-
-  private removeClonedSlidesRight(slides: HTMLElement[]): HTMLElement[] {
-    const clonedSlidesRight = slides.filter(
-      slide =>
-        hasClass(slide, CLASS_VALUES.CLONED) &&
-        hasClass(slide, CLASS_VALUES.END)
-    )
-
-    return slides.filter(slide => !clonedSlidesRight.includes(slide))
-  }
-
-  private withClonedSlidesRight(slides: HTMLElement[]): HTMLElement[] {
-    const clonedSlidesRight = slides.filter(
-      slide =>
-        hasClass(slide, CLASS_VALUES.CLONED) &&
-        hasClass(slide, CLASS_VALUES.START)
-    )
-
-    return slides.filter(slide => !clonedSlidesRight.includes(slide))
   }
 
   private setRightBoundary() {

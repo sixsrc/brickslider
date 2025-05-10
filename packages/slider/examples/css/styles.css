@@ -4,6 +4,9 @@ body {
   font-style: normal;
 }
 
+.active {
+}
+
 .slider__track {
   width: 100%;
   height: 100%;

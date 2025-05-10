@@ -142,8 +142,32 @@ export class Mount extends BaseSlider {
     })
   }
 
+  private calculateScaleFromContainer(desiredOverlap) {
+    const { slidesPerView, spacing } = this.store
+
+    // Largura total sem gaps
+    const contentWidthNoGap = this.sliderWidth! - (slidesPerView - 1) * spacing
+
+    // Largura total com gaps e sobreposição
+    const totalContentWidth = this.sliderWidth! + desiredOverlap
+
+    // Calcula o scale
+    const scale = totalContentWidth / contentWidthNoGap
+
+    return scale
+  }
+
   private setPeekStyle(): void {
-    this.animate(this.$children, { scale: STYLES.PEEK } as any, this.options())
+    const scale = this.calculateScaleFromContainer(40)
+
+    console.log("posssivel scale", scale)
+    this.animate(
+      this.$children,
+      {
+        scale: STYLES.PEEK
+      } as any,
+      this.options()
+    )
   }
 
   private endMount(): void {
