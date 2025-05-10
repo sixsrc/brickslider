@@ -19,7 +19,7 @@ export class Arrows extends BaseSlider {
   public $root: string
   private slider: Slider
   private buttons: HTMLElement[] = []
-  private isAnimating: boolean = false // Controle de animação
+  // Controle de animação
 
   constructor($root: string) {
     super($root)
@@ -27,7 +27,7 @@ export class Arrows extends BaseSlider {
     this.slider = new Slider(this.$root)
   }
 
-  public init(): void {
+  /*public init(): void {
     //const createButtons = this.createButtons(2)
     //const buttons = this.appendButtons(createButtons)
 
@@ -40,6 +40,29 @@ export class Arrows extends BaseSlider {
         this.arrowHandler(button, this.$root)
       })
     })
+  }*/
+
+  public init(): void {
+    const buttons = Array.from(
+      document.querySelectorAll(`${this.$root}  ${DOM_ELEMENTS.BRICK_ARROWS}`)
+    )
+
+    buttons.forEach(button => {
+      const debouncedHandler = this.debounce(() => {
+        this.arrowHandler(button, this.$root)
+      }, 0) // Define o tempo de debounce
+
+      listener([EVENTS.CLICK], button, debouncedHandler)
+    })
+  }
+
+  private debounce(func: Function, delay: number): (...args: any[]) => void {
+    let timer: NodeJS.Timeout | null = null
+
+    return (...args: any[]) => {
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(() => func(...args), delay)
+    }
   }
 
   private createButtons(numberOfButtons: number): HTMLElement[] {
@@ -75,12 +98,15 @@ export class Arrows extends BaseSlider {
     const slideMovement = eventType === "next" ? "increment" : "decrement"
     const currentEventType = eventType
 
-    if (this.isAnimating) return
+    //if (this.isAnimating) return
 
-    this.isAnimating = true
+    // this.isAnimating = true
 
-    waitFor(TIMES.DEFAULT_TRANSITION_TIME - 100, () => {
-      this.isAnimating = false
+    Promise.all(
+      this.$children.getAnimations().map(animation => animation.finished)
+    ).then(() => {
+      console.log("fim animacao")
+      //this.isAnimating = false
     })
 
     this.setState({ currentSlideMovement: slideMovement })

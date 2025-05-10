@@ -25,14 +25,19 @@ export class AnimationFrame extends BaseSlider {
   protected options(
     time: number = TIMES.DEFAULT_TRANSITION_TIME
   ): AnimationOptions {
-    const { isJumpSlide, currentEventType } = this.store
+    const {
+      isJumpSlide,
+      currentEventType,
+      infinite,
+      currentSlideMovement: mov
+    } = this.store
     const isTouchMove = currentEventType === EVENTS.TOUCHMOVE
     const duration = isJumpSlide || isTouchMove ? 0 : time
     const actualDuration = duration > 0 ? duration : 0
 
     return {
       duration: actualDuration,
-      easing: ANIMATION_OPTIONS.EASEOUT,
+      easing: "ease",
       fill: ANIMATION_OPTIONS.FORWARDS
     }
   }
