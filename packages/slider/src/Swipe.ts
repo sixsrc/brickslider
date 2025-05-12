@@ -26,7 +26,7 @@ export class Swipe extends BaseSlider {
     const { touchStart, touchEnd, touchMove } = this
 
     return {
-      element: this.getTrackChildren,
+      element: this.trackChildren,
       index: 0,
       touchStart: touchStart.init.bind(touchStart) as EventListener,
       touchEnd: touchEnd.init.bind(touchEnd) as EventListener,

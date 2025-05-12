@@ -60,6 +60,21 @@ export function applyCss(
   )
 }
 
+export function shouldApplyAdjustment(
+  totalSlides: number,
+  slidesPerPage: number,
+  clonedSlides: number
+) {
+  // Calcula o número total de páginas
+  const totalPages = Math.ceil(totalSlides / slidesPerPage)
+
+  // Determina o mínimo necessário de clones para cobrir as páginas corretamente
+  const minimumClonesRequired = slidesPerPage * totalPages
+
+  // O ajuste é necessário se o número de clones for menor que o mínimo necessário
+  return clonedSlides < minimumClonesRequired
+}
+
 export function appendToParent(
   parent: HTMLElement | undefined,
   element: HTMLElement | undefined

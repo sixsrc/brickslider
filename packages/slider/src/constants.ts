@@ -10,7 +10,7 @@ export const DOM_ELEMENTS = {
 
 export const STYLES = {
   TRANSITION: "transition",
-  PEEK: 0.9
+  PEEK: 0.8
 }
 
 export const TAGS = {
