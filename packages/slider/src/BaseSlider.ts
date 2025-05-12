@@ -11,7 +11,8 @@ import {
   translate3d,
   hasClass,
   getSliderNodeList,
-  waitFor
+  waitFor,
+  shouldApplyAdjustment
 } from "./helpers"
 import type {
   AnimationOptions,
@@ -25,7 +26,7 @@ export class BaseSlider {
   protected state: State
   protected store: StateType
   protected $children: HTMLElement
-  protected getTrackChildren: HTMLElement | unknown
+  protected trackChildren: HTMLElement
   protected childrenCount: number
   protected sliderWidth: number | undefined
   protected movement: boolean
@@ -54,7 +55,7 @@ export class BaseSlider {
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
     this.$children = getChildren(this.$root) as HTMLElement
-    this.getTrackChildren = getTrackChildren($root)
+    this.trackChildren = getTrackChildren($root) as HTMLElement
     this.childrenCount = getChildrenCount(this.$children)
     this.sliderWidth = getSliderWidth(this.$children)
     this.movement = false
@@ -184,8 +185,17 @@ export class BaseSlider {
       activePage,
       currentSlideMovement: mov
     } = this.store
-    const isLeftOver = this.slidesArr.length % slidesPerView !== 1
+    // const isLeftOver = this.slidesArr.length % slidesPerView !== 1
+
     const isLimitLeft = infinite && mov === "decrement" && activePage === 0
+    const clonedSlides = this.slidesArr.filter(slide =>
+      hasClass(slide, CLASS_VALUES.CLONED)
+    )
+    const isLeftOver = shouldApplyAdjustment(
+      this.slidesArr.length,
+      slidesPerPage,
+      clonedSlides.length
+    )
 
     if (infinite && mov === "decrement" && activePage === 0) {
       this.slidesArrBoundary = true

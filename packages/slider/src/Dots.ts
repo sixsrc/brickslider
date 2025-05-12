@@ -1,25 +1,17 @@
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import {
-  ATTRIBUTES,
-  CLASS_VALUES,
-  DOM_ELEMENTS,
-  EVENTS,
-  FROM,
-  TAGS
-} from "./constants"
+import { CLASS_VALUES, EVENTS, FROM, TAGS } from "./constants"
 import { Sync } from "./Sync"
 import {
   addClass,
   appendToParent,
   calcNumberOfSlides,
-  createNewElement,
   getAllElements,
   getDotsContainer,
   getSliderNodeList,
-  listener,
-  setAttribute
+  hasClass,
+  listener
 } from "./helpers"
 
 export class Dots extends BaseSlider {
@@ -68,7 +60,10 @@ export class Dots extends BaseSlider {
   }*/
 
   private calculateDots() {
-    const { slidesPerPage, slidesPerView, numberOfSlides } = this.store
+    const { slidesPerPage, slidesPerView } = this.store
+    const numberOfSlides = this.slides.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    ).length
 
     if (slidesPerPage <= 0 || slidesPerView <= 0 || numberOfSlides <= 0)
       return 0
@@ -110,12 +105,7 @@ export class Dots extends BaseSlider {
       this.containerDots
     )
 
-    if (existingDots.length === 0) {
-      console.error(
-        "O HTML inicial deve conter pelo menos um dot para estilização."
-      )
-      return
-    }
+    if (existingDots.length === 0) return
 
     // Pega o primeiro dot como modelo
     const templateDot = existingDots[0]

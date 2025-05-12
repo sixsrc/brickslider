@@ -42,7 +42,7 @@ export class Mount extends BaseSlider {
     this.setProperties()
     this.cloneSlides()
     this.appendSlider()
-    this.setControls()
+    // this.setControls()
     this.handleResize()
     this.endMount()
   }
@@ -94,23 +94,31 @@ export class Mount extends BaseSlider {
     if (touch) new Swipe($root).init()
   }
 
-  protected keyFrames(): KeyframeAnimation[] {
-    let slideWidth = this.getSlideWidth()
-    slideWidth = slideWidth
+  protected keyFrames(index: number): KeyframeAnimation[] {
+    const slideWidth = this.getSlideWidth()
+    const { spacing } = this.store
+    const isLastSlide = index === this.slides.length - 1
 
     return [
       {
+        //  marginRight: isLastSlide ? "0px" : `${spacing}px`,
+        marginRight: `${spacing}px`,
         width: `${slideWidth}px`,
-        maxWidth: `100%`
+        maxWidth: `100%`,
+        boxSizing: "border-box"
       }
     ]
   }
 
   private getSlideWidth(): number {
+    //slidesPerView * spacing
+
     const { spacing, slidesPerView, sliderWidth } = this.store
     const totalSpacing = (slidesPerView - 1) * spacing
     const availableWidth = sliderWidth - totalSpacing
     const slideWidth = availableWidth / slidesPerView
+
+    console.log("totalSpacing", sliderWidth)
 
     return Math.max(0, slideWidth) // Garantir que não seja negativo
   }
@@ -136,35 +144,29 @@ export class Mount extends BaseSlider {
     this.mutate.updateActiveSlides()
   }
 
+  private checkSlidesPerView() {
+    this.setState({
+      numberOfSlides: this.slides.length
+    })
+    const { slidesPerView, numberOfSlides } = this.store
+    if (slidesPerView > numberOfSlides) {
+    }
+    // this.setState({ slidesPerView: numberOfSlides })
+  }
+
   public setSlidesWidth(): void {
-    this.slides.forEach(slide => {
-      this.animate(slide, this.keyFrames(), this.options())
+    this.slides.forEach((slide, index) => {
+      this.animate(slide, this.keyFrames(index), this.options())
     })
   }
 
-  private calculateScaleFromContainer(desiredOverlap) {
-    const { slidesPerView, spacing } = this.store
-
-    // Largura total sem gaps
-    const contentWidthNoGap = this.sliderWidth! - (slidesPerView - 1) * spacing
-
-    // Largura total com gaps e sobreposição
-    const totalContentWidth = this.sliderWidth! + desiredOverlap
-
-    // Calcula o scale
-    const scale = totalContentWidth / contentWidthNoGap
-
-    return scale
-  }
-
   private setPeekStyle(): void {
-    const scale = this.calculateScaleFromContainer(40)
-
-    console.log("posssivel scale", scale)
     this.animate(
-      this.$children,
+      this.trackChildren,
       {
-        scale: STYLES.PEEK
+        transform: "scale(0.8)",
+        paddingLeft: "4rem",
+        paddingRight: "4rem"
       } as any,
       this.options()
     )
@@ -172,8 +174,10 @@ export class Mount extends BaseSlider {
 
   private endMount(): void {
     this.setActiveSlides()
-    this.setPeekStyle()
+    //this.setPeekStyle()
+    this.checkSlidesPerView()
     this.setSlidesWidth()
     this.setVisibility()
+    this.setControls()
   }
 }

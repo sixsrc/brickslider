@@ -179,6 +179,3 @@ export class Validation {
     )
   }
 }
-
-// //if ()
-//el.classList.contains(className)

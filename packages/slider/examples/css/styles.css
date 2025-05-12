@@ -4,15 +4,14 @@ body {
   font-style: normal;
 }
 
-.active {
-}
-
 .slider__track {
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
+  padding-left: 50px;
+  padding-right: 50px;
 }
 
 .slider.brick-slider button {
@@ -93,4 +92,8 @@ body {
 
 .slider__dot--active {
   @apply bg-violet-800 border border-violet-800;
+}
+
+.active {
+  @apply bg-violet-800 border border-violet-800 rounded-lg;
 }

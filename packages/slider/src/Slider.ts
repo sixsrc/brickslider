@@ -14,6 +14,7 @@ import {
   indexBasedBy,
   isNotMapped,
   removeClass,
+  shouldApplyAdjustment,
   waitFor
 } from "./helpers"
 import { CurrentEventType, TypeTargetSlideParams } from "./types"
@@ -114,7 +115,15 @@ export class Slider extends BaseSlider {
       activePage
     } = this.store
     //const firstActiveIndex = this.firstActiveSlideIndex(this.slidesArr)
-    const isLeftOver = this.slidesArr.length % slidesPerView !== 1
+    const clonedSlides = this.slidesArr.filter(slide =>
+      hasClass(slide, CLASS_VALUES.CLONED)
+    )
+    const isLeftOver = shouldApplyAdjustment(
+      this.slidesArr.length,
+      slidesPerPage,
+      clonedSlides.length
+    )
+    //const isLeftOver = this.slidesArr.length % slidesPerView !== 1
     const isLimitLeft = infinite && mov === "decrement" && activePage === 0
     const slidesGroup =
       isLeftOver && isLimitLeft ? slidesPerView : slidesPerPage
@@ -264,12 +273,17 @@ export class Slider extends BaseSlider {
         prevTranslate: -translate,
         currentSlideMovement: "increment"
       })
-      //requestAnimationFrame(this.animation.init)
+
       this.animate(this.$children, this.keyFrames(), this.options(0))
 
       waitFor(0, () => {
         let translate = 0
-        this.targetSlides = this.slidesArr.slice(0, 15)
+        const index = this.slidesArr.findIndex(
+          slide =>
+            slide.dataset.index === this.targetDataIndex &&
+            !hasClass(slide, CLASS_VALUES.CLONED)
+        )
+        this.targetSlides = this.slidesArr.slice(0, index)
 
         this.forEachSlide(this.targetSlides, slide => {
           translate += slide.offsetWidth + spacing
@@ -284,7 +298,7 @@ export class Slider extends BaseSlider {
       this.animate(this.$children, this.keyFrames(), this.options())
     }
     if (infinite && this.slidesArrBoundary && mov === "increment") {
-      let translate = 0
+      /* let translate = 0
       const { spacing } = this.store
       const clonedIndex = this.slidesArr.findIndex(slide => {
         return (
@@ -292,18 +306,18 @@ export class Slider extends BaseSlider {
         )
       })
 
-      this.targetSlides = this.slidesArr.slice(0, 10)
+      this.targetSlides = this.slidesArr.slice(10, 25)
 
       this.forEachSlide(this.targetSlides, slide => {
         translate += slide.offsetWidth + spacing
       })
 
       this.setState({
-        currentTranslate: -translate,
-        prevTranslate: -translate,
-        currentSlideMovement: "decrement"
+        currentTranslate: translate,
+        prevTranslate: translate,
+        currentSlideMovement: "increment"
       })
-      this.animate(this.$children, this.keyFrames(), this.options(0))
+      this.animate(this.$children, this.keyFrames(), this.options())*/
     }
   }
 
