@@ -118,19 +118,3 @@ export class CloneSlides extends BaseSlider {
     this.animate(this.$children, this.keyFrames(), this.options())
   }
 }
-
-/* private setSlides($root: string) {
-    this.slides = getSliderNodeList($root)
-  }
-
-  public getSlides(): any {
-    const { slides } = this
-
-    return { slides }
-  }*/
-/* protected calcTranslate() {
-    const { slideIndex, spacing } = this.store
-    const { $children } = this
-
-    return calcTranslate($children!, spacing, slideIndex + 1)
-  }*/
