@@ -49,6 +49,7 @@ export class Mutate extends BaseSlider {
     } = this.store
     const adjustedSlidesPerView = Math.min(slidesPerView, slidesPerPage)
     const isIncrement = slideMovement === "increment"
+    let index = 0
 
     /*let currentIdx = slides.findIndex(slide =>
       hasClass(slide, CLASS_VALUES.ACTIVE)
@@ -86,7 +87,9 @@ export class Mutate extends BaseSlider {
     }
 
     if (infinite && mov === "decrement" && activePage === 0) {
-      return 15
+      index = slides.findIndex(slide => slide.dataset.index === "1")
+
+      return index + slidesPerPage
       /*return Math.max(
         baseIndex
         Math.min(slides.length - slidesPerPage, baseIndex + targetIdx) +
@@ -95,13 +98,15 @@ export class Mutate extends BaseSlider {
       )*/
     }
     if (infinite && mov === "increment" && activePage === numberOfPages - 1) {
-      //return 0
+      index = slides.findIndex(slide => slide.dataset.index === "1")
+      return index
     }
 
     // console.log("targetIdx", targetIdx)
+    console.log("baseIndex", baseIndex)
 
     return Math.max(
-      baseIndex,
+      infinite ? baseIndex + slidesPerPage : baseIndex,
       Math.min(slides.length - slidesPerPage, baseIndex + targetIdx)
     )
   }

@@ -38,6 +38,69 @@ export class Slider extends BaseSlider {
     this.mutate = new Mutate($root)
   }
 
+  private getVisibleSlides(mov: string, slidesPerPage: number) {
+    const { slidesPerView } = this.store
+    const currentIndex = 1
+
+    // Array para armazenar todos os elementos dos slides visíveis
+    const visibleSlideElements = []
+
+    // Filtra os slides para obter apenas os não-clonados
+    const slides = this.slidesArr.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    )
+
+    // Calcula o total de slides não-clonados
+    const totalSlides = slides.length
+
+    // Calcula qual será o novo índice inicial com base na direção de movimento
+    let newFirstIndex
+
+    if (mov === "decrement") {
+      // Navegação para trás
+      newFirstIndex = currentIndex - slidesPerPage
+
+      // Se o slider for infinito, ajusta índices negativos
+      if (newFirstIndex <= 0) {
+        newFirstIndex = totalSlides + newFirstIndex
+      }
+    } else if (mov === "increment") {
+      // Navegação para frente
+      newFirstIndex = currentIndex + slidesPerPage
+
+      // Se o slider for infinito, ajusta índices que ultrapassam o total
+      if (newFirstIndex > totalSlides) {
+        newFirstIndex = newFirstIndex - totalSlides
+      }
+    } else {
+      throw new Error("Movimento inválido. Use 'increment' ou 'decrement'")
+    }
+
+    // Calcula os índices de todos os slides que ficarão visíveis
+    for (let i = 0; i < slidesPerView; i++) {
+      let slideIndex = newFirstIndex + i
+
+      // Ajusta se o índice ultrapassar o total de slides (loop infinito)
+      if (slideIndex > totalSlides) {
+        slideIndex = slideIndex - totalSlides
+      }
+
+      // Encontra o elemento do slide correspondente
+      const slideElement = Array.from(slides).find(
+        slide =>
+          parseInt((slide as HTMLElement).getAttribute("data-index")!) ===
+          slideIndex
+      )
+
+      // Adiciona o elemento ao array de slides visíveis
+      if (slideElement) {
+        visibleSlideElements.push(slideElement)
+      }
+    }
+
+    return visibleSlideElements
+  }
+
   private getVisibleSlidesDecrement(slidesPerPage: number) {
     const { slidesPerView } = this.store
     // Calcula qual será o novo índice inicial após um decrement
@@ -112,7 +175,8 @@ export class Slider extends BaseSlider {
       slidesPerView,
       infinite,
       currentSlideMovement: mov,
-      activePage
+      activePage,
+      numberOfPages
     } = this.store
     //const firstActiveIndex = this.firstActiveSlideIndex(this.slidesArr)
     const clonedSlides = this.slidesArr.filter(slide =>
@@ -125,14 +189,20 @@ export class Slider extends BaseSlider {
     )
     //const isLeftOver = this.slidesArr.length % slidesPerView !== 1
     const isLimitLeft = infinite && mov === "decrement" && activePage === 0
+    const isLimitRight =
+      infinite && mov === "increment" && activePage === numberOfPages - 1
     const slidesGroup =
       isLeftOver && isLimitLeft ? slidesPerView : slidesPerPage
+    const slidesGroup2 =
+      isLeftOver && isLimitRight ? slidesPerView : slidesPerPage
 
     const result = this.getVisibleSlidesDecrement(slidesGroup)
+    const result2 = this.getVisibleSlides(mov as string, slidesGroup2)
 
     if (infinite) {
       this.targetDataIndex = (result[0] as HTMLElement).dataset.index as string
       console.log("result", result)
+      console.log("result2", result2)
     }
 
     this.setIndexBased(params)
@@ -251,11 +321,6 @@ export class Slider extends BaseSlider {
     if (infinite && this.slidesArrBoundary && mov === "decrement") {
       let translate = 0
 
-      const index = this.slidesArr.find(
-        slide =>
-          slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
-      )
-
       const clonedIndex = this.slidesArr.findIndex(slide => {
         return (
           slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
@@ -263,6 +328,10 @@ export class Slider extends BaseSlider {
       })
 
       this.targetSlides = this.slidesArr.slice(0, clonedIndex)
+
+      this.lastIndex = this.slidesArr.indexOf(
+        this.targetSlides[this.targetSlides.length - 1]
+      )
 
       this.forEachSlide(this.targetSlides, slide => {
         translate += slide.offsetWidth + spacing
@@ -298,26 +367,26 @@ export class Slider extends BaseSlider {
       this.animate(this.$children, this.keyFrames(), this.options())
     }
     if (infinite && this.slidesArrBoundary && mov === "increment") {
-      /* let translate = 0
+      let translate = 0
       const { spacing } = this.store
       const clonedIndex = this.slidesArr.findIndex(slide => {
         return (
-          slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+          slide.dataset.index === "1" && !hasClass(slide, CLASS_VALUES.CLONED)
         )
       })
 
-      this.targetSlides = this.slidesArr.slice(10, 25)
+      this.targetSlides = this.slidesArr.slice(0, clonedIndex)
 
       this.forEachSlide(this.targetSlides, slide => {
         translate += slide.offsetWidth + spacing
       })
 
       this.setState({
-        currentTranslate: translate,
-        prevTranslate: translate,
-        currentSlideMovement: "increment"
+        currentTranslate: -translate,
+        prevTranslate: -translate,
+        currentSlideMovement: "decrement"
       })
-      this.animate(this.$children, this.keyFrames(), this.options())*/
+      this.animate(this.$children, this.keyFrames(), this.options())
     }
   }
 

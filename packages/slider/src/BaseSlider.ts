@@ -153,12 +153,6 @@ export class BaseSlider {
     const isLimitRight =
       infinite && mov === "increment" && activePage === numberOfPages - 1
 
-    if (isLimitRight) {
-      this.slidesArrBoundary = true
-    } else {
-      this.slidesArrBoundary = false
-    }
-
     const index = this.slidesArr.findIndex(slide => {
       return slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
     })
@@ -171,6 +165,21 @@ export class BaseSlider {
     )
 
     /// this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
+
+    console.log("target increment", this.targetSlides)
+
+    const isInfiniteRotation = this.targetSlides.filter(
+      slide =>
+        slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+    )
+
+    console.log("isInfiniteRotation", isInfiniteRotation)
+
+    if (isInfiniteRotation.length > 0) {
+      this.slidesArrBoundary = true
+    } else {
+      this.slidesArrBoundary = false
+    }
 
     this.lastIndex = this.slidesArr.indexOf(
       this.targetSlides[this.targetSlides.length - 1]
@@ -208,7 +217,7 @@ export class BaseSlider {
         0,
         this.getLastIndex() -
           (isLimitLeft && isLeftOver
-            ? slidesPerView
+            ? slidesPerPage
             : slidesPerPage - leftOverSlides)
       ),
       this.getLastIndex()
@@ -216,15 +225,11 @@ export class BaseSlider {
 
     //console.log("targetSlides", this.targetSlides)
 
-    console.log("this.lastIndex", this.lastIndex)
-
     if (leftOverSlides > 0) {
       this.decrementCount++
 
       // this.setState({ leftOverSlides: 0 })
     }
-
-    console.log("targetSlides", this.targetSlides)
   }
 
   private setRightBoundary() {
