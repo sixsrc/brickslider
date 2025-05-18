@@ -182,11 +182,14 @@ export class Slider extends BaseSlider {
     const clonedSlides = this.slidesArr.filter(slide =>
       hasClass(slide, CLASS_VALUES.CLONED)
     )
-    const isLeftOver = shouldApplyAdjustment(
+    /*const isLeftOver = shouldApplyAdjustment(
       this.slidesArr.length,
       slidesPerPage,
       clonedSlides.length
-    )
+    )*/
+    const { leftOver } = this.getMissingSlides()
+    const isLeftOver = leftOver > 1
+    console.log("isLeftOver", leftOver)
     //const isLeftOver = this.slidesArr.length % slidesPerView !== 1
     const isLimitLeft = infinite && mov === "decrement" && activePage === 0
     const isLimitRight =
@@ -319,7 +322,7 @@ export class Slider extends BaseSlider {
     const { infinite, currentSlideMovement: mov, spacing } = this.store
 
     if (infinite && this.slidesArrBoundary && mov === "decrement") {
-      let translate = 0
+      /* let translate = 0
 
       const clonedIndex = this.slidesArr.findIndex(slide => {
         return (
@@ -364,14 +367,15 @@ export class Slider extends BaseSlider {
           currentSlideMovement: "decrement"
         })
       })
-      this.animate(this.$children, this.keyFrames(), this.options())
+
+      this.animate(this.$children, this.keyFrames(), this.options())*/
     }
     if (infinite && this.slidesArrBoundary && mov === "increment") {
-      let translate = 0
+      /* let translate = 0
       const { spacing } = this.store
       const clonedIndex = this.slidesArr.findIndex(slide => {
         return (
-          slide.dataset.index === "1" && !hasClass(slide, CLASS_VALUES.CLONED)
+          slide.dataset.index === "6" && hasClass(slide, CLASS_VALUES.CLONED)
         )
       })
 
@@ -387,6 +391,29 @@ export class Slider extends BaseSlider {
         currentSlideMovement: "decrement"
       })
       this.animate(this.$children, this.keyFrames(), this.options())
+
+      waitFor(0, () => {
+        let translate = 0
+        const index = this.slidesArr.findIndex(
+          slide =>
+            slide.dataset.index === "1" && !hasClass(slide, CLASS_VALUES.CLONED)
+        )
+        this.targetSlides = this.slidesArr.slice(0, index)
+
+        this.forEachSlide(this.targetSlides, slide => {
+          translate += slide.offsetWidth + spacing
+        })
+
+        this.setState({
+          currentTranslate: -translate,
+          prevTranslate: -translate,
+          currentSlideMovement: "increment"
+        })
+      })
+
+      this.animate(this.$children, this.keyFrames(), this.options())
+
+      */
     }
   }
 

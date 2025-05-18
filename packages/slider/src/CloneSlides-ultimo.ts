@@ -7,11 +7,11 @@ import { StateType } from "./State"
 
 export class CloneSlides extends BaseSlider {
   private slides: HTMLElement[]
-  private clonedSlides: HTMLElement[]
+  private clonedSlides: any[]
   private mount: Mount | undefined
   private dataIndex: string
   private totalWidthBefore: number
-  private slidesBefore: HTMLElement[]
+  private slidesBefore: HTMLElement[] = []
 
   constructor($root: string) {
     super($root)
@@ -28,55 +28,50 @@ export class CloneSlides extends BaseSlider {
     this.setTranslate()
   }
 
-  private duplicateSlides(): void {
+  private duplicateSlides(): HTMLElement[] | undefined {
     const { $root, childrenCount } = this
-    const { slidesPerView, slidesPerPage } = this.store
+    let { slidesPerView } = this.store
 
     this.slides = Slider.getSlides($root)
 
     if (childrenCount < slidesPerView) return
 
-    // Número de slides necessários para cobrir uma página adicional
-    const extraSlidesNeeded = slidesPerView + 1 //slidesPerPage + 5
+    slidesPerView = Math.min(slidesPerView, childrenCount)
 
-    // Adicionar clones suficientes ao início e ao final
-    this.loopByClonedSlides(extraSlidesNeeded, childrenCount, extraSlidesNeeded)
+    this.loopByClonedSlides(slidesPerView + 1, childrenCount)
   }
 
-  private loopByClonedSlides(
-    slidesPerPage: number,
-    slideCount: number,
-    extraSlides: number
-  ): void {
-    const end = [...Array(extraSlides).keys()].map(i => i % slideCount)
-    const start = [...Array(extraSlides).keys()]
-      .map(i => (slideCount - i - 1) % slideCount)
+  private loopByClonedSlides(slidesPerView: number, slideCount: number): void {
+    const end = [...Array(slidesPerView).keys()]
+    const start = [...Array(slidesPerView).keys()]
+      .map(i => slideCount - i - 1)
       .reverse()
 
-    this.mountClonedSlides(slidesPerPage, end, start)
+    this.mountClonedSlides(slidesPerView, end, start)
   }
 
   private mountClonedSlides(
-    slidesPerPage: number,
-    end: number[],
-    start: number[]
+    slidesPerView: number,
+    end: number[], // slides do início para clonar no final
+    start: number[] // slides do final para clonar no início
   ): void {
-    // Clone slides para o início
+    // Primeiro adicionamos clones no início (do final do array original)
     for (const index of start) {
       const clone = this.slides[index].cloneNode(true) as HTMLElement
-      addClass([clone], CLASS_VALUES.CLONED)
+      addClass([clone], CLASS_VALUES.CLONED) // Fixado para passar um array
       this.$children?.insertBefore(clone, this.slides[0])
       this.clonedSlides.push(clone)
     }
 
-    // Clone slides para o final
+    // Depois adicionamos clones no final (do início do array original)
     for (const index of end) {
       const clone = this.slides[index].cloneNode(true) as HTMLElement
-      addClass([clone], CLASS_VALUES.CLONED)
+      addClass([clone], CLASS_VALUES.CLONED) // Fixado para passar um array
       this.$children?.appendChild(clone)
       this.clonedSlides.push(clone)
     }
 
+    // Configuramos o tamanho dos slides APENAS UMA VEZ após todas as clonagens
     this.mount = new Mount(this.$root)
     this.mount.setSlidesWidth()
   }
@@ -84,6 +79,7 @@ export class CloneSlides extends BaseSlider {
   private slidePositionState(): Partial<StateType> {
     const { slideIndex } = this.store
     const translate = this.calcTranslate()
+
     return {
       currentTranslate: translate,
       prevTranslate: translate,
@@ -92,7 +88,7 @@ export class CloneSlides extends BaseSlider {
     }
   }
 
-  protected calcTranslate(): number {
+  protected calcTranslate() {
     const slides = Slider.getSlides(this.$root)
     const allSlides = Array.from(slides)
     const { spacing } = this.store
@@ -103,45 +99,22 @@ export class CloneSlides extends BaseSlider {
     return -this.totalWidthBefore
   }
 
-  /*private checkDataIndex(allSlides: HTMLElement[]): void {
-    this.slidesBefore = []
+  private checkDataIndex(allSlides: HTMLElement[]) {
     for (const slide of allSlides) {
-      this.dataIndex = slide.getAttribute("data-index") || "0"
+      this.dataIndex = slide.getAttribute("data-index") as string
+
       if (this.dataIndex !== "1") this.slidesBefore.push(slide)
       else break
     }
-  }*/
-
-  private checkDataIndex(allSlides: HTMLElement[]): void {
-    this.slidesBefore = []
-    let indexCounter = 0
-
-    for (const slide of allSlides) {
-      const currentDataIndex = slide.getAttribute("data-index") || "0"
-
-      if (currentDataIndex === "1") {
-        indexCounter += 1
-        // Captura quando encontrar o segundo slide com "data-index" === "1"
-        if (indexCounter === 1) {
-          this.dataIndex = currentDataIndex
-          break
-        }
-      }
-
-      // Adiciona apenas slides anteriores ao segundo "data-index"
-      this.slidesBefore.push(slide)
-    }
   }
 
-  private setTotalWidth(spacing: number): void {
+  private setTotalWidth(spacing: number) {
     this.totalWidthBefore = this.slidesBefore.reduce((acc, slide) => {
       return acc + slide.offsetWidth + spacing
     }, 0)
-
-    console.log("totalwidthbefore", this.totalWidthBefore)
   }
 
-  private setTranslate(): void {
+  private setTranslate() {
     this.animate(this.$children, this.keyFrames(), this.options())
   }
 }
