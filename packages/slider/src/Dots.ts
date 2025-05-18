@@ -59,22 +59,21 @@ export class Dots extends BaseSlider {
     return pages
   }*/
 
-  private calculateDots() {
-    const { slidesPerPage, slidesPerView } = this.store
-    const numberOfSlides = this.slides.filter(
+  private calculateDots(): number {
+    const { slidesPerView, slidesPerPage } = this.store
+
+    // Filtra apenas os slides reais (não clonados)
+    const numberOfActualSlides = this.slides.filter(
       slide => !hasClass(slide, CLASS_VALUES.CLONED)
     ).length
 
-    if (slidesPerPage <= 0 || slidesPerView <= 0 || numberOfSlides <= 0)
+    // Validação de entradas para evitar erros
+    if (numberOfActualSlides <= 0 || slidesPerPage <= 0 || slidesPerView <= 0) {
       return 0
+    }
 
-    // Calcular o número de dots
-    const maxDots = Math.max(
-      Math.ceil((numberOfSlides - slidesPerView) / slidesPerPage) + 1,
-      1
-    )
-
-    return maxDots
+    // Cálculo de dots considerando slides por página
+    return Math.ceil(numberOfActualSlides / slidesPerPage)
   }
 
   //let dots = view === 1 ? pages : Math.max(1, pages - (view - slidesPerPage))

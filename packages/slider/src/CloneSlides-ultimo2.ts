@@ -30,38 +30,87 @@ export class CloneSlides extends BaseSlider {
 
   private duplicateSlides(): void {
     const { $root, childrenCount } = this
-    const { slidesPerView, slidesPerPage } = this.store
-
+    let { slidesPerView } = this.store
     this.slides = Slider.getSlides($root)
 
     if (childrenCount < slidesPerView) return
 
-    // Número de slides necessários para cobrir uma página adicional
-    const extraSlidesNeeded = slidesPerView + 1 //slidesPerPage + 5
-
-    // Adicionar clones suficientes ao início e ao final
-    this.loopByClonedSlides(extraSlidesNeeded, childrenCount, extraSlidesNeeded)
+    // Clone all slides for a truly infinite effect
+    // We add a special peek handling to ensure no empty spaces
+    this.loopByClonedSlides(childrenCount, childrenCount, true)
   }
 
-  private loopByClonedSlides(
-    slidesPerPage: number,
+  /*private loopByClonedSlides(
+    slidesPerView: number,
     slideCount: number,
-    extraSlides: number
+    addPeekSlides: boolean = false
   ): void {
-    const end = [...Array(extraSlides).keys()].map(i => i % slideCount)
-    const start = [...Array(extraSlides).keys()]
-      .map(i => (slideCount - i - 1) % slideCount)
+    // Create arrays with indexes of all slides to clone them at both ends
+    const end = [...Array(slideCount).keys()]
+    const start = [...Array(slideCount).keys()]
+      .map(i => slideCount - i - 1)
       .reverse()
 
-    this.mountClonedSlides(slidesPerPage, end, start)
+    // For peek style, add one extra slide at each end
+    if (addPeekSlides) {
+      // Add an extra slide at the beginning (last slide)
+      start.unshift(slideCount - 1) // <- Use unshift em vez de push para início
+
+      // Add an extra slide at the end (first slide)
+      end.push(0)
+    }
+
+    this.mountClonedSlides(slidesPerView, end, start)
+  }
+*/
+
+  /* private loopByClonedSlides(
+    slidesPerView: number,
+    slideCount: number,
+    addPeekSlides: boolean = false
+  ): void {
+    // Create arrays with indexes of all slides to clone them at both ends
+    const end = [...Array(slideCount).keys()]
+    const start = [...Array(slideCount).keys()]
+      .map(i => slideCount - i - 1)
+      .reverse()
+
+    // Add two extra slides at the beginning and the end
+    start.unshift(slideCount - 2, slideCount - 1) // Clone the last two slides at the start
+    end.push(0, 1) // Clone the first two slides at the end
+
+    this.mountClonedSlides(slidesPerView, end, start)
+  }*/
+
+  private loopByClonedSlides(
+    slidesPerView: number,
+    slideCount: number,
+    addPeekSlides: boolean = false
+  ): void {
+    // Create arrays with indexes of all slides to clone them at both ends
+    const end = [...Array(slideCount).keys()]
+    const start = [...Array(slideCount).keys()]
+      .map(i => slideCount - i - 1)
+      .reverse()
+
+    // For peek style, add one extra slide at each end
+    if (addPeekSlides) {
+      // Add an extra slide at the beginning (last slide)
+      start.unshift(slideCount - 1) // <- Use unshift em vez de push para início
+
+      // Add an extra slide at the end (first slide)
+      end.push(0)
+    }
+
+    this.mountClonedSlides(slidesPerView, end, start)
   }
 
   private mountClonedSlides(
-    slidesPerPage: number,
+    slidesPerView: number,
     end: number[],
     start: number[]
   ): void {
-    // Clone slides para o início
+    // Clone slides to the beginning
     for (const index of start) {
       const clone = this.slides[index].cloneNode(true) as HTMLElement
       addClass([clone], CLASS_VALUES.CLONED)
@@ -69,7 +118,7 @@ export class CloneSlides extends BaseSlider {
       this.clonedSlides.push(clone)
     }
 
-    // Clone slides para o final
+    // Clone slides to the end
     for (const index of end) {
       const clone = this.slides[index].cloneNode(true) as HTMLElement
       addClass([clone], CLASS_VALUES.CLONED)
@@ -122,7 +171,7 @@ export class CloneSlides extends BaseSlider {
       if (currentDataIndex === "1") {
         indexCounter += 1
         // Captura quando encontrar o segundo slide com "data-index" === "1"
-        if (indexCounter === 1) {
+        if (indexCounter === 3) {
           this.dataIndex = currentDataIndex
           break
         }

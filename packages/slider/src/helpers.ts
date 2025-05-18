@@ -60,7 +60,7 @@ export function applyCss(
   )
 }
 
-export function shouldApplyAdjustment(
+/*export function shouldApplyAdjustment(
   totalSlides: number,
   slidesPerPage: number,
   clonedSlides: number
@@ -72,6 +72,24 @@ export function shouldApplyAdjustment(
   const minimumClonesRequired = slidesPerPage * totalPages
 
   // O ajuste é necessário se o número de clones for menor que o mínimo necessário
+  return clonedSlides < minimumClonesRequired
+}*/
+
+export function shouldApplyAdjustment(
+  totalSlides: number,
+  slidesPerPage: number,
+  clonedSlides: number
+) {
+  // Calcula o número total de páginas
+  const totalPages = Math.ceil(totalSlides / slidesPerPage)
+
+  // Determina o número mínimo de clones necessários para que o "voltar" funcione corretamente
+  const minimumClonesRequired = Math.max(
+    slidesPerPage,
+    totalSlides - slidesPerPage
+  )
+
+  // Verifica se os clones são suficientes para evitar a quebra no loop
   return clonedSlides < minimumClonesRequired
 }
 

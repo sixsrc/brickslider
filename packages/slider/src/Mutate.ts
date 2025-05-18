@@ -87,9 +87,8 @@ export class Mutate extends BaseSlider {
     }
 
     if (infinite && mov === "decrement" && activePage === 0) {
-      index = slides.findIndex(slide => slide.dataset.index === "1")
-
-      return index + slidesPerPage
+      ///index = slides.findIndex(slide => slide.dataset.index === "1")
+      // return index + slidesPerPage
       /*return Math.max(
         baseIndex
         Math.min(slides.length - slidesPerPage, baseIndex + targetIdx) +
@@ -98,15 +97,21 @@ export class Mutate extends BaseSlider {
       )*/
     }
     if (infinite && mov === "increment" && activePage === numberOfPages - 1) {
-      index = slides.findIndex(slide => slide.dataset.index === "1")
-      return index
+      //index = slides.findIndex(slide => slide.dataset.index === "1")
+      //return index
     }
 
     // console.log("targetIdx", targetIdx)
-    console.log("baseIndex", baseIndex)
-
+    console.log(
+      "baseIndex",
+      Math.max(
+        baseIndex,
+        Math.min(slides.length - slidesPerPage, baseIndex + targetIdx)
+      )
+    )
+    // infinite ? baseIndex + slidesPerPage :
     return Math.max(
-      infinite ? baseIndex + slidesPerPage : baseIndex,
+      baseIndex + slidesPerPage,
       Math.min(slides.length - slidesPerPage, baseIndex + targetIdx)
     )
   }

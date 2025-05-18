@@ -149,7 +149,7 @@ export class BaseSlider {
       slidesPerView
     } = this.store
 
-    const isLeftOver = this.slidesArr.length % slidesPerView !== 1
+    const isLeftOver = false //this.slidesArr.length % slidesPerView !== 1
     const isLimitRight =
       infinite && mov === "increment" && activePage === numberOfPages - 1
 
@@ -157,11 +157,16 @@ export class BaseSlider {
       return slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
     })
 
-    this.targetSlides = this.slidesArr.slice(
-      this.getLastIndex() + 1,
+    /**
+     * this.getLastIndex() + 1,
       isLimitRight && isLeftOver
         ? index + slidesPerPage
         : this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
+     */
+
+    this.targetSlides = this.slidesArr.slice(
+      this.getLastIndex() + 1,
+      this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
     )
 
     /// this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
@@ -173,9 +178,11 @@ export class BaseSlider {
         slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
     )
 
-    console.log("isInfiniteRotation", isInfiniteRotation)
+    console.log("isLimitRight", isLimitRight)
 
-    if (isInfiniteRotation.length > 0) {
+    //isInfiniteRotation.length > 0
+
+    if (isLimitRight) {
       this.slidesArrBoundary = true
     } else {
       this.slidesArrBoundary = false
@@ -200,16 +207,16 @@ export class BaseSlider {
     const clonedSlides = this.slidesArr.filter(slide =>
       hasClass(slide, CLASS_VALUES.CLONED)
     )
-    const isLeftOver = shouldApplyAdjustment(
+    const isLeftOver = false /*shouldApplyAdjustment(
       this.slidesArr.length,
       slidesPerPage,
       clonedSlides.length
-    )
+    )*/
 
     if (infinite && mov === "decrement" && activePage === 0) {
-      this.slidesArrBoundary = true
+      // this.slidesArrBoundary = true
     } else {
-      this.slidesArrBoundary = false
+      // this.slidesArrBoundary = false
     }
 
     this.targetSlides = this.slidesArr.slice(
@@ -223,7 +230,7 @@ export class BaseSlider {
       this.getLastIndex()
     )
 
-    //console.log("targetSlides", this.targetSlides)
+    console.log("targetSlides", this.targetSlides)
 
     if (leftOverSlides > 0) {
       this.decrementCount++
