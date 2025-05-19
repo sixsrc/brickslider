@@ -171,14 +171,10 @@ export class BaseSlider {
 
     /// this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
 
-    console.log("target increment", this.targetSlides)
-
     const isInfiniteRotation = this.targetSlides.filter(
       slide =>
         slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
     )
-
-    console.log("isLimitRight", isLimitRight)
 
     //isInfiniteRotation.length > 0
 
@@ -220,6 +216,12 @@ export class BaseSlider {
     }
 
     this.targetSlides = this.slidesArr.slice(
+      Math.max(0, this.getLastIndex() - slidesPerPage),
+      this.getLastIndex()
+    )
+
+    console.log(
+      "ada",
       Math.max(
         0,
         this.getLastIndex() -
@@ -231,7 +233,6 @@ export class BaseSlider {
     )
 
     console.log("targetSlides", this.targetSlides)
-
     if (leftOverSlides > 0) {
       this.decrementCount++
 
@@ -281,6 +282,8 @@ export class BaseSlider {
       const index = parseInt(slide.getAttribute("data-index") as string, 10)
       return index > lastIndex //this.lastIndex + 1
     })
+
+    console.log("filtered Slides", filteredSlides)
 
     if (filteredSlides.length < slidesPerView) {
       //this.slidesArrBoundary = this.targetSlides
@@ -354,6 +357,8 @@ export class BaseSlider {
     const totalSlides = BaseSlider.getSlides(this.$root, false).length
     const lastPageSlides = totalSlides % slidesPerPage || slidesPerPage
     const leftOver = Math.max(0, slidesPerView - lastPageSlides)
+
+    console.log("leftOver", leftOver)
 
     return { isMissing: leftOver > 0, leftOver }
   }

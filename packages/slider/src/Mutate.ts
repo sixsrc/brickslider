@@ -58,6 +58,12 @@ export class Mutate extends BaseSlider {
 
     // console.log("slideMOvement", isIncrement, leftOverSlides)
 
+    if (!isIncrement && infinite) {
+      baseIndex = 0
+    } else if (!isIncrement && infinite && activePage === 0) {
+      baseIndex = 10
+    }
+
     if (isIncrement && leftOverSlides > 0) {
       //this.activeIndex = 8
       //currentIdx = currentIdx - (slidesPerPage - leftOverSlides)
@@ -74,9 +80,13 @@ export class Mutate extends BaseSlider {
     //const relativeIdx = currentIdx - baseIndex
     const relativeIdx = this.activeIndex - baseIndex
 
+    console.log("activeIndex", this.activeIndex)
+
     let targetIdx =
       relativeIdx +
       (isIncrement ? adjustedSlidesPerView : -adjustedSlidesPerView)
+
+    console.log("relativeIdx", relativeIdx)
 
     if (isIncrement && !infinite && leftOverSlides > 0) {
       targetIdx = targetIdx - 1
@@ -87,8 +97,9 @@ export class Mutate extends BaseSlider {
     }
 
     if (infinite && mov === "decrement" && activePage === 0) {
-      ///index = slides.findIndex(slide => slide.dataset.index === "1")
-      // return index + slidesPerPage
+      index = slides.findIndex(slide => slide.dataset.index === "1")
+
+      //return index + slidesPerPage
       /*return Math.max(
         baseIndex
         Math.min(slides.length - slidesPerPage, baseIndex + targetIdx) +
@@ -97,21 +108,15 @@ export class Mutate extends BaseSlider {
       )*/
     }
     if (infinite && mov === "increment" && activePage === numberOfPages - 1) {
-      //index = slides.findIndex(slide => slide.dataset.index === "1")
-      //return index
+      // index = slides.findIndex(slide => slide.dataset.index === "1")
+      // return index
     }
 
     // console.log("targetIdx", targetIdx)
-    console.log(
-      "baseIndex",
-      Math.max(
-        baseIndex,
-        Math.min(slides.length - slidesPerPage, baseIndex + targetIdx)
-      )
-    )
-    // infinite ? baseIndex + slidesPerPage :
+    console.log("baseIndex", baseIndex)
+
     return Math.max(
-      baseIndex + slidesPerPage,
+      infinite ? baseIndex + slidesPerPage : baseIndex,
       Math.min(slides.length - slidesPerPage, baseIndex + targetIdx)
     )
   }

@@ -189,7 +189,7 @@ export class Slider extends BaseSlider {
     )*/
     const { leftOver } = this.getMissingSlides()
     const isLeftOver = leftOver > 1
-    console.log("isLeftOver", leftOver)
+
     //const isLeftOver = this.slidesArr.length % slidesPerView !== 1
     const isLimitLeft = infinite && mov === "decrement" && activePage === 0
     const isLimitRight =
@@ -204,8 +204,8 @@ export class Slider extends BaseSlider {
 
     if (infinite) {
       this.targetDataIndex = (result[0] as HTMLElement).dataset.index as string
-      console.log("result", result)
-      console.log("result2", result2)
+      // console.log("result", result)
+      //console.log("result2", result2)
     }
 
     this.setIndexBased(params)
@@ -296,8 +296,6 @@ export class Slider extends BaseSlider {
 
   protected defineIncrementOrDecrement() {
     let { currentSlideMovement: mov, dotIndex, numberOfPages } = this.store
-
-    console.log("dotIndex", dotIndex, numberOfPages)
 
     if (mov === "increment") dotIndex++
     else dotIndex--
