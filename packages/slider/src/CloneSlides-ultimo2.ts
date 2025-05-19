@@ -186,8 +186,6 @@ export class CloneSlides extends BaseSlider {
     this.totalWidthBefore = this.slidesBefore.reduce((acc, slide) => {
       return acc + slide.offsetWidth + spacing
     }, 0)
-
-    console.log("totalwidthbefore", this.totalWidthBefore)
   }
 
   private setTranslate(): void {

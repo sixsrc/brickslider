@@ -43,6 +43,75 @@ export class Dots extends BaseSlider {
     this.eventMount()
   }
 
+  //anterior corrigido
+
+  /*private calculateDots(): number {
+    const { slidesPerView, slidesPerPage, infinite } = this.store
+    const { leftOver } = this.getMissingSlides()
+
+    // Número de slides reais (excluindo clones)
+    const numberOfActualSlides = this.slides.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    ).length
+
+    // Validação inicial para evitar cálculos inválidos
+    if (numberOfActualSlides <= 0 || slidesPerPage <= 0 || slidesPerView <= 0) {
+      return 0
+    }
+
+    // Cálculo correto para modo infinito e não infinito
+    let totalPages = 0
+
+    if (infinite) {
+      // No modo infinito, o número de páginas é baseado nos slides que podem ser deslocados
+      totalPages = Math.ceil(
+        (numberOfActualSlides - slidesPerView + slidesPerPage) / slidesPerPage
+      )
+    } else {
+      // No modo não infinito, o número de páginas é baseado em quantos grupos de slidesPerPage podemos mostrar
+      // considerando que a última página pode ter menos slides
+      totalPages = Math.ceil(
+        (numberOfActualSlides - slidesPerView + slidesPerPage) / slidesPerPage
+      )
+    }
+
+    return Math.max(1, totalPages)
+  }*/
+
+  // em análise
+
+  private calculateDots(): number {
+    const { slidesPerView, slidesPerPage, infinite } = this.store
+    const { leftOver } = this.getMissingSlides()
+
+    // Número de slides reais (excluindo clones)
+    const numberOfActualSlides = this.slides.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    ).length
+
+    // Validação inicial para evitar cálculos inválidos
+    if (numberOfActualSlides <= 0 || slidesPerPage <= 0 || slidesPerView <= 0) {
+      return 0
+    }
+
+    // Cálculo correto para modo infinito e não infinito
+    let totalPages = 0
+
+    if (infinite) {
+      // No modo infinito, o número de páginas deve ser baseado no total de slides
+      // Cada dot representa uma "página" completa de slides
+      totalPages = Math.ceil(numberOfActualSlides / slidesPerPage)
+    } else {
+      // No modo não infinito, o número de páginas é baseado em quantos grupos de slidesPerPage podemos mostrar
+      // considerando que você já tem slidesPerView visíveis inicialmente
+      totalPages = Math.ceil(
+        (numberOfActualSlides - slidesPerView + slidesPerPage) / slidesPerPage
+      )
+    }
+
+    return Math.max(1, totalPages)
+  }
+
   /*private calculateDots() {
     const { slidesPerPage, slidesPerView, infinite, numberOfSlides } =
       this.store
@@ -59,8 +128,11 @@ export class Dots extends BaseSlider {
     return pages
   }*/
 
-  private calculateDots(): number {
+  /*private calculateDots(): number {
     const { slidesPerView, slidesPerPage } = this.store
+    const { leftOver } = this.getMissingSlides()
+
+    console.log("asas", this.$root, leftOver)
 
     // Filtra apenas os slides reais (não clonados)
     const numberOfActualSlides = this.slides.filter(
@@ -75,6 +147,7 @@ export class Dots extends BaseSlider {
     // Cálculo de dots considerando slides por página
     return Math.ceil(numberOfActualSlides / slidesPerPage)
   }
+    */
 
   //let dots = view === 1 ? pages : Math.max(1, pages - (view - slidesPerPage))
 

@@ -124,7 +124,6 @@ export class BaseSlider {
       ? this.slidesArr.filter(slide => !hasClass(slide, CLASS_VALUES.CLONED))
       : this.slidesArr
 
-    console.log("slidestouse", slidesToUse)
     if (isIncrement) {
       this.incrementTargetSlides(slidesToUse, slidesPerPage)
       this.setRightBoundary(slidesToUse)
@@ -152,7 +151,7 @@ export class BaseSlider {
 
     if (this.isAtRightBoundary && isMissing) {
       this.slidesArrBoundary = this.targetSlides
-      console.log("targetSlides", this.activeSlides)
+
       this.targetSlides.splice(leftOver)
     }
   }

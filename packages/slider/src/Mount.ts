@@ -118,8 +118,6 @@ export class Mount extends BaseSlider {
     const availableWidth = sliderWidth - totalSpacing
     const slideWidth = availableWidth / slidesPerView
 
-    console.log("totalSpacing", sliderWidth)
-
     return Math.max(0, slideWidth) // Garantir que não seja negativo
   }
 
