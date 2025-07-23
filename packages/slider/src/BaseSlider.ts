@@ -1,3 +1,4 @@
+import { Mutate } from "./Mutate"
 import { State, type StateType } from "./State"
 import { ANIMATION_OPTIONS, CLASS_VALUES } from "./constants"
 import {
@@ -10,9 +11,7 @@ import {
   getTrackChildren,
   translate3d,
   hasClass,
-  getSliderNodeList,
-  waitFor,
-  shouldApplyAdjustment
+  getSliderNodeList
 } from "./helpers"
 import type {
   AnimationOptions,
@@ -31,18 +30,20 @@ export class BaseSlider {
   protected sliderWidth: number | undefined
   protected movement: boolean
   protected dotIndex: number
-  // private activeSlides: HTMLElement[]
   protected translate: number
   protected previousTranslate: number
   protected slidesArrBoundary: boolean
   protected slidesArr: HTMLElement[]
   protected targetSlides: HTMLElement[]
-  private isAtRightBoundary: boolean
+  protected isAtRightBoundary: boolean
   protected lastIndex: number
   prevSlides: HTMLElement[]
   subTranslate: number
   protected decrementCount: number
   protected isAnimating: boolean = false
+  protected firstCloned: null | HTMLElement
+  mutate: Mutate | null
+
   constructor($root: string) {
     this.$root = $root
     this.getRootSelector = getRootSelector($root)
@@ -51,6 +52,7 @@ export class BaseSlider {
     // this.slidesArr = Array.from(this.activeSlides)
     this.prevSlides = []
     this.targetSlides = []
+    this.firstCloned = null
     this.isAtRightBoundary = false
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
@@ -66,6 +68,7 @@ export class BaseSlider {
     this.lastIndex = 0
     this.slidesArrBoundary = false
     this.decrementCount = 0
+    this.mutate = null
   }
 
   public static getSlides($root: string, cloned?: boolean) {
@@ -109,9 +112,10 @@ export class BaseSlider {
   }
 
   private getLastActiveSlide() {
-    const activeSlides = this.slidesArr.filter(slide =>
+    let activeSlides = this.slidesArr.filter(slide =>
       hasClass(slide, CLASS_VALUES.ACTIVE)
     )
+
     const lastActiveSlide = activeSlides[activeSlides.length - 1]
 
     return { lastActiveSlide }
@@ -144,18 +148,23 @@ export class BaseSlider {
       infinite,
       leftOverSlides,
       currentSlideMovement: mov,
-      activePage,
       numberOfPages,
-      slidesPerView
+      slideIndex,
+      activePage
     } = this.store
+
+    const page = activePage + 1
 
     const isLeftOver = false //this.slidesArr.length % slidesPerView !== 1
     const isLimitRight =
-      infinite && mov === "increment" && activePage === numberOfPages - 1
+      infinite && mov === "increment" && slideIndex === numberOfPages - 1
+    let firstCloned = null
 
     const index = this.slidesArr.findIndex(slide => {
       return slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
     })
+
+    // this.prevSlides = [...this.targetSlides]
 
     /**
      * this.getLastIndex() + 1,
@@ -163,37 +172,63 @@ export class BaseSlider {
         ? index + slidesPerPage
         : this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
      */
-
-    this.targetSlides = this.slidesArr.slice(
-      this.getLastIndex() + 1,
-      this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
-    )
-
-    /// this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
-
-    const isInfiniteRotation = this.targetSlides.filter(
+    const isFirstSlideCloned = this.prevSlides.find(
       slide =>
         slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
     )
 
-    //isInfiniteRotation.length > 0
+    if (infinite && activePage === numberOfPages) {
+      const index = this.slidesArr.findIndex(
+        slide =>
+          slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+      )
+      this.setState({ jumpIndex: Number(index) })
 
-    if (isLimitRight) {
-      this.slidesArrBoundary = true
+      const isFirstCloned = this.prevSlides.some(
+        slide => slide.dataset.index === "1"
+      )
+
+      const firstSlidePos = this.prevSlides.findIndex(
+        slide => slide.dataset.index === "1"
+      )
+
+      if (firstSlidePos !== -1) {
+        // Remove todos os elementos a partir do data-index="1"
+        const filteredSlides = this.targetSlides.slice(0, firstSlidePos)
+
+        // Se quiser substituir o array original
+        this.targetSlides = filteredSlides
+      }
+
+      const slidesViewport = isFirstCloned
+        ? slidesPerPage - (firstSlidePos + 1)
+        : slidesPerPage
+      //this.targetSlides.pop()
+      //this.targetSlides = this.slidesArr.slice(index, 10)
+      console.log("targetSlides", this.targetSlides, isFirstCloned)
+      console.log("aaa", index, index + slidesViewport)
+
+      //this.mutate?.teste(this.targetSlides)
     } else {
-      this.slidesArrBoundary = false
-    }
+      this.setState({ jumpIndex: 0 })
 
-    this.lastIndex = this.slidesArr.indexOf(
-      this.targetSlides[this.targetSlides.length - 1]
-    )
+      this.targetSlides = this.slidesArr.slice(
+        this.getLastIndex() + 1,
+        this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
+      )
+
+      // this.mutate?.teste(this.targetSlides)
+
+      if (leftOverSlides > 0) {
+        console.log("aaa", this.targetSlides)
+      }
+    }
   }
 
   private decrementTargetSlides(slidesPerPage: number): void {
     const {
       infinite,
-      slidesPerView,
-      leftOverSlides,
+
       activePage,
       currentSlideMovement: mov
     } = this.store
@@ -209,34 +244,34 @@ export class BaseSlider {
       clonedSlides.length
     )*/
 
+    //this.setState({ jumpIndex: 0 })
+
+    //this.setState({ jumpIndex: 12 })
+
     if (infinite && mov === "decrement" && activePage === 0) {
       // this.slidesArrBoundary = true
     } else {
       // this.slidesArrBoundary = false
     }
 
+    //- leftOverSlides
+
+    const { leftOverSlides } = this.store
+    const { leftOver } = this.getMissingSlides()
+
+    const value = this.isAtRightBoundary ? leftOver : 0
+
     this.targetSlides = this.slidesArr.slice(
-      Math.max(0, this.getLastIndex() - slidesPerPage),
+      Math.max(0, this.getLastIndex() - (slidesPerPage - value)),
       this.getLastIndex()
     )
 
-    console.log(
-      "ada",
-      Math.max(
-        0,
-        this.getLastIndex() -
-          (isLimitLeft && isLeftOver
-            ? slidesPerPage
-            : slidesPerPage - leftOverSlides)
-      ),
-      this.getLastIndex()
-    )
+    console.log("por voce", this.targetSlides, this.isAtRightBoundary)
 
-    console.log("targetSlides", this.targetSlides)
     if (leftOverSlides > 0) {
-      this.decrementCount++
-
-      // this.setState({ leftOverSlides: 0 })
+      this.isAtRightBoundary = false
+      // this.decrementCount++
+      //  this.setState({ leftOverSlides: 0 })
     }
   }
 
@@ -283,17 +318,19 @@ export class BaseSlider {
       return index > lastIndex //this.lastIndex + 1
     })
 
-    console.log("filtered Slides", filteredSlides)
-
     if (filteredSlides.length < slidesPerView) {
+      console.log("filteredSlides", filteredSlides)
       //this.slidesArrBoundary = this.targetSlides
       ///this.slidesArrBoundary = filteredSlides
+      this.isAtRightBoundary = true
       this.setState({ leftOverSlides: 1 })
 
       if (filteredSlides.length > 1) {
         //console.log("filteredSlides", filteredSlides.pop())
         //this.slidesArrBoundary.splice(0, 1)
       }
+    } else {
+      this.isAtRightBoundary = false
     }
   }
 
@@ -305,32 +342,10 @@ export class BaseSlider {
   }
 
   private activeSlidesLoop(): number {
-    const { spacing, slidesPerPage } = this.store
+    const { spacing } = this.store
     let translate = 0
 
     this.setTargetSlides()
-
-    const hasClonedSlides = this.targetSlides.some(slide =>
-      hasClass(slide, CLASS_VALUES.CLONED)
-    )
-
-    if (hasClonedSlides) {
-      waitFor(600, () => {
-        const baseIndex = this.slidesArr.findIndex(
-          slide =>
-            slide.dataset.index === "1" &&
-            slide.classList.contains(CLASS_VALUES.CLONED)
-        )
-        // this.targetSlides = this.slidesArr.slice(0, 29)
-
-        /* this.lastIndex = this.slidesArr.indexOf(
-          this.targetSlides[this.targetSlides.length - 1]
-        )*/
-
-        // console.log("targetSlides", this.targetSlides)
-      })
-      //return this.sliderWidth! + spacing
-    }
 
     this.forEachSlide(this.targetSlides, slide => {
       translate += slide.offsetWidth + spacing

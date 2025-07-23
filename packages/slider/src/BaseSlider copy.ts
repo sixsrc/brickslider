@@ -147,7 +147,7 @@ export class BaseSlider {
         this.targetSlides.pop()
       }
     } else {
-      this.setState({ leftOverSlides: 0 })
+      //this.setState({ leftOverSlides: 0 })
 
       this.targetSlides = this.slidesArr.slice(
         this.getLastIndex() + 1,

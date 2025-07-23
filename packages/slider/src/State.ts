@@ -8,6 +8,7 @@ import {
 export enum State_Keys {
   PrevSlideIndex = "prevSlideIndex",
   SlideIndex = "slideIndex",
+  JumpIndex = "jumpIndex",
   ActivePage = "activePage",
   SlideSpacing = "spacing",
   SlidesPerPage = "slidesPerPage",
@@ -53,6 +54,7 @@ export enum State_Keys {
 export type StateType = {
   [key: string]: string | number | boolean | null | undefined | any[] | {}
   [State_Keys.PrevSlideIndex]: number
+  [State_Keys.JumpIndex]: number
   [State_Keys.SlideIndex]: number
   [State_Keys.ActivePage]: number
   [State_Keys.SlideSpacing]: number
@@ -130,6 +132,7 @@ class State {
   private initializeState(options: TypeOptions): void {
     State.state[this.key][State_Keys.PrevSlideIndex] = 0
     State.state[this.key][State_Keys.ActivePage] = 0
+    State.state[this.key][State_Keys.JumpIndex] = 0
     State.state[this.key][State_Keys.SlideIndex] = 0
     State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0
     State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
