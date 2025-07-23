@@ -317,9 +317,15 @@ export class Slider extends BaseSlider {
         )
         */
 
-    const { infinite, currentSlideMovement: mov, spacing } = this.store
+    const {
+      infinite,
+      jumpIndex,
+      currentSlideMovement: mov,
+      spacing,
+      activePage
+    } = this.store
 
-    if (infinite && this.slidesArrBoundary && mov === "decrement") {
+    if (infinite && mov === "decrement") {
       /* let translate = 0
 
       const clonedIndex = this.slidesArr.findIndex(slide => {
@@ -368,12 +374,13 @@ export class Slider extends BaseSlider {
 
       this.animate(this.$children, this.keyFrames(), this.options())*/
     }
-    if (infinite && this.slidesArrBoundary && mov === "increment") {
-      /* let translate = 0
+    console.log("avantasia", activePage)
+    if (infinite && activePage === 999 && mov === "increment") {
+      let translate = 0
       const { spacing } = this.store
       const clonedIndex = this.slidesArr.findIndex(slide => {
         return (
-          slide.dataset.index === "6" && hasClass(slide, CLASS_VALUES.CLONED)
+          slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
         )
       })
 
@@ -386,15 +393,15 @@ export class Slider extends BaseSlider {
       this.setState({
         currentTranslate: -translate,
         prevTranslate: -translate,
-        currentSlideMovement: "decrement"
+        currentSlideMovement: "increment"
       })
       this.animate(this.$children, this.keyFrames(), this.options())
 
       waitFor(0, () => {
-        let translate = 0
+        /*let translate = 0
         const index = this.slidesArr.findIndex(
           slide =>
-            slide.dataset.index === "1" && !hasClass(slide, CLASS_VALUES.CLONED)
+            slide.dataset.index === "6" && hasClass(slide, CLASS_VALUES.CLONED)
         )
         this.targetSlides = this.slidesArr.slice(0, index)
 
@@ -406,12 +413,10 @@ export class Slider extends BaseSlider {
           currentTranslate: -translate,
           prevTranslate: -translate,
           currentSlideMovement: "increment"
-        })
+        })*/
       })
 
-      this.animate(this.$children, this.keyFrames(), this.options())
-
-      */
+      ///this.animate(this.$children, this.keyFrames(), this.options())
     }
   }
 
@@ -452,7 +457,8 @@ export class Slider extends BaseSlider {
 
       if (i === Math.abs(selectedIndex)) {
         addClass([dot], CLASS_VALUES.SELECTED)
-        this.setState({ activePage: i })
+
+        this.setState({ activePage: i + 1 })
       }
     })
   }

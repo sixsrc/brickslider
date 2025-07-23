@@ -105,7 +105,6 @@ export class Arrows extends BaseSlider {
     Promise.all(
       this.$children.getAnimations().map(animation => animation.finished)
     ).then(() => {
-      console.log("fim animacao")
       //this.isAnimating = false
     })
 
