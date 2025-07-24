@@ -266,8 +266,6 @@ export class BaseSlider {
       this.getLastIndex()
     )
 
-    console.log("por voce", this.targetSlides, this.isAtRightBoundary)
-
     if (leftOverSlides > 0) {
       this.isAtRightBoundary = false
       // this.decrementCount++
