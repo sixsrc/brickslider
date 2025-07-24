@@ -1,7 +1,7 @@
-import { c } from "vite/dist/node/types.d-aGj9QkWt"
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
+
 import { Observer } from "./Observer"
 import { StateType } from "./State"
 import { CLASS_VALUES, TAGS, TIMES } from "./constants"
@@ -322,7 +322,9 @@ export class Slider extends BaseSlider {
       jumpIndex,
       currentSlideMovement: mov,
       spacing,
-      activePage
+      slideIndex,
+      activePage,
+      numberOfPages
     } = this.store
 
     if (infinite && mov === "decrement") {
@@ -374,13 +376,18 @@ export class Slider extends BaseSlider {
 
       this.animate(this.$children, this.keyFrames(), this.options())*/
     }
-    console.log("avantasia", activePage)
-    if (infinite && activePage === 999 && mov === "increment") {
+    console.log("avantasia", { activePage, numberOfPages, slideIndex })
+    if (
+      infinite &&
+      activePage === 2 &&
+      slideIndex > activePage &&
+      mov === "increment"
+    ) {
       let translate = 0
       const { spacing } = this.store
       const clonedIndex = this.slidesArr.findIndex(slide => {
         return (
-          slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+          slide.dataset.index === "1" && !hasClass(slide, CLASS_VALUES.CLONED)
         )
       })
 
@@ -398,10 +405,10 @@ export class Slider extends BaseSlider {
       this.animate(this.$children, this.keyFrames(), this.options())
 
       waitFor(0, () => {
-        /*let translate = 0
+        let translate = 0
         const index = this.slidesArr.findIndex(
           slide =>
-            slide.dataset.index === "6" && hasClass(slide, CLASS_VALUES.CLONED)
+            slide.dataset.index === "3" && !hasClass(slide, CLASS_VALUES.CLONED)
         )
         this.targetSlides = this.slidesArr.slice(0, index)
 
@@ -413,7 +420,7 @@ export class Slider extends BaseSlider {
           currentTranslate: -translate,
           prevTranslate: -translate,
           currentSlideMovement: "increment"
-        })*/
+        })
       })
 
       ///this.animate(this.$children, this.keyFrames(), this.options())

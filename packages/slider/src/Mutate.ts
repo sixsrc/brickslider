@@ -1,27 +1,30 @@
 import { BaseSlider } from "./BaseSlider"
 import { CLASS_VALUES } from "./constants"
-import { addClass, hasClass, removeClass } from "./helpers"
+import { addClass, removeClass } from "./helpers"
 import { Slider } from "./Slider"
 
 export class Mutate extends BaseSlider {
-  activeIndex: number
+  private activeIndex: number
 
   constructor($root: string) {
     super($root)
     this.activeIndex = 0
   }
 
-  public teste(slides: any) {
+  public updateActiveSlides(slideMov: string | null = null): void {
+    this.startUpdate(slideMov)
+    this.resetActiveClasses(this.getSlides())
+    this.activateSlides(this.getSlides(), this.activeIndex)
+  }
+
+  private getSlides(): HTMLElement[] {
+    const slides = Slider.getSlides(this.$root)
     return slides
   }
 
-  public updateActiveSlides(slideMovement: string | null = null): void {
-    const slides = Slider.getSlides(this.$root)
-    const startIndex = this.calculateStartIndex(slides, slideMovement)
-
+  private startUpdate(slideMov: string | null = null): void {
+    const startIndex = this.calculateStartIndex(this.getSlides(), slideMov)
     this.activeIndex = startIndex
-    this.resetActiveClasses(slides)
-    this.activateSlides(slides, this.activeIndex)
   }
 
   private calculateStartIndex(
@@ -40,93 +43,96 @@ export class Mutate extends BaseSlider {
     slideMovement: string,
     baseIndex: number
   ): number {
-    const {
-      activePage,
-      slidesPerPage,
-      slidesPerView,
-      leftOverSlides,
-      infinite
-    } = this.store
-    const adjustedSlidesPerView = Math.min(slidesPerView, slidesPerPage)
     const isIncrement = slideMovement === "increment"
-    let result = 0
-    const index = slides.findIndex(slide => slide.dataset.index === "1")
+    const adjustedSlides = this.getAdjustedSlides()
+    const indexFromData = this.getFirstSlideIndex(slides)
 
-    console.log("leo lins", index)
-
-    if (!isIncrement && infinite) {
-      baseIndex = 0
-    } else if (!isIncrement && infinite && activePage === 0) {
-      baseIndex = index
+    if (!isIncrement) {
+      baseIndex = this.adjustBaseIndexForDecrement(indexFromData)
     }
 
-    if (!isIncrement && leftOverSlides > 0) {
-      this.activeIndex = this.activeIndex + 3
+    const relative = this.activeIndex - baseIndex
+
+    let target = this.calculateTargetIndex(
+      relative,
+      adjustedSlides,
+      isIncrement
+    )
+
+    return this.getClampedTargetIndex(baseIndex, target, slides.length)
+  }
+  private getAdjustedSlides(): number {
+    const { slidesPerView, slidesPerPage } = this.store
+    return Math.min(slidesPerView, slidesPerPage)
+  }
+
+  private getFirstSlideIndex(slides: HTMLElement[]): number {
+    return slides.findIndex(slide => slide.dataset.index === "1")
+  }
+
+  private adjustBaseIndexForDecrement(indexFromData: number): number {
+    const { activePage, leftOverSlides } = this.store
+    const { leftOver } = this.getMissingSlides()
+
+    if (leftOverSlides > 0) {
+      this.activeIndex += leftOver
       this.setState({ leftOverSlides: 0 })
     }
 
-    const relativeIdx = this.activeIndex - baseIndex
+    return activePage === 0 ? indexFromData : 0
+  }
 
-    let targetIdx =
-      relativeIdx +
-      (isIncrement ? adjustedSlidesPerView : -adjustedSlidesPerView)
+  private calculateTargetIndex(
+    relative: number,
+    adjustedSlides: number,
+    isIncrement: boolean
+  ): number {
+    const { infinite, leftOverSlides, activePage } = this.store
+    let target = relative + (isIncrement ? adjustedSlides : -adjustedSlides)
 
     if (isIncrement && !infinite && leftOverSlides > 0) {
-      targetIdx = targetIdx - 1
+      target -= 1
     }
 
-    if (!isIncrement && !infinite && leftOverSlides > 0) {
-      //targetIdx = targetIdx + 2
-    }
+    console.log("Active Page:", activePage)
 
-    result = Math.max(
-      infinite ? baseIndex + slidesPerPage : baseIndex,
-      Math.min(slides.length - slidesPerPage, baseIndex + targetIdx)
-    )
+    return target
+  }
 
-    return result
+  private getClampedTargetIndex(
+    baseIndex: number,
+    target: number,
+    totalSlides: number
+  ): number {
+    const { slidesPerPage, infinite } = this.store
+    const min = infinite ? baseIndex + slidesPerPage : baseIndex
+    const max = totalSlides - slidesPerPage
+
+    console.log({
+      baseIndex,
+      target,
+      totalSlides,
+      slidesPerPage,
+      min,
+      max,
+      isInfinite: infinite
+    })
+
+    return Math.max(min, Math.min(max, baseIndex + target))
   }
 
   private resetActiveClasses(slides: HTMLElement[]): void {
     slides.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
   }
+
   private activateSlides(slides: HTMLElement[], startIndex: number): void {
-    const { slidesPerPage, jumpIndex, leftOverSlides } = this.store
+    const { slidesPerPage } = this.store
     let index = 0
 
     Array.from({ length: slidesPerPage }).forEach((_, i) => {
       index = startIndex + i
 
-      console.log("startIndex", startIndex)
-
-      if (index < slides.length) {
-        addClass([slides[index]], CLASS_VALUES.ACTIVE)
-      }
+      if (index < slides.length) addClass([slides[index]], CLASS_VALUES.ACTIVE)
     })
   }
 }
-
-/*
- if (isIncrement && leftOverSlides > 0) {
-      //this.activeIndex = 8
-      //currentIdx = currentIdx - (slidesPerPage - leftOverSlides)
-    }
-
-      if (infinite && mov === "decrement" && activePage === 0) {
-      index = slides.findIndex(slide => slide.dataset.index === "1")
-
-      //return index + slidesPerPage
-      /*return Math.max(
-        baseIndex
-        Math.min(slides.length - slidesPerPage, baseIndex + targetIdx) +
-          slidesPerView +
-          1
-      )
-    }
-    
-      if (!isIncrement && leftOverSlides > 0) {
-      //targetIdx = targetIdx + 1
-      //this.setState({ leftOverSlides: 0 })
-    }
-    
-    */
