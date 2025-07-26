@@ -29,6 +29,7 @@ export class BaseSlider {
   protected childrenCount: number
   protected sliderWidth: number | undefined
   protected movement: boolean
+  protected firstDataIndex: number
   protected dotIndex: number
   protected translate: number
   protected previousTranslate: number
@@ -50,6 +51,7 @@ export class BaseSlider {
     // this.activeSlides = getSliderNodeList($root)
     this.slidesArr = getSliderNodeList($root)
     // this.slidesArr = Array.from(this.activeSlides)
+
     this.prevSlides = []
     this.targetSlides = []
     this.firstCloned = null
@@ -61,6 +63,7 @@ export class BaseSlider {
     this.childrenCount = getChildrenCount(this.$children)
     this.sliderWidth = getSliderWidth(this.$children)
     this.movement = false
+    this.firstDataIndex = 0
     this.translate = 0
     this.subTranslate = 0
     this.previousTranslate = 0
@@ -258,7 +261,6 @@ export class BaseSlider {
 
     const { leftOverSlides } = this.store
     const { leftOver } = this.getMissingSlides()
-
     const value = this.isAtRightBoundary ? leftOver : 0
 
     this.targetSlides = this.slidesArr.slice(
@@ -400,5 +402,15 @@ export class BaseSlider {
 
   protected setState(state: Partial<StateType>) {
     this.state.set(state)
+  }
+
+  protected getDataIndex(slide: HTMLElement): string {
+    const dataIndex = slide.dataset.index
+
+    if (dataIndex) {
+      return dataIndex
+    }
+
+    throw new Error("Data index not found on slide element.")
   }
 }

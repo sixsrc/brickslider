@@ -1,10 +1,9 @@
+import { a } from "vitest/dist/chunks/suite.B2jumIFP"
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
-
-import { Observer } from "./Observer"
 import { StateType } from "./State"
-import { CLASS_VALUES, TAGS, TIMES } from "./constants"
+import { CLASS_VALUES, DOM_ELEMENTS, TAGS } from "./constants"
 import {
   addClass,
   getAllElements,
@@ -203,8 +202,8 @@ export class Slider extends BaseSlider {
     const result2 = this.getVisibleSlides(mov as string, slidesGroup2)
 
     if (infinite) {
-      this.targetDataIndex = (result[0] as HTMLElement).dataset.index as string
-      // console.log("result", result)
+      //this.targetDataIndex = (result2[0] as HTMLElement).dataset.index as string
+      console.log("result", result2)
       //console.log("result2", result2)
     }
 
@@ -301,7 +300,7 @@ export class Slider extends BaseSlider {
     else dotIndex--
 
     if (dotIndex === -1) dotIndex = numberOfPages - 1
-    //   else if (dotIndex > numberOfPages - 1) dotIndex = 0
+    else if (dotIndex > numberOfPages - 1) dotIndex = 0
 
     return { dotIndex }
   }
@@ -323,6 +322,7 @@ export class Slider extends BaseSlider {
       currentSlideMovement: mov,
       spacing,
       slideIndex,
+      slidesPerPage,
       activePage,
       numberOfPages
     } = this.store
@@ -376,7 +376,33 @@ export class Slider extends BaseSlider {
 
       this.animate(this.$children, this.keyFrames(), this.options())*/
     }
-    console.log("avantasia", { activePage, numberOfPages, slideIndex })
+
+    if (infinite && activePage === numberOfPages) {
+      const index = this.slidesArr.findIndex(slide => {
+        return (
+          slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+        )
+      })
+
+      console.log("slidesArrr", this.slidesArr)
+
+      this.mutate.setActiveIndex(index - slidesPerPage)
+    }
+
+    if (infinite && activePage === 1) {
+      const { SINGLE_SLIDE } = DOM_ELEMENTS
+      const { ACTIVE } = CLASS_VALUES
+
+      const allActive = getAllElements<HTMLElement>(
+        `${this.$root} ${SINGLE_SLIDE}.${ACTIVE}`,
+        this.$children
+      )
+      const lastActive = allActive[allActive.length - 1]
+      this.firstDataIndex = parseInt(allActive[0].dataset.index as string)
+      this.targetDataIndex = lastActive?.dataset.index as string
+      console.log("ALLL ACTIVE", allActive[0].dataset.index)
+    }
+
     if (
       infinite &&
       activePage === 2 &&
@@ -384,7 +410,13 @@ export class Slider extends BaseSlider {
       mov === "increment"
     ) {
       let translate = 0
-      const { spacing } = this.store
+      const {
+        spacing,
+        slidesPerView,
+        slideIndex,
+        slidesPerPage,
+        currentSlideMovement: mov
+      } = this.store
       const clonedIndex = this.slidesArr.findIndex(slide => {
         return (
           slide.dataset.index === "1" && !hasClass(slide, CLASS_VALUES.CLONED)
@@ -405,11 +437,19 @@ export class Slider extends BaseSlider {
       this.animate(this.$children, this.keyFrames(), this.options())
 
       waitFor(0, () => {
+        const targetIndex = Number(this.targetDataIndex)
+        const dataset = targetIndex + 1
+        const indextoString = dataset.toString()
+
+        console.log("dataIdx", indextoString)
+
         let translate = 0
         const index = this.slidesArr.findIndex(
           slide =>
-            slide.dataset.index === "3" && !hasClass(slide, CLASS_VALUES.CLONED)
+            slide.dataset.index === indextoString &&
+            !hasClass(slide, CLASS_VALUES.CLONED)
         )
+
         this.targetSlides = this.slidesArr.slice(0, index)
 
         this.forEachSlide(this.targetSlides, slide => {
@@ -417,28 +457,32 @@ export class Slider extends BaseSlider {
         })
 
         this.setState({
+          isJumpSlide: true,
           currentTranslate: -translate,
           prevTranslate: -translate,
           currentSlideMovement: "increment"
         })
-      })
+        const { leftOver } = this.getMissingSlides()
+        const isLeftOver = leftOver > 1
+        const isLimitRight =
+          infinite && mov === "increment" && activePage === numberOfPages - 1
+        const slidesGroup2 =
+          isLeftOver && isLimitRight ? slidesPerView : slidesPerPage
+        const items = this.getVisibleSlides(mov as string, slidesGroup2)
+        const lastSlide = items[items.length - 1]
+        const lastIndex = parseInt(lastSlide.dataset.index as string)
 
-      ///this.animate(this.$children, this.keyFrames(), this.options())
+        this.mutate.resetActiveClasses(Slider.getSlides(this.$root))
+        this.mutate.setActiveIndex(lastIndex + 1)
+        this.mutate.activateSlides(Slider.getSlides(this.$root), lastIndex + 1)
+      })
     }
   }
 
   protected updateDOM(): void {
-    const { slidesPerPage, slidesPerView, currentSlideMovement } = this.store
-    const { $root } = this
+    const { currentSlideMovement } = this.store
 
     this.mutate.updateActiveSlides(currentSlideMovement as string)
-
-    /* toggleClass2(
-      getSliderNodeList($root),
-      slidesPerView,
-      slidesPerPage,
-      currentSlideMovement
-    )*/
   }
 
   public waitForAnimationEnd(callback?: () => void): void {
@@ -462,6 +506,8 @@ export class Slider extends BaseSlider {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
         removeClass(dot, CLASS_VALUES.SELECTED)
 
+      console.log("iiiiii", Math.abs(selectedIndex))
+
       if (i === Math.abs(selectedIndex)) {
         addClass([dot], CLASS_VALUES.SELECTED)
 
@@ -470,42 +516,4 @@ export class Slider extends BaseSlider {
     })
   }
 }
-
-/*
-
- if (currentIndex <= 0) {
-      // translate = 0
-    }
-
-if (infinite && slidesPerView >= 2) {
-      //currentIndex += 1
-    }
-*/
-/* private applyTranslateToAdjacent(adjacentIndex: number, translate: number) {
-    const lastSlide = this.slides[this.slides.length - 1]
-    const lastSlideIndex = parseInt(lastSlide.dataset.index as string)
-    const missingSlides = this.getMissingSlides()
-    const slideWidthWithMargin = lastSlide.offsetWidth + this.store.spacing
-
-    const adjustedTranslate = translate - slideWidthWithMargin
-    const targetIndex = lastSlideIndex + 1
-
-    this.forEachSlide(this.slides, slide => {
-      if (this.getSlideIndex(slide) === targetIndex) {
-        // Aplica o translate ajustado ao slide que seria o "próximo"
-
-        this.animate(slide, this.keyFrames(adjustedTranslate), this.options(0))
-      } else if (this.getSlideIndex(slide) === adjacentIndex) {
-        // Aplica o translate normal para os outros slides adjacentes
-        this.animate(slide, this.keyFrames(translate), this.options(0))
-      }
-    })
-  }*/
-/* protected calcTranslate(): number {
-    // let { currentIndex } = this
-    // currentIndex = this.checkCurrentIndex(currentIndex)
-
-    this.translate = this.getSlidesSizes() as number
-
-    return this.translate
-  }*/
+///this.animate(this.$children, this.keyFrames(), this.options())
