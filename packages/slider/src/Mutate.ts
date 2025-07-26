@@ -18,6 +18,7 @@ export class Mutate extends BaseSlider {
   public updateActiveSlides(slideMov: string | null = null): void {
     this.startUpdate(slideMov)
     this.resetActiveClasses(this.getSlides())
+
     this.activateSlides(this.getSlides(), this.activeIndex)
   }
 
@@ -27,7 +28,12 @@ export class Mutate extends BaseSlider {
   }
 
   private startUpdate(slideMov: string | null = null): void {
-    const startIndex = this.calculateStartIndex(this.getSlides(), slideMov)
+    const startIndex = this.calculateStartIndex(
+      Slider.getSlides(this.$root),
+      slideMov
+    )
+
+    console.log("start update", startIndex)
     this.activeIndex = startIndex
   }
 
@@ -120,8 +126,6 @@ export class Mutate extends BaseSlider {
   public activateSlides(slides: HTMLElement[], startIndex: number): void {
     const { slidesPerPage } = this.store
     let index = 0
-
-    console.log("bbbbbb", this.firstDataIndex)
 
     Array.from({ length: slidesPerPage }).forEach((_, i) => {
       index = startIndex + i

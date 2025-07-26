@@ -1,4 +1,3 @@
-import { a } from "vitest/dist/chunks/suite.B2jumIFP"
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
@@ -437,20 +436,21 @@ export class Slider extends BaseSlider {
       this.animate(this.$children, this.keyFrames(), this.options())
 
       waitFor(0, () => {
+        let translate = 0
         const targetIndex = Number(this.targetDataIndex)
         const dataset = targetIndex + 1
         const indextoString = dataset.toString()
-
-        console.log("dataIdx", indextoString)
-
-        let translate = 0
         const index = this.slidesArr.findIndex(
           slide =>
             slide.dataset.index === indextoString &&
             !hasClass(slide, CLASS_VALUES.CLONED)
         )
 
+        console.log("dataIdx", index)
+
         this.targetSlides = this.slidesArr.slice(0, index)
+
+        console.log("targetSlides", this.targetSlides)
 
         this.forEachSlide(this.targetSlides, slide => {
           translate += slide.offsetWidth + spacing
@@ -462,19 +462,19 @@ export class Slider extends BaseSlider {
           prevTranslate: -translate,
           currentSlideMovement: "increment"
         })
-        const { leftOver } = this.getMissingSlides()
-        const isLeftOver = leftOver > 1
-        const isLimitRight =
+        /* const { leftOver } = this.getMissingSlides()
+        const isOver = leftOver > 1
+        const isLimit =
           infinite && mov === "increment" && activePage === numberOfPages - 1
-        const slidesGroup2 =
-          isLeftOver && isLimitRight ? slidesPerView : slidesPerPage
-        const items = this.getVisibleSlides(mov as string, slidesGroup2)
+        //slidesPerView
+        const slidesGroup = isOver && isLimit ? slidesPerPage : slidesPerPage
+        const items = this.getVisibleSlides(mov as string, slidesGroup)
         const lastSlide = items[items.length - 1]
-        const lastIndex = parseInt(lastSlide.dataset.index as string)
+        const lastIndex = parseInt(lastSlide.dataset.index as string)*/
 
         this.mutate.resetActiveClasses(Slider.getSlides(this.$root))
-        this.mutate.setActiveIndex(lastIndex + 1)
-        this.mutate.activateSlides(Slider.getSlides(this.$root), lastIndex + 1)
+        this.mutate.setActiveIndex(index)
+        this.mutate.activateSlides(Slider.getSlides(this.$root), index)
       })
     }
   }
