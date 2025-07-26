@@ -32,7 +32,7 @@ export class AnimationFrame extends BaseSlider {
       currentSlideMovement: mov
     } = this.store
     const isTouchMove = currentEventType === EVENTS.TOUCHMOVE
-    const duration = isJumpSlide || isTouchMove ? 0 : time
+    const duration = /*isJumpSlide ||*/ isTouchMove ? 0 : time
     const actualDuration = duration > 0 ? duration : 0
 
     return {
