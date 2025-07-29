@@ -1,4 +1,3 @@
-import { Mutate } from "./Mutate"
 import { State, type StateType } from "./State"
 import { ANIMATION_OPTIONS, CLASS_VALUES } from "./constants"
 import {
@@ -25,6 +24,7 @@ export class BaseSlider {
   protected state: State
   protected store: StateType
   protected $children: HTMLElement
+  protected $track: HTMLElement
   protected trackChildren: HTMLElement
   protected childrenCount: number
   protected sliderWidth: number | undefined
@@ -43,15 +43,11 @@ export class BaseSlider {
   protected decrementCount: number
   protected isAnimating: boolean = false
   protected firstCloned: null | HTMLElement
-  mutate: Mutate | null
 
   constructor($root: string) {
     this.$root = $root
     this.getRootSelector = getRootSelector($root)
-    // this.activeSlides = getSliderNodeList($root)
     this.slidesArr = getSliderNodeList($root)
-    // this.slidesArr = Array.from(this.activeSlides)
-
     this.prevSlides = []
     this.targetSlides = []
     this.firstCloned = null
@@ -59,10 +55,12 @@ export class BaseSlider {
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
     this.$children = getChildren(this.$root) as HTMLElement
+    this.$track = getTrackChildren($root) as HTMLElement
     this.trackChildren = getTrackChildren($root) as HTMLElement
     this.childrenCount = getChildrenCount(this.$children)
     this.sliderWidth = getSliderWidth(this.$children)
     this.movement = false
+
     this.firstDataIndex = 0
     this.translate = 0
     this.subTranslate = 0
@@ -71,7 +69,6 @@ export class BaseSlider {
     this.lastIndex = 0
     this.slidesArrBoundary = false
     this.decrementCount = 0
-    this.mutate = null
   }
 
   public static getSlides($root: string, cloned?: boolean) {
@@ -100,12 +97,22 @@ export class BaseSlider {
     else if (this.dotIndex === numberOfSlides) this.dotIndex = 0
   }
 
-  protected animate(
+  /*protected animate(
     element: HTMLElement,
     keyFrames: KeyframeAnimation[],
     options: AnimationOptions
   ): void {
     animateElement(element, keyFrames, options)
+  }*/
+
+  protected animate(
+    element: HTMLElement,
+    keyFrames: KeyframeAnimation[],
+    options: AnimationOptions
+  ): Animation[] {
+    const animations = animateElement(element, keyFrames, options)
+    console.log("Animações criadas:", animations)
+    return animations
   }
 
   protected calcTranslate(): number {
@@ -134,7 +141,6 @@ export class BaseSlider {
   private setTargetSlides(): void {
     const { slidesPerPage, currentSlideMovement } = this.store
     const isIncrement = currentSlideMovement === "increment"
-
     this.prevSlides = [...this.targetSlides]
 
     if (isIncrement) {
@@ -142,54 +148,19 @@ export class BaseSlider {
       this.incrementTargetSlides(slidesPerPage)
     } else {
       this.decrementTargetSlides(slidesPerPage)
-      this.resetSlidesArrBoundary()
     }
   }
 
   private incrementTargetSlides(slidesPerPage: number) {
-    const {
-      infinite,
-      leftOverSlides,
-      currentSlideMovement: mov,
-      numberOfPages,
-      slideIndex,
-      activePage
-    } = this.store
-
-    const page = activePage + 1
-
-    const isLeftOver = false //this.slidesArr.length % slidesPerView !== 1
-    const isLimitRight =
-      infinite && mov === "increment" && slideIndex === numberOfPages - 1
-    let firstCloned = null
-
-    const index = this.slidesArr.findIndex(slide => {
-      return slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
-    })
-
-    // this.prevSlides = [...this.targetSlides]
-
-    /**
-     * this.getLastIndex() + 1,
-      isLimitRight && isLeftOver
-        ? index + slidesPerPage
-        : this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
-     */
-    const isFirstSlideCloned = this.prevSlides.find(
-      slide =>
-        slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
-    )
-
+    const { infinite, leftOverSlides, numberOfPages, activePage } = this.store
+    this.lastIndex = 0
+    console.log("cansaaaaaado", this.lastIndex)
     if (infinite && activePage === numberOfPages) {
       const index = this.slidesArr.findIndex(
         slide =>
           slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
       )
       this.setState({ jumpIndex: Number(index) })
-
-      const isFirstCloned = this.prevSlides.some(
-        slide => slide.dataset.index === "1"
-      )
 
       const firstSlidePos = this.prevSlides.findIndex(
         slide => slide.dataset.index === "1"
@@ -202,16 +173,6 @@ export class BaseSlider {
         // Se quiser substituir o array original
         this.targetSlides = filteredSlides
       }
-
-      const slidesViewport = isFirstCloned
-        ? slidesPerPage - (firstSlidePos + 1)
-        : slidesPerPage
-      //this.targetSlides.pop()
-      //this.targetSlides = this.slidesArr.slice(index, 10)
-      console.log("targetSlides", this.targetSlides, isFirstCloned)
-      console.log("aaa", index, index + slidesViewport)
-
-      //this.mutate?.teste(this.targetSlides)
     } else {
       this.setState({ jumpIndex: 0 })
 
@@ -219,14 +180,26 @@ export class BaseSlider {
         this.getLastIndex() + 1,
         this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
       )
-
-      // this.mutate?.teste(this.targetSlides)
-
-      if (leftOverSlides > 0) {
-        console.log("aaa", this.targetSlides)
-      }
     }
   }
+
+  /*private decrementTargetSlides(slidesPerPage: number): void {
+    //    const { leftOver } = this.getMissingSlides()
+    //- leftOverSlides
+    const { leftOverSlides } = this.store
+    const value = this.isAtRightBoundary ? leftOverSlides : 0
+    const isSmaller = slidesPerPage - value < 0
+    const calc = [value - slidesPerPage, slidesPerPage - value]
+
+    this.targetSlides = this.slidesArr.slice(
+      Math.max(0, this.getLastIndex() - (isSmaller ? calc[0] : calc[1])),
+      this.getLastIndex()
+    )
+
+    console.log("decremet target", calc[0], calc[1])
+
+    if (leftOverSlides > 0) this.isAtRightBoundary = false
+  }*/
 
   private decrementTargetSlides(slidesPerPage: number): void {
     const {
@@ -259,24 +232,35 @@ export class BaseSlider {
 
     //- leftOverSlides
 
-    const { leftOverSlides } = this.store
+    const { leftOverSlides, slidesPerView } = this.store
     const { leftOver } = this.getMissingSlides()
-    const value = this.isAtRightBoundary ? leftOver : 0
+    const value = this.isAtRightBoundary ? leftOverSlides : 0
 
     this.targetSlides = this.slidesArr.slice(
       Math.max(0, this.getLastIndex() - (slidesPerPage - value)),
       this.getLastIndex()
     )
 
+    const lastActiveSlide = this.getLastActiveSlide().lastActiveSlide
+    const index = this.getAdjustedStartIndex(
+      parseInt(lastActiveSlide.dataset.index as string)
+    )
+
+    console.log("asasa", leftOverSlides)
+    console.log("lastActiveSlide", index)
+
     if (leftOverSlides > 0) {
+      //this.lastIndex = index
       this.isAtRightBoundary = false
       // this.decrementCount++
       //  this.setState({ leftOverSlides: 0 })
+    } else {
+      //this.lastIndex = 8
     }
   }
 
   private setRightBoundary() {
-    const { isMissing, leftOver } = this.getMissingSlides()
+    const { isMissing } = this.getMissingSlides()
     const { infinite, slidesPerView, slideIndex, numberOfSlides } = this.store
 
     if (infinite) {
@@ -284,30 +268,68 @@ export class BaseSlider {
         this.handleInfiniteBoundary(isMissing)
       //this.handleNonInfiniteBoundary(isMissing, slidesPerView, leftOver)
     } else {
-      this.handleNonInfiniteBoundary(isMissing, slidesPerView, leftOver)
+      this.handleNonInfiniteBoundary(slidesPerView)
     }
   }
 
+  /*protected getAdjustedStartIndex(currentIndex: number, slidesPerView: number) {
+    const totalSlides = this.slidesArr.length
+    const slidesRemaining = totalSlides - currentIndex
+    const missing = Math.max(0, slidesPerView - slidesRemaining)
+    const adjustedStart = currentIndex - missing
+    return Math.max(0, adjustedStart)
+  }*/
+
+  /*protected getAdjustedStartIndex(currentIndex: number) {
+    const totalSlides = this.slidesArr.length
+    const { slidesPerView, currentSlideMovement: direction } = this.store
+
+    if (direction === "increment") {
+      const slidesRemaining = totalSlides - currentIndex
+      const missing = Math.max(0, slidesPerView - slidesRemaining)
+      return Math.max(0, currentIndex - missing)
+    }
+
+    if (direction === "decrement") {
+      return Math.max(0, currentIndex - slidesPerView)
+    }
+
+    return currentIndex
+  }*/
+
+  protected getAdjustedStartIndex(currentIndex: number): number {
+    const totalSlides = this.slidesArr.length
+    const {
+      slidesPerView,
+      currentSlideMovement: direction,
+      leftOverSlides
+    } = this.store
+
+    // Se não há sobra, retorna o índice original sem compensar
+    if (leftOverSlides === 0) return currentIndex
+
+    // Caso haja sobra (leftOverSlides > 0), aplicar cálculo de compensação
+    if (direction === "increment") {
+      const slidesRemaining = totalSlides - currentIndex
+      const missing = Math.max(0, slidesPerView - slidesRemaining)
+      return Math.max(0, currentIndex - missing)
+    }
+
+    if (direction === "decrement") {
+      return Math.max(0, currentIndex - slidesPerView)
+    }
+
+    return currentIndex
+  }
+
   private handleInfiniteBoundary(isMissing: boolean) {
-    //const withoutClonedRight = this.removeClonedSlidesRight(this.slidesArr)
-
-    ///this.slidesArr = [...withoutClonedRight]
-
     if (isMissing && this.isAtRightBoundary) {
       // const withClonedRight = this.withClonedSlidesRight(this.slidesArr)
       // this.slidesArr = [...withClonedRight, ...withoutClonedRight]
     }
   }
 
-  private handleNonInfiniteBoundary(
-    isMissing: boolean,
-    slidesPerView: number,
-    leftOver: number
-  ) {
-    //if (!isMissing || !this.isAtRightBoundary) return
-
-    //this.setState({ leftOverSlides: 1 })
-
+  private handleNonInfiniteBoundary(slidesPerView: number) {
     const lastIndex = parseInt(
       this.getLastActiveSlide().lastActiveSlide.dataset.index as string,
       10
@@ -319,26 +341,13 @@ export class BaseSlider {
     })
 
     if (filteredSlides.length < slidesPerView) {
-      console.log("filteredSlides", filteredSlides)
-      //this.slidesArrBoundary = this.targetSlides
-      ///this.slidesArrBoundary = filteredSlides
       this.isAtRightBoundary = true
-      this.setState({ leftOverSlides: 1 })
-
-      if (filteredSlides.length > 1) {
-        //console.log("filteredSlides", filteredSlides.pop())
-        //this.slidesArrBoundary.splice(0, 1)
-      }
+      this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
+      this.lastIndex = this.getAdjustedStartIndex(lastIndex)
+      console.log("lastIndex", this.lastIndex)
     } else {
       this.isAtRightBoundary = false
     }
-  }
-
-  private resetSlidesArrBoundary(): void {
-    // if (this.slidesArrBoundary.length > 0) {
-    //  this.targetSlides = this.slidesArrBoundary
-    // this.slidesArrBoundary = []
-    // }
   }
 
   private activeSlidesLoop(): number {
@@ -354,26 +363,11 @@ export class BaseSlider {
     return translate
   }
 
-  /*protected getMissingSlides(): getMissingSlides {
-    const { slidesPerPage, slidesPerView } = this.store
-    const slides = BaseSlider.getSlides(this.$root, false).length
-    const calc1 = slides % slidesPerPage
-    const calc2 = slides % slidesPerView
-    const leftOver = calc1 > 0 ? calc1 : calc2
-    const isMissing = leftOver > 0
-
-    //console.log("calc1", calc1, "calc2", calc2)
-
-    return { isMissing, leftOver }
-  }*/
-
   protected getMissingSlides(): { isMissing: boolean; leftOver: number } {
     const { slidesPerPage, slidesPerView } = this.store
     const totalSlides = BaseSlider.getSlides(this.$root, false).length
     const lastPageSlides = totalSlides % slidesPerPage || slidesPerPage
     const leftOver = Math.max(0, slidesPerView - lastPageSlides)
-
-    console.log("leftOver", leftOver)
 
     return { isMissing: leftOver > 0, leftOver }
   }

@@ -19,8 +19,8 @@ import {
 import { Attributes, KeyframeAnimation } from "./types"
 import { ContextMenu } from "./ContextMenu"
 
-import { Mutate } from "./Mutate"
 import { BaseSlider } from "./BaseSlider"
+import { Mutate } from "./Mutate"
 
 export class Mount extends BaseSlider {
   private clonedSlides: HTMLElement[] = []
@@ -139,7 +139,24 @@ export class Mount extends BaseSlider {
   }
 
   private setActiveSlides(): void {
-    this.mutate.updateActiveSlides()
+    const visibleIndexes = this.getVisibleSlideIndexes()
+    this.mutate.updateActiveSlides(visibleIndexes)
+    //this.mutate.updateActiveSlides()
+    //this.mutate.updateActiveSlides(null)
+  }
+
+  private getVisibleSlideIndexes(): number[] {
+    const slides = this.slides
+    const slidesPerPage = this.store.slidesPerPage || 1
+
+    // encontra o índice do slide que tem data-index === "1"
+    const startIndex = slides.findIndex(slide => slide.dataset.index === "1")
+
+    // cria um array com os índices do startIndex até slidesPerPage
+    return Array.from(
+      { length: slidesPerPage },
+      (_, i) => startIndex + i
+    ).filter(i => i < slides.length) // garante que não ultrapasse o tamanho do array
   }
 
   private checkSlidesPerView() {

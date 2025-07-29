@@ -2,7 +2,8 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 import { StateType } from "./State"
-import { CLASS_VALUES, DOM_ELEMENTS, TAGS } from "./constants"
+import { Observer } from "./Observer"
+import { CLASS_VALUES, DOM_ELEMENTS, TAGS, TIMES } from "./constants"
 import {
   addClass,
   getAllElements,
@@ -25,6 +26,7 @@ export class Slider extends BaseSlider {
   mutate: Mutate
   static slides: any
   private targetDataIndex: null | string
+  observer: Observer
 
   constructor($root: string) {
     super($root)
@@ -34,6 +36,7 @@ export class Slider extends BaseSlider {
     // this.translate = 0
     this.slides = getSliderNodeList($root)
     this.mutate = new Mutate($root)
+    this.observer = new Observer($root)
   }
 
   private getVisibleSlides(mov: string, slidesPerPage: number) {
@@ -202,7 +205,6 @@ export class Slider extends BaseSlider {
 
     if (infinite) {
       //this.targetDataIndex = (result2[0] as HTMLElement).dataset.index as string
-      console.log("result", result2)
       //console.log("result2", result2)
     }
 
@@ -243,8 +245,30 @@ export class Slider extends BaseSlider {
     return isNotMapped(infinite, currentIndex, numberOfSlides)
   }
 
-  private animationFrame() {
+  /* private animationFrame() {
     requestAnimationFrame(this.animation.init)
+    this.animation.init().then(animations => {
+      console.log("Todas as animações terminaram!", animations)
+      // Aqui pode fazer qualquer coisa ao final, tipo atualizar estado, chamar observer etc
+    })
+  }*/
+
+  private animationFrame() {
+    requestAnimationFrame(() => {
+      const { slidesPerPage } = this.store
+
+      this.animation.init().then(animations => {
+        console.log("Todas as animações terminaram!", animations)
+        // Aqui pode fazer qualquer coisa ao final, tipo atualizar estado, chamar observer etc
+
+        waitFor(50, () => {
+          const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
+
+          // Atualiza classes com Mutate
+          this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
+        })
+      })
+    })
   }
 
   private mainState(): Partial<StateType> {
@@ -383,9 +407,7 @@ export class Slider extends BaseSlider {
         )
       })
 
-      console.log("slidesArrr", this.slidesArr)
-
-      this.mutate.setActiveIndex(index - slidesPerPage)
+      //this.mutate.setActiveIndex(index - slidesPerPage)
     }
 
     if (infinite && activePage === 1) {
@@ -399,7 +421,6 @@ export class Slider extends BaseSlider {
       const lastActive = allActive[allActive.length - 1]
       this.firstDataIndex = parseInt(allActive[0].dataset.index as string)
       this.targetDataIndex = lastActive?.dataset.index as string
-      console.log("ALLL ACTIVE", allActive[0].dataset.index)
     }
 
     if (
@@ -446,11 +467,7 @@ export class Slider extends BaseSlider {
             !hasClass(slide, CLASS_VALUES.CLONED)
         )
 
-        console.log("dataIdx", index)
-
         this.targetSlides = this.slidesArr.slice(0, index)
-
-        console.log("targetSlides", this.targetSlides)
 
         this.forEachSlide(this.targetSlides, slide => {
           translate += slide.offsetWidth + spacing
@@ -472,28 +489,36 @@ export class Slider extends BaseSlider {
         const lastSlide = items[items.length - 1]
         const lastIndex = parseInt(lastSlide.dataset.index as string)*/
 
-        this.mutate.resetActiveClasses(Slider.getSlides(this.$root))
-        this.mutate.setActiveIndex(index)
-        this.mutate.activateSlides(Slider.getSlides(this.$root), index)
+        //this.mutate.resetActiveClasses(Slider.getSlides(this.$root))
+        // this.mutate.setActiveIndex(index)
+        // this.mutate.activateSlides(Slider.getSlides(this.$root), index)
       })
     }
   }
 
-  protected updateDOM(): void {
-    const { currentSlideMovement } = this.store
-
-    this.mutate.updateActiveSlides(currentSlideMovement as string)
-  }
+  protected updateDOM(): void {}
 
   public waitForAnimationEnd(callback?: () => void): void {
-    Promise.all(
-      this.$children.getAnimations().map(animation => animation.finished)
-    ).then(() => {
-      if (callback) {
-        callback() // Executa o callback passado
-      }
+    // Espera 2 frames para garantir que a animação tenha iniciado
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const animations = this.$children.getAnimations()
+        console.log("⏱️ Animações após 2x RAF:", animations)
+
+        if (animations.length === 0) {
+          console.warn("⚠️ Nenhuma animação ativa (mesmo após 2x RAF).")
+          callback?.()
+          return
+        }
+
+        Promise.all(animations.map(anim => anim.finished)).then(() => {
+          console.log("✅ Animações finalizadas")
+          callback?.()
+        })
+      })
     })
   }
+
   public updateDots($root: string) {
     const { dotIndex } = this.store
     let selectedIndex = dotIndex ?? 0
@@ -505,8 +530,6 @@ export class Slider extends BaseSlider {
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
         removeClass(dot, CLASS_VALUES.SELECTED)
-
-      console.log("iiiiii", Math.abs(selectedIndex))
 
       if (i === Math.abs(selectedIndex)) {
         addClass([dot], CLASS_VALUES.SELECTED)
