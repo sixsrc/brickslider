@@ -4,12 +4,14 @@ import { Mount } from "./Mount"
 import { StateType, TypeOptions } from "./State"
 import { Validation } from "./Validation"
 import { isValidSelector } from "./helpers"
+import { EventEmitter } from "./EventEmitter"
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: TypeOptions
   private mount: Mount | null = null
   private validate: Validation
   private message: Messages
+  private emitter = new EventEmitter()
 
   constructor($root: string, options?: TypeOptions) {
     super($root)
@@ -52,6 +54,29 @@ export class BrickSlider extends BaseSlider {
   public stop() {}
 
   public destroy() {}
+
+  // Método para o usuário se inscrever
+  public on(event: string, listener: (...args: any[]) => void): void {
+    this.emitter.on(event, listener)
+  }
+
+  // Método para remover listener
+  public off(event: string, listener: (...args: any[]) => void): void {
+    this.emitter.off(event, listener)
+  }
+
+  // Método para disparar evento internamente
+  protected emit(event: string, ...args: any[]): void {
+    this.emitter.emit(event, ...args)
+  }
+
+  // Exemplo: disparar evento quando animação terminar
+  protected onAnimationFinished() {
+    this.emit("animationFinished", {
+      message: "Animação finalizada",
+      time: Date.now()
+    })
+  }
 }
 //public clonedSlides: HTMLElement[] = []
 

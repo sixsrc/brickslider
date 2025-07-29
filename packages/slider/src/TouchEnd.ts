@@ -89,8 +89,6 @@ export class TouchEnd extends BaseSlider {
   }
 
   private positionState(currentTranslate: number): Partial<StateType> {
-    console.log("teste")
-
     return {
       sliderReady: true,
       currentTranslate: currentTranslate,

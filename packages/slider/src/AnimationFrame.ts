@@ -1,6 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./constants"
-import { translate3d } from "./helpers"
+import { animateElement, translate3d } from "./helpers"
 import { AnimationOptions, KeyframeAnimation } from "./types"
 
 export class AnimationFrame extends BaseSlider {
@@ -8,12 +8,34 @@ export class AnimationFrame extends BaseSlider {
     super($root)
   }
 
-  public init = (): number => {
+  /*public init = (): number => {
     const animationId = requestAnimationFrame(() => {
       this.animate(this.$children, this.keyFrames(), this.options())
     })
 
     return animationId
+  }*/
+
+  public init = (): Promise<Animation[]> => {
+    return new Promise(resolve => {
+      requestAnimationFrame(() => {
+        // Cria as animações para os elementos
+        const animations = animateElement(
+          this.$children,
+          this.keyFrames(),
+          this.options()
+        )
+
+        // Promise que resolve quando todas as animações terminarem
+        const finishedPromises = animations.map(anim => anim.finished)
+
+        Promise.all(finishedPromises).then(() => {
+          // Aqui a animação terminou
+          // Pode emitir um evento, chamar callback, ou só resolver a Promise
+          resolve(animations)
+        })
+      })
+    })
   }
 
   protected keyFrames(): KeyframeAnimation[] {

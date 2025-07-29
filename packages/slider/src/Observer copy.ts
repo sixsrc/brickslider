@@ -48,6 +48,9 @@ export class Observer extends BaseSlider {
     })
 
     if (updated) {
+      // Código original comentado para entendimento:
+      // this.mutate.updateActiveSlides([...this.visibleIndexes].sort((a, b) => a - b))
+
       console.log(
         "[Observer] Slides visíveis atualizados:",
         [...this.visibleIndexes].sort((a, b) => a - b)
