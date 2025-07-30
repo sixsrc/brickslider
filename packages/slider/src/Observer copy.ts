@@ -1,17 +1,14 @@
 import { BaseSlider } from "./BaseSlider"
-import { Mutate } from "./Mutate"
 
 export class Observer extends BaseSlider {
-  private mutate: Mutate
   private observer: IntersectionObserver
   private visibleIndexes = new Set<number>()
 
   constructor($root: string) {
     super($root)
-    this.mutate = new Mutate($root)
 
     this.observer = new IntersectionObserver(this.handleIntersect.bind(this), {
-      root: this.$track, // já vem de BaseSlider
+      root: this.$track,
       threshold: 0.9
     })
 
@@ -20,7 +17,7 @@ export class Observer extends BaseSlider {
 
   private observeSlides(): void {
     this.slidesArr.forEach((slide, index) => {
-      slide.dataset.index = index.toString()
+      // slide.dataset.index = index.toString()
       this.observer.observe(slide)
     })
   }
@@ -28,7 +25,7 @@ export class Observer extends BaseSlider {
   private handleIntersect(entries: IntersectionObserverEntry[]): void {
     let updated = false
 
-    entries.forEach(entry => {
+    entries.forEach((entry, idx) => {
       const index = parseInt(
         (entry.target as HTMLElement).dataset.index || "-1"
       )
@@ -48,22 +45,19 @@ export class Observer extends BaseSlider {
     })
 
     if (updated) {
-      // Código original comentado para entendimento:
-      // this.mutate.updateActiveSlides([...this.visibleIndexes].sort((a, b) => a - b))
-
-      console.log(
+      /*console.log(
         "[Observer] Slides visíveis atualizados:",
         [...this.visibleIndexes].sort((a, b) => a - b)
-      )
+      )*/
     }
   }
 
   // Método público para chamar manualmente e ver os índices visíveis
   public logVisibleSlides(): void {
-    console.log(
+    /*console.log(
       "[Observer] Slides visíveis agora (chamado manualmente):",
       [...this.visibleIndexes].sort((a, b) => a - b)
-    )
+    )*/
   }
 
   public getVisibleSlideIndexes(): number[] {
