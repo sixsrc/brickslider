@@ -3,7 +3,7 @@ import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 import { StateType } from "./State"
 import { Observer } from "./Observer"
-import { CLASS_VALUES, DOM_ELEMENTS, TAGS, TIMES } from "./constants"
+import { CLASS_VALUES, DOM_ELEMENTS, TAGS } from "./constants"
 import {
   addClass,
   getAllElements,
@@ -13,7 +13,6 @@ import {
   indexBasedBy,
   isNotMapped,
   removeClass,
-  shouldApplyAdjustment,
   waitFor
 } from "./helpers"
 import { CurrentEventType, TypeTargetSlideParams } from "./types"
@@ -255,16 +254,18 @@ export class Slider extends BaseSlider {
 
   private animationFrame() {
     requestAnimationFrame(() => {
-      const { slidesPerPage } = this.store
+      const { slidesPerPage, infinite } = this.store
 
       this.animation.init().then(animations => {
-        console.log("Todas as animações terminaram!", animations)
+        // console.log("Todas as animações terminaram!", animations)
         // Aqui pode fazer qualquer coisa ao final, tipo atualizar estado, chamar observer etc
 
         waitFor(50, () => {
           const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
 
+          console.log("visibleIndexes", visibleIndexes)
           // Atualiza classes com Mutate
+
           this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
         })
       })
@@ -429,6 +430,7 @@ export class Slider extends BaseSlider {
       slideIndex > activePage &&
       mov === "increment"
     ) {
+      alert("life won wiat for you my friend")
       let translate = 0
       const {
         spacing,
@@ -442,6 +444,8 @@ export class Slider extends BaseSlider {
           slide.dataset.index === "1" && !hasClass(slide, CLASS_VALUES.CLONED)
         )
       })
+
+      console.log("clonedIndex", clonedIndex)
 
       this.targetSlides = this.slidesArr.slice(0, clonedIndex)
 
@@ -457,7 +461,7 @@ export class Slider extends BaseSlider {
       this.animate(this.$children, this.keyFrames(), this.options())
 
       waitFor(0, () => {
-        let translate = 0
+        /*  let translate = 0
         const targetIndex = Number(this.targetDataIndex)
         const dataset = targetIndex + 1
         const indextoString = dataset.toString()
@@ -478,20 +482,7 @@ export class Slider extends BaseSlider {
           currentTranslate: -translate,
           prevTranslate: -translate,
           currentSlideMovement: "increment"
-        })
-        /* const { leftOver } = this.getMissingSlides()
-        const isOver = leftOver > 1
-        const isLimit =
-          infinite && mov === "increment" && activePage === numberOfPages - 1
-        //slidesPerView
-        const slidesGroup = isOver && isLimit ? slidesPerPage : slidesPerPage
-        const items = this.getVisibleSlides(mov as string, slidesGroup)
-        const lastSlide = items[items.length - 1]
-        const lastIndex = parseInt(lastSlide.dataset.index as string)*/
-
-        //this.mutate.resetActiveClasses(Slider.getSlides(this.$root))
-        // this.mutate.setActiveIndex(index)
-        // this.mutate.activateSlides(Slider.getSlides(this.$root), index)
+        })*/
       })
     }
   }

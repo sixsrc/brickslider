@@ -111,7 +111,7 @@ export class BaseSlider {
     options: AnimationOptions
   ): Animation[] {
     const animations = animateElement(element, keyFrames, options)
-    console.log("Animações criadas:", animations)
+    // console.log("Animações criadas:", animations)
     return animations
   }
 
@@ -154,7 +154,7 @@ export class BaseSlider {
   private incrementTargetSlides(slidesPerPage: number) {
     const { infinite, leftOverSlides, numberOfPages, activePage } = this.store
     this.lastIndex = 0
-    console.log("cansaaaaaado", this.lastIndex)
+
     if (infinite && activePage === numberOfPages) {
       const index = this.slidesArr.findIndex(
         slide =>
@@ -175,6 +175,8 @@ export class BaseSlider {
       }
     } else {
       this.setState({ jumpIndex: 0 })
+
+      console.log("jakelee", leftOverSlides)
 
       this.targetSlides = this.slidesArr.slice(
         this.getLastIndex() + 1,
@@ -246,14 +248,11 @@ export class BaseSlider {
       parseInt(lastActiveSlide.dataset.index as string)
     )
 
-    console.log("asasa", leftOverSlides)
-    console.log("lastActiveSlide", index)
-
     if (leftOverSlides > 0) {
       //this.lastIndex = index
       this.isAtRightBoundary = false
       // this.decrementCount++
-      //  this.setState({ leftOverSlides: 0 })
+      this.setState({ leftOverSlides: 0 })
     } else {
       //this.lastIndex = 8
     }
@@ -343,8 +342,8 @@ export class BaseSlider {
     if (filteredSlides.length < slidesPerView) {
       this.isAtRightBoundary = true
       this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
-      this.lastIndex = this.getAdjustedStartIndex(lastIndex)
-      console.log("lastIndex", this.lastIndex)
+      //this.lastIndex = this.getAdjustedStartIndex(lastIndex)
+      //console.log("lastIndex", this.lastIndex)
     } else {
       this.isAtRightBoundary = false
     }

@@ -50,7 +50,7 @@ export class CloneSlides extends BaseSlider {
     this.mountClonedSlides(slidesPerView, end, start)
   }
 
-  private mountClonedSlides(
+  /* private mountClonedSlides(
     slidesPerView: number,
     end: number[], // slides do início para clonar no final
     start: number[] // slides do final para clonar no início
@@ -74,7 +74,7 @@ export class CloneSlides extends BaseSlider {
     // Configuramos o tamanho dos slides APENAS UMA VEZ após todas as clonagens
     this.mount = new Mount(this.$root)
     this.mount.setSlidesWidth()
-  }
+  }*/
 
   private slidePositionState(): Partial<StateType> {
     const { slideIndex } = this.store
@@ -86,6 +86,41 @@ export class CloneSlides extends BaseSlider {
       slideIndex: slideIndex + 1,
       isInitialRender: false
     }
+  }
+
+  private mountClonedSlides(
+    slidesPerView: number,
+    end: number[],
+    start: number[]
+  ): void {
+    // Clonar do final para o início
+    for (const index of start) {
+      const original = this.slides[index]
+      const clone = original.cloneNode(true) as HTMLElement
+      addClass([clone], CLASS_VALUES.CLONED)
+
+      const dataIndex = original.getAttribute("data-index")
+      if (dataIndex) clone.setAttribute("data-index", dataIndex)
+
+      this.$children?.insertBefore(clone, this.slides[0])
+      this.clonedSlides.push(clone)
+    }
+
+    // Clonar do início para o final
+    for (const index of end) {
+      const original = this.slides[index]
+      const clone = original.cloneNode(true) as HTMLElement
+      addClass([clone], CLASS_VALUES.CLONED)
+
+      const dataIndex = original.getAttribute("data-index")
+      if (dataIndex) clone.setAttribute("data-index", dataIndex)
+
+      this.$children?.appendChild(clone)
+      this.clonedSlides.push(clone)
+    }
+
+    this.mount = new Mount(this.$root)
+    this.mount.setSlidesWidth()
   }
 
   protected calcTranslate() {

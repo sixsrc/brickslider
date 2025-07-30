@@ -5,12 +5,13 @@ import { Resize } from "./Resize"
 import { CloneSlides } from "./CloneSlides"
 import { StateType } from "./State"
 import { Swipe } from "./Swipe"
-import { CLASS_VALUES, EVENTS, STYLES } from "./constants"
+import { CLASS_VALUES, EVENTS } from "./constants"
 import {
   appendToParent,
   getChildrenCount,
   getSliderNodeList,
   getSliderWidth,
+  hasClass,
   listener,
   removeClass,
   setAttributes
@@ -42,7 +43,6 @@ export class Mount extends BaseSlider {
     this.setProperties()
     this.cloneSlides()
     this.appendSlider()
-    // this.setControls()
     this.handleResize()
     this.endMount()
   }
@@ -58,10 +58,20 @@ export class Mount extends BaseSlider {
 
     if (infinite) {
       this.clone.init()
-      //this.slides = this.clone.getSlides()["slides"]
       this.slides = BaseSlider.getSlides(this.$root)
     }
   }
+
+  /* private setAttr(index: number): Attributes {
+    const { numberOfSlides } = this.store
+
+    return {
+      "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
+      "aria-hidden": "true",
+      "data-index": index + 1,
+      role: "group"
+    }
+  }*/
 
   private setAttr(index: number): Attributes {
     const { numberOfSlides } = this.store
@@ -69,7 +79,7 @@ export class Mount extends BaseSlider {
     return {
       "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
       "aria-hidden": "true",
-      "data-index": index + 1,
+      "data-index": index + 1, // Convertido para string
       role: "group"
     }
   }
@@ -97,11 +107,9 @@ export class Mount extends BaseSlider {
   protected keyFrames(index: number): KeyframeAnimation[] {
     const slideWidth = this.getSlideWidth()
     const { spacing } = this.store
-    const isLastSlide = index === this.slides.length - 1
 
     return [
       {
-        //  marginRight: isLastSlide ? "0px" : `${spacing}px`,
         marginRight: `${spacing}px`,
         width: `${slideWidth}px`,
         maxWidth: `100%`,
@@ -111,14 +119,12 @@ export class Mount extends BaseSlider {
   }
 
   private getSlideWidth(): number {
-    //slidesPerView * spacing
-
     const { spacing, slidesPerView, sliderWidth } = this.store
     const totalSpacing = (slidesPerView - 1) * spacing
     const availableWidth = sliderWidth - totalSpacing
     const slideWidth = availableWidth / slidesPerView
 
-    return Math.max(0, slideWidth) // Garantir que não seja negativo
+    return Math.max(0, slideWidth)
   }
 
   private mountState(): Partial<StateType> {
@@ -140,59 +146,76 @@ export class Mount extends BaseSlider {
 
   private setActiveSlides(): void {
     const visibleIndexes = this.getVisibleSlideIndexes()
-    this.mutate.updateActiveSlides(visibleIndexes)
-    //this.mutate.updateActiveSlides()
-    //this.mutate.updateActiveSlides(null)
+    //this.mutate.updateActiveSlides(visibleIndexes)
+
+    const visibleDataIndexes = visibleIndexes.map(i => {
+      const slide = this.slides[i]
+      return Number(slide?.dataset.index)
+    })
+
+    this.mutate.updateActiveSlides(visibleDataIndexes)
   }
 
-  private getVisibleSlideIndexes(): number[] {
-    const slides = this.slides
+  /*private getVisibleSlideIndexes(): number[] {
+    const slides = this.slides.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    )
     const slidesPerPage = this.store.slidesPerPage || 1
 
-    // encontra o índice do slide que tem data-index === "1"
     const startIndex = slides.findIndex(slide => slide.dataset.index === "1")
 
-    // cria um array com os índices do startIndex até slidesPerPage
     return Array.from(
       { length: slidesPerPage },
       (_, i) => startIndex + i
-    ).filter(i => i < slides.length) // garante que não ultrapasse o tamanho do array
+    ).filter(i => i < slides.length)
   }
-
-  private checkSlidesPerView() {
-    this.setState({
-      numberOfSlides: this.slides.length
-    })
-    const { slidesPerView, numberOfSlides } = this.store
-    if (slidesPerView > numberOfSlides) {
-    }
-    // this.setState({ slidesPerView: numberOfSlides })
-  }
-
+*/
   public setSlidesWidth(): void {
     this.slides.forEach((slide, index) => {
       this.animate(slide, this.keyFrames(index), this.options())
     })
   }
 
-  private setPeekStyle(): void {
-    this.animate(
-      this.trackChildren,
-      {
-        transform: "scale(0.8)",
-        paddingLeft: "4rem",
-        paddingRight: "4rem"
-      } as any,
-      this.options()
+  private fixDataIndexes(): void {
+    const allSlides = Array.from(
+      this.$children?.children || []
+    ) as HTMLElement[]
+
+    allSlides.forEach(slide => {
+      const ariaLabel = slide.getAttribute("aria-label")
+      if (ariaLabel) {
+        // Extrai o número antes do "of" usando regex
+        const match = ariaLabel.match(/slide (\d+) of/)
+        if (match) {
+          const slideNumber = match[1]
+          slide.setAttribute("data-index", slideNumber)
+        }
+      }
+    })
+  }
+
+  private getVisibleSlideIndexes(): number[] {
+    const slidesPerPage = this.store.slidesPerPage || 1
+
+    // Encontra o primeiro slide visível real (não clonado)
+    const firstVisibleIndex = this.slides.findIndex(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    )
+
+    console.log("firstVisibleIndex", this.$root, firstVisibleIndex)
+
+    // Coleta os próximos N slides
+    return Array.from(
+      { length: slidesPerPage },
+      (_, i) => firstVisibleIndex + i
     )
   }
 
   private endMount(): void {
     this.setActiveSlides()
-    //this.setPeekStyle()
-    this.checkSlidesPerView()
     this.setSlidesWidth()
     this.setVisibility()
     this.setControls()
+    // this.fixDataIndexes()
   }
 }

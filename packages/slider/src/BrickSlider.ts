@@ -1,10 +1,11 @@
 import { BaseSlider } from "./BaseSlider"
 import { Messages } from "./Messages"
-import { Mount } from "./Mount"
+
 import { StateType, TypeOptions } from "./State"
 import { Validation } from "./Validation"
 import { isValidSelector } from "./helpers"
 import { EventEmitter } from "./EventEmitter"
+import { Mount } from "./Mount"
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: TypeOptions
