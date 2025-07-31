@@ -98,23 +98,11 @@ export class Arrows extends BaseSlider {
     const slideMovement = eventType === "next" ? "increment" : "decrement"
     const currentEventType = eventType
 
-    //if (this.isAnimating) return
-
-    // this.isAnimating = true
-
-    Promise.all(
-      this.$children.getAnimations().map(animation => animation.finished)
-    ).then(() => {
-      //this.isAnimating = false
-    })
-
     this.setState({ currentSlideMovement: slideMovement })
 
     this.movement = true
 
     this.setState(this.startPosState())
-
-    // this.handleMove()
 
     this.setState({ prevSlideIndex: slideIndex, currentEventType })
 
