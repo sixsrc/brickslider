@@ -758,6 +758,28 @@ export function translate3d(x: number): string | undefined {
   return `translate3d(${x}px, 0px, 0px)`
 }
 
+export function waitUntil(
+  condition: () => boolean,
+  interval = 10,
+  timeout = 2000
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const startTime = Date.now()
+
+    const check = () => {
+      if (condition()) {
+        resolve()
+      } else if (Date.now() - startTime >= timeout) {
+        reject(new Error("waitUntil: timeout exceeded"))
+      } else {
+        setTimeout(check, interval)
+      }
+    }
+
+    check()
+  })
+}
+
 export function waitFor(time: number, callback: () => void) {
   let start: number
 
