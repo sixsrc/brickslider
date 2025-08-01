@@ -66,10 +66,11 @@ export class Observer extends BaseSlider {
     })
 
     if (updated) {
-      console.log(
+      /* console.log(
         "[Observer] Slides visíveis atualizados:",
+        this.$root,
         [...this.visibleIndexes].sort((a, b) => a - b)
-      )
+      )*/
     }
   }
 

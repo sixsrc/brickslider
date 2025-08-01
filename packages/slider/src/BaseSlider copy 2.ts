@@ -114,10 +114,11 @@ export class BaseSlider {
   }
 
   private getLastActiveSlide() {
-    const { activePage, slidesPerPage } = this.store
-    const start = activePage * slidesPerPage
-    const end = start + slidesPerPage
-    const lastActiveSlide = this.slidesArr[end - 1]
+    let activeSlides = this.slidesArr.filter(slide =>
+      hasClass(slide, CLASS_VALUES.ACTIVE)
+    )
+
+    const lastActiveSlide = activeSlides[activeSlides.length - 1]
 
     return { lastActiveSlide }
   }
@@ -130,34 +131,63 @@ export class BaseSlider {
   }
 
   private setTargetSlides(): void {
-    const { slidesPerPage, activePage, slidesPerView } = this.store
-    const totalSlides = this.slidesArr.length
-
-    const start = activePage * slidesPerPage
-    const rawEnd = start + slidesPerView
-
-    let visibleStart = start
-    let visibleEnd = rawEnd
-
-    // Ajustar final se passar do total
-    if (visibleEnd > totalSlides) {
-      visibleEnd = totalSlides
-      visibleStart = Math.max(0, visibleEnd - slidesPerView)
-    }
-
-    // Só os ativos: os primeiros slidesPerPage do intervalo visível
-    const activeEnd = Math.min(visibleStart + slidesPerPage, totalSlides)
-
+    const { slidesPerPage, currentSlideMovement, activePage } = this.store
+    const isIncrement = currentSlideMovement === "increment"
     this.prevSlides = [...this.targetSlides]
-    this.targetSlides = this.slidesArr.slice(visibleStart, activeEnd)
+
+    if (isIncrement) {
+      this.setRightBoundary()
+      this.incrementTargetSlides(slidesPerPage)
+    } else {
+      this.decrementTargetSlides(slidesPerPage)
+    }
   }
 
   private incrementTargetSlides(slidesPerPage: number) {
-    // Desnecessário agora, incorporado em setTargetSlides
+    const { infinite, leftOverSlides, numberOfPages, activePage } = this.store
+    this.lastIndex = 0
+
+    if (infinite && activePage === numberOfPages) {
+      const index = this.slidesArr.findIndex(
+        slide =>
+          slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+      )
+      this.setState({ jumpIndex: Number(index) })
+
+      const firstSlidePos = this.prevSlides.findIndex(
+        slide => slide.dataset.index === "1"
+      )
+
+      if (firstSlidePos !== -1) {
+        // Remove todos os elementos a partir do data-index="1"
+        const filteredSlides = this.targetSlides.slice(0, firstSlidePos)
+
+        // Se quiser substituir o array original
+        this.targetSlides = filteredSlides
+      }
+    } else {
+      this.setState({ jumpIndex: 0 })
+
+      this.targetSlides = this.slidesArr.slice(
+        this.getLastIndex() + 1,
+        this.getLastIndex() + 1 + slidesPerPage - leftOverSlides
+      )
+    }
   }
 
   private decrementTargetSlides(slidesPerPage: number): void {
-    // Desnecessário agora, incorporado em setTargetSlides
+    const { leftOverSlides } = this.store
+    const value = this.isAtRightBoundary ? leftOverSlides : 0
+
+    this.targetSlides = this.slidesArr.slice(
+      Math.max(0, this.getLastIndex() - (slidesPerPage - value)),
+      this.getLastIndex()
+    )
+
+    if (leftOverSlides > 0) {
+      this.isAtRightBoundary = false
+      this.setState({ leftOverSlides: 0 })
+    }
   }
 
   private setRightBoundary() {
