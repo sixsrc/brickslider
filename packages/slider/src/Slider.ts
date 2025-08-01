@@ -244,24 +244,19 @@ export class Slider extends BaseSlider {
     return isNotMapped(infinite, currentIndex, numberOfSlides)
   }
 
-  private async animationFrame() {
-    const { slidesPerPage } = this.store
+  private animationFrame() {
+    requestAnimationFrame(() => {
+      const { slidesPerPage } = this.store
 
-    if (this.isAnimating) return
-
-    this.isAnimating = true
-
-    await this.animation.init()
-
-    await new Promise(resolve => {
-      waitFor(50, () => {
+      this.animation.init().then(animations => {
+        // console.log("Todas as animações terminaram!", animations)
+        // Aqui pode fazer qualquer coisa ao final, tipo atualizar estado, chamar observer etc
         const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
-        this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
-        resolve(true)
+        //this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
+
+        waitFor(50, () => {})
       })
     })
-
-    this.isAnimating = false
   }
 
   private mainState(): Partial<StateType> {
@@ -323,13 +318,7 @@ export class Slider extends BaseSlider {
 
   public updateSlider() {
     this.defineDotIndex()
-
-    const waitForAnimation = setInterval(() => {
-      if (!this.isAnimating) {
-        this.updateDots(this.$root)
-        clearInterval(waitForAnimation)
-      }
-    }, 10)
+    this.updateDots(this.$root)
 
     const {
       infinite,

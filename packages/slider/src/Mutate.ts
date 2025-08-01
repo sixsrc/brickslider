@@ -46,7 +46,7 @@ export class Mutate extends BaseSlider {
     visibleIndexes: number[] | null,
     maxActive?: number
   ): void {
-    this.resetActiveClasses()
+    //this.resetActiveClasses()
 
     if (!visibleIndexes) return
 

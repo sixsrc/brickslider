@@ -7,6 +7,7 @@ import { StateType } from "./State"
 import { Swipe } from "./Swipe"
 import { CLASS_VALUES, EVENTS } from "./constants"
 import {
+  addClass,
   appendToParent,
   getChildrenCount,
   getSliderNodeList,
@@ -146,7 +147,6 @@ export class Mount extends BaseSlider {
 
   private setActiveSlides(): void {
     const visibleIndexes = this.getVisibleSlideIndexes()
-    //this.mutate.updateActiveSlides(visibleIndexes)
 
     const visibleDataIndexes = visibleIndexes.map(i => {
       const slide = this.slides[i]
@@ -154,8 +154,16 @@ export class Mount extends BaseSlider {
     })
 
     this.mutate.updateActiveSlides(visibleDataIndexes)
-  }
 
+    const slidesWithActiveClass = this.slidesArr.filter(slide =>
+      hasClass(slide, CLASS_VALUES.ACTIVE)
+    )
+
+    slidesWithActiveClass.forEach(slide => {
+      addClass([slide], "isVisible")
+    })
+  }
+  //this.mutate.updateActiveSlides(visibleIndexes)
   /*private getVisibleSlideIndexes(): number[] {
     const slides = this.slides.filter(
       slide => !hasClass(slide, CLASS_VALUES.CLONED)

@@ -1,46 +1,21 @@
 import { BaseSlider } from "./BaseSlider"
-import { HandleMovement } from "./HandleMovement"
+
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TAGS, TIMES } from "./constants"
-import {
-  addClass,
-  createNewElement,
-  getElementAttribute,
-  listener,
-  prependChild,
-  setAttribute,
-  setInnerHTML,
-  waitFor
-} from "./helpers"
-import { IndexData, IndexKey, IndexMap } from "./types"
+import { ATTRIBUTES, DOM_ELEMENTS, EVENTS } from "./constants"
+import { getElementAttribute, listener } from "./helpers"
+import { IndexData, IndexKey } from "./types"
 
 export class Arrows extends BaseSlider {
   public $root: string
   private slider: Slider
   private buttons: HTMLElement[] = []
-  // Controle de animação
 
   constructor($root: string) {
     super($root)
     this.$root = $root
     this.slider = new Slider(this.$root)
   }
-
-  /*public init(): void {
-    //const createButtons = this.createButtons(2)
-    //const buttons = this.appendButtons(createButtons)
-
-    const buttons = Array.from(
-      document.querySelectorAll(`${this.$root}  ${DOM_ELEMENTS.BRICK_ARROWS}`)
-    )
-
-    buttons.forEach(button => {
-      listener([EVENTS.CLICK], button, () => {
-        this.arrowHandler(button, this.$root)
-      })
-    })
-  }*/
 
   public init(): void {
     const buttons = Array.from(
@@ -65,32 +40,6 @@ export class Arrows extends BaseSlider {
     }
   }
 
-  private createButtons(numberOfButtons: number): HTMLElement[] {
-    for (let i = 0; i < numberOfButtons; i++) {
-      const button = createNewElement(TAGS.BUTTON)
-      const isGreaterThanZero = i === 0
-      const attr = isGreaterThanZero ? "next" : "prev"
-
-      setAttribute(button, ATTRIBUTES.DIRECTION, attr)
-
-      addClass([button], DOM_ELEMENTS.BRICK_ARROWS)
-
-      setInnerHTML(button, isGreaterThanZero ? "next" : "prev")
-
-      this.buttons.push(button)
-    }
-
-    return this.buttons
-  }
-
-  private appendButtons(buttons: HTMLElement[]): HTMLElement[] {
-    buttons.forEach(button => {
-      prependChild(this.getRootSelector, button)
-    })
-
-    return buttons
-  }
-
   private arrowHandler(button: Element, $root: string): void {
     const { slideIndex } = this.store
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
@@ -109,17 +58,6 @@ export class Arrows extends BaseSlider {
     this.slider.setSlideTarget({ $root })
   }
 
-  protected jumpSlideTo(to: keyof IndexMap): void {
-    // const indexData = this.mapIndex().get(to)
-    //if (indexData) {
-    //const indexes = this.getIndexes()
-    // this.setState(this.slideState(indexes, indexData))
-    //this.animate(this.$children, this.keyFrames(), this.options(0))
-    //
-    // this.waitForAction()
-    //}
-  }
-
   protected evalSlideConditions(): Record<any, boolean> {
     const { slideIndex, slidesPerPage } = this.store
     const isFirstCloned = slideIndex === 0
@@ -130,14 +68,6 @@ export class Arrows extends BaseSlider {
       FIRST: isFirstCloned,
       LAST: isLastCloned
     }
-  }
-
-  private waitForAction(): void {
-    const action = () => {
-      this.setState(this.jumpSlideState(false))
-    }
-
-    waitFor(0, action)
   }
 
   private slideState(
@@ -161,37 +91,4 @@ export class Arrows extends BaseSlider {
       startPos: Infinity
     }
   }
-
-  private jumpSlideState(c: boolean): Partial<StateType> {
-    return { isJumpSlide: c }
-  }
 }
-
-/*
-private handleMove(): void {
-    const { infinite, slidesPerPage } = this.store
-    infinite && slidesPerPage <= 1 && this.infiniteMove()
-  }
-  private mapIndex(): Map<IndexKey, IndexData> {
-    const penultIndex = this.calcTranslate(this.childrenCount - 2)
-    const secondIndex = this.calcTranslate(1)
-    const { FIRST, LAST } = SLIDE_INDEX
-
-    return new Map([
-      [FIRST, { currentIndex: LAST, translate: penultIndex }],
-      [LAST, { currentIndex: FIRST, translate: secondIndex }]
-    ])
-  }
-
-   private infiniteMove(): void {
-    const isEqual = Object.keys(this.evalSlideConditions()).find(
-      key => this.evalSlideConditions()[key]
-    )
-
-    if (isEqual) {
-      this.jumpSlideTo(SLIDE_INDEX[isEqual as keyof typeof SLIDE_INDEX])
-    }
-  }
-
-
-*/
