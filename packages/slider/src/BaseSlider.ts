@@ -130,7 +130,8 @@ export class BaseSlider {
   }
 
   private setTargetSlides(): void {
-    const { slidesPerPage, activePage, slidesPerView } = this.store
+    const { slidesPerPage, activePage, slidesPerView, leftOverSlides } =
+      this.store
     const totalSlides = this.slidesArr.length
 
     const start = activePage * slidesPerPage
@@ -142,22 +143,48 @@ export class BaseSlider {
     // Ajustar final se passar do total
     if (visibleEnd > totalSlides) {
       visibleEnd = totalSlides
+
       visibleStart = Math.max(0, visibleEnd - slidesPerView)
     }
 
     // Só os ativos: os primeiros slidesPerPage do intervalo visível
-    const activeEnd = Math.min(visibleStart + slidesPerPage, totalSlides)
+    const activeEnd = Math.min(
+      visibleStart + slidesPerPage - leftOverSlides,
+      totalSlides
+    )
 
     this.prevSlides = [...this.targetSlides]
+
+    const lastSlide = this.targetSlides[this.targetSlides.length - 1]
+    const lastIndexStr = lastSlide?.dataset.index
+    this.lastIndex =
+      lastIndexStr !== undefined ? parseInt(lastIndexStr, 10) : -1
+
+    //this.lastIndex = visibleStart
+
+    const filteredSlides = Array.from(this.slidesArr).filter(slide => {
+      const index = parseInt(slide.getAttribute("data-index") as string, 10)
+      return index > 7
+    })
+
+    if (filteredSlides.length < slidesPerView) {
+      this.isAtRightBoundary = true
+      this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
+    } //else {
+    // this.isAtRightBoundary = false
+    //}
+
+    console.log("filtered slides", filteredSlides)
+
     this.targetSlides = this.slidesArr.slice(visibleStart, activeEnd)
   }
 
-  private incrementTargetSlides(slidesPerPage: number) {
-    // Desnecessário agora, incorporado em setTargetSlides
-  }
-
-  private decrementTargetSlides(slidesPerPage: number): void {
-    // Desnecessário agora, incorporado em setTargetSlides
+  private isOverflowing(
+    visibleSlides: number,
+    slidesPerPage: number,
+    totalSlides: number
+  ) {
+    return visibleSlides + slidesPerPage > totalSlides
   }
 
   private setRightBoundary() {
@@ -232,13 +259,45 @@ export class BaseSlider {
     return translate
   }
 
-  protected getMissingSlides(): { isMissing: boolean; leftOver: number } {
+  /* protected getMissingSlides(): { isMissing: boolean; leftOver: number } {
     const { slidesPerPage, slidesPerView } = this.store
     const totalSlides = BaseSlider.getSlides(this.$root, false).length
     const lastPageSlides = totalSlides % slidesPerPage || slidesPerPage
     const leftOver = Math.max(0, slidesPerView - lastPageSlides)
 
     return { isMissing: leftOver > 0, leftOver }
+  }*/
+
+  /* protected getMissingSlides(): { isMissing: boolean; leftOver: number } {
+    const { slidesPerPage, slidesPerView } = this.store
+    const totalSlides = BaseSlider.getSlides(this.$root, false).length
+    const lastPageSlides = totalSlides % slidesPerPage || slidesPerPage
+    const leftOver = Math.max(0, slidesPerView - lastPageSlides)
+
+    return { isMissing: leftOver > 0, leftOver }
+  }*/
+
+  protected getMissingSlides(): { isMissing: boolean; leftOver: number } {
+    const { slidesPerPage, slidesPerView } = this.store
+    const totalSlides = BaseSlider.getSlides(this.$root, false).length
+
+    // Quantas páginas completas temos
+    const fullPages = Math.floor(totalSlides / slidesPerPage)
+
+    // Quantos slides começam na última página
+    const lastPageStart = fullPages * slidesPerPage
+
+    // Quantos slides ainda sobram depois disso
+    const remainingSlides = totalSlides - lastPageStart
+
+    // Ex: 9 por view, 5 por página, 14 total
+    // => lastPageStart = 10, remainingSlides = 4, leftOver = 9 - 4 = 5
+    const leftOver = Math.max(0, slidesPerView - remainingSlides)
+
+    return {
+      isMissing: leftOver > 0,
+      leftOver
+    }
   }
 
   protected getSlidesSizes(): number | undefined {

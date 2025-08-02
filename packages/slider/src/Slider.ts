@@ -1,8 +1,9 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
-import { StateType } from "./State"
 import { Observer } from "./Observer"
+import { StateType } from "./State"
+
 import { CLASS_VALUES, DOM_ELEMENTS, TAGS } from "./constants"
 import {
   addClass,

@@ -160,7 +160,7 @@ export class Mount extends BaseSlider {
     )
 
     slidesWithActiveClass.forEach(slide => {
-      addClass([slide], "isVisible")
+      //addClass([slide], "isVisible")
     })
   }
   //this.mutate.updateActiveSlides(visibleIndexes)
@@ -224,6 +224,6 @@ export class Mount extends BaseSlider {
     this.setSlidesWidth()
     this.setVisibility()
     this.setControls()
-    // this.fixDataIndexes()
+    /// this.fixDataIndexes()
   }
 }
