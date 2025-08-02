@@ -3,7 +3,8 @@ import { BaseSlider } from "./BaseSlider"
 export class Observer extends BaseSlider {
   private observer: IntersectionObserver
   private visibleIndexes = new Set<number>()
-  private elementToIndexMap = new Map<HTMLElement, number>() // Para modo infinito
+  private elementToIndexMap = new Map<HTMLElement, number>()
+  private visibleDataIndexes = new Set<number>() // Novo: para armazenar data-indexes
 
   constructor($root: string) {
     super($root)
@@ -19,11 +20,7 @@ export class Observer extends BaseSlider {
       const { isInfinite } = this.store
 
       if (isInfinite) {
-        // Modo infinito: mapeia elemento para índice real
         this.elementToIndexMap.set(slide, index)
-      } else {
-        // Modo normal: usa data-index
-        slide.dataset.index = index.toString()
       }
 
       this.observer.observe(slide)
@@ -36,45 +33,69 @@ export class Observer extends BaseSlider {
 
     entries.forEach(entry => {
       let index: number
+      const dataIndex = parseInt(
+        (entry.target as HTMLElement).dataset.index || "-1"
+      )
+
+      if (isNaN(dataIndex) || dataIndex === -1) return
 
       if (isInfinite) {
-        // Modo infinito: busca índice pelo mapa
+        // Modo infinito: usa índice real do array para visibleIndexes
         const mappedIndex = this.elementToIndexMap.get(
           entry.target as HTMLElement
         )
         if (mappedIndex === undefined) return
         index = mappedIndex
       } else {
-        // Modo normal: busca índice pelo data-index
-        const dataIndex = parseInt(
-          (entry.target as HTMLElement).dataset.index || "-1"
-        )
-        if (isNaN(dataIndex) || dataIndex === -1) return
+        // Modo normal: usa data-index para visibleIndexes também
         index = dataIndex
       }
 
       if (entry.isIntersecting) {
         if (!this.visibleIndexes.has(index)) {
           this.visibleIndexes.add(index)
+          this.visibleDataIndexes.add(dataIndex) // Sempre adiciona o data-index
           updated = true
         }
       } else {
         if (this.visibleIndexes.delete(index)) {
+          this.visibleDataIndexes.delete(dataIndex) // Sempre remove o data-index
           updated = true
         }
       }
     })
 
     if (updated) {
-      /* console.log(
-        "[Observer] Slides visíveis atualizados:",
-        this.$root,
-        [...this.visibleIndexes].sort((a, b) => a - b)
-      )*/
+      // Atualiza o lastIndex SEMPRE com o maior data-index visível
+      this.updateLastIndex()
+
+      console.log(
+        "[Observer] Slides visíveis (índices reais):",
+        [...this.visibleIndexes].sort((a, b) => a - b),
+        "| Data-indexes visíveis:",
+        [...this.visibleDataIndexes].sort((a, b) => a - b),
+        "| Último data-index:",
+        this.lastIndex
+      )
+    }
+  }
+
+  private updateLastIndex(): void {
+    if (this.visibleDataIndexes.size > 0) {
+      // SEMPRE pega o maior data-index dos slides visíveis
+      this.lastIndex = Math.max(...this.visibleDataIndexes)
     }
   }
 
   public getVisibleSlideIndexes(): number[] {
     return [...this.visibleIndexes].sort((a, b) => a - b)
+  }
+
+  public getVisibleDataIndexes(): number[] {
+    return [...this.visibleDataIndexes].sort((a, b) => a - b)
+  }
+
+  public getLastVisibleDataIndex(): number {
+    return this.lastIndex
   }
 }
