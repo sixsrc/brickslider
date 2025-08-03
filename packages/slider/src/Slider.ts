@@ -318,6 +318,7 @@ export class Slider extends BaseSlider {
   public updateSlider() {
     this.defineDotIndex()
     this.updateDots(this.$root)
+    this.setState({ endTime: performance.now() })
 
     const {
       infinite,

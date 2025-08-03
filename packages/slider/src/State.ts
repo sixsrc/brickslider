@@ -30,6 +30,7 @@ export const state = {
   isCompleteGroup: "isCompleteGroup",
   isDragging: "isDragging",
   isJumpSlide: "isJumpSlide",
+  isFastNavigation: "isFastNavigation",
   startPos: "startPos",
   prevTranslate: "prevTranslate",
   currentTranslate: "currentTranslate",
@@ -77,6 +78,7 @@ export enum State_Keys {
   isCompleteGroup = "isCompleteGroup",
   isDragging = "isDragging",
   IsJumpSlide = "isJumpSlide",
+  isFastNavigation = "isFastNavigation",
   StartPos = "startPos",
   PrevTranslate = "prevTranslate",
   CurrentTranslate = "currentTranslate",
@@ -199,6 +201,7 @@ class State {
     State.state[this.key][State_Keys.isCompleteGroup] = true
     State.state[this.key][State_Keys.isDragging] = false
     State.state[this.key][State_Keys.IsJumpSlide] = false
+    State.state[this.key][State_Keys.isFastNavigation] = false
     State.state[this.key][State_Keys.StartPos] = 0
     State.state[this.key][State_Keys.StartX] = 0
     State.state[this.key][State_Keys.StartY] = 0
