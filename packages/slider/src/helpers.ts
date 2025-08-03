@@ -758,6 +758,11 @@ export function translate3d(x: number): string | undefined {
   return `translate3d(${x}px, 0px, 0px)`
 }
 
+export function isSafariBrowser() {
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  return isSafari
+}
+
 export function waitUntil(
   condition: () => boolean,
   interval = 10,

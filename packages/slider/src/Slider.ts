@@ -2,6 +2,7 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 import { Observer } from "./Observer"
+
 import { StateType } from "./State"
 
 import { CLASS_VALUES, DOM_ELEMENTS, TAGS } from "./constants"
@@ -13,6 +14,7 @@ import {
   hasClass,
   indexBasedBy,
   isNotMapped,
+  isSafariBrowser,
   removeClass,
   waitFor
 } from "./helpers"
@@ -248,9 +250,10 @@ export class Slider extends BaseSlider {
   private animationFrame() {
     requestAnimationFrame(() => {
       const { slidesPerPage } = this.store
+      const time = isSafariBrowser() ? 10 : 0
 
       this.animation.init().then(() => {
-        waitFor(50, () => {
+        waitFor(time, () => {
           const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
           this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
         })
