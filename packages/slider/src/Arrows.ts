@@ -1,8 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
-
 import { Slider } from "./Slider"
-import { StateType } from "./State"
-import { ATTRIBUTES, DOM_ELEMENTS, EVENTS } from "./constants"
+import { state, StateType } from "./State"
+import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TIMES } from "./constants"
 import { getElementAttribute, listener } from "./helpers"
 import { IndexData, IndexKey } from "./types"
 
@@ -23,21 +22,28 @@ export class Arrows extends BaseSlider {
     )
 
     buttons.forEach(button => {
-      const debouncedHandler = this.debounce(() => {
-        this.arrowHandler(button, this.$root)
-      }, 0) // Define o tempo de debounce
-
-      listener([EVENTS.CLICK], button, debouncedHandler)
+      const handler = () => {
+        setTimeout(() => {
+          this.arrowHandler(button, this.$root)
+        }, this.setTime())
+      }
+      listener([EVENTS.CLICK], button, handler)
     })
   }
 
-  private debounce(func: Function, delay: number): (...args: any[]) => void {
-    let timer: NodeJS.Timeout | null = null
+  private setTime(): number {
+    const totalSlides = Slider.getSlides(this.$root, false).length
+      ? TIMES.DEFAULT_TRANSITION_TIME - 100
+      : 0
 
-    return (...args: any[]) => {
-      if (timer) clearTimeout(timer)
-      timer = setTimeout(() => func(...args), delay)
-    }
+    return this.getTime(totalSlides) ? totalSlides : 0
+  }
+
+  private getTime(totalSlides: number): boolean {
+    return (
+      this.store[state.activePage] >= this.store[state.numberOfPages] - 1 &&
+      this.hasRemaining(totalSlides)
+    )
   }
 
   private arrowHandler(button: Element, $root: string): void {
@@ -92,3 +98,12 @@ export class Arrows extends BaseSlider {
     }
   }
 }
+/*buttons.forEach(button => {
+      let time = this.store["activePage"] >= 5 ? 300 : 0
+      const debouncedHandler = this.debounce(() => {
+        console.log("daime", time)
+        this.arrowHandler(button, this.$root)
+      }, time) //120) // Define o tempo de debounce
+
+      listener([EVENTS.CLICK], button, debouncedHandler)
+    })*/

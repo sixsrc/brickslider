@@ -249,13 +249,11 @@ export class Slider extends BaseSlider {
     requestAnimationFrame(() => {
       const { slidesPerPage } = this.store
 
-      this.animation.init().then(animations => {
-        // console.log("Todas as animações terminaram!", animations)
-        // Aqui pode fazer qualquer coisa ao final, tipo atualizar estado, chamar observer etc
-        const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
-        //this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
-
-        waitFor(50, () => {})
+      this.animation.init().then(() => {
+        waitFor(50, () => {
+          const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
+          this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
+        })
       })
     })
   }

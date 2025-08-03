@@ -1,5 +1,6 @@
-import { State, type StateType } from "./State"
-import { ANIMATION_OPTIONS, CLASS_VALUES } from "./constants"
+import { Slider } from "./Slider"
+import { state, State, type StateType } from "./State"
+import { ANIMATION_OPTIONS } from "./constants"
 import {
   animateElement,
   getEventType,
@@ -9,7 +10,6 @@ import {
   getSliderWidth,
   getTrackChildren,
   translate3d,
-  hasClass,
   getSliderNodeList
 } from "./helpers"
 import type {
@@ -36,13 +36,13 @@ export class BaseSlider {
   protected slidesArrBoundary: boolean
   protected slidesArr: HTMLElement[]
   protected targetSlides: HTMLElement[]
-  protected isAtRightBoundary: boolean
   protected lastIndex: number
   prevSlides: HTMLElement[]
   subTranslate: number
   protected decrementCount: number
   protected isAnimating: boolean = false
   protected firstCloned: null | HTMLElement
+  protected isIncompleteGroup: boolean
 
   constructor($root: string) {
     this.$root = $root
@@ -51,7 +51,7 @@ export class BaseSlider {
     this.prevSlides = []
     this.targetSlides = []
     this.firstCloned = null
-    this.isAtRightBoundary = false
+    this.isIncompleteGroup = false
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
     this.$children = getChildren(this.$root) as HTMLElement
@@ -122,72 +122,73 @@ export class BaseSlider {
     return { lastActiveSlide }
   }
 
-  private getLastIndex(): number {
-    const { lastActiveSlide } = this.getLastActiveSlide()
-    const lastIndex = this.slidesArr.indexOf(lastActiveSlide)
-
-    return lastIndex
-  }
-
   private setTargetSlides(): void {
-    const { slidesPerPage, activePage, slidesPerView, leftOverSlides } =
+    const { slidesPerPage, activePage, activeDataIndex, slidesPerView } =
       this.store
     const totalSlides = this.slidesArr.length
-
     const start = activePage * slidesPerPage
     const rawEnd = start + slidesPerView
-
     let visibleStart = start
     let visibleEnd = rawEnd
 
     // Ajustar final se passar do total
     if (visibleEnd > totalSlides) {
       visibleEnd = totalSlides
-
       visibleStart = Math.max(0, visibleEnd - slidesPerView)
     }
 
     // Só os ativos: os primeiros slidesPerPage do intervalo visível
-    const activeEnd = Math.min(
-      visibleStart + slidesPerPage - leftOverSlides,
-      totalSlides
-    )
 
     this.prevSlides = [...this.targetSlides]
 
     const lastSlide = this.targetSlides[this.targetSlides.length - 1]
     const lastIndexStr = lastSlide?.dataset.index
-    this.lastIndex =
-      lastIndexStr !== undefined ? parseInt(lastIndexStr, 10) : -1
+    const undef = undefined
+    this.lastIndex = lastIndexStr !== undef ? parseInt(lastIndexStr, 10) : -1
 
     //this.lastIndex = visibleStart
 
     const filteredSlides = Array.from(this.slidesArr).filter(slide => {
       const index = parseInt(slide.getAttribute("data-index") as string, 10)
-      return index > 7
+      return index > activeDataIndex
     })
 
-    if (filteredSlides.length < slidesPerView) {
-      this.isAtRightBoundary = true
-      this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
-    } //else {
-    // this.isAtRightBoundary = false
-    //}
-
     console.log("filtered slides", filteredSlides)
+
+    const { currentSlideMovement: mov } = this.store
+
+    if (mov === "increment") {
+      if (filteredSlides.length < slidesPerView) {
+        this.isIncompleteGroup = true
+        this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
+      }
+    } else {
+      if (this.isIncompleteGroup) {
+        this.isIncompleteGroup = false
+        console.log("bbb", this.store["leftOverSlides"])
+      } else {
+        this.setState({ leftOverSlides: 0 })
+      }
+    }
+
+    const activeEnd = Math.min(
+      visibleStart + slidesPerPage - this.store["leftOverSlides"],
+      totalSlides
+    )
 
     this.targetSlides = this.slidesArr.slice(visibleStart, activeEnd)
   }
 
-  private isOverflowing(
-    visibleSlides: number,
-    slidesPerPage: number,
-    totalSlides: number
-  ) {
-    return visibleSlides + slidesPerPage > totalSlides
+  protected hasRemaining(totalSlides: number): boolean {
+    return (
+      !this.store[state.infinite] &&
+      (totalSlides - this.store[state.slidesPerView]) %
+        this.store[state.slidesPerPage] !==
+        0
+    )
   }
 
-  private setRightBoundary() {
+  /*private setRightBoundary() {
     const { isMissing } = this.getMissingSlides()
     const { infinite, slidesPerView, slideIndex, numberOfSlides } = this.store
 
@@ -197,7 +198,7 @@ export class BaseSlider {
     } else {
       this.handleNonInfiniteBoundary(slidesPerView)
     }
-  }
+  }*/
 
   protected getAdjustedStartIndex(currentIndex: number): number {
     const totalSlides = this.slidesArr.length
@@ -222,12 +223,10 @@ export class BaseSlider {
     return currentIndex
   }
 
-  private handleInfiniteBoundary(isMissing: boolean) {
-    if (isMissing && this.isAtRightBoundary) {
-    }
-  }
+  private handleInfiniteBoundary(isMissing: boolean) {}
 
-  private handleNonInfiniteBoundary(slidesPerView: number) {
+  /*private handleNonInfiniteBoundary(slidesPerView: number) {
+    const { currentSlideMovement: mov } = this.store
     const lastIndex = parseInt(
       this.getLastActiveSlide().lastActiveSlide.dataset.index as string,
       10
@@ -238,13 +237,13 @@ export class BaseSlider {
       return index > lastIndex
     })
 
-    if (filteredSlides.length < slidesPerView) {
-      this.isAtRightBoundary = true
-      this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
-    } else {
-      this.isAtRightBoundary = false
+    if (mov === "increment") {
+      if (filteredSlides.length < slidesPerView) {
+        this.isIncompleteGroup = true
+        this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
+      }
     }
-  }
+  }*/
 
   private activeSlidesLoop(): number {
     const { spacing } = this.store
@@ -336,3 +335,13 @@ export class BaseSlider {
     throw new Error("Data index not found on slide element.")
   }
 }
+
+/*
+  private getLastIndex(): number {
+    const { lastActiveSlide } = this.getLastActiveSlide()
+    const lastIndex = this.slidesArr.indexOf(lastActiveSlide)
+
+    return lastIndex
+  }
+
+*/
