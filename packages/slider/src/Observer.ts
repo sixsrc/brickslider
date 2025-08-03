@@ -77,7 +77,6 @@ export class Observer extends BaseSlider {
       const adjustedLast = limited[limited.length - 1]
 
       this.lastIndex = adjustedLast
-
       this.setState(this.setActiveDataIndexState())
     }
   }
@@ -89,6 +88,14 @@ export class Observer extends BaseSlider {
   }
 
   public getVisibleSlideIndexes(): number[] {
+    console.log(
+      "[Observer] Slides visíveis (índices reais):",
+      [...this.visibleIndexes].sort((a, b) => a - b),
+      "| Data-indexes visíveis:",
+      [...this.visibleDataIndexes].sort((a, b) => a - b),
+      "| Último data-index:",
+      this.lastIndex
+    )
     return [...this.visibleIndexes].sort((a, b) => a - b)
   }
 

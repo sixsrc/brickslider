@@ -113,6 +113,7 @@ export class BaseSlider {
     return this.translate
   }
 
+ 
   private getLastActiveSlide() {
     const { activePage, slidesPerPage } = this.store
     const start = activePage * slidesPerPage
