@@ -19,7 +19,9 @@ export class Observer extends BaseSlider {
     this.slidesArr.forEach((slide, index) => {
       const { isInfinite } = this.store
 
-      if (isInfinite) this.elementToIndexMap.set(slide, index)
+      if (isInfinite) {
+        this.elementToIndexMap.set(slide, index)
+      }
 
       this.observer.observe(slide)
     })
@@ -66,25 +68,25 @@ export class Observer extends BaseSlider {
     if (updated) {
       // Atualiza o lastIndex SEMPRE com o maior data-index visível
       this.updateLastIndex()
+
+      console.log(
+        "[Observer] Slides visíveis (índices reais):",
+        [...this.visibleIndexes].sort((a, b) => a - b),
+        "| Data-indexes visíveis:",
+        [...this.visibleDataIndexes].sort((a, b) => a - b),
+        "| Último data-index:",
+        this.lastIndex
+      )
     }
   }
 
   private updateLastIndex(): void {
     if (this.visibleDataIndexes.size > 0) {
-      const { slidesPerPage } = this.store
-      const sorted = [...this.visibleDataIndexes].sort((a, b) => a - b)
-      const limited = sorted.slice(0, slidesPerPage)
-      const adjustedLast = limited[limited.length - 1]
-
-      this.lastIndex = adjustedLast
-
-      this.setState(this.setActiveDataIndexState())
-    }
-  }
-
-  private setActiveDataIndexState() {
-    return {
-      activeDataIndex: this.lastIndex
+      // SEMPRE pega o maior data-index dos slides visíveis
+      this.lastIndex = Math.max(...this.visibleDataIndexes)
+      this.setState({
+        startTime: this.lastIndex
+      })
     }
   }
 
@@ -100,24 +102,3 @@ export class Observer extends BaseSlider {
     return this.lastIndex
   }
 }
-
-/*
-  
-  console.log(
-        "[Observer] Slides visíveis (índices reais):",
-        [...this.visibleIndexes].sort((a, b) => a - b),
-        "| Data-indexes visíveis:",
-        [...this.visibleDataIndexes].sort((a, b) => a - b),
-        "| Último data-index:",
-        this.lastIndex
-      )
-  
-  private updateLastIndex(): void {
-    if (this.visibleDataIndexes.size > 0) {
-      // SEMPRE pega o maior data-index dos slides visíveis
-      this.lastIndex = Math.max(...this.visibleDataIndexes)
-      this.setState({
-        startTime: this.lastIndex
-      })
-    }
-  }*/

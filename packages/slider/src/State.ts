@@ -5,11 +5,59 @@ import {
   invalidationConditions
 } from "./types"
 
+export const state = {
+  prevSlideIndex: "prevSlideIndex",
+  statelideIndex: "slideIndex",
+  jumpIndex: "jumpIndex",
+  activePage: "activePage",
+  activeDataIndex: "activeDataIndex",
+  slideSpacing: "spacing",
+  slidesPerPage: "slidesPerPage",
+  slidesPerView: "slidesPerView",
+  numberOfPages: "numberOfPages",
+  numberOfSlides: "numberOfSlides",
+  sliderWidth: "sliderWidth",
+  slideSizes: "slideSizes",
+  leftOverSlides: "leftOverSlides",
+  startX: "startX",
+  startY: "startY",
+  endX: "endX",
+  eventFrom: "eventFrom",
+  sliderReady: "sliderReady",
+  isPagedActive: "isPagedActive",
+  isInitialRender: "isInitialRender",
+  isTouch: "isTouch",
+  isCompleteGroup: "isCompleteGroup",
+  isDragging: "isDragging",
+  isJumpSlide: "isJumpSlide",
+  startPos: "startPos",
+  prevTranslate: "prevTranslate",
+  currentTranslate: "currentTranslate",
+  currentEventType: "currentEventType",
+  currentSlideMovement: "currentSlideMovement",
+  currentAnimation: "currentAnimation",
+  startTime: "startTime",
+  endTime: "endTime",
+  isMouseLeave: "isMouseLeave",
+  animationID: "animationID",
+  autoplay: "autoplay",
+  autoplaySpeed: "autoplaySpeed",
+  dots: "dots",
+  dotIndex: "dotIndex",
+  arrows: "arrows",
+  touch: "touch",
+  infinite: "infinite",
+  speed: "speed",
+  transition: "transition",
+  useTailwind: "useTailwind"
+} as const
+
 export enum State_Keys {
   PrevSlideIndex = "prevSlideIndex",
   SlideIndex = "slideIndex",
   JumpIndex = "jumpIndex",
   ActivePage = "activePage",
+  ActiveDataIndex = "activeDataIndex",
   SlideSpacing = "spacing",
   SlidesPerPage = "slidesPerPage",
   SlidesPerView = "slidesPerView",
@@ -56,6 +104,7 @@ export type StateType = {
   [State_Keys.PrevSlideIndex]: number
   [State_Keys.JumpIndex]: number
   [State_Keys.SlideIndex]: number
+  [State_Keys.ActiveDataIndex]: number
   [State_Keys.ActivePage]: number
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
@@ -132,6 +181,7 @@ class State {
   private initializeState(options: TypeOptions): void {
     State.state[this.key][State_Keys.PrevSlideIndex] = 0
     State.state[this.key][State_Keys.ActivePage] = 0
+    State.state[this.key][State_Keys.ActiveDataIndex] = 0
     State.state[this.key][State_Keys.JumpIndex] = 0
     State.state[this.key][State_Keys.SlideIndex] = 0
     State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0

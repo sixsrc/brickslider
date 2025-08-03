@@ -47,7 +47,7 @@ export const ATTRIBUTES = {
 } as const
 
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 400
+  DEFAULT_TRANSITION_TIME: 600 //200
 }
 
 export const TRANSITIONS = {
