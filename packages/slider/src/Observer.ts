@@ -1,4 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
+import { CLASS_VALUES } from "./constants"
+import { hasClass } from "./helpers"
 
 export class Observer extends BaseSlider {
   private observer: IntersectionObserver
@@ -16,7 +18,10 @@ export class Observer extends BaseSlider {
   }
 
   private observeSlides(): void {
-    this.slidesArr.forEach((slide, index) => {
+    const slides = this.slidesArr.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    )
+    slides.forEach((slide, index) => {
       const { isInfinite } = this.store
 
       if (isInfinite) this.elementToIndexMap.set(slide, index)

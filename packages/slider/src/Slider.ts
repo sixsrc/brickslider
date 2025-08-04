@@ -255,7 +255,9 @@ export class Slider extends BaseSlider {
       this.animation.init().then(() => {
         waitFor(time, () => {
           const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
-          this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
+          waitFor(50, () => {
+            this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
+          })
         })
       })
     })
@@ -321,7 +323,6 @@ export class Slider extends BaseSlider {
   public updateSlider() {
     this.defineDotIndex()
     this.updateDots(this.$root)
-    this.setState({ endTime: performance.now() })
 
     const {
       infinite,
