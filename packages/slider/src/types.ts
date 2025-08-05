@@ -18,6 +18,7 @@ export type Attributes = {
   "aria-label": string
   "aria-hidden": string
   "data-index": number
+  "data-slide-number": number
   role: string
 }
 

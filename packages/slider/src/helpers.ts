@@ -763,19 +763,22 @@ export function isSafariBrowser() {
   return isSafari
 }
 
-export function waitUntil(
-  condition: () => boolean,
-  interval = 10,
+// helpers.ts
+
+export function waitUntil<T>(
+  predicate: () => T | false,
+  interval = 16,
   timeout = 2000
-): Promise<void> {
+): Promise<T> {
   return new Promise((resolve, reject) => {
-    const startTime = Date.now()
+    const start = performance.now()
 
     const check = () => {
-      if (condition()) {
-        resolve()
-      } else if (Date.now() - startTime >= timeout) {
-        reject(new Error("waitUntil: timeout exceeded"))
+      const result = predicate()
+      if (result) {
+        resolve(result)
+      } else if (performance.now() - start > timeout) {
+        reject(new Error("Timeout"))
       } else {
         setTimeout(check, interval)
       }

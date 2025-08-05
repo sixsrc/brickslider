@@ -46,7 +46,7 @@ export class Mutate extends BaseSlider {
     visibleIndexes: number[] | null,
     maxActive?: number
   ): void {
-    //this.resetActiveClasses()
+    this.resetActiveClasses()
 
     if (!visibleIndexes) return
 
@@ -59,7 +59,7 @@ export class Mutate extends BaseSlider {
     const allSlides = this.getAllSlides()
 
     allSlides.forEach(slide => {
-      const slideIndex = Number(slide.dataset.index)
+      const slideIndex = Number(slide.dataset.slideNumber)
       if (toActivate.includes(slideIndex)) {
         addClass([slide], CLASS_VALUES.ACTIVE)
       } else {

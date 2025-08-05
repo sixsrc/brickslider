@@ -47,34 +47,8 @@ export class CloneSlides extends BaseSlider {
       .map(i => slideCount - i - 1)
       .reverse()
 
-    this.mountClonedSlides(slidesPerView, end, start)
+    this.mountClonedSlides(end, start)
   }
-
-  /* private mountClonedSlides(
-    slidesPerView: number,
-    end: number[], // slides do início para clonar no final
-    start: number[] // slides do final para clonar no início
-  ): void {
-    // Primeiro adicionamos clones no início (do final do array original)
-    for (const index of start) {
-      const clone = this.slides[index].cloneNode(true) as HTMLElement
-      addClass([clone], CLASS_VALUES.CLONED) // Fixado para passar um array
-      this.$children?.insertBefore(clone, this.slides[0])
-      this.clonedSlides.push(clone)
-    }
-
-    // Depois adicionamos clones no final (do início do array original)
-    for (const index of end) {
-      const clone = this.slides[index].cloneNode(true) as HTMLElement
-      addClass([clone], CLASS_VALUES.CLONED) // Fixado para passar um array
-      this.$children?.appendChild(clone)
-      this.clonedSlides.push(clone)
-    }
-
-    // Configuramos o tamanho dos slides APENAS UMA VEZ após todas as clonagens
-    this.mount = new Mount(this.$root)
-    this.mount.setSlidesWidth()
-  }*/
 
   private slidePositionState(): Partial<StateType> {
     const { slideIndex } = this.store
@@ -88,12 +62,7 @@ export class CloneSlides extends BaseSlider {
     }
   }
 
-  private mountClonedSlides(
-    slidesPerView: number,
-    end: number[],
-    start: number[]
-  ): void {
-    // Clonar do final para o início
+  /*private mountClonedSlides(end: number[], start: number[]): void {
     for (const index of start) {
       const original = this.slides[index]
       const clone = original.cloneNode(true) as HTMLElement
@@ -106,7 +75,6 @@ export class CloneSlides extends BaseSlider {
       this.clonedSlides.push(clone)
     }
 
-    // Clonar do início para o final
     for (const index of end) {
       const original = this.slides[index]
       const clone = original.cloneNode(true) as HTMLElement
@@ -118,6 +86,44 @@ export class CloneSlides extends BaseSlider {
       this.$children?.appendChild(clone)
       this.clonedSlides.push(clone)
     }
+
+    this.mount = new Mount(this.$root)
+    this.mount.setSlidesWidth()
+  }*/
+
+  private mountClonedSlides(end: number[], start: number[]): void {
+    // Clonar antes (início)
+    for (const index of start) {
+      const original = this.slides[index]
+      const clone = original.cloneNode(true) as HTMLElement
+      addClass([clone], CLASS_VALUES.CLONED)
+
+      // data-index do clone = data-index do original
+      clone.setAttribute("data-index", original.getAttribute("data-index")!)
+
+      this.$children?.insertBefore(clone, this.slides[0])
+      this.clonedSlides.push(clone)
+    }
+
+    // Clonar depois (fim)
+    for (const index of end) {
+      const original = this.slides[index]
+      const clone = original.cloneNode(true) as HTMLElement
+      addClass([clone], CLASS_VALUES.CLONED)
+
+      // data-index do clone = data-index do original
+      clone.setAttribute("data-index", original.getAttribute("data-index")!)
+
+      this.$children?.appendChild(clone)
+      this.clonedSlides.push(clone)
+    }
+
+    // Agora, percorre TODOS os slides no DOM (originais + clones)
+    // e atribui data-slide-number na ordem do DOM (1, 2, 3, ...)
+    const allSlides = Array.from(this.$children!.children) as HTMLElement[]
+    allSlides.forEach((slide, i) => {
+      slide.setAttribute("data-slide-number", (i + 1).toString())
+    })
 
     this.mount = new Mount(this.$root)
     this.mount.setSlidesWidth()

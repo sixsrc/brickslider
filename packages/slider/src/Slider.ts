@@ -247,18 +247,47 @@ export class Slider extends BaseSlider {
     return isNotMapped(infinite, currentIndex, numberOfSlides)
   }
 
-  private animationFrame() {
+  /*private animationFrame() {
     requestAnimationFrame(() => {
       const { slidesPerPage } = this.store
       const time = isSafariBrowser() ? 10 : 0
 
       this.animation.init().then(() => {
-        waitFor(time, () => {
-          const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
-          waitFor(50, () => {
+        const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
+        console.log("mutate", visibleIndexes)
+        this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
+        //waitFor(time, () => {})
+      })
+    })
+  }*/
+
+  private animationFrame() {
+    const { slidesPerPage } = this.store
+    let intervalId: number | null = null
+
+    this.animation
+      .init({
+        onStart: () => {
+          intervalId = window.setInterval(() => {
+            const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
             this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
-          })
-        })
+          }, 10)
+        },
+        onEnd: () => {
+          if (intervalId !== null) {
+            clearInterval(intervalId)
+            intervalId = null
+          }
+        }
+      })
+      .then(() => {
+        console.log("✅ Todas as animações finalizadas")
+      })
+
+    requestAnimationFrame(() => {
+      const time = isSafariBrowser() ? 10 : 0
+      this.animation.init().then(() => {
+        // Algo após animação
       })
     })
   }
@@ -386,17 +415,16 @@ export class Slider extends BaseSlider {
     }
 
     if (infinite && activePage === numberOfPages) {
-      const index = this.slidesArr.findIndex(slide => {
+      /*  const index = this.slidesArr.findIndex(slide => {
         return (
           slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
         )
-      })
-
+      })*/
       //this.mutate.setActiveIndex(index - slidesPerPage)
     }
 
     if (infinite && activePage === 1) {
-      const { SINGLE_SLIDE } = DOM_ELEMENTS
+      /* const { SINGLE_SLIDE } = DOM_ELEMENTS
       const { ACTIVE } = CLASS_VALUES
 
       const allActive = getAllElements<HTMLElement>(
@@ -405,7 +433,7 @@ export class Slider extends BaseSlider {
       )
       const lastActive = allActive[allActive.length - 1]
       this.firstDataIndex = parseInt(allActive[0].dataset.index as string)
-      this.targetDataIndex = lastActive?.dataset.index as string
+      this.targetDataIndex = lastActive?.dataset.index as string*/
     }
 
     if (
