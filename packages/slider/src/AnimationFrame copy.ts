@@ -3,17 +3,12 @@ import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./constants"
 import { animateElement, translate3d } from "./helpers"
 import { AnimationOptions, KeyframeAnimation } from "./types"
 
-type AnimationCallbacks = {
-  onStart?: (animations: Animation[]) => void
-  onEnd?: (animations: Animation[]) => void
-}
-
 export class AnimationFrame extends BaseSlider {
   constructor($root: string) {
     super($root)
   }
 
-  public init = (callbacks?: AnimationCallbacks): Promise<Animation[]> => {
+  public init = (): Promise<Animation[]> => {
     return new Promise(resolve => {
       requestAnimationFrame(() => {
         const animations = animateElement(
@@ -22,19 +17,9 @@ export class AnimationFrame extends BaseSlider {
           this.options()
         )
 
-        // 🔹 Aciona o callback onStart imediatamente após criar as animações
-        if (callbacks?.onStart) {
-          // Aguarda um microtask para garantir que as animações estejam prontas
-          queueMicrotask(() => {
-            callbacks.onStart?.(animations)
-          })
-        }
-
         const finishedAnimations = animations.map(anim => anim.finished)
 
         Promise.all(finishedAnimations).then(() => {
-          // 🔹 Aciona o callback onEnd, se existir
-          callbacks?.onEnd?.(animations)
           resolve(animations)
         })
       })
@@ -43,6 +28,7 @@ export class AnimationFrame extends BaseSlider {
 
   protected keyFrames(): KeyframeAnimation[] {
     const { currentTranslate } = this.store
+
     return [{ transform: translate3d(currentTranslate) }]
   }
 
@@ -51,7 +37,7 @@ export class AnimationFrame extends BaseSlider {
   ): AnimationOptions {
     const { currentEventType } = this.store
     const isTouchMove = currentEventType === EVENTS.TOUCHMOVE
-    const duration = isTouchMove ? 0 : time
+    const duration = /*isJumpSlide ||*/ isTouchMove ? 0 : time
     const actualDuration = duration > 0 ? duration : 0
 
     return {

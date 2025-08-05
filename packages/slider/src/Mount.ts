@@ -1,5 +1,4 @@
 import { Arrows } from "./Arrows"
-
 import { Dots } from "./Dots"
 import { Resize } from "./Resize"
 import { CloneSlides } from "./CloneSlides"
@@ -7,7 +6,6 @@ import { StateType } from "./State"
 import { Swipe } from "./Swipe"
 import { CLASS_VALUES, EVENTS } from "./constants"
 import {
-  addClass,
   appendToParent,
   getChildrenCount,
   getSliderNodeList,
@@ -17,10 +15,8 @@ import {
   removeClass,
   setAttributes
 } from "./helpers"
-
 import { Attributes, KeyframeAnimation } from "./types"
 import { ContextMenu } from "./ContextMenu"
-
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 
@@ -63,24 +59,25 @@ export class Mount extends BaseSlider {
     }
   }
 
-  /* private setAttr(index: number): Attributes {
+  /*private setAttr(index: number): Attributes {
     const { numberOfSlides } = this.store
 
     return {
       "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
       "aria-hidden": "true",
       "data-index": index + 1,
+      "data-slide-number": index + 1,
       role: "group"
     }
   }*/
 
   private setAttr(index: number): Attributes {
     const { numberOfSlides } = this.store
-
     return {
       "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
       "aria-hidden": "true",
-      "data-index": index + 1, // Convertido para string
+      "data-index": index + 1,
+      "data-slide-number": index + 1,
       role: "group"
     }
   }
@@ -150,69 +147,24 @@ export class Mount extends BaseSlider {
 
     const visibleDataIndexes = visibleIndexes.map(i => {
       const slide = this.slides[i]
-      return Number(slide?.dataset.index)
+      return Number(slide?.dataset.slideNumber)
     })
 
     this.mutate.updateActiveSlides(visibleDataIndexes)
-
-    const slidesWithActiveClass = this.slidesArr.filter(slide =>
-      hasClass(slide, CLASS_VALUES.ACTIVE)
-    )
-
-    slidesWithActiveClass.forEach(slide => {
-      //addClass([slide], "isVisible")
-    })
   }
-  //this.mutate.updateActiveSlides(visibleIndexes)
-  /*private getVisibleSlideIndexes(): number[] {
-    const slides = this.slides.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    )
-    const slidesPerPage = this.store.slidesPerPage || 1
 
-    const startIndex = slides.findIndex(slide => slide.dataset.index === "1")
-
-    return Array.from(
-      { length: slidesPerPage },
-      (_, i) => startIndex + i
-    ).filter(i => i < slides.length)
-  }
-*/
   public setSlidesWidth(): void {
     this.slides.forEach((slide, index) => {
       this.animate(slide, this.keyFrames(index), this.options())
     })
   }
 
-  private fixDataIndexes(): void {
-    const allSlides = Array.from(
-      this.$children?.children || []
-    ) as HTMLElement[]
-
-    allSlides.forEach(slide => {
-      const ariaLabel = slide.getAttribute("aria-label")
-      if (ariaLabel) {
-        // Extrai o número antes do "of" usando regex
-        const match = ariaLabel.match(/slide (\d+) of/)
-        if (match) {
-          const slideNumber = match[1]
-          slide.setAttribute("data-index", slideNumber)
-        }
-      }
-    })
-  }
-
   private getVisibleSlideIndexes(): number[] {
     const slidesPerPage = this.store.slidesPerPage || 1
-
-    // Encontra o primeiro slide visível real (não clonado)
     const firstVisibleIndex = this.slides.findIndex(
       slide => !hasClass(slide, CLASS_VALUES.CLONED)
     )
 
-    console.log("firstVisibleIndex", this.$root, firstVisibleIndex)
-
-    // Coleta os próximos N slides
     return Array.from(
       { length: slidesPerPage },
       (_, i) => firstVisibleIndex + i
@@ -224,6 +176,5 @@ export class Mount extends BaseSlider {
     this.setSlidesWidth()
     this.setVisibility()
     this.setControls()
-    /// this.fixDataIndexes()
   }
 }

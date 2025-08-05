@@ -153,21 +153,25 @@ export class BaseSlider {
       return index > activeDataIndex
     })
 
-    console.log("filtered slides", filteredSlides)
+    // console.log("filtered slides", activePage, this.store.numberOfPages)
 
-    const { currentSlideMovement: mov } = this.store
+    const { infinite, currentSlideMovement: mov } = this.store
 
-    if (mov === "increment") {
-      if (filteredSlides.length < slidesPerView) {
-        this.isIncompleteGroup = true
-        this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
-      }
-    } else {
-      if (this.isIncompleteGroup) {
-        this.isIncompleteGroup = false
-        console.log("bbb", this.store["leftOverSlides"])
+    if (!infinite) {
+      if (mov === "increment") {
+        if (filteredSlides.length < slidesPerView) {
+          this.isIncompleteGroup = true
+          this.setState({
+            leftOverSlides: slidesPerView - filteredSlides.length
+          })
+        }
       } else {
-        this.setState({ leftOverSlides: 0 })
+        if (this.isIncompleteGroup) {
+          this.isIncompleteGroup = false
+          // console.log("bbb", this.store["leftOverSlides"])
+        } else {
+          this.setState({ leftOverSlides: 0 })
+        }
       }
     }
 
@@ -177,6 +181,8 @@ export class BaseSlider {
     )
 
     this.targetSlides = this.slidesArr.slice(visibleStart, activeEnd)
+
+    console.log("DDDDDDDDDDDARGET", this.targetSlides)
   }
 
   protected hasRemaining(totalSlides: number): boolean {
