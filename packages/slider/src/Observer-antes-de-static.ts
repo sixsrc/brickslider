@@ -5,6 +5,10 @@ import { hasClass } from "./helpers"
 export class Observer extends BaseSlider {
   private visibleIndexes = new Set<number>()
   private visibleDataIndexes = new Set<number>()
+
+  // 🔹 Agora são propriedades estáticas (compartilhadas entre todas as instâncias)
+  private static visibleIndexes = new Set<number>()
+  private static visibleDataIndexes = new Set<number>()
   private elementToIndexMap = new Map<HTMLElement, number>()
   private animationFrameId: number | null = null
 
@@ -72,14 +76,15 @@ export class Observer extends BaseSlider {
       this.visibleDataIndexes = newlyVisibleDataIndexes
       this.updateLastIndex()
 
-      // ✅ Só loga quando houver mudança nos visíveis
-      console.log(
-        "[Observer] Slides visíveis (data-index):",
+      const slides =
+        // ✅ Só loga quando houver mudança nos visíveis
+        console.log(
+          "[Observer] Slides visíveis (data-index):",
 
-        [...this.visibleDataIndexes].sort((a, b) => a - b),
-        "| Último data-index:",
-        this.lastIndex
-      )
+          [...this.visibleDataIndexes].sort((a, b) => a - b),
+          "| Último data-index:",
+          this.lastIndex
+        )
     }
   }
 
@@ -108,7 +113,7 @@ export class Observer extends BaseSlider {
     }
   }
 
-  public getVisibleSlideIndexes(): number[] {
+  public static getVisibleSlideIndexes(): number[] {
     return [...this.visibleIndexes].sort((a, b) => a - b)
   }
 

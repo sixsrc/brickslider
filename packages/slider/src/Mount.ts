@@ -144,7 +144,6 @@ export class Mount extends BaseSlider {
 
   private setActiveSlides(): void {
     const visibleIndexes = this.getVisibleSlideIndexes()
-
     const visibleDataIndexes = visibleIndexes.map(i => {
       const slide = this.slides[i]
       return Number(slide?.dataset.slideNumber)
@@ -152,6 +151,8 @@ export class Mount extends BaseSlider {
 
     this.mutate.updateActiveSlides(visibleDataIndexes)
   }
+
+  private setActivePage(): void {}
 
   public setSlidesWidth(): void {
     this.slides.forEach((slide, index) => {
