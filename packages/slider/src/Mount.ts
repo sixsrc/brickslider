@@ -13,7 +13,8 @@ import {
   hasClass,
   listener,
   removeClass,
-  setAttributes
+  setAttributes,
+  waitFor
 } from "./helpers"
 import { Attributes, KeyframeAnimation } from "./types"
 import { ContextMenu } from "./ContextMenu"
@@ -37,6 +38,7 @@ export class Mount extends BaseSlider {
 
   public init(): void {
     this.setState(this.mountState())
+    this.normalizeSlidesConfig()
     this.setProperties()
     this.cloneSlides()
     this.appendSlider()
@@ -44,6 +46,55 @@ export class Mount extends BaseSlider {
     this.endMount()
   }
 
+  private normalizeSlidesConfig(): void {
+    const { slidesPerPage: originalPerPage, slidesPerView: originalPerView } =
+      this.store
+    const totalSlides = this.slidesArr.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    ).length
+    let adjustedPerPage = 0
+
+    if (totalSlides <= originalPerView) {
+      this.setState({
+        slidesPerPage: totalSlides,
+        slidesPerView: totalSlides
+      })
+      return
+    }
+
+    adjustedPerPage = originalPerPage
+
+    if (totalSlides <= originalPerPage) adjustedPerPage = totalSlides
+    else {
+      const remainingSlides = totalSlides % originalPerPage
+
+      if (remainingSlides > 0 && remainingSlides < originalPerView) {
+        adjustedPerPage = Math.floor(
+          totalSlides / Math.ceil(totalSlides / originalPerPage)
+        )
+
+        adjustedPerPage = Math.max(adjustedPerPage, originalPerView)
+
+        if (
+          totalSlides -
+            Math.floor(totalSlides / adjustedPerPage) * adjustedPerPage <
+          originalPerView
+        ) {
+          const pagesNeeded =
+            Math.ceil((totalSlides - originalPerView) / originalPerPage) + 1
+          adjustedPerPage = Math.ceil(
+            (totalSlides - originalPerView) / (pagesNeeded - 1)
+          )
+          adjustedPerPage = Math.max(adjustedPerPage, 1)
+        }
+      }
+    }
+
+    this.setState({
+      slidesPerPage: adjustedPerPage,
+      slidesPerView: originalPerView
+    })
+  }
   private setProperties(): void {
     this.slides.forEach((slide, index) => {
       setAttributes(slide, this.setAttr(index))

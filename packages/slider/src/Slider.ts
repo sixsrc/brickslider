@@ -240,7 +240,7 @@ export class Slider extends BaseSlider {
     })
   }
 
-  private mapSlideIndex(): boolean {
+  public mapSlideIndex(): boolean {
     const { infinite, numberOfSlides } = this.store
     const { currentIndex } = this
 
@@ -312,7 +312,11 @@ export class Slider extends BaseSlider {
   }
 
   public defineDotIndex(): void {
-    const { currentSlideMovement: mov, isPagedActive } = this.store
+    const {
+      currentSlideMovement: mov,
+      isPagedActive,
+      currentEventType
+    } = this.store
 
     if (mov && isPagedActive) {
       const { dotIndex } = this.defineIncrementOrDecrement()

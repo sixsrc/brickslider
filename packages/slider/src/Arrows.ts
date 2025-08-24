@@ -26,12 +26,16 @@ export class Arrows extends BaseSlider {
       const handler = () => {
         this.updateClickSpeed()
 
-        setTimeout(() => {
-          this.arrowHandler(button, this.$root)
-        }, this.setTime())
+        // Atualiza o dot imediatamente
+        //this.updateDotInstant(button)
+
+        // Movimenta o slider apenas após o delay
+        setTimeout(() => {}, this.setTime())
       }
 
-      listener([EVENTS.CLICK], button, handler)
+      listener([EVENTS.CLICK], button, () =>
+        this.arrowHandler(button, this.$root)
+      )
     })
   }
 
@@ -39,13 +43,11 @@ export class Arrows extends BaseSlider {
     const now = Date.now()
     this.lastClickTimestamps.push(now)
 
-    // mantém só os últimos 3 cliques
     if (this.lastClickTimestamps.length > 3) {
       this.lastClickTimestamps.shift()
     }
 
-    // calcula média do tempo entre os cliques
-    if (this.lastClickTimestamps.length >= 2) {
+    if (this.lastClickTimestamps.length >= 3) {
       const deltas = this.lastClickTimestamps
         .slice(1)
         .map((t, i) => t - this.lastClickTimestamps[i])
@@ -53,26 +55,21 @@ export class Arrows extends BaseSlider {
       const avgDelta = deltas.reduce((a, b) => a + b, 0) / deltas.length
 
       this.setState({
-        isFastNavigation: avgDelta < TIMES.DEFAULT_TRANSITION_TIME + 100
-      }) // margem de 100ms
+        isFastNavigation: avgDelta < TIMES.DEFAULT_TRANSITION_TIME - 100
+      })
     }
   }
 
   private setTime(): number {
     const totalSlides = Slider.getSlides(this.$root, false).length
-
     return this.getTime(totalSlides) ? TIMES.DEFAULT_TRANSITION_TIME - 100 : 0
   }
 
   private getTime(totalSlides: number): boolean {
     const isAtEnd =
       this.store[state.activePage] >= this.store[state.numberOfPages] - 1
-
     const hasRemainingSlides = this.hasRemaining(totalSlides)
     const isFast = !!this.store["isFastNavigation"]
-
-    console.log("⏱️ teste", Date.now(), TIMES.DEFAULT_TRANSITION_TIME, isFast)
-
     return isAtEnd && hasRemainingSlides && isFast
   }
 
@@ -81,19 +78,39 @@ export class Arrows extends BaseSlider {
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
     const eventType = getAttribute === "prev" ? "prev" : "next"
     const slideMovement = eventType === "next" ? "increment" : "decrement"
-    const currentEventType = eventType
 
     this.setState({
       currentSlideMovement: slideMovement
     })
 
     this.movement = true
-
     this.setState(this.startPosState())
-
-    this.setState({ prevSlideIndex: slideIndex, currentEventType })
+    this.setState({ prevSlideIndex: slideIndex, currentEventType: eventType })
 
     this.slider.setSlideTarget({ $root })
+  }
+
+  /** Atualiza apenas o dot, sem mover o slider */
+  private updateDotInstant(button: Element) {
+    const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
+    const eventType = getAttribute === "prev" ? "prev" : "next"
+    const { dotIndex, numberOfPages, infinite } = this.store
+
+    let newDotIndex = dotIndex ?? 0
+    if (eventType === "next") newDotIndex++
+    else newDotIndex--
+
+    if (newDotIndex > numberOfPages - 1) return
+
+    if (newDotIndex < 0) newDotIndex = numberOfPages - 1
+    if (newDotIndex > numberOfPages - 1) {
+      newDotIndex = 0
+    }
+
+    this.setState({ dotIndex: newDotIndex })
+
+    // Atualiza visualmente os dots imediatamente
+    this.slider.updateDots(this.$root)
   }
 
   protected evalSlideConditions(): Record<any, boolean> {
