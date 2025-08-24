@@ -30,6 +30,7 @@ export class BrickSlider extends BaseSlider {
 
   private defineConfigs($root: string, options?: TypeOptions) {
     this.userOptions = options
+
     this.mount = new Mount($root)
     this.setOptions(options)
   }
