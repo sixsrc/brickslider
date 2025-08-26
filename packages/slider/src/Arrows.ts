@@ -24,13 +24,13 @@ export class Arrows extends BaseSlider {
 
     buttons.forEach(button => {
       const handler = () => {
-        this.updateClickSpeed()
-
         // Atualiza o dot imediatamente
         //this.updateDotInstant(button)
 
         // Movimenta o slider apenas após o delay
-        setTimeout(() => {}, this.setTime())
+        setTimeout(() => {
+          this.updateClickSpeed()
+        }, this.setTime())
       }
 
       listener([EVENTS.CLICK], button, () =>

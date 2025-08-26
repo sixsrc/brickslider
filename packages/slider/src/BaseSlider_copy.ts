@@ -253,7 +253,7 @@ export class BaseSlider {
   }
 
   protected hasRemaining(totalSlides: number): boolean {
-    const { slidesPerView, slidesPerPage, infinite } = this.store
+    const { slidesPerView, slidesPerPage } = this.store
     return (totalSlides - slidesPerView) % slidesPerPage !== 0
   }
 

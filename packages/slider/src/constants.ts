@@ -39,6 +39,7 @@ export const CLASS_VALUES = {
 }
 
 export const ATTRIBUTES = {
+  DATA_NUMBER: "data-slide-number",
   CLASS: "class",
   ARIA_HIDDEN: "aria-hidden",
   ROLE: "role",

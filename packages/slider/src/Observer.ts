@@ -73,13 +73,13 @@ export class Observer extends BaseSlider {
       this.updateLastIndex()
 
       // ✅ Só loga quando houver mudança nos visíveis
-      console.log(
+      /*console.log(
         "[Observer] Slides visíveis (data-index):",
 
         [...this.visibleDataIndexes].sort((a, b) => a - b),
         "| Último data-index:",
         this.lastIndex
-      )
+      )*/
     }
   }
 

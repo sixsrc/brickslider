@@ -20,9 +20,9 @@ const slider2 = new BrickSlider("#slider2", {
 
 const slider3 = new BrickSlider("#slider3", {
   spacing: 20,
-  slidesPerView: 11,
-  slidesPerPage: 11,
-  infinite: true
+  slidesPerView: 3,
+  slidesPerPage: 3,
+  infinite: false
 })
 /*
 "Aviso: O número de slides clonados não é suficiente para transições consistentes. Ajuste 'slides por página' ou 'clones' para evitar diferenças visuais."
