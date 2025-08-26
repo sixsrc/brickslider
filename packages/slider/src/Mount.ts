@@ -46,7 +46,7 @@ export class Mount extends BaseSlider {
     this.endMount()
   }
 
-  private normalizeSlidesConfig(): void {
+  /*private normalizeSlidesConfig(): void {
     const { slidesPerPage: originalPerPage, slidesPerView: originalPerView } =
       this.store
     const totalSlides = this.slidesArr.filter(
@@ -89,6 +89,47 @@ export class Mount extends BaseSlider {
         }
       }
     }
+
+    this.setState({
+      slidesPerPage: adjustedPerPage,
+      slidesPerView: originalPerView
+    })
+  }*/
+
+  private normalizeSlidesConfig(): void {
+    const { slidesPerPage: originalPerPage, slidesPerView: originalPerView } =
+      this.store
+
+    // Filtra apenas slides reais (não clonados)
+    const totalSlides = this.slidesArr.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    ).length
+
+    // Se o total de slides for menor ou igual ao slidesPerView
+    if (totalSlides <= originalPerView) {
+      this.setState({
+        slidesPerPage: totalSlides,
+        slidesPerView: totalSlides
+      })
+      return
+    }
+
+    // CONDIÇÃO PRINCIPAL: só normaliza se a soma ultrapassar o total de slides
+    if (originalPerView + originalPerPage <= totalSlides) {
+      // Configuração é válida, mantém os valores originais
+      this.setState({
+        slidesPerPage: originalPerPage,
+        slidesPerView: originalPerView
+      })
+      return
+    }
+
+    // Se chegou até aqui, precisa normalizar porque slidesPerView + slidesPerPage > totalSlides
+    // A fórmula é simples: o máximo que podemos avançar garantindo que sobre slidesPerView
+    let adjustedPerPage = totalSlides - originalPerView
+
+    // Garante que seja pelo menos 1
+    adjustedPerPage = Math.max(adjustedPerPage, 1)
 
     this.setState({
       slidesPerPage: adjustedPerPage,
