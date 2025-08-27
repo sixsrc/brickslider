@@ -133,74 +133,56 @@ export class BaseSlider {
     return { visibleStart, visibleEnd }
   }
 
-  private updateIncompleteGroup(
-    filteredSlides: HTMLElement[],
-    totalSlides: number
-  ): void {
-    const {
-      currentSlideMovement: mov,
-      infinite,
-      slidesPerView,
-      leftOverSlides,
-      activePage,
-      numberOfPages,
-      slidesPerPage
-    } = this.store
+  private updateIncompleteGroup(filteredSlides: HTMLElement[]): void {
+    const { currentSlideMovement: mov } = this.store
 
-    if (!infinite) {
-      if (mov === "increment") {
-        if (
-          filteredSlides.length < slidesPerView ||
-          (activePage === numberOfPages - 1 &&
-            filteredSlides.length > slidesPerPage)
-        ) {
-          const k = this.slidesOnLastPage()
-
-          if (filteredSlides.length > k) {
-            filteredSlides = filteredSlides.slice(
-              Math.max(filteredSlides.length - k, 0)
-            )
-          }
-
-          console.log("filtered slides", filteredSlides, k)
-
-          this.isIncompleteGroup = true
-          this.setState({
-            leftOverSlides: slidesPerView - filteredSlides.length
-          })
-        }
-
-        return
-      }
-    }
-
-    if (this.isIncompleteGroup) this.isIncompleteGroup = false
-    else this.setState({ leftOverSlides: 0 })
+    mov === "increment"
+      ? this.handleIncrement(filteredSlides)
+      : this.resetIncompleteGroupState()
   }
 
-  private adjustForLastPage(totalSlides: number) {
-    const {
-      infinite,
-      activePage,
-      numberOfPages,
-      slidesPerPage,
-      currentSlideMovement: mov
-    } = this.store
-    if (
-      !infinite &&
-      mov === "increment" &&
-      activePage === numberOfPages - 1 &&
-      this.hasRemaining(totalSlides)
-    ) {
-      if (this.prevSlides.length >= slidesPerPage) {
-        console.log("teste", this.prevSlides)
-        //this.prevSlides.splice(-Math.abs(1))
-        const { leftOver } = this.getMissingSlides()
-      }
-    }
+  private handleIncrement(filteredSlides: HTMLElement[]): void {
+    if (!this.shouldAdjustGroup(filteredSlides)) return
+
+    const adjustedSlides = this.adjustSlidesForLastPage(filteredSlides)
+    this.markGroupAsIncomplete(adjustedSlides)
   }
 
-  private buildTargetSlides(clonedIndex: number) {
+  private shouldAdjustGroup(filteredSlides: HTMLElement[]): boolean {
+    const { slidesPerView, activePage, numberOfPages, slidesPerPage } =
+      this.store
+    const isUnderfilled = filteredSlides.length < slidesPerView
+    const isOverflowOnLast =
+      activePage === numberOfPages - 1 && filteredSlides.length > slidesPerPage
+
+    return isUnderfilled || isOverflowOnLast
+  }
+
+  private adjustSlidesForLastPage(
+    filteredSlides: HTMLElement[]
+  ): HTMLElement[] {
+    const allowedSlides = this.slidesOnLastPage()
+    const startIndex = Math.max(filteredSlides.length - allowedSlides, 0)
+
+    if (filteredSlides.length <= allowedSlides) return filteredSlides
+
+    return filteredSlides.slice(startIndex)
+  }
+
+  private markGroupAsIncomplete(filteredSlides: HTMLElement[]): void {
+    const { slidesPerView } = this.store
+
+    this.isIncompleteGroup = true
+    this.setState({ leftOverSlides: slidesPerView - filteredSlides.length })
+  }
+
+  private resetIncompleteGroupState(): void {
+    this.isIncompleteGroup
+      ? (this.isIncompleteGroup = false)
+      : this.setState({ leftOverSlides: 0 })
+  }
+
+  /*  private buildTargetSlides(clonedIndex: number) {
     const { infinite, activePage, numberOfPages } = this.store
 
     if (infinite && clonedIndex !== -1 && activePage === numberOfPages - 1) {
@@ -212,39 +194,59 @@ export class BaseSlider {
     }
 
     this.targetSlides = this.prevSlides
-  }
+  }*/
 
+  private buildTargetSlides(clonedIdx: number) {
+    const { infinite, activePage, numberOfPages } = this.store
+    const isLastPage = activePage === numberOfPages - 1
+    const isValidClone = clonedIdx !== -1
+    const key = infinite && isValidClone && isLastPage ? "spec" : "def"
+    const cases = this.buildTargetObj(clonedIdx)
+
+    this.targetSlides = key === "spec" ? cases.spec : this.prevSlides
+  }
+  //Record<string, any[]>
+  private buildTargetObj(clonedIdx: number) {
+    return {
+      spec:
+        clonedIdx === this.prevSlides.length - 1
+          ? this.prevSlides.slice(0, -1)
+          : this.prevSlides.slice(0, clonedIdx)
+    }
+  }
   private setTargetSlides(): void {
-    const { slidesPerPage, activePage, activeDataIndex } = this.store
+    const { infinite, slidesPerPage, activePage, activeDataIndex } = this.store
     const totalSlides = this.slidesArr.length
     const leftClones = this.getLeftClonesCount()
     const start = activePage * slidesPerPage
     const { visibleStart } = this.calculateVisibleRange(start, leftClones)
     const lastSlide = this.targetSlides[this.targetSlides.length - 1]
-    const filteredSlides = this.getFilteredSlides(
-      this.slidesArr,
-      activeDataIndex
-    )
+    const slides = this.getFilteredSlides(this.slidesArr, activeDataIndex)
 
+    this.updateLastIndex(lastSlide)
+    if (!infinite) this.updateIncompleteGroup(slides)
+    this.updatePrevSlides(visibleStart, slidesPerPage, totalSlides)
+    this.buildTargetSlides(this.getFirstClonedIndex())
+  }
+
+  private updateLastIndex(lastSlide: HTMLElement | undefined) {
     this.lastIndex = lastSlide?.dataset.index
       ? parseInt(lastSlide.dataset.index, 10)
       : -1
+  }
 
-    this.updateIncompleteGroup(filteredSlides, totalSlides)
-
+  private updatePrevSlides(
+    visibleStart: number,
+    slidesPerPage: number,
+    totalSlides: number
+  ) {
+    const { leftOverSlides } = this.store
     const activeEnd = Math.min(
-      visibleStart + slidesPerPage - this.store["leftOverSlides"],
+      visibleStart + slidesPerPage - leftOverSlides,
       totalSlides
     )
+
     this.prevSlides = this.slidesArr.slice(visibleStart, activeEnd)
-
-    const clonedIndex = this.prevSlides.findIndex(
-      slide =>
-        slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
-    )
-
-    this.adjustForLastPage(totalSlides)
-    this.buildTargetSlides(clonedIndex)
   }
 
   protected hasRemaining(totalSlides: number): boolean {
@@ -260,8 +262,6 @@ export class BaseSlider {
     this.forEachSlide(this.targetSlides, slide => {
       translate += slide.offsetWidth + spacing
     })
-
-    console.log("translate", translate)
 
     return translate
   }
@@ -298,9 +298,8 @@ export class BaseSlider {
   protected slidesOnLastPage() {
     const totalSlides = this.slidesArr.length
     const { slidesPerPage, slidesPerView } = this.store
-    const totalPages =
-      Math.ceil((totalSlides - slidesPerView) / slidesPerPage) + 1
-    const startIndex = (totalPages - 1) * slidesPerPage
+    const pages = Math.ceil((totalSlides - slidesPerView) / slidesPerPage) + 1
+    const startIndex = (pages - 1) * slidesPerPage
 
     if (totalSlides === 0) return 0
 
@@ -309,6 +308,13 @@ export class BaseSlider {
 
   protected setState(state: Partial<StateType>) {
     this.state.set(state)
+  }
+
+  protected getFirstClonedIndex(): number {
+    return this.prevSlides.findIndex(
+      slide =>
+        slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+    )
   }
 
   protected getFilteredSlides(slides: HTMLElement[], activeDataIndex: number) {

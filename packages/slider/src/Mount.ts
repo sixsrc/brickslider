@@ -135,6 +135,20 @@ export class Mount extends BaseSlider {
       slidesPerPage: adjustedPerPage,
       slidesPerView: originalPerView
     })
+
+    console.log(
+      "normalizeSlidesConfig:",
+      "slidesPerPage =",
+      this.store.slidesPerPage,
+      "slidesPerView =",
+      this.store.slidesPerView,
+      "totalSlides =",
+      totalSlides,
+      "soma =",
+      originalPerView + originalPerPage,
+      "needsNormalization =",
+      originalPerView + originalPerPage > totalSlides
+    )
   }
   private setProperties(): void {
     this.slides.forEach((slide, index) => {
@@ -186,9 +200,7 @@ export class Mount extends BaseSlider {
     const { dots, arrows, touch } = this.store
     const { $root } = this
 
-    if ($root) {
-    }
-    new ContextMenu($root).init()
+    if ($root) new ContextMenu($root).init()
     if (dots) new Dots($root).init()
     if (arrows) new Arrows($root).init()
     if (touch) new Swipe($root).init()
