@@ -20,8 +20,8 @@ const slider2 = new BrickSlider("#slider2", {
 
 const slider3 = new BrickSlider("#slider3", {
   spacing: 20,
-  slidesPerView: 3,
-  slidesPerPage: 3,
+  slidesPerView: 4,
+  slidesPerPage: 5,
   infinite: false
 })
 /*
