@@ -120,7 +120,7 @@ export class BaseSlider {
   }
 
   private calculateVisibleRange(start: number, leftClones: number) {
-    const { infinite, slidesPerPage } = this.store
+    const { infinite, slidesPerView, slidesPerPage } = this.store
     const totalSlides = this.slidesArr.length
     const rawEnd = start + slidesPerPage
     let visibleStart = infinite ? start + leftClones : start
@@ -131,6 +131,7 @@ export class BaseSlider {
       visibleStart = Math.max(0, visibleEnd - slidesPerPage)
     }
 
+    console.log("visibleStart", visibleStart, "visibleEnd", visibleEnd)
     return { visibleStart, visibleEnd }
   }
 
@@ -155,6 +156,8 @@ export class BaseSlider {
     const isUnderfilled = filteredSlides.length < slidesPerView
     const isOverflowOnLast =
       activePage === numberOfPages - 1 && filteredSlides.length > slidesPerPage
+
+    console.log("dapica", isUnderfilled || isOverflowOnLast, filteredSlides)
 
     return isUnderfilled || isOverflowOnLast
   }
@@ -186,8 +189,7 @@ export class BaseSlider {
   }
 
   private buildTargetSlides(clonedIndex: number) {
-    const { infinite, activePage, numberOfPages, isSlidesPerPageAdjusted } =
-      this.store
+    const { infinite, activePage, numberOfPages } = this.store
 
     if (infinite && clonedIndex !== -1 && activePage === numberOfPages - 1) {
       this.targetSlides =
@@ -195,7 +197,6 @@ export class BaseSlider {
           ? this.prevSlides.slice(0, -1)
           : this.prevSlides.slice(0, clonedIndex)
       return
-    } else if (infinite && activePage === numberOfPages) {
     }
 
     this.targetSlides = this.prevSlides
@@ -245,27 +246,11 @@ export class BaseSlider {
     slidesPerPage: number,
     totalSlides: number
   ) {
-    const {
-      infinite,
-      leftOverSlides,
-      slidesPerView,
-      activePage,
-      numberOfPages
-    } = this.store
-    let activeEnd = 0
-
-    if (infinite && activePage === numberOfPages) {
-      let slidesPerPage = slidesPerView
-      activeEnd = Math.min(
-        visibleStart + slidesPerPage - leftOverSlides,
-        totalSlides
-      )
-    } else {
-      activeEnd = Math.min(
-        visibleStart + slidesPerPage - leftOverSlides,
-        totalSlides
-      )
-    }
+    const { leftOverSlides } = this.store
+    const activeEnd = Math.min(
+      visibleStart + slidesPerPage - leftOverSlides,
+      totalSlides
+    )
 
     this.prevSlides = this.slidesArr.slice(visibleStart, activeEnd)
   }
@@ -280,7 +265,6 @@ export class BaseSlider {
     let translate = 0
 
     this.setTargetSlides()
-
     this.forEachSlide(this.targetSlides, slide => {
       translate += slide.offsetWidth + spacing
     })

@@ -133,7 +133,8 @@ export class Mount extends BaseSlider {
 
     this.setState({
       slidesPerPage: adjustedPerPage,
-      slidesPerView: originalPerView
+      slidesPerView: originalPerView,
+      isSlidesPerPageAdjusted: true
     })
 
     console.log(
