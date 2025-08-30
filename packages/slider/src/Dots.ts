@@ -43,46 +43,8 @@ export class Dots extends BaseSlider {
     this.eventMount()
   }
 
-  //anterior corrigido
-
   /*private calculateDots(): number {
     const { slidesPerView, slidesPerPage, infinite } = this.store
-    const { leftOver } = this.getMissingSlides()
-
-    // Número de slides reais (excluindo clones)
-    const numberOfActualSlides = this.slides.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    ).length
-
-    // Validação inicial para evitar cálculos inválidos
-    if (numberOfActualSlides <= 0 || slidesPerPage <= 0 || slidesPerView <= 0) {
-      return 0
-    }
-
-    // Cálculo correto para modo infinito e não infinito
-    let totalPages = 0
-
-    if (infinite) {
-      // No modo infinito, o número de páginas é baseado nos slides que podem ser deslocados
-      totalPages = Math.ceil(
-        (numberOfActualSlides - slidesPerView + slidesPerPage) / slidesPerPage
-      )
-    } else {
-      // No modo não infinito, o número de páginas é baseado em quantos grupos de slidesPerPage podemos mostrar
-      // considerando que a última página pode ter menos slides
-      totalPages = Math.ceil(
-        (numberOfActualSlides - slidesPerView + slidesPerPage) / slidesPerPage
-      )
-    }
-
-    return Math.max(1, totalPages)
-  }*/
-
-  // em análise
-
-  private calculateDots(): number {
-    const { slidesPerView, slidesPerPage, infinite } = this.store
-    const { leftOver } = this.getMissingSlides()
 
     // Número de slides reais (excluindo clones)
     const numberOfActualSlides = this.slides.filter(
@@ -110,65 +72,36 @@ export class Dots extends BaseSlider {
     }
 
     return Math.max(1, totalPages)
-  }
-
-  /*private calculateDots() {
-    const { slidesPerPage, slidesPerView, infinite, numberOfSlides } =
-      this.store
-    const slides = BaseSlider.getSlides(this.$root, false)
-    const pages = Math.ceil(slides.length / slidesPerView)
-    const leftOver = slides.length % slidesPerPage
-
-    console.log("numberOFSlides", numberOfSlides)
-
-    if (slidesPerPage <= 0 || slidesPerView <= 0) return 0
-    if (infinite) return pages
-    // if (leftOver > 0) return pages - 1
-
-    return pages
   }*/
 
-  /*private calculateDots(): number {
-    const { slidesPerView, slidesPerPage } = this.store
+  private calculateDots(): number {
+    const { slidesPerView, slidesPerPage, infinite } = this.store
     const { leftOver } = this.getMissingSlides()
 
-    console.log("asas", this.$root, leftOver)
-
-    // Filtra apenas os slides reais (não clonados)
+    // Número de slides reais (sem clones)
     const numberOfActualSlides = this.slides.filter(
       slide => !hasClass(slide, CLASS_VALUES.CLONED)
     ).length
 
-    // Validação de entradas para evitar erros
+    // Validação inicial para evitar cálculos inválidos
     if (numberOfActualSlides <= 0 || slidesPerPage <= 0 || slidesPerView <= 0) {
       return 0
     }
 
-    // Cálculo de dots considerando slides por página
-    return Math.ceil(numberOfActualSlides / slidesPerPage)
-  }
-    */
+    let totalPages = 0
 
-  //let dots = view === 1 ? pages : Math.max(1, pages - (view - slidesPerPage))
-
-  // dots = isBlankSpace ? dots - 1 : dots
-
-  //let calcValue = loop ? pages : Math.max(1, pages - (view - slidesPerPage))
-
-  /* private createDots(): void {
-    const numberOfDots = this.calculateDots()
-
-    for (let i = 0; i < numberOfDots; i++) {
-      const liDots = createNewElement(TAGS.LI)
-
-      appendToParent(this.containerDots, liDots)
-      addClass([liDots], CLASS_VALUES.SLIDER_DOT)
-
-      if (i === 0) addClass([liDots], CLASS_VALUES.SELECTED)
+    if (infinite) {
+      // Modo infinito → simplesmente divide pelos slidesPerPage
+      totalPages = Math.ceil(numberOfActualSlides / slidesPerPage)
+    } else {
+      // Modo não infinito → primeira página é a visível (slidesPerView),
+      // depois avança de slidesPerPage em slidesPerPage
+      totalPages =
+        Math.ceil((numberOfActualSlides - slidesPerView) / slidesPerPage) + 1
     }
 
-    this.setState(this.numOfSlidesState(numberOfDots))
-  }*/
+    return Math.max(1, totalPages)
+  }
 
   private createDots(): void {
     // Verifica se existe ao menos um dot no HTML inicial
