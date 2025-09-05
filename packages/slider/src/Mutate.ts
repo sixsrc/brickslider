@@ -42,7 +42,7 @@ export class Mutate extends BaseSlider {
     })
   }*/
 
-  public updateActiveSlides(
+  /*public updateActiveSlides(
     visibleIndexes: number[] | null,
     maxActive?: number
   ): void {
@@ -58,6 +58,35 @@ export class Mutate extends BaseSlider {
 
     const allSlides = this.getAllSlides()
 
+    allSlides.forEach(slide => {
+      const slideIndex = Number(slide.dataset.slideNumber)
+      if (toActivate.includes(slideIndex)) {
+        addClass([slide], CLASS_VALUES.ACTIVE)
+      } else {
+        removeClass(slide, CLASS_VALUES.ACTIVE)
+      }
+    })
+  }
+*/
+
+  public updateActiveSlides(
+    visibleIndexes: number[] | null,
+    maxActive?: number
+  ): void {
+    this.resetActiveClasses()
+    if (!visibleIndexes) return
+
+    const { slidesPerPage } = this.store
+    const firstIndex = Math.min(...visibleIndexes)
+    const fullRange = Array.from(
+      { length: slidesPerPage },
+      (_, i) => firstIndex + i
+    )
+
+    const toActivate =
+      maxActive !== undefined ? fullRange.slice(0, maxActive) : fullRange
+
+    const allSlides = this.getAllSlides()
     allSlides.forEach(slide => {
       const slideIndex = Number(slide.dataset.slideNumber)
       if (toActivate.includes(slideIndex)) {

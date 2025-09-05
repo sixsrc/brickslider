@@ -14,14 +14,14 @@ const slider1 = new BrickSlider("#slider1", {
 
 const slider2 = new BrickSlider("#slider2", {
   slidesPerView: 1,
-  slidesPerPage: 1,
+  slidesPerPage: 10,
   infinite: false
 })
 
 const slider3 = new BrickSlider("#slider3", {
   spacing: 20,
-  slidesPerView: 4,
-  slidesPerPage: 100,
+  slidesPerView: 3,
+  slidesPerPage: 10,
   infinite: true
 })
 /*

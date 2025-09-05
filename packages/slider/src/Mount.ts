@@ -96,14 +96,21 @@ export class Mount extends BaseSlider {
     })
   }*/
 
-  private normalizeSlidesConfig(): void {
-    const { slidesPerPage: originalPerPage, slidesPerView: originalPerView } =
-      this.store
+  /*  private normalizeSlidesConfig(): void {
+    const {
+      infinite,
+      slidesPerPage: originalPerPage,
+      slidesPerView: originalPerView
+    } = this.store
 
     // Filtra apenas slides reais (não clonados)
     const totalSlides = this.slidesArr.filter(
       slide => !hasClass(slide, CLASS_VALUES.CLONED)
     ).length
+
+    if (originalPerPage > originalPerView) {
+      this.setState({ isSlidesPerPageAdjusted: true })
+    }
 
     // Se o total de slides for menor ou igual ao slidesPerView
     if (totalSlides <= originalPerView) {
@@ -133,12 +140,130 @@ export class Mount extends BaseSlider {
 
     this.setState({
       slidesPerPage: adjustedPerPage,
-      slidesPerView: originalPerView,
-      isSlidesPerPageAdjusted: true
+      slidesPerView: originalPerView
     })
 
     console.log(
       "normalizeSlidesConfig:",
+      "slidesPerPage =",
+      this.store.slidesPerPage,
+      "slidesPerView =",
+      this.store.slidesPerView,
+      "totalSlides =",
+      totalSlides,
+      "soma =",
+      originalPerView + originalPerPage,
+      "needsNormalization =",
+      originalPerView + originalPerPage > totalSlides
+    )
+  }*/
+
+  private normalizeSlidesConfig(): void {
+    const {
+      infinite,
+      slidesPerPage: originalPerPage,
+      slidesPerView: originalPerView
+    } = this.store
+
+    // Filtra apenas slides reais (não clonados)
+    const totalSlides = this.slidesArr.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    ).length
+
+    if (originalPerPage > originalPerView) {
+      this.setState({ isSlidesPerPageAdjusted: true })
+    }
+
+    // Se o total de slides for menor ou igual ao slidesPerView
+    if (totalSlides <= originalPerView) {
+      this.setState({
+        slidesPerPage: totalSlides,
+        slidesPerView: totalSlides
+      })
+      return
+    }
+
+    // NOVA LÓGICA: Verificar se haverá sobras e ajustar
+    const remainingSlides = totalSlides - originalPerView
+    const fullPages = Math.floor(remainingSlides / originalPerPage)
+    const remainder = remainingSlides % originalPerPage
+
+    // Se há sobras e slidesPerPage > slidesPerView, ajustar para eliminar sobras
+    if (remainder > 0 && originalPerPage > originalPerView) {
+      // Calcular novo slidesPerPage que elimine as sobras
+      // Opção 1: Ajustar para cima (mais conservador)
+      const adjustedPerPageUp = Math.ceil(remainingSlides / fullPages)
+
+      // Opção 2: Ajustar para baixo
+      const adjustedPerPageDown =
+        fullPages > 0
+          ? Math.floor(remainingSlides / fullPages)
+          : remainingSlides
+
+      // Escolher o ajuste que fique mais próximo do original e seja >= slidesPerView
+      let adjustedPerPage
+      if (
+        adjustedPerPageUp >= originalPerView &&
+        adjustedPerPageDown >= originalPerView
+      ) {
+        // Se ambos são válidos, escolher o mais próximo do original
+        const diffUp = Math.abs(adjustedPerPageUp - originalPerPage)
+        const diffDown = Math.abs(adjustedPerPageDown - originalPerPage)
+        adjustedPerPage =
+          diffUp <= diffDown ? adjustedPerPageUp : adjustedPerPageDown
+      } else if (adjustedPerPageUp >= originalPerView) {
+        adjustedPerPage = adjustedPerPageUp
+      } else if (adjustedPerPageDown >= originalPerView) {
+        adjustedPerPage = adjustedPerPageDown
+      } else {
+        // Fallback: usar o valor mínimo permitido
+        adjustedPerPage = originalPerView
+      }
+
+      this.setState({
+        slidesPerPage: adjustedPerPage,
+        slidesPerView: originalPerView
+      })
+
+      console.log(
+        "normalizeSlidesConfig (sobras eliminadas):",
+        "slidesPerPage ajustado =",
+        adjustedPerPage,
+        "slidesPerView =",
+        originalPerView,
+        "totalSlides =",
+        totalSlides,
+        "sobras eliminadas =",
+        remainder,
+        "páginas completas =",
+        Math.floor((totalSlides - originalPerView) / adjustedPerPage)
+      )
+      return
+    }
+
+    // CONDIÇÃO ORIGINAL: só normaliza se a soma ultrapassar o total de slides
+    if (originalPerView + originalPerPage <= totalSlides) {
+      // Configuração é válida, mantém os valores originais
+      this.setState({
+        slidesPerPage: originalPerPage,
+        slidesPerView: originalPerView
+      })
+      return
+    }
+
+    // Se chegou até aqui, precisa normalizar porque slidesPerView + slidesPerPage > totalSlides
+    // A fórmula é simples: o máximo que podemos avançar garantindo que sobre slidesPerView
+    let adjustedPerPage = totalSlides - originalPerView
+    // Garante que seja pelo menos 1
+    adjustedPerPage = Math.max(adjustedPerPage, 1)
+
+    this.setState({
+      slidesPerPage: adjustedPerPage,
+      slidesPerView: originalPerView
+    })
+
+    console.log(
+      "normalizeSlidesConfig (normalização padrão):",
       "slidesPerPage =",
       this.store.slidesPerPage,
       "slidesPerView =",

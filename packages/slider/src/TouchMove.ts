@@ -38,7 +38,7 @@ export class TouchMove extends HandleMovement {
       //this.handleMove()
       //this.skipSlide ? this.infiniteState() :
       this.setState(this.mainState())
-      this.setSkipSlide(false)
+      //this.setSkipSlide(false)
       console.log("currentTranslate", this.store["currentTranslate"])
     }
   }
@@ -105,7 +105,7 @@ export class TouchMove extends HandleMovement {
       isTouch: true,
       isMouseLeave: false,
       currentTranslate: prevTranslate + currentPosition - startPos!,
-      animationID: requestAnimationFrame(this.animation.init)
+      animationID: requestAnimationFrame(() => this.animation.init())
     }
   }
 

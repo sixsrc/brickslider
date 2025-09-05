@@ -91,7 +91,7 @@ export class Observer extends BaseSlider {
     return false
   }
 
-  private updateLastIndex(): void {
+  protected updateLastIndex(): void {
     if (this.visibleDataIndexes.size > 0) {
       const sorted = [...this.visibleDataIndexes].sort((a, b) => a - b)
       const limited = sorted.slice(0, this.store.slidesPerPage)
