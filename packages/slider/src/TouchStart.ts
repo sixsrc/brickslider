@@ -58,7 +58,7 @@ export class TouchStart extends BaseSlider {
     return {
       currentEventType: EVENTS.TOUCHSTART,
       startTime: new Date().getMilliseconds(),
-      slideIndex: index,
+      slideIndex: slideIndex,
       startPos: getAxisX(event),
       isMouseLeave: false
     }

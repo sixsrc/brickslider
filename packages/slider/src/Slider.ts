@@ -303,6 +303,9 @@ export class Slider extends BaseSlider {
         ? translate + Math.abs(this.store.currentTranslate)
         : Math.abs(this.store.currentTranslate) - translate
 
+    // 🔧 HACK: Aplica o limite aqui também
+    //translate = this.safeTranslate(translate)
+
     return {
       ...startPos,
       slideIndex: currentIndex,
