@@ -41,7 +41,7 @@ export class Slider extends BaseSlider {
     this.observer = new Observer($root)
   }
 
-  private getVisibleSlides(mov: string, slidesPerPage: number) {
+  /*private getVisibleSlides(mov: string, slidesPerPage: number) {
     const { slidesPerView } = this.store
     const currentIndex = 1
 
@@ -102,7 +102,7 @@ export class Slider extends BaseSlider {
     }
 
     return visibleSlideElements
-  }
+  }*/
 
   private getVisibleSlidesDecrement(slidesPerPage: number) {
     const { slidesPerView } = this.store
@@ -202,8 +202,8 @@ export class Slider extends BaseSlider {
     const slidesGroup2 =
       isLeftOver && isLimitRight ? slidesPerView : slidesPerPage
 
-    const result = this.getVisibleSlidesDecrement(slidesGroup)
-    const result2 = this.getVisibleSlides(mov as string, slidesGroup2)
+    //const result = this.getVisibleSlidesDecrement(slidesGroup)
+    // const result2 = this.getVisibleSlides(mov as string, slidesGroup2)
 
     if (infinite) {
       //this.targetDataIndex = (result2[0] as HTMLElement).dataset.index as string
@@ -247,20 +247,6 @@ export class Slider extends BaseSlider {
     return isNotMapped(infinite, currentIndex, numberOfSlides)
   }
 
-  /*private animationFrame() {
-    requestAnimationFrame(() => {
-      const { slidesPerPage } = this.store
-      const time = isSafariBrowser() ? 10 : 0
-
-      this.animation.init().then(() => {
-        const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
-        console.log("mutate", visibleIndexes)
-        this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
-        //waitFor(time, () => {})
-      })
-    })
-  }*/
-
   private animationFrame() {
     const { slidesPerPage } = this.store
     let intervalId: number | null = null
@@ -281,7 +267,7 @@ export class Slider extends BaseSlider {
         }
       })
       .then(() => {
-        console.log("✅ Todas as animações finalizadas")
+        //console.log("✅ Todas as animações finalizadas")
       })
 
     requestAnimationFrame(() => {
@@ -304,7 +290,7 @@ export class Slider extends BaseSlider {
         : Math.abs(this.store.currentTranslate) - translate
 
     // 🔧 HACK: Aplica o limite aqui também
-    //translate = this.safeTranslate(translate)
+    translate = this.safeTranslate(translate)
 
     return {
       ...startPos,
@@ -449,6 +435,7 @@ export class Slider extends BaseSlider {
       slideIndex > activePage &&
       mov === "increment"
     ) {
+      /*
       let translate = 0
       const { spacing, currentSlideMovement: mov } = this.store
       const clonedIndex = this.slidesArr.findIndex(slide => {
@@ -471,6 +458,7 @@ export class Slider extends BaseSlider {
         currentSlideMovement: "increment"
       })
       this.animate(this.$children, this.keyFrames(), this.options())
+     */
 
       waitFor(0, () => {
         /*  let translate = 0

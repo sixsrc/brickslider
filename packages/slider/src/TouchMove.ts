@@ -1,21 +1,22 @@
 import { AnimationFrame } from "./AnimationFrame"
-import { HandleMovement } from "./HandleMovement"
+import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
-import { EVENTS, MOVE_TO_LIMIT, POSITION } from "./constants"
+import { EVENTS, MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
 import { getAxisX } from "./helpers"
 import {
   IndexData,
+  IndexKey,
   IndexMap,
   MouseEventOrTouchEvent,
   PositionSlider
 } from "./types"
 
-export class TouchMove extends HandleMovement {
+export class TouchMove extends BaseSlider {
   private currentPosition: number
   protected previousPosition: number
   private skipSlide: boolean
   private currentIndex: number
-  // private translate: number
+  private translate: number
   animation: AnimationFrame
 
   constructor($root: string) {
@@ -29,63 +30,24 @@ export class TouchMove extends HandleMovement {
   }
 
   public init(event: MouseEventOrTouchEvent): void {
-    const { isDragging, currentEventType } = this.store
-    const isRightClick = currentEventType === "contextmenu"
+    const { isDragging } = this.store
 
-    if (isDragging && !isRightClick) {
-      this.setState(this.eventTargetState())
+    if (isDragging) {
       this.updatePosition(event)
-      //this.handleMove()
-      //this.skipSlide ? this.infiniteState() :
-      this.setState(this.mainState())
-      //this.setSkipSlide(false)
-      console.log("currentTranslate", this.store["currentTranslate"])
+      this.setState(this.eventTargetState())
+      this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
     }
   }
 
   protected updatePosition(event: MouseEvent | TouchEvent) {
     this.previousPosition = this.currentPosition
     this.currentPosition = getAxisX(event)
-    this.translate = this.store.currentTranslate
   }
 
   private eventTargetState(): Partial<StateType> {
     return {
       currentEventType: EVENTS.TOUCHMOVE
     }
-  }
-
-  protected evalSlideConditions(): Partial<StateType> {
-    const { slideIndex, slidesPerPage } = this.store
-    const isFirstCloned = slideIndex === 0
-    const penultIndex = Math.ceil(this.childrenCount / slidesPerPage) - 1
-    const isLastCloned = slideIndex === penultIndex //this.childrenCount - 1
-
-    return {
-      FIRST: this.movingTo(POSITION.RIGHT) && isFirstCloned,
-      LAST: this.movingTo(POSITION.LEFT) && isLastCloned
-    }
-  }
-
-  protected jumpSlideTo(to: keyof IndexMap): void {
-    const indexData = this.mapIndex().get(to)
-    const { currentIndex, translate } = indexData as IndexData
-
-    if (indexData) {
-      const indexes = this.getIndexes()
-      this.setSkipSlide(true)
-      this.currentIndex = indexes[currentIndex]
-      this.translate = translate
-      this.state.set(this.jumpSlideState())
-    }
-  }
-
-  protected setSkipSlide(c: boolean) {
-    this.skipSlide = c
-  }
-
-  private jumpSlideState() {
-    return { isJumpSlide: true }
   }
 
   private infiniteState(): Partial<StateType> {
@@ -118,36 +80,4 @@ export class TouchMove extends HandleMovement {
     return position === POSITION.RIGHT ? translate <= limit : translate >= limit
   }
 }
-
-/* protected evalSlideConditions(): Partial<StateType> {
-    const { slideIndex, slidesPerPage } = this.store
-    const isFirstCloned = slideIndex === 0
-    const isLastCloned = slideIndex === this.childrenCount - 1
-    const totalRealSlides = Math.ceil(this.childrenCount / slidesPerPage) - 1
-    // const isPenultSlide = slideIndex === totalRealSlides
-
-    return {
-      FIRST: this.movingTo(POSITION.RIGHT) && isFirstCloned,
-      LAST: this.movingTo(POSITION.LEFT) && isLastCloned
-      //PENULT: this.movingTo(POSITION.RIGHT) && isPenultSlide
-    }
-  }*/
-
-/*
-
-   // SECOND: this.movingTo(POSITION.RIGHT) && isSecondSlide,
-protected infiniteMove(): void {
-    const isEqual = Object.keys(this.evalSlideConditions()).find(
-      key => this.evalSlideConditions()[key]
-    )
-
-    if (isEqual) {
-      this.jumpSlideTo(SLIDE_INDEX[isEqual as keyof typeof SLIDE_INDEX])
-    }
-  }*/
-
-/*protected handleMove(): boolean | void {
-    const { infinite, slidesPerPage } = this.store
-
-    infinite && slidesPerPage <= 1 && this.infiniteMove()
-  }*/
+//

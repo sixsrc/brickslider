@@ -117,7 +117,8 @@ export class TouchEnd extends BaseSlider {
     }
 
     if (isTouch && !isMouseLeave) {
-      this.setPosition()
+      console.log("asas", currentTranslate, prevTranslate), this.setPosition()
+      this.cancelAnimationFrame()
 
       this.movement = false
 
@@ -211,9 +212,7 @@ export class TouchEnd extends BaseSlider {
     } = this.store
     //const currentTranslate = slideIndex * -sliderWidth!
 
-    // this.setState(this.positionState(-(882 - 294)))
-
-    console.log("touchend currentranslate", currentTranslate)
+    this.setState(this.positionState(this.translate))
 
     if (!mov) {
       /* this.setState({

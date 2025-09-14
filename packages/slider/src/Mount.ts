@@ -4,7 +4,7 @@ import { Resize } from "./Resize"
 import { CloneSlides } from "./CloneSlides"
 import { StateType } from "./State"
 import { Swipe } from "./Swipe"
-import { CLASS_VALUES, EVENTS } from "./constants"
+import { CLASS_VALUES, EVENTS, STYLES } from "./constants"
 import {
   appendToParent,
   getChildrenCount,
@@ -382,6 +382,10 @@ export class Mount extends BaseSlider {
     this.mutate.updateActiveSlides(visibleDataIndexes)
   }
 
+  private setPeekStyle(): void {
+    this.animate(this.$track, {} as any, this.options())
+  }
+
   private setActivePage(): void {}
 
   public setSlidesWidth(): void {
@@ -404,6 +408,8 @@ export class Mount extends BaseSlider {
 
   private endMount(): void {
     this.setActiveSlides()
+    this.setPeekStyle()
+    this.setSlidesWidth()
     this.setSlidesWidth()
     this.setVisibility()
     this.setControls()

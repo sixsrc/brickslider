@@ -39,6 +39,7 @@ export class BaseSlider {
   protected firstCloned: null | HTMLElement
   protected isIncompleteGroup: boolean
   movement: boolean
+  inSafeTranslate: boolean
 
   constructor($root: string) {
     this.$root = $root
@@ -60,6 +61,7 @@ export class BaseSlider {
     this.lastIndex = 0
     this.movement = false
     this.slidesArrBoundary = false
+    this.inSafeTranslate = false
   }
 
   public static getSlides($root: string, cloned?: boolean) {
@@ -102,18 +104,26 @@ export class BaseSlider {
     this.translate = this.getSlidesSizes() as number
 
     // 🔧 HACK: Aplica o limite de segurança
-    //this.translate = this.safeTranslate(this.translate)
+    this.translate = this.safeTranslate(this.translate)
+
+    console.log("translate", this.translate)
 
     return this.translate
   }
 
   protected safeTranslate(translate: number): number {
     const containerWidth = this.sliderWidth || 0
-    const maxTranslate = this.getTotalWidth() - containerWidth
+    let maxTranslate = this.getTotalWidth() - containerWidth
+    const { spacing } = this.store
 
     // Se translate for muito grande, ajusta automaticamente
+
     if (translate > maxTranslate) {
-      console.warn(`🔧 Translate ajustado: ${translate} -> ${maxTranslate}`)
+      console.log("translate", translate)
+      console.warn(
+        `🔧 Translate ajustado: ${translate} -> ${maxTranslate} ${containerWidth}`
+      )
+
       return maxTranslate
     }
 
@@ -125,10 +135,23 @@ export class BaseSlider {
     return translate
   }
 
-  private getTotalWidth(): number {
+  /*  private getTotalWidth(): number {
     const { spacing } = this.store
     return this.slidesArr.reduce((total, slide) => {
       return total + slide.offsetWidth + spacing
+    }, 0)
+  }*/
+
+  private getTotalWidth(): number {
+    const { spacing } = this.store
+    if (this.slidesArr.length === 0) return 0
+
+    return this.slidesArr.reduce((total, slide, index) => {
+      return (
+        total +
+        slide.offsetWidth +
+        (index < this.slidesArr.length - 1 ? spacing : 0)
+      )
     }, 0)
   }
 
@@ -255,7 +278,7 @@ export class BaseSlider {
     const slides = this.getFilteredSlides(this.slidesArr, activeDataIndex)
 
     this.updateLastIndex(lastSlide)
-    if (!infinite) this.updateIncompleteGroup(slides)
+    //  if (!infinite) this.updateIncompleteGroup(slides)
     this.updatePrevSlides(visibleStart, slidesPerPage, totalSlides)
     this.buildTargetSlides(this.getFirstClonedIndex(), slides)
   }
@@ -275,19 +298,21 @@ export class BaseSlider {
           ? this.prevSlides.slice(0, -1)
           : this.prevSlides.slice(0, clonedIndex)
       return
-    } else if (
+    } else {
+      this.targetSlides = this.prevSlides
+      console.log("else", this.targetSlides)
+    }
+  }
+
+  /*
+  else if (
       !infinite &&
       isSlidesPerPageAdjusted &&
       activePage === numberOfPages - 1
     ) {
       this.targetSlides = slides as HTMLElement[]
-    } else {
-      this.targetSlides = this.prevSlides
     }
-
-    console.log("target Slides", this.targetSlides)
-  }
-
+  */
   protected updateLastIndex(lastSlide: HTMLElement | undefined) {
     this.lastIndex = lastSlide?.dataset.index
       ? parseInt(lastSlide.dataset.index, 10)
@@ -304,6 +329,8 @@ export class BaseSlider {
       visibleStart + slidesPerPage - leftOverSlides,
       totalSlides
     )
+
+    console.log("activeEnd", visibleStart, activeEnd)
 
     this.prevSlides = this.slidesArr.slice(visibleStart, activeEnd)
   }
@@ -323,10 +350,13 @@ export class BaseSlider {
     this.forEachSlide(this.targetSlides, slide => {
       translate += slide.offsetWidth + spacing
     })
+    // Salva o valor antigo como prevTranslate
+    const prevTranslate = currentTranslate
 
-    console.log("translate", translate)
-    console.log("currentTranslate", currentTranslate)
-
+    this.setState({
+      currentTranslate: translate,
+      prevTranslate
+    })
     return translate
   }
 

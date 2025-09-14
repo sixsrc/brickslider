@@ -10,7 +10,7 @@ body {
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
-
+  box-sizing: border-box;
   padding-left: 50px;
   padding-right: 50px;
 }
@@ -41,8 +41,7 @@ body {
 }
 
 .slider__container {
-  /*scale: 0.8;*/
-
+  box-sizing: border-box;
   display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: row;
