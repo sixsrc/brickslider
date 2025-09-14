@@ -145,7 +145,7 @@ export class Dots extends BaseSlider {
 
     this.setState(this.currentEventType())
 
-    //this.movement = true
+    this.movement = true
 
     if (sync.now()) sync.handleJumpSlide()
     else this.slider.setSlideTarget({ touchIndex, $root })

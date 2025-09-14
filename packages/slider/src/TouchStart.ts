@@ -3,7 +3,7 @@ import { EVENTS } from "./constants"
 import { Draggable } from "./Draggable"
 import { adjustIndex, getAxisX, getSliderNodeList } from "./helpers"
 import { StateType } from "./State"
-import { MouseEventOrTouchEvent } from "./types"
+import { CurrentEventType, MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
   private draggable: Draggable
@@ -25,7 +25,7 @@ export class TouchStart extends BaseSlider {
     } = this.store
     const isTargetSlide = slideIndex === 0
 
-    console.log("currentTranslate", this.store.currentTranslate)
+    //console.log("currentTranslate", this.store.currentTranslate)
 
     if (infinite && slidesPerPage <= 1) {
       /*  if (isTargetSlide) {
@@ -58,7 +58,7 @@ export class TouchStart extends BaseSlider {
     return {
       currentEventType: EVENTS.TOUCHSTART,
       startTime: new Date().getMilliseconds(),
-      slideIndex: slideIndex,
+      slideIndex: index,
       startPos: getAxisX(event),
       isMouseLeave: false
     }
