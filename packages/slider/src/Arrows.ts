@@ -87,7 +87,7 @@ export class Arrows extends BaseSlider {
     this.setState(this.startPosState())
     this.setState({ prevSlideIndex: slideIndex, currentEventType: eventType })
 
-    this.slider.setSlideTarget({ $root })
+    this.slider.setSlideTarget({ $root, from: eventType })
   }
 
   /** Atualiza apenas o dot, sem mover o slider */

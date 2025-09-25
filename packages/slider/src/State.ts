@@ -50,7 +50,8 @@ export const state = {
   infinite: "infinite",
   speed: "speed",
   transition: "transition",
-  useTailwind: "useTailwind"
+  useTailwind: "useTailwind",
+  targetSlides: "targetSlides"
 } as const
 
 export enum State_Keys {
@@ -99,7 +100,8 @@ export enum State_Keys {
   Infinite = "infinite",
   Speed = "speed",
   Transition = "transition",
-  UseTailwind = "useTailwind"
+  UseTailwind = "useTailwind",
+  TargetSlides = "targetSlides"
 }
 
 export type StateType = {
@@ -149,6 +151,7 @@ export type StateType = {
   [State_Keys.Speed]: number
   [State_Keys.Transition]: string
   [State_Keys.UseTailwind]: boolean
+  [State_Keys.TargetSlides]: number[]
 }
 
 export type TypeOptions = Partial<{
@@ -230,6 +233,7 @@ class State {
     State.state[this.key][State_Keys.Speed] = options.speed ?? 300
     State.state[this.key][State_Keys.Transition] = options.transition ?? "slide"
     State.state[this.key][State_Keys.UseTailwind] = options.useTailwind ?? true
+    State.state[this.key][State_Keys.TargetSlides] = []
   }
 
   setOptions(options: TypeOptions): void {
@@ -276,29 +280,3 @@ class State {
 }
 
 export { State }
-
-/*set(props: { [key in keyof StateType]?: StateType[key] }): void {
-    for (const key in props) {
-      if (props.hasOwnProperty(key)) {
-        State.state[this.key][key] = props[key]!
-      }
-    }
-  }*/
-
-/*set(props: { [key in keyof StateType]?: StateType[key] }): void {
-    for (const key in props) {
-      if (props.hasOwnProperty(key)) {
-        if (
-          (key === State_Keys.PrevTranslate ||
-            key === State_Keys.CurrentTranslate) &&
-          typeof props[key] === "number" &&
-          isNaN(props[key] as number)
-        ) {
-          continue
-        }
-
-        // Caso contrário, atualiza normalmente
-        State.state[this.key][key] = props[key]!
-      }
-    }
-  }*/

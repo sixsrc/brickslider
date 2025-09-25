@@ -1,0 +1,24 @@
+# BEGIN WordPress
+# As diretrizes (linhas) entre "BEGIN WordPress" e "END WordPress" são
+# geradas dinamicamente e só devem ser modificadas através de filtros do WordPress.
+# Quaisquer alterações nas diretivas entre esses marcadores serão sobrescritas.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress
+
+# Custom PHP configurations
+# Aumenta o tamanho máximo de envio de arquivos
+php_value upload_max_filesize 100M
+# Aumenta o tamanho máximo de dados enviados via POST
+php_value post_max_size 100M
+# Define o tempo máximo para o script executar
+php_value max_execution_time 500
+# Define o tempo máximo de espera para uma requisição
+php_value max_input_time 500

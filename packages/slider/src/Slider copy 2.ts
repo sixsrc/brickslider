@@ -265,6 +265,35 @@ export class Slider extends BaseSlider {
     })
   }
 
+  /**
+   * Recalculamos dotIndex A PARTIR do slideStartIndex (slideIndex) — assim nunca
+   * ficamos dependentes de incrementos acumulados.
+   */
+
+  /* public defineDotIndex(): void {
+    const { isPagedActive } = this.store
+    if (!isPagedActive) return
+
+    const slidesPerPage = this.store.slidesPerPage || 1
+    // priorize slideIndex do store (que é o start-index), fallback para this.currentIndex
+    const startIndex =
+      typeof this.store.slideIndex === "number"
+        ? this.store.slideIndex
+        : this.currentIndex
+    let computedDot = Math.floor(startIndex / slidesPerPage)
+
+    // trata casos infinitos simples: se estamos no início, exibir último dot etc.
+    computedDot = this.mapDotIndexForInfinite(computedDot, startIndex)
+
+    console.log(
+      "[defineDotIndex] startIndex:",
+      startIndex,
+      "computedDot:",
+      computedDot
+    )
+    this.setState({ dotIndex: computedDot })
+  }*/
+
   public defineDotIndex(): void {
     const { isPagedActive, slidesPerPage } = this.store
     if (!isPagedActive) return
@@ -292,21 +321,10 @@ export class Slider extends BaseSlider {
     // Encontra qual dot corresponde à posição atual
     let computedDot = validPositions.findIndex(pos => pos === startIndex)
 
-    console.log(
-      "startIndex",
-      startIndex,
-      "validPositions",
-      validPositions,
-      "computedDot",
-      computedDot
-    )
-
     // Se não encontrou exata, encontra a posição mais próxima
     if (computedDot === -1) {
       computedDot = validPositions.findIndex(pos => pos >= startIndex)
-      console.log("computedDot", computedDot)
-      //if (computedDot > 0) computedDot -= 1
-      console.log("computedDot", computedDot)
+      if (computedDot > 0) computedDot -= 1
     }
 
     // Garante que não saia dos limites
@@ -353,14 +371,12 @@ export class Slider extends BaseSlider {
   protected updateDOM(): void {}
 
   public updateDots($root: string) {
-    const { dotIndex, activePage } = this.store
+    const { dotIndex } = this.store
     let selectedIndex = dotIndex ?? 0
     const { dots: isDots } = this.store
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
 
     if (!isDots) return {}
-
-    console.log("dotIndex", selectedIndex)
 
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
