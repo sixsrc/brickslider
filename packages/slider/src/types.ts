@@ -89,7 +89,7 @@ export type DirectionType = Partial<
   Record<Directions, boolean | undefined>
 > | null
 
-export type EventFrom = "dots" | "touch" | "next" | "prev" | null
+export type EventFrom = "dots" | "touchend" | "next" | "prev" | null
 
 export type getMissingSlides = {
   isMissing: boolean
@@ -97,7 +97,7 @@ export type getMissingSlides = {
 }
 
 export type TypeTargetSlideParams = {
-  //from: "next" | "prev" | "dots" | "touch"
+  from: "next" | "prev" | "dots" | "touchend"
   touchIndex?: number
   $root: string
 }

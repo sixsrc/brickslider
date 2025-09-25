@@ -228,6 +228,7 @@ export class Mount extends BaseSlider {
       console.log(
         "normalizeSlidesConfig (sobras eliminadas):",
         "slidesPerPage ajustado =",
+        this.$root,
         adjustedPerPage,
         "slidesPerView =",
         originalPerView,

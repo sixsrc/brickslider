@@ -9,20 +9,20 @@ import { BrickSlider } from "./BrickSlider"
 
 const slider1 = new BrickSlider("#slider1", {
   slidesPerView: 2,
-  slidesPerPage: 2
+  slidesPerPage: 2,
+  infinite: false
 })
 
 const slider2 = new BrickSlider("#slider2", {
   slidesPerView: 1,
-  slidesPerPage: 12,
+  slidesPerPage: 1,
   infinite: false
 })
 
 const slider3 = new BrickSlider("#slider3", {
   spacing: 20,
   slidesPerView: 3,
-  slidesPerPage: 10,
-  infinite: false
+  slidesPerPage: 2
 })
 /*
 "Aviso: O número de slides clonados não é suficiente para transições consistentes. Ajuste 'slides por página' ou 'clones' para evitar diferenças visuais."

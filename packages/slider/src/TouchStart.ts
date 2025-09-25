@@ -53,8 +53,8 @@ export class TouchStart extends BaseSlider {
   protected mainState(event: TouchEvent | MouseEvent): Partial<StateType> {
     const { slideIndex, slidesPerPage } = this.store
     const isTrue = slidesPerPage <= 1
-    const index = isTrue ? adjustIndex(slideIndex, slidesPerPage) : slideIndex
-
+    const index = slideIndex
+    // isTrue ? adjustIndex(slideIndex, slidesPerPage) :
     return {
       currentEventType: EVENTS.TOUCHSTART,
       startTime: new Date().getMilliseconds(),

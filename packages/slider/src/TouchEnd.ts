@@ -2,7 +2,7 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { EVENTS, TOUCH_LIMIT } from "./constants"
+import { EVENTS, TIMES, TOUCH_LIMIT } from "./constants"
 import { getSliderNodeList, translate3d, waitFor } from "./helpers"
 import {
   CurrentSlideMovement,
@@ -44,23 +44,18 @@ export class TouchEnd extends BaseSlider {
     const isEqual = Object.keys(this.evalSwipeConditions(event)).find(
       key => this.evalSwipeConditions(event)[key]
     )
-
     return isEqual
   }
 
   protected shouldNotBeSwipe(): boolean {
     const { currentEventType } = this.store
-
     return currentEventType !== "touchmove"
   }
 
   private evalSwipeConditions(event: any): Partial<StateType> {
     const isMouseLeave = event.type === "mouseleave"
-    // const speedInteraction = this.getSpeedInteraction() <= 150
-
     return {
       FIRST: isMouseLeave
-      // SECOND: !isMouseLeave && isMouseLeaveAndSpeedInteraction
     }
   }
 
@@ -86,14 +81,6 @@ export class TouchEnd extends BaseSlider {
     }
   }
 
-  private positionState(currentTranslate: number): Partial<StateType> {
-    return {
-      sliderReady: true,
-      currentTranslate: currentTranslate,
-      prevTranslate: currentTranslate
-    }
-  }
-
   private handleTouchMove(): void {
     const {
       isMouseLeave,
@@ -104,7 +91,6 @@ export class TouchEnd extends BaseSlider {
     } = this.store
 
     this.moveSlider = currentTranslate - prevTranslate
-
     this.setState(this.prevSlideState(slideIndex))
 
     const { isNext, isPrev } = this.actionsMove()
@@ -117,12 +103,9 @@ export class TouchEnd extends BaseSlider {
     }
 
     if (isTouch && !isMouseLeave) {
-      console.log("asas", currentTranslate, prevTranslate), this.setPosition()
+      this.setPosition()
       this.cancelAnimationFrame()
-
       this.movement = false
-
-      // this.setState(this.jumpSlideState())
     }
   }
 
@@ -131,25 +114,21 @@ export class TouchEnd extends BaseSlider {
     const { moveSlider, slides } = this
     const isNext = this.goToNextSlide(moveSlider, slideIndex, slides)
     const isPrev = this.goToPrevSlide(moveSlider, slideIndex)
-
     return { isNext, isPrev }
   }
 
   protected keyFrames(): KeyframeAnimation[] {
     const { currentTranslate } = this.store
-
     return [{ transform: translate3d(currentTranslate) }]
   }
 
   protected getSpeedInteraction() {
     const { startTime, endTime } = this.store
-
     return Math.abs(startTime - endTime)
   }
 
   private cancelAnimationFrame(): void {
     const { animationId } = this.store
-
     if (typeof animationId === "number") {
       cancelAnimationFrame(animationId)
     }
@@ -159,24 +138,24 @@ export class TouchEnd extends BaseSlider {
     const incrementOrDecrement = this.incrementOrDecrementState(action)
     const currentSlideMovement = this.slideMovementState(action)
     const objState = { ...incrementOrDecrement, ...currentSlideMovement }
-
+    const { slideIndex, slidesPerPage } = { ...this.store, ...objState }
+    objState.activePage = Math.floor(slideIndex / slidesPerPage)
     this.setState(objState)
   }
 
   private slideMovementState(action: CurrentSlideMovement): Partial<StateType> {
-    return {
-      currentSlideMovement: action
-    }
+    return { currentSlideMovement: action }
   }
 
+  /** ALTERAÇÃO: agora avança/decrementa por slidesPerPage (páginas) */
   private incrementOrDecrementState(
     action: UpdateSlideIndexType
   ): Partial<StateType> {
-    const { slideIndex } = this.store
-
+    const { slideIndex, slidesPerPage } = this.store
+    const step = slidesPerPage || 1
     return action === "increment"
-      ? { slideIndex: slideIndex + 1 }
-      : { slideIndex: slideIndex - 1 }
+      ? { slideIndex: (slideIndex || 0) + step }
+      : { slideIndex: (slideIndex || 0) - step }
   }
 
   private goToNextSlide(
@@ -186,6 +165,7 @@ export class TouchEnd extends BaseSlider {
   ): boolean {
     const isMovedByThreshold =
       moveSlider < (-this.sliderWidth! * TOUCH_LIMIT) / 100
+
     const isNotLastSlide = currentIndex < element.length - 1
 
     return isMovedByThreshold && isNotLastSlide
@@ -195,53 +175,52 @@ export class TouchEnd extends BaseSlider {
     const isMovedByThreshold =
       moveSlider > (this.sliderWidth! * TOUCH_LIMIT) / 100
     const isNotFirstSlide = currentIndex > 0
-
-    console.log(" isMovedByThreshold", isMovedByThreshold)
-
     return isMovedByThreshold && isNotFirstSlide
   }
 
   private setPosition() {
-    const { $root, sliderWidth } = this
     const {
       slideIndex,
-      prevTranslate,
+      currentSlideMovement: mov,
       currentTranslate,
-
-      currentSlideMovement: mov
+      prevTranslate
     } = this.store
-    //const currentTranslate = slideIndex * -sliderWidth!
+    // calcTranslate agora usa store.slideIndex internamente (BaseSlider.calcTranslate)
+    const translate = this.calcTranslate()
 
-    this.setState(this.positionState(this.translate))
+    this.setState({
+      currentTranslate: -translate,
+      prevTranslate: -translate
+    })
 
-    if (!mov) {
+    this.slider.setSlideTarget({
+      from: "touchend",
+      touchIndex: slideIndex,
+      $root: this.$root
+    })
+
+    if (mov) {
+      // Se houve movimento, atualizamos para o translate calculado para o slideIndex atual
+    } else {
+      // Sem movimento - anima de volta (reset)
       /* this.setState({
         currentTranslate: prevTranslate,
-        prevTranslate: prevTranslate
+        prevTranslate
       })
 
-      const animate = new AnimationFrame(this.$root)
-
-      animate.init()*/
-      //ß return
+      this.animate(
+        this.$children,
+        this.keyFrames(),
+        this.options(TIMES.DEFAULT_TRANSITION_TIME)
+      )*/
     }
-
-    console.log("touchIndex", slideIndex)
-    this.slider.setSlideTarget({ touchIndex: slideIndex, $root })
   }
 
   private prevSlideState(slideIndex: number): Partial<StateType> {
-    return {
-      prevSlideIndex: slideIndex
-    }
+    return { prevSlideIndex: slideIndex }
   }
 
-  private jumpSlideState(): Partial<StateType> {
-    return { isJumpSlide: false }
-  }
   private eventTargetState(): Partial<StateType> {
-    return {
-      currentEventType: EVENTS.TOUCHEND
-    }
+    return { currentEventType: EVENTS.TOUCHEND }
   }
 }

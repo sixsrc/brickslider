@@ -395,7 +395,7 @@ export function indexBasedBy(params: TypeIndexBaseSliderdBy) {
     case "prev":
       return slideIndex - 1
     case "dots":
-    case "touch":
+    case "touchend":
       return touchIndex ?? slideIndex
     default:
       return slideIndex
