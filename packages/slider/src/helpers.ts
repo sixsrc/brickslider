@@ -402,7 +402,7 @@ export function indexBasedBy(params: TypeIndexBaseSliderdBy) {
   }
 }
 
-export function isNotMapped(
+/*export function isNotMapped(
   infinite: boolean,
   currentIndex: number,
   numberOfSlides: number
@@ -420,6 +420,18 @@ export function isNotMapped(
       break
   }
 
+  return false
+}*/
+
+export function isNotMapped(
+  infinite: boolean,
+  currentIndex: number,
+  numberOfSlides: number
+): boolean {
+  if (!infinite) {
+    if (currentIndex < 0) return true
+    if (currentIndex > numberOfSlides - 1) return true
+  }
   return false
 }
 

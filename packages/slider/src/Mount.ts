@@ -38,7 +38,7 @@ export class Mount extends BaseSlider {
 
   public init(): void {
     this.setState(this.mountState())
-    this.normalizeSlidesConfig()
+    //this.normalizeSlidesConfig()
     this.setProperties()
     this.cloneSlides()
     this.appendSlider()
