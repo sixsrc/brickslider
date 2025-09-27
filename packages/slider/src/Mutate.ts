@@ -42,7 +42,7 @@ export class Mutate extends BaseSlider {
     })
   }*/
 
-  /*public updateActiveSlides(
+  public updateActiveSlides(
     visibleIndexes: number[] | null,
     maxActive?: number
   ): void {
@@ -67,9 +67,8 @@ export class Mutate extends BaseSlider {
       }
     })
   }
-*/
 
-  public updateActiveSlides(
+  /*public updateActiveSlides(
     visibleIndexes: number[] | null,
     maxActive?: number
   ): void {
@@ -95,7 +94,7 @@ export class Mutate extends BaseSlider {
         removeClass(slide, CLASS_VALUES.ACTIVE)
       }
     })
-  }
+  }*/
 
   private resetActiveClasses(): void {
     this.slidesArr.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))

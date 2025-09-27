@@ -159,6 +159,22 @@ export class BaseSlider {
     )
   }
 
+  protected getLastGroupStep(
+    totalSlides: number,
+    slidesPerView: number,
+    slidesPerPage: number
+  ): number {
+    const step = slidesPerPage
+    const maxStartIndex = Math.max(totalSlides - slidesPerView, 0)
+
+    // índice do início da penúltima página
+    const fullPages = Math.floor(maxStartIndex / step) * step
+
+    // quantos slides vão rolar do início da penúltima página até o final
+    const lastGroupStep = maxStartIndex - fullPages
+    return lastGroupStep > 0 ? lastGroupStep : step
+  }
+
   protected hasRemaining(totalSlides: number): boolean {
     const { slidesPerView, slidesPerPage } = this.store
 
