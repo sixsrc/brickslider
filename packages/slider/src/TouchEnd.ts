@@ -183,8 +183,7 @@ export class TouchEnd extends BaseSlider {
   private incrementOrDecrementState(
     action: UpdateSlideIndexType
   ): Partial<StateType> {
-    const { slideIndex, slidesPerPage, slidesPerView, leftOverSlides } =
-      this.store
+    const { slideIndex, slidesPerPage, slidesPerView } = this.store
     const step = slidesPerPage || 1
     const totalSlides = this.slides.length
     const view = slidesPerView || 1
@@ -196,6 +195,8 @@ export class TouchEnd extends BaseSlider {
       slidesPerPage
     )
     const hasIncompleteGroup = lastGroupStep < slidesPerView
+
+    console.log("slideIndex", slideIndex)
 
     if (
       action === "decrement" &&
@@ -210,6 +211,8 @@ export class TouchEnd extends BaseSlider {
           ? (slideIndex || 0) + step
           : (slideIndex || 0) - step
     }
+
+    console.log("slideIndex touch", nextIndex)
 
     // clamp para não ultrapassar limites
     if (nextIndex > maxStartIndex) nextIndex = maxStartIndex
@@ -258,24 +261,7 @@ export class TouchEnd extends BaseSlider {
       touchIndex: slideIndex,
       $root: this.$root
     })
-
-    if (mov) {
-      // Se houve movimento, atualizamos para o translate calculado para o slideIndex atual
-    } else {
-      // Sem movimento - anima de volta (reset)
-      /* this.setState({
-        currentTranslate: prevTranslate,
-        prevTranslate
-      })
-
-      this.animate(
-        this.$children,
-        this.keyFrames(),
-        this.options(TIMES.DEFAULT_TRANSITION_TIME)
-      )*/
-    }
   }
-
   private prevSlideState(slideIndex: number): Partial<StateType> {
     return { prevSlideIndex: slideIndex }
   }

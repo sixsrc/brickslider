@@ -19,7 +19,7 @@ import { CurrentEventType, TypeTargetSlideParams } from "./types"
 
 export class Slider extends BaseSlider {
   private animation: AnimationFrame
-  private currentIndex: number
+  public currentIndex: number
   private slides: HTMLElement[]
   mutate: Mutate
   static slides: any
@@ -36,8 +36,95 @@ export class Slider extends BaseSlider {
     this.observer = new Observer($root)
   }
 
+  /** Sincroniza this.currentIndex a partir do translate atual (store.currentTranslate) */
+  /* public updateCurrentIndexFromTranslate(): void {
+    const spacing = this.store.spacing || 0
+    let remaining = -this.store.currentTranslate
+    let idx = 0
+
+    for (let i = 0; i < this.slides.length; i++) {
+      const w = this.slides[i].offsetWidth + spacing
+      if (remaining < w) {
+        idx = i
+        break
+      }
+      remaining -= w
+    }
+
+    const step = this.store.slidesPerPage || 1
+    const view = this.store.slidesPerView || 1
+    const maxStartIndex = Math.max(this.slides.length - view, 0)
+
+    const validPositions: number[] = []
+    let pos = 0
+    while (pos <= maxStartIndex) {
+      validPositions.push(pos)
+      pos += step
+    }
+    if (!validPositions.includes(maxStartIndex))
+      validPositions.push(maxStartIndex)
+
+    // snap para posição válida mais próxima
+    let nearest = validPositions[0]
+    for (const vp of validPositions) {
+      if (Math.abs(vp - idx) < Math.abs(nearest - idx)) {
+        nearest = vp
+      }
+    }
+
+    this.currentIndex = nearest
+    console.log(
+      "[updateCurrentIndexFromTranslate] idx cru:",
+      idx,
+      "ajustado para válido:",
+      this.currentIndex
+    )
+  }*/
+
+  public updateCurrentIndexFromTranslate(): void {
+    const spacing = this.store.spacing || 0
+    let remaining = -this.store.currentTranslate
+    let idx = 0
+
+    for (let i = 0; i < this.slides.length; i++) {
+      const w = this.slides[i].offsetWidth + spacing
+      if (remaining < w) {
+        idx = i
+        break
+      }
+      remaining -= w
+    }
+
+    // pega o índice lógico (real), mesmo que esteja em clone
+    const realIndex = parseInt(this.slides[idx]?.dataset.index || "1", 10) - 1
+
+    this.currentIndex = this.normalizeIndex(realIndex)
+
+    console.log(
+      "[updateCurrentIndexFromTranslate] idx cru:",
+      idx,
+      "realIndex:",
+      realIndex,
+      "ajustado para válido:",
+      this.currentIndex
+    )
+  }
+
+  /** Calcula translate (soma de larguras + spacing) para um índice qualquer. */
+  public calcTranslateForIndex(index: number): number {
+    const spacing = this.store.spacing || 0
+    let translate = 0
+
+    for (let i = 0; i < index; i++) {
+      const slide = this.slides[i]
+      if (slide) translate += slide.offsetWidth + spacing
+    }
+
+    return translate
+  }
+
   public setSlideTarget(params: TypeTargetSlideParams) {
-    const { numberOfPages } = this.store
+    this.updateCurrentIndexFromTranslate()
 
     console.log(
       "[Slider.setSlideTarget] params:",
@@ -46,91 +133,78 @@ export class Slider extends BaseSlider {
       this.currentIndex
     )
 
-    // 🔒 BLOQUEIO ANTES de recalcular o índice
-    if (
-      (params.from === "next" && this.currentIndex >= numberOfPages - 1) ||
-      (params.from === "prev" && this.currentIndex <= 0)
-    ) {
-      console.log("[Slider.setSlideTarget] limite atingido, ignorando ação")
-      return
-    }
+    // recalcula índice final e aplica
+    this.currentIndex = this.setIndexBased(params)
 
-    // só executa se passou no bloqueio
-    this.setIndexBased(params)
     console.log(
       "[Slider.setSlideTarget] after setIndexBased, currentIndex:",
       this.currentIndex
     )
 
-    if (!this.mapSlideIndex()) this.nextAction()
+    this.nextAction()
   }
 
-  /* private setIndexBased(params: TypeTargetSlideParams): void {
-    const { slideIndex, infinite, currentEventType, numberOfSlides } =
-      this.store
-    const from = currentEventType as CurrentEventType
-    let nextIndex = slideIndex
+  public normalizeIndex(index: number): number {
+    const step = this.store.slidesPerPage || 1
+    const view = this.store.slidesPerView || 1
+    const maxStartIndex = Math.max(this.slides.length - view, 0)
 
-    if (from === "next") {
-      nextIndex = slideIndex + 1
-    } else if (from === "prev") {
-      nextIndex = slideIndex - 1
-    } else if (from === "dots" || from === "touchend") {
+    const validPositions: number[] = []
+    let pos = 0
+    while (pos <= maxStartIndex) {
+      validPositions.push(pos)
+      pos += step
+    }
+    if (!validPositions.includes(maxStartIndex))
+      validPositions.push(maxStartIndex)
+
+    // snap para posição válida mais próxima
+    return validPositions.reduce((prev, curr) => {
+      return Math.abs(curr - index) < Math.abs(prev - index) ? curr : prev
+    }, validPositions[0])
+  }
+
+  private setIndexBased(params: TypeTargetSlideParams): number {
+    const step = this.store.slidesPerPage || 1
+    const view = this.store.slidesPerView || 1
+    const maxStartIndex = Math.max(this.slides.length - view, 0)
+
+    const validPositions: number[] = []
+    let pos = 0
+    while (pos <= maxStartIndex) {
+      validPositions.push(pos)
+      pos += step
+    }
+    if (!validPositions.includes(maxStartIndex))
+      validPositions.push(maxStartIndex)
+
+    let nextIndex = this.currentIndex
+
+    if (params.from === "next") {
+      console.log("asdadadad91287981798379183", this.currentIndex)
+      const next = validPositions.find(vp => vp > this.currentIndex)
+      if (next !== undefined) nextIndex = next
+    } else if (params.from === "prev") {
+      const prev = [...validPositions]
+        .reverse()
+        .find(vp => vp < this.currentIndex)
+      if (prev !== undefined) nextIndex = prev
+    } else if (params.from === "dots" || params.from === "touchend") {
       if (params.touchIndex !== undefined) {
-        nextIndex = params.touchIndex
-        if (infinite && from === "dots") {
-          nextIndex = nextIndex + 1
-        }
+        /*nextIndex = validPositions.reduce((prev, curr) => {
+          return Math.abs(curr - params.touchIndex!) <
+            Math.abs(prev - params.touchIndex!)
+            ? curr
+            : prev
+        }, validPositions[0])*/
+
+        nextIndex = this.normalizeIndex(params.touchIndex)
       }
     }
 
-    // 🔒 garantir que não sai dos limites
-    if (nextIndex < 0) {
-      nextIndex = infinite ? numberOfSlides - 1 : 0
-    } else if (nextIndex > numberOfSlides - 1) {
-      nextIndex = infinite ? 0 : numberOfSlides - 1
-    }
+    /* */
 
-    this.currentIndex = nextIndex
-    console.log("[Slider.setIndexBased] resolved index:", this.currentIndex)
-  }
-*/
-
-  private setIndexBased(params: TypeTargetSlideParams): void {
-    const {
-      slideIndex,
-      infinite,
-      numberOfPages,
-      currentEventType,
-      slidesPerPage
-    } = this.store
-    const from = currentEventType as CurrentEventType
-    let nextIndex = slideIndex
-
-    const totalSlides = this.slides.length
-
-    if (from === "next") {
-      nextIndex = slideIndex + 1
-    } else if (from === "prev") {
-      nextIndex = slideIndex - 1
-    } else if (from === "dots" || from === "touchend") {
-      if (params.touchIndex !== undefined) {
-        nextIndex = params.touchIndex
-        if (infinite && from === "dots") {
-          //nextIndex += slidesPerPage
-        }
-      }
-    }
-
-    // 🔒 garantir que não sai dos limites
-    if (nextIndex < 0) {
-      nextIndex = infinite ? Math.max(numberOfPages - slidesPerPage, 0) : 0
-    } else if (nextIndex > numberOfPages - 1) {
-      nextIndex = infinite ? 0 : numberOfPages - 1
-    }
-
-    this.currentIndex = nextIndex
-    console.log("[Slider.setIndexBased] resolved index:", this.currentIndex)
+    return nextIndex
   }
 
   public mapSlideIndex(): boolean {
@@ -146,27 +220,14 @@ export class Slider extends BaseSlider {
     this.updateSlider()
   }
 
-  /** 🔑 calcTranslate robusto baseado em currentIndex */
-
-  /*public calcTranslate(): number {
-    let translate = 0
-    for (let i = 0; i < this.currentIndex; i++) {
-      const slide = this.slides[i]
-      if (slide) {
-        translate += slide.offsetWidth
-      }
-    }
-    return translate
-  }*/
-
   private mainState(): Partial<StateType> {
-    const translate = this.calcTranslate()
-
-    console.log("translate", this.store.currentTranslate, -translate)
+    const translate = this.calcTranslateForIndex(this.currentIndex)
+    const safe = this.safeTranslate(translate)
+    console.log("translate", this.currentIndex)
     return {
       slideIndex: this.currentIndex,
-      prevTranslate: -translate,
-      currentTranslate: -translate
+      prevTranslate: -safe,
+      currentTranslate: -safe
     }
   }
 
@@ -198,44 +259,83 @@ export class Slider extends BaseSlider {
   }
 
   public defineDotIndex(): void {
-    const {
-      currentSlideMovement: mov,
-      isPagedActive,
-      currentEventType
-    } = this.store
+    const { isPagedActive, slidesPerPage, slidesPerView } = this.store
+    if (!isPagedActive) return
 
-    if (mov && isPagedActive) {
-      const { dotIndex } = this.defineIncrementOrDecrement()
-      this.reorderActiveDot(dotIndex)
+    const step = slidesPerPage || 1
+    const view = slidesPerView || 1
+    const totalSlides = this.slides.length
+    const maxStartIndex = Math.max(totalSlides - view, 0)
+
+    const validPositions: number[] = []
+    let pos = 0
+    while (pos <= maxStartIndex) {
+      validPositions.push(pos)
+      pos += step
     }
+    if (!validPositions.includes(maxStartIndex))
+      validPositions.push(maxStartIndex)
+
+    const startIndex =
+      typeof this.store.slideIndex === "number"
+        ? this.store.slideIndex
+        : this.currentIndex
+
+    let computedDot = validPositions.findIndex(pos => pos === startIndex)
+
+    if (computedDot === -1) {
+      for (let i = validPositions.length - 1; i >= 0; i--) {
+        if (validPositions[i] <= startIndex) {
+          computedDot = i
+          break
+        }
+      }
+    }
+
+    computedDot = Math.max(0, Math.min(computedDot, validPositions.length - 1))
+
+    computedDot = this.mapDotIndexForInfinite(computedDot, startIndex)
+
+    this.setState({ dotIndex: computedDot })
   }
 
-  private reorderActiveDot(dotIndex: number) {
-    const { slideIndex, infinite } = this.store
-    dotIndex = this.mapDotIndex().get(`${infinite}-${slideIndex}`) ?? dotIndex
-    this.setState({ dotIndex })
-  }
+  /* private mapDotIndexForInfinite(dotIndex: number, startIndex: number): number {
+    const { infinite, slidesPerPage } = this.store
+    if (!infinite) return dotIndex
 
-  private mapDotIndex(): Map<string, number | undefined> {
-    const { slideIndex, numberOfSlides, infinite } = this.store
-    const dotIndexMap = new Map<string, number | undefined>([
-      [`true-0`, infinite ? numberOfSlides - 1 : 0],
-      [`true-${numberOfSlides + 1}`, infinite ? 0 : undefined],
-      [`false-${numberOfSlides - 1}`, slideIndex]
-    ])
-    return dotIndexMap
-  }
+    // pegar apenas slides reais
+    const realSlides = this.slides.filter(slide => !hasClass(slide, "cloned"))
+    const maxIndex = realSlides.length - 1
 
-  protected defineIncrementOrDecrement() {
-    let { currentSlideMovement: mov, dotIndex, numberOfPages } = this.store
+    // se for antes do primeiro slide real
+    if (startIndex <= 0) return 0
 
-    if (mov === "increment") dotIndex++
-    else dotIndex--
+    // se for depois do último slide real
+    if (startIndex >= maxIndex) return Math.floor(maxIndex / slidesPerPage)
 
-    if (dotIndex === -1) dotIndex = numberOfPages - 1
-    else if (dotIndex > numberOfPages - 1) dotIndex = 0
+    // mapear startIndex para dotIndex
+    return Math.floor(startIndex / slidesPerPage)
+  }*/
 
-    return { dotIndex }
+  private mapDotIndexForInfinite(dotIndex: number, startIndex: number): number {
+    const { infinite, slidesPerPage } = this.store
+    if (!infinite) return dotIndex
+
+    const realSlides = this.slides.filter(slide => !hasClass(slide, "cloned"))
+    const totalGroups = Math.ceil(realSlides.length / slidesPerPage)
+
+    // pegar índice real via dataset
+    const realIndex =
+      parseInt(this.slides[startIndex]?.dataset.index || "1", 10) - 1
+
+    // se está antes do primeiro real (clones iniciais) → última dot
+    if (realIndex <= 0) return totalGroups - 1
+
+    // se está depois do último real (clones finais) → primeira dot
+    if (realIndex >= realSlides.length - 1) return 0
+
+    // caso normal
+    return Math.floor(realIndex / slidesPerPage)
   }
 
   public updateSlider() {
@@ -252,6 +352,8 @@ export class Slider extends BaseSlider {
     const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
 
     if (!isDots) return {}
+
+    console.log("dotIndex", selectedIndex)
 
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))

@@ -12,10 +12,12 @@ export class CloneSlides extends BaseSlider {
   private dataIndex: string
   private totalWidthBefore: number
   private slidesBefore: HTMLElement[] = []
+  private slider: Slider
 
   constructor($root: string) {
     super($root)
     this.slides = []
+    this.slider = new Slider($root)
     this.clonedSlides = []
     this.dataIndex = "0"
     this.totalWidthBefore = 0
@@ -30,7 +32,7 @@ export class CloneSlides extends BaseSlider {
 
   private duplicateSlides(): HTMLElement[] | undefined {
     const { $root, childrenCount } = this
-    let { slidesPerView } = this.store
+    let { slidesPerView, slidesPerPage } = this.store
 
     this.slides = Slider.getSlides($root)
 
@@ -51,13 +53,16 @@ export class CloneSlides extends BaseSlider {
   }
 
   private slidePositionState(): Partial<StateType> {
-    const { slideIndex } = this.store
+    const { infinite } = this.store
     const translate = this.calcTranslate()
+    const index = infinite ? this.slider.getInitialIndexFromClones() : 0
+
+    console.log("index inicial", index, infinite)
 
     return {
       currentTranslate: translate,
       prevTranslate: translate,
-      slideIndex: slideIndex + 1,
+      slideIndex: index,
       isInitialRender: false
     }
   }

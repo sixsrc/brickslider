@@ -100,7 +100,7 @@ export class Dots extends BaseSlider {
         Math.ceil((numberOfActualSlides - slidesPerView) / slidesPerPage) + 1
     }
 
-    return 4 //Math.max(1, totalPages)
+    return Math.max(1, totalPages)
   }
 
   private createDots(): void {
