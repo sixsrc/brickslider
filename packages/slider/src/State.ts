@@ -59,6 +59,7 @@ export enum State_Keys {
   SlideIndex = "slideIndex",
   JumpIndex = "jumpIndex",
   ActivePage = "activePage",
+  ActivePosition = "activePosition",
   ActiveDataIndex = "activeDataIndex",
   SlideSpacing = "spacing",
   SlidesPerPage = "slidesPerPage",
@@ -109,6 +110,7 @@ export type StateType = {
   [State_Keys.PrevSlideIndex]: number
   [State_Keys.JumpIndex]: number
   [State_Keys.SlideIndex]: number
+  [State_Keys.ActivePosition]: number
   [State_Keys.ActiveDataIndex]: number
   [State_Keys.ActivePage]: number
   [State_Keys.SlideSpacing]: number
@@ -189,6 +191,7 @@ class State {
     State.state[this.key][State_Keys.PrevSlideIndex] = 0
     State.state[this.key][State_Keys.ActivePage] = 0
     State.state[this.key][State_Keys.ActiveDataIndex] = 0
+    State.state[this.key][State_Keys.ActivePosition] = 0
     State.state[this.key][State_Keys.JumpIndex] = 0
     State.state[this.key][State_Keys.SlideIndex] = 0
     State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0

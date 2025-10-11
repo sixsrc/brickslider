@@ -35,6 +35,7 @@ export class Slider extends BaseSlider {
     const spacing = this.store.spacing || 0
     let remaining = -this.store.currentTranslate
     let idx = 0
+
     for (let i = 0; i < this.slides.length; i++) {
       const w = this.slides[i].offsetWidth + spacing
       if (remaining < w) {
@@ -93,6 +94,9 @@ export class Slider extends BaseSlider {
     const view = this.store.slidesPerView || 1
     const maxStartIndex = Math.max(this.slides.length - view, 0)
     const validPositions: number[] = []
+
+    console.log("maxStartIndex:", this.slides.length - view)
+
     let pos = 0
     while (pos <= maxStartIndex) {
       validPositions.push(pos)
@@ -100,6 +104,15 @@ export class Slider extends BaseSlider {
     }
     if (!validPositions.includes(maxStartIndex))
       validPositions.push(maxStartIndex)
+
+    console.log(
+      "918723917391873123",
+      validPositions.reduce(
+        (prev, curr) =>
+          Math.abs(curr - index) < Math.abs(prev - index) ? curr : prev,
+        validPositions[0]
+      )
+    )
 
     return validPositions.reduce(
       (prev, curr) =>
@@ -150,7 +163,7 @@ export class Slider extends BaseSlider {
     const step = this.store.slidesPerPage || 1
     const view = this.store.slidesPerView || 1
     const maxStartIndex = Math.max(this.slides.length - view, 0)
-    const validPositions: number[] = []
+    let validPositions: number[] = []
     let pos = 0
     while (pos <= maxStartIndex) {
       validPositions.push(pos)
@@ -160,6 +173,8 @@ export class Slider extends BaseSlider {
       validPositions.push(maxStartIndex)
 
     let nextIndex = this.currentIndex
+
+    // validPositions = [0, 5, 8, 11, 14, 17, 20, 23]
 
     console.log("valid positions", validPositions)
 
