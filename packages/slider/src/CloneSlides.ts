@@ -33,14 +33,16 @@ export class CloneSlides extends BaseSlider {
   private duplicateSlides(): HTMLElement[] | undefined {
     const { $root, childrenCount } = this
     let { slidesPerView, slidesPerPage } = this.store
+    let qtySlidesToClone = slidesPerView * 2
 
     this.slides = Slider.getSlides($root)
 
     if (childrenCount < slidesPerView) return
+    if (slidesPerView < slidesPerPage) qtySlidesToClone = slidesPerPage
 
     slidesPerView = Math.min(slidesPerView, childrenCount)
 
-    this.loopByClonedSlides(slidesPerView + 1, childrenCount)
+    this.loopByClonedSlides(qtySlidesToClone, childrenCount)
   }
 
   private loopByClonedSlides(slidesPerView: number, slideCount: number): void {
@@ -56,8 +58,6 @@ export class CloneSlides extends BaseSlider {
     const { infinite } = this.store
     const translate = this.calcTranslate()
     const index = infinite ? this.slider.getInitialIndexFromClones() : 0
-
-    console.log("index inicial", index, infinite)
 
     return {
       currentTranslate: translate,

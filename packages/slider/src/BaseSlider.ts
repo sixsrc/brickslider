@@ -122,8 +122,10 @@ export class BaseSlider {
   }
 
   protected getTotalWidth(): number {
-    const { spacing } = this.store
+    const { spacing, infinite } = this.store
     if (this.slidesArr.length === 0) return 0
+
+    console.log("Total Width:", this.slidesArr)
 
     return this.slidesArr.reduce((total, slide, index) => {
       return (
