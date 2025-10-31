@@ -6,12 +6,14 @@ import { StateType } from "./State"
 import { CLASS_VALUES, TAGS } from "./constants"
 import {
   addClass,
+  animateElement,
   getAllElements,
   getDotsSelector,
   getSliderNodeList,
   hasClass,
   isSafariBrowser,
-  removeClass
+  removeClass,
+  waitFor
 } from "./helpers"
 import { TypeTargetSlideParams } from "./types"
 
@@ -19,6 +21,7 @@ export class Slider extends BaseSlider {
   private animation: AnimationFrame
   public currentIndex: number
   private slides: HTMLElement[]
+  private validPositions: number[]
   mutate: Mutate
   observer: Observer
   constructor($root: string) {
@@ -28,6 +31,7 @@ export class Slider extends BaseSlider {
     this.slides = getSliderNodeList($root)
     this.mutate = new Mutate($root)
     this.observer = new Observer($root)
+    this.validPositions = []
   }
 
   /** Sincroniza currentIndex a partir do translate */
@@ -99,25 +103,25 @@ export class Slider extends BaseSlider {
 
     let pos = 0
     while (pos <= maxStartIndex) {
-      validPositions.push(pos)
+      this.validPositions.push(pos)
       pos += step
     }
-    if (!validPositions.includes(maxStartIndex))
-      validPositions.push(maxStartIndex)
+    if (!this.validPositions.includes(maxStartIndex))
+      this.validPositions.push(maxStartIndex)
 
     console.log(
       "918723917391873123",
-      validPositions.reduce(
+      this.validPositions.reduce(
         (prev, curr) =>
           Math.abs(curr - index) < Math.abs(prev - index) ? curr : prev,
-        validPositions[0]
+        this.validPositions[0]
       )
     )
 
-    return validPositions.reduce(
+    return this.validPositions.reduce(
       (prev, curr) =>
         Math.abs(curr - index) < Math.abs(prev - index) ? curr : prev,
-      validPositions[0]
+      this.validPositions[0]
     )
   }
 
@@ -163,26 +167,28 @@ export class Slider extends BaseSlider {
     const step = this.store.slidesPerPage || 1
     const view = this.store.slidesPerView || 1
     const maxStartIndex = Math.max(this.slides.length - view, 0)
-    let validPositions: number[] = []
+    //let validPositions: number[] = []
     let pos = 0
     while (pos <= maxStartIndex) {
-      validPositions.push(pos)
+      this.validPositions.push(pos)
       pos += step
     }
-    if (!validPositions.includes(maxStartIndex))
-      validPositions.push(maxStartIndex)
+    if (!this.validPositions.includes(maxStartIndex))
+      this.validPositions.push(maxStartIndex)
 
     let nextIndex = this.currentIndex
 
+    this.validPositions = [...new Set(this.validPositions)]
+
     // validPositions = [0, 5, 8, 11, 14, 17, 20, 23]
 
-    console.log("valid positions", validPositions)
+    // console.log("valid positions", validPositions)
 
     if (params.from === "next") {
-      const next = validPositions.find(vp => vp > this.currentIndex)
+      const next = this.validPositions.find(vp => vp > this.currentIndex)
       if (next !== undefined) nextIndex = next
     } else if (params.from === "prev") {
-      const prev = [...validPositions]
+      const prev = [...this.validPositions]
         .reverse()
         .find(vp => vp < this.currentIndex)
       if (prev !== undefined) nextIndex = prev
@@ -243,11 +249,11 @@ export class Slider extends BaseSlider {
     const validPositions: number[] = []
     let pos = 0
     while (pos <= maxStartIndex) {
-      validPositions.push(pos)
+      this.validPositions.push(pos)
       pos += step
     }
-    if (!validPositions.includes(maxStartIndex))
-      validPositions.push(maxStartIndex)
+    if (!this.validPositions.includes(maxStartIndex))
+      this.validPositions.push(maxStartIndex)
 
     let rawStart =
       typeof this.store.slideIndex === "number"
@@ -261,16 +267,19 @@ export class Slider extends BaseSlider {
       startIndex = dataIndex - 1
     }
 
-    let computedDot = validPositions.findIndex(pos => pos === startIndex)
+    let computedDot = this.validPositions.findIndex(pos => pos === startIndex)
     if (computedDot === -1) {
-      for (let i = validPositions.length - 1; i >= 0; i--) {
-        if (validPositions[i] <= startIndex) {
+      for (let i = this.validPositions.length - 1; i >= 0; i--) {
+        if (this.validPositions[i] <= startIndex) {
           computedDot = i
           break
         }
       }
     }
-    computedDot = Math.max(0, Math.min(computedDot, validPositions.length - 1))
+    computedDot = Math.max(
+      0,
+      Math.min(computedDot, this.validPositions.length - 1)
+    )
     computedDot = this.mapDotIndexForInfinite(computedDot, startIndex)
 
     this.setState({ dotIndex: computedDot })
@@ -301,6 +310,119 @@ export class Slider extends BaseSlider {
   }
 
   nextAction() {
+    const {
+      infinite,
+      jumpIndex,
+      currentSlideMovement: mov,
+      spacing,
+      slideIndex,
+      activePage,
+      numberOfPages,
+      slidesPerView,
+      activeDataIndex
+    } = this.store
+
+    let translate = 0
+
+    const filteredSlides = this.slides.filter(
+      slide =>
+        !hasClass(slide, CLASS_VALUES.CLONED) &&
+        parseInt(slide.dataset.slideNumber as string) > activeDataIndex
+    )
+
+    let isActive = false
+
+    const isTheRightEdge =
+      filteredSlides.length > 0 && filteredSlides.length < slidesPerView
+
+    console.log("Filtered Slides:", filteredSlides)
+
+    if (infinite && mov === "increment" && filteredSlides.length === 0) {
+      this.setState({
+        isJumpSlide: true
+      })
+
+      // const targetSlides = this.slides.slice(0, 10)
+      this.currentIndex = 10
+
+      this.animationFrame()
+      this.setState(this.mainState())
+      this.updateDOM()
+      this.updateSlider()
+
+      /*  this.forEachSlide(targetSlides, slide => {
+        translate += slide.offsetWidth + spacing
+      })
+
+      this.setState({
+        currentTranslate: -translate
+      })
+
+      animateElement(this.$children, this.keyFrames(), this.options(0))*/
+
+      waitFor(0, () => {
+        this.setState({
+          isJumpSlide: false
+        })
+        this.currentIndex = 20
+
+        this.animationFrame()
+        this.setState(this.mainState())
+        this.updateDOM()
+        this.updateSlider()
+
+        /*  const targetSlides = this.slides.slice(0, 20)
+
+        this.forEachSlide(targetSlides, slide => {
+          translate += slide.offsetWidth + spacing
+        })
+
+        this.setState({
+          currentTranslate: -translate
+        })
+
+        animateElement(this.$children, this.keyFrames(), this.options(700))*/
+      })
+
+      return
+    }
+
+    if (infinite && mov === "increment" && isTheRightEdge) {
+      console.log("Reached right edge", filteredSlides)
+
+      this.currentIndex = 24
+
+      /*
+      const targetSlides = this.slides.slice(0, 10)
+
+      this.forEachSlide(targetSlides, slide => {
+        translate += slide.offsetWidth + spacing
+      })
+
+      this.setState({
+        currentTranslate: -translate
+      })
+
+      animateElement(this.$children, this.keyFrames(), this.options())
+      */
+
+      waitFor(800, () => {
+        /*const targetSlides = this.slides.slice(0, 10)
+
+        this.forEachSlide(targetSlides, slide => {
+          translate += slide.offsetWidth + spacing
+        })
+
+        this.setState({
+          currentTranslate: -translatew
+        })
+        this.animationFrame()
+        this.updateSlider() */
+      })
+
+      //return
+    }
+
     this.animationFrame()
     this.setState(this.mainState())
     this.updateDOM()
