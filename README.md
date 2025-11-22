@@ -11,3 +11,14 @@
     <img src="https://img.shields.io/github/contributors/sixsrc/brickslider?style=for-the-badge" alt="Contributors" />
   </a>
 </p>
+ 
+## Contributors
+
+<p align="center">
+  <a href="https://github.com/malopestorres">
+    <img src="https://avatars.githubusercontent.com/u/14898081?v=4&s=100" width="96" alt="@malopestorres" style="border-radius:50%" />
+  </a>
+  <p align="center">
+    <a href="https://github.com/malopestorres"><strong>@malopestorres</strong></a>
+  </p>
+</p>
