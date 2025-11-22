@@ -3,7 +3,17 @@
   "projectOwner": "sixsrc",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "files": ["CONTRIBUTORS.md"],
+  "files": ["CONTRIBUTORS.md", "README.md"],
   "imageSize": 100,
-  "contributors": []
+  "contributors": [
+    {
+      "login": "malopestorres",
+      "name": "Marcus Torres",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14898081?v=4",
+      "profile": "https://github.com/malopestorres",
+      "contributions": ["code"]
+    }
+  ],
+  "commitConvention": "angular"
 }
+

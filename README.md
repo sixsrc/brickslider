@@ -4,9 +4,6 @@
 
 <h1 align="center" style="color: red">Under construction, please do not use! Coming soon.</h1>
 
-<p align="center">
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
-</p>
 
 <!-- Contributors section will be populated in CONTRIBUTORS.md -->
 
