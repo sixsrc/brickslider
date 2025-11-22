@@ -6,12 +6,7 @@
 
 
 
-<p align="center">
-  <a href="https://github.com/sixsrc/brickslider/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/sixsrc/brickslider?style=for-the-badge" alt="Contributors" />
-  </a>
-</p>
- 
+
 ## Contributors
 
 <p align="center">
