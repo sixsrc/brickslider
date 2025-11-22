@@ -96,7 +96,7 @@ export class Arrows extends BaseSlider {
     const eventType = getAttribute === "prev" ? "prev" : "next"
     const { dotIndex, numberOfPages, infinite } = this.store
 
-    let newDotIndex = dotIndex ?? 0
+    let newDotIndex = dotIndex ?? 1
     if (eventType === "next") newDotIndex++
     else newDotIndex--
 

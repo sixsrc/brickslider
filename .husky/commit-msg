@@ -1,11 +1,15 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-#fix
+# Run commitlint on the commit message
+npx --no-install commitlint --edit "$1" || exit 1
 
+# If commitizen hook exists use it as fallback
 if [ "$1" = "prepare-commit-msg" ]; then
   exec < /dev/tty && npx cz --hook || true
 fi
+
+
 
 
 

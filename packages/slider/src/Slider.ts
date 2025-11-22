@@ -20,14 +20,16 @@ import { TypeTargetSlideParams } from "./types"
 export class Slider extends BaseSlider {
   private animation: AnimationFrame
   public currentIndex: number
-  private slides: HTMLElement[]
+  protected slides: HTMLElement[]
   private validPositions: number[]
-  mutate: Mutate
-  observer: Observer
+  private mutate: Mutate
+  private observer: Observer
+  private isClonedPassed: boolean
   constructor($root: string) {
     super($root)
     this.animation = new AnimationFrame(this.$root)
     this.currentIndex = 0
+    this.isClonedPassed = false
     this.slides = getSliderNodeList($root)
     this.mutate = new Mutate($root)
     this.observer = new Observer($root)
@@ -77,7 +79,7 @@ export class Slider extends BaseSlider {
     this.updateCurrentIndexFromTranslate()
 
     console.log(
-      "[Slider.setSlideTarget] params:",
+      "[Slider.setSlideTarget] param5555:",
       params,
       "currentIndex:",
       this.currentIndex
@@ -319,6 +321,7 @@ export class Slider extends BaseSlider {
       activePage,
       numberOfPages,
       slidesPerView,
+      slidesPerPage,
       activeDataIndex
     } = this.store
 
@@ -338,12 +341,13 @@ export class Slider extends BaseSlider {
     console.log("Filtered Slides:", filteredSlides)
 
     if (infinite && mov === "increment" && filteredSlides.length === 0) {
+      this.currentIndex = this.getFirstIndex()
+
       this.setState({
         isJumpSlide: true
       })
 
       // const targetSlides = this.slides.slice(0, 10)
-      this.currentIndex = 10
 
       this.animationFrame()
       this.setState(this.mainState())
@@ -364,7 +368,7 @@ export class Slider extends BaseSlider {
         this.setState({
           isJumpSlide: false
         })
-        this.currentIndex = 20
+        this.currentIndex = this.currentIndex + slidesPerPage
 
         this.animationFrame()
         this.setState(this.mainState())
@@ -388,39 +392,20 @@ export class Slider extends BaseSlider {
     }
 
     if (infinite && mov === "increment" && isTheRightEdge) {
-      console.log("Reached right edge", filteredSlides)
+      this.isClonedPassed = true
+      console.log(
+        "Reached right edge",
+        filteredSlides,
+        this.isClonedPassed,
+        this.getFirstClonedIndex()
+      )
+      this.currentIndex = this.getFirstClonedIndex()
+    }
 
-      this.currentIndex = 24
-
-      /*
-      const targetSlides = this.slides.slice(0, 10)
-
-      this.forEachSlide(targetSlides, slide => {
-        translate += slide.offsetWidth + spacing
-      })
-
-      this.setState({
-        currentTranslate: -translate
-      })
-
-      animateElement(this.$children, this.keyFrames(), this.options())
-      */
-
-      waitFor(800, () => {
-        /*const targetSlides = this.slides.slice(0, 10)
-
-        this.forEachSlide(targetSlides, slide => {
-          translate += slide.offsetWidth + spacing
-        })
-
-        this.setState({
-          currentTranslate: -translatew
-        })
-        this.animationFrame()
-        this.updateSlider() */
-      })
-
-      //return
+    if (infinite && mov === "decrement" && this.isClonedPassed) {
+      alert("daa")
+      this.isClonedPassed = false
+      this.currentIndex = 20
     }
 
     this.animationFrame()
@@ -446,7 +431,8 @@ export class Slider extends BaseSlider {
       .init({
         onStart: () => {
           intervalId = window.setInterval(() => {
-            const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
+            let visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
+
             this.mutate.updateActiveSlides(visibleIndexes, slidesPerPage)
           }, 10)
         },
@@ -458,10 +444,10 @@ export class Slider extends BaseSlider {
         }
       })
       .then(() => {})
-    requestAnimationFrame(() => {
+    /*requestAnimationFrame(() => {
       const time = isSafariBrowser() ? 10 : 0
       this.animation.init().then(() => {})
-    })
+    })*/
   }
 
   /** Retorna o índice inicial baseado apenas nos clones à esquerda */
