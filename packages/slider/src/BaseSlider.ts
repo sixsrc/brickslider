@@ -28,6 +28,7 @@ export class BaseSlider {
   protected childrenCount: number
   protected sliderWidth: number | undefined
   protected slidesArr: HTMLElement[]
+  protected slides: HTMLElement[]
   protected targetSlides: HTMLElement[]
   protected translate: number
   movement: boolean
@@ -36,6 +37,7 @@ export class BaseSlider {
     this.$root = $root
     this.getRootSelector = getRootSelector($root)
     this.slidesArr = getSliderNodeList($root)
+    this.slides = getSliderNodeList($root)
     this.targetSlides = []
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
@@ -153,9 +155,12 @@ export class BaseSlider {
     this.state.set(state)
   }
 
+  protected getFirstIndex(): number {
+    return this.slides.findIndex(slide => slide.dataset.index === "1")
+  }
+
   protected getFirstClonedIndex(): number {
-    // usado por algumas funcionalidades de clone/infinite
-    return this.targetSlides.findIndex(
+    return this.slides.findIndex(
       slide =>
         slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
     )

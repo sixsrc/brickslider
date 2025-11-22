@@ -21,6 +21,9 @@
     "dist",
     "src"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/brick-slider.cjs",
   "module": "./dist/brick-slider.js",
   "exports": {
@@ -38,8 +41,6 @@
   },
   "scripts": {
     "start": "vite --host",
-    "test": "vitest",
-    "lint": "eslint --ext .ts {src,__tests__}/**.ts",
     "build": "tsc --noEmit && vite build"
   },
   "dependencies": {
