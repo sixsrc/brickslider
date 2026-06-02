@@ -2,7 +2,7 @@ import { BaseSlider } from "./BaseSlider"
 import { CLASS_VALUES } from "./constants"
 import { addClass } from "./helpers"
 import { Mount } from "./Mount"
-import { Slider } from "./Slider"
+import { Slider } from "./Slider-ORIGINAL"
 import { StateType } from "./State"
 
 export class CloneSlides extends BaseSlider {

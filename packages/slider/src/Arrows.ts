@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { Slider } from "./Slider"
+import { Slider } from "./Slider-ORIGINAL"
 import { state, StateType } from "./State"
 import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TIMES } from "./constants"
 import { getElementAttribute, listener } from "./helpers"

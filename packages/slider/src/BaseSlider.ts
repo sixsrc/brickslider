@@ -159,6 +159,36 @@ export class BaseSlider {
     return this.slides.findIndex(slide => slide.dataset.index === "1")
   }
 
+  protected getDataSlideNumber(dataNumber: string): number {
+    return this.slides.findIndex(
+      slide =>
+        slide.dataset.slideNumber === dataNumber &&
+        !hasClass(slide, CLASS_VALUES.CLONED)
+    )
+  }
+
+  protected getDataIndex(dataNumber: string): number {
+    return Number(
+      this.slides.find(
+        slide =>
+          slide.dataset.slideNumber === dataNumber &&
+          !hasClass(slide, CLASS_VALUES.CLONED)
+      )?.dataset.index ?? -1
+    )
+  }
+
+  protected getClonePreviousPosition(dataNumber: string): number {
+    const dataIndex = this.getDataIndex(dataNumber)
+
+    const clonedSlide = this.slides.find(
+      slide =>
+        slide.dataset.index === String(dataIndex) &&
+        hasClass(slide, CLASS_VALUES.CLONED)
+    )
+
+    return Number(clonedSlide?.dataset.slideNumber) - 1
+  }
+
   protected getFirstClonedIndex(): number {
     return this.slides.findIndex(
       slide =>
@@ -186,6 +216,10 @@ export class BaseSlider {
     const { slidesPerView, slidesPerPage } = this.store
 
     return (totalSlides - slidesPerView) % slidesPerPage !== 0
+  }
+
+  protected isAlign(totalSlides: number, slidesPerPage: number) {
+    return totalSlides % slidesPerPage === 0
   }
 
   protected getMissingSlides(): { isMissing: boolean; leftOver: number } {

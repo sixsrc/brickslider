@@ -4,7 +4,7 @@ import { Resize } from "./Resize"
 import { CloneSlides } from "./CloneSlides"
 import { StateType } from "./State"
 import { Swipe } from "./Swipe"
-import { CLASS_VALUES, EVENTS, STYLES } from "./constants"
+import { CLASS_VALUES, EVENTS } from "./constants"
 import {
   appendToParent,
   getChildrenCount,
@@ -25,7 +25,6 @@ export class Mount extends BaseSlider {
   private clonedSlides: HTMLElement[] = []
   private resize: Resize
   private clone: CloneSlides
-  private slides: HTMLElement[]
   private mutate: Mutate
 
   constructor($root: string) {
@@ -38,7 +37,7 @@ export class Mount extends BaseSlider {
 
   public init(): void {
     this.setState(this.mountState())
-    //this.normalizeSlidesConfig()
+    this.normalizeSlidesConfig()
     this.setProperties()
     this.cloneSlides()
     this.appendSlider()
@@ -46,241 +45,28 @@ export class Mount extends BaseSlider {
     this.endMount()
   }
 
-  /*private normalizeSlidesConfig(): void {
+  private setProperties(): void {
+    this.slides.forEach((slide, index) => {
+      setAttributes(slide, this.setAttr(index))
+    })
+  }
+  private normalizeSlidesConfig(): void {
     const { slidesPerPage: originalPerPage, slidesPerView: originalPerView } =
       this.store
     const totalSlides = this.slidesArr.filter(
       slide => !hasClass(slide, CLASS_VALUES.CLONED)
     ).length
-    let adjustedPerPage = 0
 
-    if (totalSlides <= originalPerView) {
-      this.setState({
-        slidesPerPage: totalSlides,
-        slidesPerView: totalSlides
-      })
-      return
-    }
+    if (originalPerView > totalSlides)
+      this.setState({ slidesPerView: totalSlides })
 
-    adjustedPerPage = originalPerPage
-
-    if (totalSlides <= originalPerPage) adjustedPerPage = totalSlides
-    else {
-      const remainingSlides = totalSlides % originalPerPage
-
-      if (remainingSlides > 0 && remainingSlides < originalPerView) {
-        adjustedPerPage = Math.floor(
-          totalSlides / Math.ceil(totalSlides / originalPerPage)
-        )
-
-        adjustedPerPage = Math.max(adjustedPerPage, originalPerView)
-
-        if (
-          totalSlides -
-            Math.floor(totalSlides / adjustedPerPage) * adjustedPerPage <
-          originalPerView
-        ) {
-          const pagesNeeded =
-            Math.ceil((totalSlides - originalPerView) / originalPerPage) + 1
-          adjustedPerPage = Math.ceil(
-            (totalSlides - originalPerView) / (pagesNeeded - 1)
-          )
-          adjustedPerPage = Math.max(adjustedPerPage, 1)
-        }
-      }
-    }
-
-    this.setState({
-      slidesPerPage: adjustedPerPage,
-      slidesPerView: originalPerView
-    })
-  }*/
-
-  /*  private normalizeSlidesConfig(): void {
-    const {
-      infinite,
-      slidesPerPage: originalPerPage,
-      slidesPerView: originalPerView
-    } = this.store
-
-    // Filtra apenas slides reais (não clonados)
-    const totalSlides = this.slidesArr.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    ).length
-
-    if (originalPerPage > originalPerView) {
-      this.setState({ isSlidesPerPageAdjusted: true })
-    }
-
-    // Se o total de slides for menor ou igual ao slidesPerView
-    if (totalSlides <= originalPerView) {
-      this.setState({
-        slidesPerPage: totalSlides,
-        slidesPerView: totalSlides
-      })
-      return
-    }
-
-    // CONDIÇÃO PRINCIPAL: só normaliza se a soma ultrapassar o total de slides
     if (originalPerView + originalPerPage <= totalSlides) {
-      // Configuração é válida, mantém os valores originais
       this.setState({
         slidesPerPage: originalPerPage,
         slidesPerView: originalPerView
       })
       return
     }
-
-    // Se chegou até aqui, precisa normalizar porque slidesPerView + slidesPerPage > totalSlides
-    // A fórmula é simples: o máximo que podemos avançar garantindo que sobre slidesPerView
-    let adjustedPerPage = totalSlides - originalPerView
-
-    // Garante que seja pelo menos 1
-    adjustedPerPage = Math.max(adjustedPerPage, 1)
-
-    this.setState({
-      slidesPerPage: adjustedPerPage,
-      slidesPerView: originalPerView
-    })
-
-    console.log(
-      "normalizeSlidesConfig:",
-      "slidesPerPage =",
-      this.store.slidesPerPage,
-      "slidesPerView =",
-      this.store.slidesPerView,
-      "totalSlides =",
-      totalSlides,
-      "soma =",
-      originalPerView + originalPerPage,
-      "needsNormalization =",
-      originalPerView + originalPerPage > totalSlides
-    )
-  }*/
-
-  private normalizeSlidesConfig(): void {
-    const {
-      infinite,
-      slidesPerPage: originalPerPage,
-      slidesPerView: originalPerView
-    } = this.store
-
-    // Filtra apenas slides reais (não clonados)
-    const totalSlides = this.slidesArr.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    ).length
-
-    if (originalPerPage > originalPerView) {
-      this.setState({ isSlidesPerPageAdjusted: true })
-    }
-
-    // Se o total de slides for menor ou igual ao slidesPerView
-    if (totalSlides <= originalPerView) {
-      this.setState({
-        slidesPerPage: totalSlides,
-        slidesPerView: totalSlides
-      })
-      return
-    }
-
-    // NOVA LÓGICA: Verificar se haverá sobras e ajustar
-    const remainingSlides = totalSlides - originalPerView
-    const fullPages = Math.floor(remainingSlides / originalPerPage)
-    const remainder = remainingSlides % originalPerPage
-
-    // Se há sobras e slidesPerPage > slidesPerView, ajustar para eliminar sobras
-    if (remainder > 0 && originalPerPage > originalPerView) {
-      // Calcular novo slidesPerPage que elimine as sobras
-      // Opção 1: Ajustar para cima (mais conservador)
-      const adjustedPerPageUp = Math.ceil(remainingSlides / fullPages)
-
-      // Opção 2: Ajustar para baixo
-      const adjustedPerPageDown =
-        fullPages > 0
-          ? Math.floor(remainingSlides / fullPages)
-          : remainingSlides
-
-      // Escolher o ajuste que fique mais próximo do original e seja >= slidesPerView
-      let adjustedPerPage
-      if (
-        adjustedPerPageUp >= originalPerView &&
-        adjustedPerPageDown >= originalPerView
-      ) {
-        // Se ambos são válidos, escolher o mais próximo do original
-        const diffUp = Math.abs(adjustedPerPageUp - originalPerPage)
-        const diffDown = Math.abs(adjustedPerPageDown - originalPerPage)
-        adjustedPerPage =
-          diffUp <= diffDown ? adjustedPerPageUp : adjustedPerPageDown
-      } else if (adjustedPerPageUp >= originalPerView) {
-        adjustedPerPage = adjustedPerPageUp
-      } else if (adjustedPerPageDown >= originalPerView) {
-        adjustedPerPage = adjustedPerPageDown
-      } else {
-        // Fallback: usar o valor mínimo permitido
-        adjustedPerPage = originalPerView
-      }
-
-      this.setState({
-        slidesPerPage: adjustedPerPage,
-        slidesPerView: originalPerView
-      })
-
-      console.log(
-        "normalizeSlidesConfig (sobras eliminadas):",
-        "slidesPerPage ajustado =",
-        this.$root,
-        adjustedPerPage,
-        "slidesPerView =",
-        originalPerView,
-        "totalSlides =",
-        totalSlides,
-        "sobras eliminadas =",
-        remainder,
-        "páginas completas =",
-        Math.floor((totalSlides - originalPerView) / adjustedPerPage)
-      )
-      return
-    }
-
-    // CONDIÇÃO ORIGINAL: só normaliza se a soma ultrapassar o total de slides
-    if (originalPerView + originalPerPage <= totalSlides) {
-      // Configuração é válida, mantém os valores originais
-      this.setState({
-        slidesPerPage: originalPerPage,
-        slidesPerView: originalPerView
-      })
-      return
-    }
-
-    // Se chegou até aqui, precisa normalizar porque slidesPerView + slidesPerPage > totalSlides
-    // A fórmula é simples: o máximo que podemos avançar garantindo que sobre slidesPerView
-    let adjustedPerPage = totalSlides - originalPerView
-    // Garante que seja pelo menos 1
-    adjustedPerPage = Math.max(adjustedPerPage, 1)
-
-    this.setState({
-      slidesPerPage: adjustedPerPage,
-      slidesPerView: originalPerView
-    })
-
-    console.log(
-      "normalizeSlidesConfig (normalização padrão):",
-      "slidesPerPage =",
-      this.store.slidesPerPage,
-      "slidesPerView =",
-      this.store.slidesPerView,
-      "totalSlides =",
-      totalSlides,
-      "soma =",
-      originalPerView + originalPerPage,
-      "needsNormalization =",
-      originalPerView + originalPerPage > totalSlides
-    )
-  }
-  private setProperties(): void {
-    this.slides.forEach((slide, index) => {
-      setAttributes(slide, this.setAttr(index))
-    })
   }
 
   private cloneSlides(): void {
@@ -291,18 +77,6 @@ export class Mount extends BaseSlider {
       this.slides = BaseSlider.getSlides(this.$root)
     }
   }
-
-  /*private setAttr(index: number): Attributes {
-    const { numberOfSlides } = this.store
-
-    return {
-      "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
-      "aria-hidden": "true",
-      "data-index": index + 1,
-      "data-slide-number": index + 1,
-      role: "group"
-    }
-  }*/
 
   private setAttr(index: number): Attributes {
     const { numberOfSlides } = this.store
@@ -387,8 +161,6 @@ export class Mount extends BaseSlider {
     this.animate(this.$track, {} as any, this.options())
   }
 
-  private setActivePage(): void {}
-
   public setSlidesWidth(): void {
     this.slides.forEach((slide, index) => {
       this.animate(slide, this.keyFrames(index), this.options())
@@ -416,3 +188,15 @@ export class Mount extends BaseSlider {
     this.setControls()
   }
 }
+
+/*private setAttr(index: number): Attributes {
+    const { numberOfSlides } = this.store
+
+    return {
+      "aria-label": `slide ${index + 1} of ${numberOfSlides}`,
+      "aria-hidden": "true",
+      "data-index": index + 1,
+      "data-slide-number": index + 1,
+      role: "group"
+    }
+  }*/

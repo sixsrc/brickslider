@@ -1,5 +1,3 @@
-
-
 /*
 export { BrickSlider }
 ;(window as any).BrickSlider = BrickSlider
@@ -22,10 +20,11 @@ export { BrickSlider }
 export { BrickSlider } from "./BrickSlider"
 
 if (import.meta.env.DEV) {
-  // dynamic import ensures dev-demo is excluded from production bundles by DCE
-  import('../development/dev-demo').then(m => {
-    m.startDemo?.();
-  }).catch(e => {
-    console.warn('Failed to load dev-demo (dev only):', e);
-  });
+  import("../development/dev-demo")
+    .then(m => {
+      m.startDemo?.()
+    })
+    .catch(e => {
+      console.warn("Failed to load dev-demo (dev only):", e)
+    })
 }

@@ -9,7 +9,7 @@
     "lint": "pnpm -w -r run lint",
     "lint:fix": "pnpm -w -r run lint -- --fix",
     "test": "pnpm -w -r run test",
-    "start": "pnpm -w -r run start",
+    "start": "pnpm --filter=./packages/slider start",
     "commit": "git-cz",
     "changelog": "standard-changelog",
     "prepare": "husky install",

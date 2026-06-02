@@ -20,10 +20,19 @@ const options = [
   },
   {
     slidesPerView: 3,
+    slidesPerPage: 2,
+    spacing: 20,
+    infinite: false
+  }
+
+  /*
+  {
+    slidesPerView: 3,
     slidesPerPage: 10,
     spacing: 20,
     infinite: true
   }
+  */
 ]
 
 export function startDemo() {

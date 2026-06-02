@@ -1,6 +1,6 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { Slider } from "./Slider"
+import { Slider } from "./Slider-ORIGINAL"
 import { StateType } from "./State"
 import { CLASS_VALUES, EVENTS, TIMES, TOUCH_LIMIT } from "./constants"
 import { getSliderNodeList, hasClass, translate3d, waitFor } from "./helpers"
@@ -11,11 +11,9 @@ import {
 } from "./types"
 
 export class TouchEnd extends BaseSlider {
-  private slides: HTMLElement[]
   protected animation: AnimationFrame
   private slider: Slider
   private moveSlider: number
-  private isFastInteraction: boolean
 
   constructor($root: string) {
     super($root)
@@ -23,7 +21,6 @@ export class TouchEnd extends BaseSlider {
     this.slides = getSliderNodeList(this.$root)
     this.animation = new AnimationFrame(this.$root)
     this.moveSlider = 0
-    this.isFastInteraction = false
   }
 
   public init = (event: any): void => {
@@ -67,6 +64,7 @@ export class TouchEnd extends BaseSlider {
   }
 
   protected action(): void {
+    this.setState({ endTime: Date.now() })
     this.setState(this.eventTargetState())
     this.handleTouchMove()
     this.setState(this.mainState())
@@ -74,11 +72,34 @@ export class TouchEnd extends BaseSlider {
 
   private mainState(): Partial<StateType> {
     return {
-      endTime: new Date().getMilliseconds(),
       isDragging: false,
       isMouseLeave: true,
       isTouch: false
     }
+  }
+
+  private getTouchLimit(moveSlider: number): number {
+    const { startTime, endTime } = this.store
+    const duration = Math.max(0, endTime - startTime)
+    const distance = Math.abs(moveSlider)
+    const velocity = distance / Math.max(1, duration)
+    const fastSwipeMaxMs = 180
+    const fastVelocityThreshold = 0.35
+    const slowLimit = 35
+    const maxLimit = 55
+    const speedRatio = Math.min(
+      1,
+      Math.max(0, (fastVelocityThreshold - velocity) / fastVelocityThreshold)
+    )
+    const threshold =
+      slowLimit + Math.round(speedRatio * (maxLimit - slowLimit))
+
+    if (!startTime || !endTime) return TOUCH_LIMIT
+    if (duration <= fastSwipeMaxMs || velocity >= fastVelocityThreshold) {
+      return TOUCH_LIMIT
+    }
+
+    return Math.min(maxLimit, Math.max(slowLimit, threshold))
   }
 
   private handleTouchMove(): void {
@@ -226,8 +247,9 @@ export class TouchEnd extends BaseSlider {
     currentIndex: number,
     element: HTMLElement[]
   ): boolean {
+    const touchLimit = this.getTouchLimit(moveSlider)
     const isMovedByThreshold =
-      moveSlider < (-this.sliderWidth! * TOUCH_LIMIT) / 100
+      moveSlider < (-this.sliderWidth! * touchLimit) / 100
 
     const isNotLastSlide = currentIndex < element.length - 1
 
@@ -235,20 +257,15 @@ export class TouchEnd extends BaseSlider {
   }
 
   private goToPrevSlide(moveSlider: number, currentIndex: number): boolean {
+    const touchLimit = this.getTouchLimit(moveSlider)
     const isMovedByThreshold =
-      moveSlider > (this.sliderWidth! * TOUCH_LIMIT) / 100
+      moveSlider > (this.sliderWidth! * touchLimit) / 100
     const isNotFirstSlide = currentIndex > 0
     return isMovedByThreshold && isNotFirstSlide
   }
 
   private setPosition() {
-    const {
-      slideIndex,
-      currentSlideMovement: mov,
-      currentTranslate,
-      prevTranslate
-    } = this.store
-    // calcTranslate agora usa store.slideIndex internamente (BaseSlider.calcTranslate)
+    const { slideIndex } = this.store
     const translate = this.calcTranslate()
 
     this.setState({

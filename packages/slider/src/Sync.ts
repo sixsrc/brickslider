@@ -1,6 +1,6 @@
 import { BaseSlider } from "./BaseSlider"
 import { calcNumberOfSlides, calcTranslate, waitFor } from "./helpers"
-import { Slider } from "./Slider"
+import { Slider } from "./Slider-ORIGINAL"
 import { StateType } from "./State"
 
 export class Sync extends BaseSlider {

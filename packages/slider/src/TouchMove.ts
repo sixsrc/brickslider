@@ -3,13 +3,7 @@ import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
 import { EVENTS, MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
 import { getAxisX } from "./helpers"
-import {
-  IndexData,
-  IndexKey,
-  IndexMap,
-  MouseEventOrTouchEvent,
-  PositionSlider
-} from "./types"
+import { MouseEventOrTouchEvent, PositionSlider } from "./types"
 
 export class TouchMove extends BaseSlider {
   private currentPosition: number
@@ -80,4 +74,3 @@ export class TouchMove extends BaseSlider {
     return position === POSITION.RIGHT ? translate <= limit : translate >= limit
   }
 }
-//

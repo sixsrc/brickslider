@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { Slider } from "./Slider"
+import { Slider } from "./Slider-ORIGINAL"
 import { StateType } from "./State"
 import { CLASS_VALUES, EVENTS, FROM, TAGS } from "./constants"
 import { Sync } from "./Sync"
