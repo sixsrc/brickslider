@@ -1,5 +1,5 @@
 import { State, type StateType } from "./State"
-import { ANIMATION_OPTIONS, ATTRIBUTES, CLASS_VALUES } from "./constants"
+import { ANIMATION_OPTIONS, CLASS_VALUES } from "./helpers"
 import {
   animateElement,
   getEventType,
@@ -79,10 +79,6 @@ export class BaseSlider {
     return animateElement(element, keyFrames, options)
   }
 
-  /**
-   * Calcula o translate somando larguras dos slides até `index`.
-   * Usa safeTranslate para limitar por máximo.
-   */
   protected calcTranslateForIndex(index: number): number {
     const spacing = this.store.spacing || 0
     let translate = 0
@@ -92,48 +88,42 @@ export class BaseSlider {
       if (slide) translate += slide.offsetWidth + spacing
     }
 
-    // remove spacing extra se existiu soma
     return this.safeTranslate(translate)
   }
 
-  /**
-   * Compatibilidade: calcTranslate sem parâmetro usa o slideIndex do store.
-   * Isso garante que TouchEnd e outras classes que chamam calcTranslate() obtenham
-   * o mesmo resultado que a navegação por setSlideTarget().
-   */
   protected calcTranslate(): number {
-    const index =
-      typeof this.store.slideIndex === "number" ? this.store.slideIndex : 0
+    const { slideIndex } = this.store
+    const index = typeof slideIndex === "number" ? slideIndex : 0
+
     return this.calcTranslateForIndex(index)
   }
 
   protected safeTranslate(translate: number): number {
-    const containerWidth = this.sliderWidth || 0
+    const containerWidth =
+      this.store.sliderWidth ??
+      this.sliderWidth ??
+      getSliderWidth(this.$children) ??
+      0
+
+    this.sliderWidth = containerWidth
     let maxTranslate = this.getTotalWidth() - containerWidth
 
-    if (translate > maxTranslate) {
-      // limita e devolve o máximo
-      return maxTranslate
-    }
-
-    if (translate < 0) {
-      return 0
-    }
+    if (translate > maxTranslate) return maxTranslate
+    if (translate < 0) return 0
 
     return translate
   }
 
   protected getTotalWidth(): number {
-    const { spacing, infinite } = this.store
-    if (this.slidesArr.length === 0) return 0
+    const { spacing } = this.store
 
-    console.log("Total Width:", this.slidesArr)
+    if (this.slides.length === 0) return 0
 
-    return this.slidesArr.reduce((total, slide, index) => {
+    return this.slides.reduce((total, slide, index) => {
       return (
         total +
         slide.offsetWidth +
-        (index < this.slidesArr.length - 1 ? spacing : 0)
+        (index < this.slides.length - 1 ? spacing : 0)
       )
     }, 0)
   }
@@ -203,12 +193,9 @@ export class BaseSlider {
   ): number {
     const step = slidesPerPage
     const maxStartIndex = Math.max(totalSlides - slidesPerView, 0)
-
-    // índice do início da penúltima página
     const fullPages = Math.floor(maxStartIndex / step) * step
-
-    // quantos slides vão rolar do início da penúltima página até o final
     const lastGroupStep = maxStartIndex - fullPages
+
     return lastGroupStep > 0 ? lastGroupStep : step
   }
 

@@ -1,9 +1,9 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { Slider } from "./Slider-ORIGINAL"
+import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { CLASS_VALUES, EVENTS, TIMES, TOUCH_LIMIT } from "./constants"
-import { getSliderNodeList, hasClass, translate3d, waitFor } from "./helpers"
+import { EVENTS, TOUCH_LIMIT } from "./helpers"
+import { getSliderNodeList, translate3d, waitFor } from "./helpers"
 import {
   CurrentSlideMovement,
   KeyframeAnimation,
@@ -167,39 +167,6 @@ export class TouchEnd extends BaseSlider {
   private slideMovementState(action: CurrentSlideMovement): Partial<StateType> {
     return { currentSlideMovement: action }
   }
-
-  /** ALTERAÇÃO: agora avança/decrementa por slidesPerPage (páginas) */
-  /* private incrementOrDecrementState(
-    action: UpdateSlideIndexType
-  ): Partial<StateType> {
-    const { slideIndex, slidesPerPage } = this.store
-    const step = slidesPerPage || 1
-    console.log("step", slideIndex, this.slider.currentIndex)
-    return action === "increment"
-      ? { slideIndex: (slideIndex || 0) + step }
-      : { slideIndex: (slideIndex || 0) - step }
-  }*/
-
-  /*private incrementOrDecrementState(
-    action: UpdateSlideIndexType
-  ): Partial<StateType> {
-    const { slideIndex, slidesPerPage, slidesPerView } = this.store
-    const step = slidesPerPage || 1
-    const totalSlides = this.slides.length
-    const view = slidesPerView || 1
-    const maxStartIndex = Math.max(totalSlides - view, 0)
-
-    let nextIndex =
-      action === "increment"
-        ? (slideIndex || 0) + step
-        : (slideIndex || 0) - step
-
-    // clamp para não sair dos limites
-    if (nextIndex > maxStartIndex) nextIndex = maxStartIndex
-    if (nextIndex < 0) nextIndex = 0
-
-    return { slideIndex: nextIndex }
-  }*/
 
   private incrementOrDecrementState(
     action: UpdateSlideIndexType

@@ -1,4 +1,5 @@
-import { DOM_ELEMENTS, TAGS } from "./constants"
+import { DOM_ELEMENTS, TAGS } from "./helpers"
+import { TypeOptions } from "./State"
 import {
   $,
   getAllElements,
@@ -94,6 +95,13 @@ export class Validation {
     )
   }
 
+  public sanitizeOptions(options?: TypeOptions): TypeOptions | undefined {
+    if (!options) return options
+
+    this.runValidations(options)
+    return this.sanitizeSlideSizesOptions(options)
+  }
+
   private hasAllElements(): boolean {
     return [
       this.hasRootContainer(),
@@ -140,25 +148,136 @@ export class Validation {
     return Object.values(classCounts).some(count => count > 1)
   }
 
-  public runValidations(): void {
+  public runValidations(options?: TypeOptions): void {
     const validations = [
       { c: () => !this.hasRootContainer(), id: "NO_ROOT" },
       { c: () => !this.hasTrackContainer(), id: "NO_TRACK" },
       { c: () => !this.hasChildrenContainer(), id: "NO_CHILDREN" },
       { c: () => !this.hasSlide(), id: "NO_SLIDES" },
       { c: () => this.hasDuplicateClasses(), id: "DUPLICATE_ELEMENTS" },
-      { c: () => !this.hasAllElementsInOrder(), id: "INVALID_ORDER" }
+      { c: () => !this.hasAllElementsInOrder(), id: "INVALID_ORDER" },
+      {
+        c: () => this.hasUnsupportedSingleViewSlideSizes(options),
+        id: "UNSUPPORTED_SLIDE_SIZES_SINGLE_VIEW"
+      },
+      {
+        c: () => this.hasInvalidSlideSizesValues(options),
+        id: "INVALID_SLIDE_SIZES_VALUES"
+      }
     ]
 
     this.ids.clear()
 
-    const failedValidation = validations.find(({ c }) => c())
-
-    if (failedValidation) this.ids.add(failedValidation.id)
+    validations.forEach(({ c, id }) => {
+      if (c()) this.ids.add(id)
+    })
   }
 
   public getIds(): string[] {
     return Array.from(this.ids)
+  }
+
+  private isSlideSizesValid(slideSizes?: TypeOptions["slideSizes"]): boolean {
+    if (!slideSizes) return true
+
+    return !Object.entries(slideSizes).some(([key, value]) => {
+      const numericKey = Number(key)
+
+      return !this.isValidSlideSizeEntry(numericKey, value)
+    })
+  }
+
+  private hasUnsupportedSingleViewSlideSizes(options?: TypeOptions): boolean {
+    if (!options) return false
+
+    const hasUnsupportedBaseSlideSizes =
+      !!options.slideSizes && !this.isSlideSizesAllowed(options.slidesPerView)
+
+    if (hasUnsupportedBaseSlideSizes) return true
+
+    return Object.values(options.responsive ?? {}).some(config => {
+      if (!config?.slideSizes) return false
+
+      const effectiveSlidesPerView =
+        config.slidesPerView ?? options.slidesPerView ?? 1
+
+      return !this.isSlideSizesAllowed(effectiveSlidesPerView)
+    })
+  }
+
+  private hasInvalidSlideSizesValues(options?: TypeOptions): boolean {
+    if (!options) return false
+
+    const hasInvalidBaseSlideSizes =
+      !!options.slideSizes && this.isSlideSizesAllowed(options.slidesPerView)
+        ? !this.isSlideSizesValid(options.slideSizes)
+        : false
+
+    if (hasInvalidBaseSlideSizes) return true
+
+    return Object.values(options.responsive ?? {}).some(config => {
+      if (!config?.slideSizes) return false
+
+      const effectiveSlidesPerView =
+        config.slidesPerView ?? options.slidesPerView ?? 1
+
+      if (!this.isSlideSizesAllowed(effectiveSlidesPerView)) return false
+
+      return !this.isSlideSizesValid(config.slideSizes)
+    })
+  }
+
+  private sanitizeSlideSizesOptions(options: TypeOptions): TypeOptions {
+    const sanitizedOptions: TypeOptions = { ...options }
+    const isBaseSlideSizesAllowed = this.isSlideSizesAllowed(
+      options.slidesPerView
+    )
+    const hasInvalidBaseSlideSizes =
+      !isBaseSlideSizesAllowed || !this.isSlideSizesValid(options.slideSizes)
+
+    if (hasInvalidBaseSlideSizes) {
+      sanitizedOptions.slideSizes = undefined
+    }
+
+    if (!options.responsive) return sanitizedOptions
+
+    sanitizedOptions.responsive = Object.entries(options.responsive).reduce(
+      (acc, [breakpoint, config]) => {
+        if (!config) {
+          acc[breakpoint] = config
+          return acc
+        }
+
+        const effectiveSlidesPerView =
+          config.slidesPerView ?? options.slidesPerView ?? 1
+        const hasInvalidResponsiveSlideSizes =
+          !this.isSlideSizesAllowed(effectiveSlidesPerView) ||
+          !this.isSlideSizesValid(config.slideSizes)
+
+        acc[breakpoint] = hasInvalidResponsiveSlideSizes
+          ? { ...config, slideSizes: undefined }
+          : config
+
+        return acc
+      },
+      {} as TypeOptions["responsive"]
+    )
+
+    return sanitizedOptions
+  }
+
+  private isSlideSizesAllowed(slidesPerView?: number): boolean {
+    return (slidesPerView ?? 1) >= 2
+  }
+
+  private isValidSlideSizeEntry(position: number, value: unknown): boolean {
+    return (
+      Number.isInteger(position) &&
+      position >= 0 &&
+      typeof value === "number" &&
+      Number.isFinite(value) &&
+      value >= 0
+    )
   }
 
   protected hasRootContainer(): HTMLElement | undefined {

@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { CLASS_VALUES } from "./constants"
+import { CLASS_VALUES } from "./helpers"
 import { addClass, removeClass } from "./helpers"
 
 export class Mutate extends BaseSlider {
@@ -58,9 +58,8 @@ export class Mutate extends BaseSlider {
 
     const allSlides = this.getAllSlides()
 
-    allSlides.forEach(slide => {
-      const slideIndex = Number(slide.dataset.slideNumber)
-      if (toActivate.includes(slideIndex)) {
+    allSlides.forEach((slide, index) => {
+      if (toActivate.includes(index)) {
         addClass([slide], CLASS_VALUES.ACTIVE)
       } else {
         removeClass(slide, CLASS_VALUES.ACTIVE)

@@ -14,10 +14,16 @@ export const state = {
   slideSpacing: "spacing",
   slidesPerPage: "slidesPerPage",
   slidesPerView: "slidesPerView",
+  baseSlidesPerPage: "baseSlidesPerPage",
+  baseSlidesPerView: "baseSlidesPerView",
   numberOfPages: "numberOfPages",
   numberOfSlides: "numberOfSlides",
   sliderWidth: "sliderWidth",
   slideSizes: "slideSizes",
+  baseSlideSizes: "baseSlideSizes",
+  screens: "screens",
+  responsive: "responsive",
+  activeBreakpoint: "activeBreakpoint",
   leftOverSlides: "leftOverSlides",
   startX: "startX",
   startY: "startY",
@@ -64,10 +70,16 @@ export enum State_Keys {
   SlideSpacing = "spacing",
   SlidesPerPage = "slidesPerPage",
   SlidesPerView = "slidesPerView",
+  BaseSlidesPerPage = "baseSlidesPerPage",
+  BaseSlidesPerView = "baseSlidesPerView",
   NumberOfPages = "numberOfPages",
   NumberOfSlides = "numberOfSlides",
   SliderWidth = "sliderWidth",
   SlideSizes = "slideSizes",
+  BaseSlideSizes = "baseSlideSizes",
+  Screens = "screens",
+  Responsive = "responsive",
+  ActiveBreakpoint = "activeBreakpoint",
   LeftOverSlides = "leftOverSlides",
   StartX = "startX",
   StartY = "startY",
@@ -116,10 +128,16 @@ export type StateType = {
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
   [State_Keys.SlidesPerView]: number
+  [State_Keys.BaseSlidesPerPage]: number
+  [State_Keys.BaseSlidesPerView]: number
   [State_Keys.NumberOfPages]: number
   [State_Keys.NumberOfSlides]: number
   [State_Keys.SliderWidth]: number
-  [State_Keys.SlideSizes]: Record<number, string>
+  [State_Keys.SlideSizes]: Record<number, number>
+  [State_Keys.BaseSlideSizes]: Record<number, number>
+  [State_Keys.Screens]: ResponsiveScreensInput
+  [State_Keys.Responsive]: ResponsiveInput
+  [State_Keys.ActiveBreakpoint]: ResponsiveBreakpoint | "base" | null
   [State_Keys.LeftOverSlides]: number
   [State_Keys.StartX]: number
   [State_Keys.StartY]: number
@@ -156,11 +174,31 @@ export type StateType = {
   [State_Keys.TargetSlides]: number[]
 }
 
+export type SlideSizesInput = Record<number, number>
+
+export type ResponsiveBreakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
+
+export type ResponsiveScreensInput = Partial<
+  Record<ResponsiveBreakpoint, number>
+>
+
+export type ResponsiveOption = Partial<{
+  [State_Keys.SlidesPerPage]: number
+  [State_Keys.SlidesPerView]: number
+  [State_Keys.SlideSizes]: SlideSizesInput
+}>
+
+export type ResponsiveInput = Partial<
+  Record<ResponsiveBreakpoint, ResponsiveOption>
+>
+
 export type TypeOptions = Partial<{
   [State_Keys.SlideSpacing]: number
   [State_Keys.SlidesPerPage]: number
   [State_Keys.SlidesPerView]: number
-  [State_Keys.SlideSizes]: Record<number, string>
+  [State_Keys.SlideSizes]: SlideSizesInput
+  [State_Keys.Screens]: ResponsiveScreensInput
+  [State_Keys.Responsive]: ResponsiveInput
   [State_Keys.Autoplay]: boolean
   [State_Keys.AutoplaySpeed]: number
   [State_Keys.Dots]: boolean
@@ -197,10 +235,29 @@ class State {
     State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0
     State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
     State.state[this.key][State_Keys.SlidesPerView] = options.slidesPerView ?? 1
+    State.state[this.key][State_Keys.BaseSlidesPerPage] =
+      options.slidesPerPage ?? 1
+    State.state[this.key][State_Keys.BaseSlidesPerView] =
+      options.slidesPerView ?? 1
     State.state[this.key][State_Keys.NumberOfPages] = 0
     State.state[this.key][State_Keys.NumberOfSlides] = 0
     State.state[this.key][State_Keys.SliderWidth] = 0
-    State.state[this.key][State_Keys.SlideSizes] = options.slideSizes ?? {}
+    // Normaliza `slideSizes` como percentuais numéricos por posição.
+    // Se vier fora de ordem, o mapa final fica ordenado.
+    State.state[this.key][State_Keys.SlideSizes] = this.normalizeSlideSizes(
+      options.slideSizes
+    )
+    State.state[this.key][State_Keys.BaseSlideSizes] =
+      this.normalizeSlideSizes(options.slideSizes)
+    State.state[this.key][State_Keys.Screens] = this.normalizeScreens(
+      options.screens
+    )
+    // Guarda os overrides responsivos fora do Tailwind para o ResizeObserver
+    // aplicar por largura real do slider.
+    State.state[this.key][State_Keys.Responsive] = this.normalizeResponsive(
+      options.responsive
+    )
+    State.state[this.key][State_Keys.ActiveBreakpoint] = "base"
     State.state[this.key][State_Keys.LeftOverSlides] = 0
     State.state[this.key][State_Keys.SliderReady] = null
     State.state[this.key][State_Keys.isSlidesPerPageAdjusted] = false
@@ -237,6 +294,108 @@ class State {
     State.state[this.key][State_Keys.Transition] = options.transition ?? "slide"
     State.state[this.key][State_Keys.UseTailwind] = options.useTailwind ?? true
     State.state[this.key][State_Keys.TargetSlides] = []
+  }
+
+  private normalizeSlideSizes(
+    slideSizes?: SlideSizesInput
+  ): Record<number, number> {
+    if (!slideSizes) return {}
+
+    const hasInvalidEntry = Object.entries(slideSizes).some(
+      ([position, size]) =>
+        !this.isValidSlideSizePosition(Number(position)) ||
+        !this.hasSlideSize(size)
+    )
+
+    if (hasInvalidEntry) return {}
+
+    const normalizedEntries: Array<[number, number]> = []
+
+    Object.entries(slideSizes).forEach(([position, size]) => {
+      const numericPosition = Number(position)
+
+      if (
+        this.isValidSlideSizePosition(numericPosition) &&
+        this.hasSlideSize(size)
+      ) {
+        normalizedEntries.push([numericPosition, this.formatSlideSize(size)])
+      }
+    })
+
+    return normalizedEntries
+      .sort(([a], [b]) => a - b)
+      .reduce<Record<number, number>>((acc, [position, size]) => {
+        acc[position] = size
+        return acc
+      }, {})
+  }
+
+  private isValidSlideSizePosition(position: unknown): position is number {
+    return (
+      typeof position === "number" &&
+      Number.isInteger(position) &&
+      position >= 0
+    )
+  }
+
+  private hasSlideSize(size: unknown): size is number {
+    return typeof size === "number" && Number.isFinite(size) && size >= 0
+  }
+
+  private formatSlideSize(size: number): number {
+    return size
+  }
+
+  private normalizeResponsive(
+    responsive?: ResponsiveInput
+  ): ResponsiveInput {
+    if (!responsive) return {}
+
+    const normalizedResponsive: ResponsiveInput = {}
+
+    Object.entries(responsive).forEach(([breakpoint, config]) => {
+      if (!this.isResponsiveBreakpoint(breakpoint) || !config) return
+
+      normalizedResponsive[breakpoint] = {
+        slidesPerView: this.getResponsiveNumber(config.slidesPerView),
+        slidesPerPage: this.getResponsiveNumber(config.slidesPerPage),
+        slideSizes: this.normalizeSlideSizes(config.slideSizes)
+      }
+    })
+
+    return normalizedResponsive
+  }
+
+  private normalizeScreens(
+    screens?: ResponsiveScreensInput
+  ): ResponsiveScreensInput {
+    if (!screens) return {}
+
+    const normalizedScreens: ResponsiveScreensInput = {}
+
+    Object.entries(screens).forEach(([breakpoint, value]) => {
+      if (!this.isResponsiveBreakpoint(breakpoint)) return
+
+      const numericValue = this.getResponsiveNumber(value)
+
+      if (numericValue !== undefined) {
+        normalizedScreens[breakpoint] = numericValue
+      }
+    })
+
+    return normalizedScreens
+  }
+
+  private isResponsiveBreakpoint(
+    breakpoint: string
+  ): breakpoint is ResponsiveBreakpoint {
+    return ["xs", "sm", "md", "lg", "xl", "2xl"].includes(breakpoint)
+  }
+
+  private getResponsiveNumber(value: unknown): number | undefined {
+    return typeof value === "number" && Number.isFinite(value) && value >= 0
+      ? value
+      : undefined
   }
 
   setOptions(options: TypeOptions): void {

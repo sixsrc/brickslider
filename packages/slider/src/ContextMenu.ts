@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { EVENTS, FROM } from "./constants"
+import { EVENTS, FROM } from "./helpers"
 import { listener } from "./helpers"
 import { ContextMenuListenersParams } from "./types"
 

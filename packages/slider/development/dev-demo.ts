@@ -11,11 +11,13 @@ const options = [
   {
     slidesPerView: 2,
     slidesPerPage: 2,
+
     infinite: false
   },
   {
     slidesPerView: 1,
     slidesPerPage: 1,
+    spacing: 30,
     infinite: false
   },
   {

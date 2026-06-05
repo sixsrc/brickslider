@@ -3,7 +3,7 @@ import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 import { Observer } from "./Observer"
 import { StateType } from "./State"
-import { CLASS_VALUES, TAGS } from "./constants"
+import { CLASS_VALUES, TAGS } from "./helpers"
 import {
   addClass,
   getAllElements,
@@ -152,7 +152,7 @@ export class Slider extends BaseSlider {
   }
 
   public defineDotIndex(): void {
-    const { isPagedActive, slidesPerPage, slidesPerView } = this.store
+    const { isPagedActive } = this.store
     if (!isPagedActive) return
     const positions = this.getPositions()
 

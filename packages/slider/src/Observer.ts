@@ -1,12 +1,12 @@
 import { BaseSlider } from "./BaseSlider"
-import { CLASS_VALUES } from "./constants"
-import { hasClass } from "./helpers"
+import { CLASS_VALUES, hasClass } from "./helpers"
 
 export class Observer extends BaseSlider {
   private visibleIndexes = new Set<number>()
   private visibleDataIndexes = new Set<number>()
   private elementToIndexMap = new Map<HTMLElement, number>()
   private animationFrameId: number | null = null
+  private lastIndex = 0
 
   constructor($root: string) {
     super($root)
@@ -15,12 +15,8 @@ export class Observer extends BaseSlider {
   }
 
   private observeSlides(): void {
-    const slides = this.slidesArr.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    )
-
     this.slidesArr.forEach((slide, index) => {
-      if (this.store.isInfinite) {
+      if (this.store.infinite) {
         this.elementToIndexMap.set(slide, index)
       }
     })
@@ -36,13 +32,9 @@ export class Observer extends BaseSlider {
 
   private checkVisibleSlides(): void {
     const trackRect = this.$track.getBoundingClientRect()
-    const slides = this.slidesArr.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    )
-
     const newlyVisibleIndexes = new Set<number>()
     const newlyVisibleDataIndexes = new Set<number>()
-    const { isInfinite } = this.store
+    const { infinite } = this.store
 
     this.slidesArr.forEach(slide => {
       const rect = slide.getBoundingClientRect()
@@ -51,11 +43,10 @@ export class Observer extends BaseSlider {
         Math.max(rect.left, trackRect.left)
       const ratio = visibleWidth / rect.width
 
-      const dataIndex = parseInt(slide.dataset.index || "-1")
       const slideNumber = parseInt(slide.dataset.slideNumber || "-1")
-      const index = isInfinite
+      const index = infinite
         ? (this.elementToIndexMap.get(slide) ?? -1)
-        : slideNumber
+        : slideNumber - 1
 
       if (ratio >= 0.75 && index !== -1 && slideNumber !== -1) {
         newlyVisibleIndexes.add(index)

@@ -1,10 +1,104 @@
-import { CLASS_VALUES, DOM_ELEMENTS } from "./constants"
-import {
-  AnimationOptions,
-  CurrentSlideMovement,
-  MouseEventOrTouchEvent,
-  TypeIndexBaseSliderdBy
-} from "./types"
+export const DOM_ELEMENTS = {
+  CHILDREN_SELECTOR: ".slider__container",
+  SINGLE_SLIDE: ".slider__slide",
+  TRACK_SELECTOR: ".slider__track",
+  DOTS_SELECTOR: ".slider__dots ",
+  NEXT_BUTTON: "next-button",
+  PREV_BUTTON: "prev-button",
+  BRICK_ARROWS: ".slider__arrows"
+}
+
+export const CLASS_VALUES = {
+  ACTIVE: "active",
+  SLIDER_DOT: "slider__dot",
+  SELECTED: "slider__dot--active",
+  CLONED: "cloned",
+  HIDE: "hide",
+  START: "start",
+  END: "end"
+}
+
+export const STYLES = {
+  TRANSITION: "transition",
+  PEEK: 0.8
+}
+
+export const TAGS = {
+  UL: "ul",
+  LI: "li",
+  BUTTON: "button",
+  DIV: "div"
+}
+
+export const FROM = {
+  DOTS: "dots",
+  RIGHT_CLICK: "contextmenu",
+  PREV: "prev",
+  NEXT: "next",
+  TOUCH: "touch"
+} as const
+
+export const ATTRIBUTES = {
+  DATA_NUMBER: "data-slide-number",
+  CLASS: "class",
+  ARIA_HIDDEN: "aria-hidden",
+  ROLE: "role",
+  DIRECTION: "data-direction",
+  DRAGGABLE: "draggable"
+} as const
+
+export const TIMES = {
+  DEFAULT_TRANSITION_TIME: 500 //200
+}
+
+export const TRANSITIONS = {
+  TRANSFORM_EASE: `transform ${TIMES.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
+}
+
+export const EVENTS = {
+  RESIZE: "resize",
+  CLICK: "click",
+  TOUCHSTART: "touchstart",
+  TOUCHEND: "touchend",
+  TOUCHMOVE: "touchmove",
+  MOUSEDOWN: "mousedown",
+  MOUSEUP: "mouseup",
+  MOUSELEAVE: "mouseleave",
+  MOUSEMOVE: "mousemove",
+  CONTEXTMENU: "contextmenu",
+  TRANSITIONSTART: "transitionstart",
+  TRANSITIONEND: "transitionend",
+  TRANSITIONCANCEL: "transitioncancel",
+  DRAGSTART: "dragstart",
+  DRAGOVER: "dragover",
+  DRAGEND: "dragend"
+} as const
+
+export const ANIMATION_DELAY = 100
+
+export const ANIMATION_OPTIONS = {
+  FORWARDS: "forwards",
+  EASEOUT: "ease-in-out"
+} as const
+
+export const TOUCH_LIMIT = 0
+
+export const MOVE_TO_LIMIT = 3
+
+export const POSITION = {
+  RIGHT: "right",
+  LEFT: "left"
+} as const
+
+export const SLIDE_INDEX = {
+  FIRST: "first",
+  LAST: "last"
+} as const
+
+export const DOCS = {
+  GET_STARTED: "brickslider.github.io/docs/get-started",
+  BASIC_HTML_DOC: "brickslider.github.io/docs/basic-html"
+}
 
 export function addClass(
   elements: (HTMLElement | Element)[],
@@ -15,26 +109,10 @@ export function addClass(
   })
 }
 
-/*export function animateElement(
-  element: HTMLElement | HTMLElement[],
-  keyframes: Keyframe[],
-  options: Partial<AnimationOptions>
-): void {
-  if (!element) {
-    throw new Error("Element is required for animation.")
-  }
-
-  const elements = Array.isArray(element) ? element : [element]
-
-  elements.forEach(el => {
-    el.animate(keyframes, options)
-  })
-}*/
-
 export function animateElement(
   element: HTMLElement | HTMLElement[],
   keyframes: Keyframe[],
-  options: Partial<AnimationOptions>
+  options: any
 ): Animation[] {
   if (!element) {
     throw new Error("Element is required for animation.")
@@ -43,54 +121,6 @@ export function animateElement(
   const elements = Array.isArray(element) ? element : [element]
 
   return elements.map(el => el.animate(keyframes, options))
-}
-
-export function appendChildren(
-  container: HTMLElement,
-  children: HTMLElement[]
-): void {
-  children.forEach(element => container.appendChild(element))
-}
-export function applyCss(
-  element: HTMLElement,
-  styles: { [style: string]: string }
-): void {
-  Object.keys(styles).forEach(key =>
-    element.style.setProperty(key, styles[key])
-  )
-}
-
-/*export function shouldApplyAdjustment(
-  totalSlides: number,
-  slidesPerPage: number,
-  clonedSlides: number
-) {
-  // Calcula o número total de páginas
-  const totalPages = Math.ceil(totalSlides / slidesPerPage)
-
-  // Determina o mínimo necessário de clones para cobrir as páginas corretamente
-  const minimumClonesRequired = slidesPerPage * totalPages
-
-  // O ajuste é necessário se o número de clones for menor que o mínimo necessário
-  return clonedSlides < minimumClonesRequired
-}*/
-
-export function shouldApplyAdjustment(
-  totalSlides: number,
-  slidesPerPage: number,
-  clonedSlides: number
-) {
-  // Calcula o número total de páginas
-  const totalPages = Math.ceil(totalSlides / slidesPerPage)
-
-  // Determina o número mínimo de clones necessários para que o "voltar" funcione corretamente
-  const minimumClonesRequired = Math.max(
-    slidesPerPage,
-    totalSlides - slidesPerPage
-  )
-
-  // Verifica se os clones são suficientes para evitar a quebra no loop
-  return clonedSlides < minimumClonesRequired
 }
 
 export function appendToParent(
@@ -103,13 +133,19 @@ export function appendToParent(
   }
 }
 
-export function calcWidth(
-  sliderWidth: number,
+export function shouldApplyAdjustment(
+  totalSlides: number,
   slidesPerPage: number,
-  spacing: number
-): number {
-  const width = sliderWidth / slidesPerPage - spacing / slidesPerPage
-  return width
+  clonedSlides: number
+) {
+  const totalPages = Math.ceil(totalSlides / slidesPerPage)
+
+  const minimumClonesRequired = Math.max(
+    slidesPerPage,
+    totalSlides - slidesPerPage
+  )
+
+  return clonedSlides < minimumClonesRequired
 }
 
 export function calcNumberOfSlides(
@@ -135,15 +171,16 @@ export function createNewElement(tagName: string): HTMLElement {
   return document.createElement(tagName)
 }
 
-export function delayOf<T>(ms: number, value: T) {
-  return new Promise<T>(resolve => setTimeout(resolve, ms, value))
-}
-
 export function getAllElements<T extends Element>(
   selector: string,
   parent: Document | Element = document
 ): NodeListOf<T> {
   return parent.querySelectorAll(selector) as NodeListOf<T>
+}
+
+export function $(element: string): HTMLElement | undefined {
+  const selectedElement: HTMLElement | null = document.querySelector(element)
+  return selectedElement ?? undefined
 }
 
 export function getDotsContainer(
@@ -190,19 +227,6 @@ export function getSliderWidth(
   if (el) return el.offsetWidth
 }
 
-export function getPosition(element: HTMLElement) {
-  var xPos = 0,
-    yPos = 0
-
-  while (element) {
-    xPos += element.offsetLeft - element.scrollLeft + element.clientLeft
-    yPos += element.offsetTop - element.scrollTop + element.clientTop
-    element = element.offsetParent as HTMLElement
-  }
-
-  return { x: xPos, y: yPos }
-}
-
 export function getTrackChildren(
   rootSelector: string
 ): HTMLElement | undefined {
@@ -213,16 +237,10 @@ export function hasClass(el: HTMLElement, className: string): boolean {
   return el.classList.contains(className)
 }
 
-export function prependChild(
-  parentEl: HTMLElement | undefined,
-  childEl: HTMLElement
-): void {
-  parentEl?.prepend(childEl)
-}
-
 export function removeClass(el: HTMLElement, className: string): void {
   el.classList.remove(className)
 }
+
 export function removePart<T extends string | any[]>(
   input: T,
   start?: number,
@@ -249,116 +267,7 @@ export function setInnerHTML(el: HTMLElement, html: string): void {
   el.innerHTML = html
 }
 
-export function setProperty(element: HTMLElement, prop: string, value: string) {
-  element.style.setProperty(prop, value)
-}
-
-export function setStyle(el: HTMLElement, styleProp: any, value: string): void {
-  el.style[styleProp] = value
-}
-
-export function $(element: string): HTMLElement | undefined {
-  const selectedElement: HTMLElement | null = document.querySelector(element)
-  if (selectedElement) {
-    return selectedElement
-  }
-}
-
-export function adjustIndex(index: number, slidesPerPage: number) {
-  if (slidesPerPage > 1) return Math.floor(index / slidesPerPage)
-  return index
-}
-
-export function assert(condition: boolean, message?: string): void {
-  if (!condition) {
-    throw new Error(` ${message || ""}`)
-  }
-}
-
-export function calcIndex(
-  infinite: boolean,
-  i: number,
-  numberOfSlides: number,
-  slidesPerPage: number
-) {
-  let index: number
-  let sliderCount: number
-
-  index = i + 1
-  sliderCount = numberOfSlides
-
-  if (infinite) {
-    ///setIndexBypass(i, numberOfSlides, slidesPerPage) + 1
-    sliderCount = numberOfSlides - 2
-  }
-
-  // index = i + 1
-  return { index, sliderCount }
-}
-
-export function calcSliderWidth(spacing: number, sliderWidth: number) {
-  return sliderWidth + spacing
-}
-
-export function calcTranslate2(
-  $root: string,
-  movement: "increment" | "decrement",
-  slidesPerView: number,
-  spacing: number
-): number {
-  const slides = getSliderNodeList($root)
-  let translate = 0
-  let val = 0
-  val = movement === "increment" ? val++ : val--
-
-  return translate
-}
-
-export function calcTranslate(
-  $children: HTMLElement,
-  slideSpacing: number,
-  slidePosition: number
-): number {
-  const marginDiference = slidePosition * slideSpacing
-  const sliderWidth = getSliderWidth($children)
-  const translate = -(sliderWidth! * slidePosition + marginDiference)
-
-  return translate
-}
-
-/*export function calcTranslate2(
-  $children: HTMLElement, // O contêiner pai que contém os slides
-  slideSpacing: number,
-  slidesPerView: number,
-  targetPosition: number
-): number {
-  let translate = 0
-
-  const slides = Array.from($children.children) as HTMLElement[]
-
-  // Soma a largura real dos slides anteriores ao alvo
-  for (let i = 0; i < targetPosition; i++) {
-    const slideWidth = slides[i].getBoundingClientRect().width
-    translate -= slideWidth + slideSpacing
-  }
-
-  // Garante que o translate não ultrapasse o limite baseado no slidesPerView
-  let visibleWidth = 0
-  for (let i = targetPosition; i < targetPosition + slidesPerView; i++) {
-    if (slides[i]) {
-      visibleWidth += slides[i].getBoundingClientRect().width + slideSpacing
-    }
-  }
-
-  // Ajusta o translate para alinhar os slides dentro do espaço visível
-  translate += visibleWidth
-
-  return translate
-}*/
-
-export function getEventType(
-  event: MouseEventOrTouchEvent
-): MouseEvent | Touch {
+export function getEventType(event: any): MouseEvent | Touch {
   if (event.type.includes("mouse")) {
     return event as MouseEvent
   } else {
@@ -367,7 +276,7 @@ export function getEventType(
   }
 }
 
-export function getAxisX(event: MouseEvent | TouchEvent): number {
+export function getAxisX(event: any): number {
   if (event.type.includes("mouse")) {
     return (event as MouseEvent).pageX
   } else if (
@@ -387,7 +296,7 @@ export function isAppleDevice(): boolean {
   )
 }
 
-export function indexBasedBy(params: TypeIndexBaseSliderdBy) {
+export function indexBasedBy(params: any) {
   const { from, slideIndex, touchIndex } = params
   switch (from) {
     case "next":
@@ -401,27 +310,6 @@ export function indexBasedBy(params: TypeIndexBaseSliderdBy) {
       return slideIndex
   }
 }
-
-/*export function isNotMapped(
-  infinite: boolean,
-  currentIndex: number,
-  numberOfSlides: number
-): boolean {
-  switch (true) {
-    case !infinite && currentIndex > numberOfSlides - 1:
-      return true
-    case !infinite && currentIndex < 0:
-      return true
-    case currentIndex > currentIndex + 1:
-      currentIndex = currentIndex - 1
-      break
-    case currentIndex < 0:
-      currentIndex = currentIndex + 1
-      break
-  }
-
-  return false
-}*/
 
 export function isNotMapped(
   infinite: boolean,
@@ -499,193 +387,46 @@ export function updateDataIndexes(
   slides: HTMLElement[],
   slidesPerPage: number
 ) {
-  // Inicializa o índice de grupo
   let groupIndex = 0
 
-  // Itera sobre os slides e atualiza o data-index
   slides.forEach((slide, index) => {
-    // Calcula o índice de grupo para o slide atual
     const isStartOfGroup = index % slidesPerPage === 0
 
-    // Se for o início de um novo grupo, incrementa o groupIndex
     if (isStartOfGroup && index !== 0) {
       groupIndex++
     }
 
-    // Atualiza o atributo data-index do slide
     slide.setAttribute("data-index", String(groupIndex))
   })
 }
-
-/*export function reorderIdx(
-  displayedIndex: number,
-  numberOfSlides: number,
-  slidesPerPage: number
-) {
-  // Ajusta o número de slides total considerando que cada grupo de slides por página é tratado como 1 unidade
-  const effectiveSlidesCount =
-    Math.ceil(numberOfSlides / slidesPerPage) * slidesPerPage
-
-  // Calcula o índice do slide após a reordenação
-  const reorder =
-    displayedIndex < 0
-      ? effectiveSlidesCount - 1
-      : displayedIndex >= effectiveSlidesCount
-        ? displayedIndex
-        : displayedIndex === effectiveSlidesCount - 1
-          ? 0
-          : displayedIndex === 0
-            ? effectiveSlidesCount - 1
-            : displayedIndex - 1
-
-  return reorder
-}*/
-
-/*export function toggleClass2(
-  slides: HTMLElement[],
-  slideIndex: number,
-  slidesPerView: number,
-  slidesPerPage: number,
-  slideMovement: "increment" | "decrement"
-): void {
-  // Valida se slidesPerView não é maior que slidesPerPage
-  if (slidesPerView > slidesPerPage) {
-    slidesPerView = slidesPerPage // Limita ao máximo permitido
-  }
-
-  // Determina o número de slides ativos e onde estão os limites
-  let activeStartIndex = -1
-  let activeEndIndex = -1
-
-  // Encontra os índices de slides atualmente ativos
-  slides.forEach((slide, index) => {
-    if (slide.classList.contains(CLASS_VALUES.ACTIVE)) {
-      if (activeStartIndex === -1) {
-        activeStartIndex = index // Primeiro slide ativo
-      }
-      activeEndIndex = index // Último slide ativo
-    }
-  })
-
-  // Remove todas as classes ativas
-  slides.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
-
-  // Determina o próximo intervalo de slides ativos
-  let targetStartIndex: number
-  if (slideMovement === "increment") {
-    targetStartIndex = activeStartIndex + slidesPerView // Próximo bloco
-  } else {
-    targetStartIndex = activeStartIndex - slidesPerView // Bloco anterior
-  }
-
-  // Garante que os índices estão dentro dos limites válidos
-  targetStartIndex = Math.max(
-    0,
-    Math.min(slides.length - slidesPerPage, targetStartIndex)
-  )
-
-  // Define os novos slides ativos
-  for (let i = 0; i < slidesPerPage; i++) {
-    const index = targetStartIndex + i
-    if (index < slides.length) {
-      addClass([slides[index]], CLASS_VALUES.ACTIVE)
-    }
-  }
-}*/
-
-/*export function toggleClass2(
-  slides: HTMLElement[],
-  slideIndex: number,
-  slidesPerView: number,
-  slidesPerPage: number,
-  slideMovement: "increment" | "decrement"
-): Map<number, number[]> {
-  // Valida se slidesPerView não é maior que slidesPerPage
-  if (slidesPerView > slidesPerPage) {
-    slidesPerView = slidesPerPage // Limita ao máximo permitido
-  }
-
-  // Determina o número de slides ativos e onde estão os limites
-  let activeStartIndex = -1
-  let activeEndIndex = -1
-
-  // Encontra os índices de slides atualmente ativos
-  slides.forEach((slide, index) => {
-    if (slide.classList.contains(CLASS_VALUES.ACTIVE)) {
-      if (activeStartIndex === -1) {
-        activeStartIndex = index // Primeiro slide ativo
-      }
-      activeEndIndex = index // Último slide ativo
-    }
-  })
-
-  // Remove todas as classes ativas
-  slides.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
-
-  // Determina o próximo intervalo de slides ativos
-  let targetStartIndex: number
-  if (slideMovement === "increment") {
-    targetStartIndex = activeStartIndex + slidesPerView // Próximo bloco
-  } else {
-    targetStartIndex = activeStartIndex - slidesPerView // Bloco anterior
-  }
-
-  // Garante que os índices estão dentro dos limites válidos
-  targetStartIndex = Math.max(
-    0,
-    Math.min(slides.length - slidesPerPage, targetStartIndex)
-  )
-
-  // Define os novos slides ativos e cria o Map de retorno
-  const activeSlidesMap = new Map<number, number[]>() // Map para armazenar os índices
-  const activeIndices: number[] = [] // Array temporário para armazenar os índices ativos
-
-  for (let i = 0; i < slidesPerPage; i++) {
-    const index = targetStartIndex + i
-    if (index < slides.length) {
-      addClass([slides[index]], CLASS_VALUES.ACTIVE)
-      activeIndices.push(index) // Adiciona o índice ativo
-    }
-  }
-
-  // Preenche o Map com a página como chave e os índices como valor
-  const currentPage = Math.floor(targetStartIndex / slidesPerPage) + 1
-  activeSlidesMap.set(currentPage, activeIndices)
-
-  return activeSlidesMap
-}
-*/
 
 export function shouldChangePage(
   allSlides: Record<number, number[]>,
   activeSlides: Record<number, number[]>
 ): boolean {
-  // Percorre os grupos de slides ativos
   for (const page in activeSlides) {
     const activeGroup = activeSlides[page]
 
-    // Verifica se esse grupo existe em algum dos grupos de `allSlides`
     for (const group in allSlides) {
       const allGroup = allSlides[group]
 
-      // Se o grupo ativo é idêntico ao grupo geral, retorna true
       const isEqual =
         activeGroup.length === allGroup.length &&
         activeGroup.every(value => allGroup.includes(value))
 
       if (isEqual) {
-        return true // Hora de mudar de página
+        return true
       }
     }
   }
 
-  return false // Não encontrou nenhum grupo igual
+  return false
 }
 export function toggleClass2(
   slides: HTMLElement[],
   slidesPerView: number,
   slidesPerPage: number,
-  slideMovement: CurrentSlideMovement
+  slideMovement: any
 ): Map<number, number[]> {
   if (slidesPerView > slidesPerPage) {
     slidesPerView = slidesPerPage
@@ -718,8 +459,6 @@ export function toggleClass2(
     Math.min(slides.length - slidesPerPage, targetStartIndex)
   )
 
-  console.log("targetStartIndex", targetStartIndex)
-
   const activeSlidesMap = new Map<number, number[]>()
   const activeIndices: number[] = []
 
@@ -737,17 +476,6 @@ export function toggleClass2(
   return activeSlidesMap
 }
 
-/* const startIndex =
-    slideMovement === "increment"
-      ? slideIndex * slidesPerPage
-      : slideIndex * slidesPerPage - slidesPerView
- 
-  const endIndex = Math.min(startIndex + slidesPerView, slides.length)
-  const validStartIndex = Math.max(0, startIndex)
-
-  for (let i = validStartIndex; i < endIndex; i++) {
-    addClass([slides[i]], CLASS_VALUES.ACTIVE)
-  }*/
 export function toggleClass(
   slides: HTMLElement[],
   slideIndex: number,
@@ -774,8 +502,6 @@ export function isSafariBrowser() {
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
   return isSafari
 }
-
-// helpers.ts
 
 export function waitUntil<T>(
   predicate: () => T | false,

@@ -18,7 +18,8 @@ export class BrickSlider extends BaseSlider {
     super($root)
     this.validate = new Validation($root)
     this.message = new Messages($root)
-    this.validation($root, options)
+    this.message.displayMessage(options)
+    this.validation($root, this.validate.sanitizeOptions(options))
   }
 
   private validation($root: string, options?: TypeOptions) {

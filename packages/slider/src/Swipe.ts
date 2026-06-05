@@ -2,7 +2,7 @@ import { BaseSlider } from "./BaseSlider"
 import { TouchEnd } from "./TouchEnd"
 import { TouchMove } from "./TouchMove"
 import { TouchStart } from "./TouchStart"
-import { EVENTS } from "./constants"
+import { EVENTS } from "./helpers"
 import { listener } from "./helpers"
 import { TouchListenersParams } from "./types"
 

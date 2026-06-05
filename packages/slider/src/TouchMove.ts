@@ -1,7 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { StateType } from "./State"
-import { EVENTS, MOVE_TO_LIMIT, POSITION, SLIDE_INDEX } from "./constants"
+import { EVENTS, MOVE_TO_LIMIT, POSITION } from "./helpers"
 import { getAxisX } from "./helpers"
 import { MouseEventOrTouchEvent, PositionSlider } from "./types"
 
@@ -10,7 +10,7 @@ export class TouchMove extends BaseSlider {
   protected previousPosition: number
   private skipSlide: boolean
   private currentIndex: number
-  private translate: number
+  protected translate: number
   animation: AnimationFrame
 
   constructor($root: string) {

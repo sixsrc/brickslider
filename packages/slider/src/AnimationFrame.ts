@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./constants"
+import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./helpers"
 import { animateElement, translate3d } from "./helpers"
 import { AnimationOptions, KeyframeAnimation } from "./types"
 
@@ -22,9 +22,7 @@ export class AnimationFrame extends BaseSlider {
           this.options()
         )
 
-        // 🔹 Aciona o callback onStart imediatamente após criar as animações
         if (callbacks?.onStart) {
-          // Aguarda um microtask para garantir que as animações estejam prontas
           queueMicrotask(() => {
             callbacks.onStart?.(animations)
           })
@@ -33,7 +31,6 @@ export class AnimationFrame extends BaseSlider {
         const finishedAnimations = animations.map(anim => anim.finished)
 
         Promise.all(finishedAnimations).then(() => {
-          // 🔹 Aciona o callback onEnd, se existir
           callbacks?.onEnd?.(animations)
           resolve(animations)
         })

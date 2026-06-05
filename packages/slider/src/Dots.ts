@@ -1,8 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
-import { Slider } from "./Slider-ORIGINAL"
+import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { CLASS_VALUES, EVENTS, FROM, TAGS } from "./constants"
-import { Sync } from "./Sync"
+import { CLASS_VALUES, EVENTS, FROM, TAGS } from "./helpers"
 import {
   addClass,
   appendToParent,
@@ -16,15 +15,12 @@ import {
 
 export class Dots extends BaseSlider {
   private slider: Slider
-  private sync: Sync
   private containerDots: HTMLElement | undefined
   public slides: HTMLElement[]
 
   constructor($root: string) {
     super($root)
     this.slider = new Slider($root)
-    this.sync = new Sync($root)
-    //this.containerDots = createNewElement(TAGS.UL)
     this.containerDots = getDotsContainer($root)
     this.slides = getSliderNodeList($root)
   }
@@ -139,18 +135,12 @@ export class Dots extends BaseSlider {
     this.setState(this.numOfSlidesState(numberOfDots))
   }
 
-  private dotHandler(): void {
-    const { $root, sync } = this
-    const touchIndex = this.store.slideIndex
-
+  private dotHandler(touchIndex: number): void {
     this.setState(this.currentEventType())
-
     this.movement = true
 
-    if (sync.now()) sync.handleJumpSlide()
-    else this.slider.setSlideTarget({ from: "dots", touchIndex, $root })
-
-    this.slider.updateDots($root)
+    this.slider.goToDotIndex(touchIndex)
+    this.slider.updateSlider()
   }
 
   private numOfSlidesState(numberOfSlides: number): Partial<StateType> {
@@ -167,10 +157,48 @@ export class Dots extends BaseSlider {
     })
   }
 
-  private handleClick(dot: HTMLElement, index: number): void {
+  // Em modo normal usamos as posições válidas reais do viewport.
+  // Em modo infinite cada dot representa uma página cíclica de `slidesPerPage`,
+  // então o último dot precisa poder avançar para a direita até o grupo final.
+  private getDotTargetIndex(dotIndex: number): number {
+    const { slidesPerPage, slidesPerView, infinite } = this.store
+    const realSlides = this.slides.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    )
+    const totalSlides = realSlides.length
+    const step = slidesPerPage || 1
+
+    if (infinite) {
+      const cyclicTargetIndex = Math.min(dotIndex * step, totalSlides - 1)
+
+      return cyclicTargetIndex + this.slider.getInitialIndexFromClones()
+    }
+
+    const view = slidesPerView || 1
+    const maxStartIndex = Math.max(totalSlides - view, 0)
+    const positions: number[] = []
+
+    for (let pos = 0; pos <= maxStartIndex; pos += step) positions.push(pos)
+    if (!positions.includes(maxStartIndex)) positions.push(maxStartIndex)
+
+    return positions[dotIndex] ?? maxStartIndex
+  }
+
+  private handleClick(dot: HTMLElement, dotIndex: number): void {
     listener([EVENTS.CLICK], dot, () => {
-      this.setState(this.slideIndexState(index))
-      this.dotHandler()
+      const { infinite } = this.store
+      const slideIndex = this.getDotTargetIndex(dotIndex)
+
+      console.log(
+        "dot clicked",
+        dotIndex,
+        "→ slideIndex",
+        slideIndex,
+        "infinite:",
+        infinite
+      )
+      this.setState(this.slideIndexState(slideIndex))
+      this.dotHandler(slideIndex)
     })
   }
 

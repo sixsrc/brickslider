@@ -1,6 +1,6 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { EVENTS } from "./constants"
+import { EVENTS } from "./helpers"
 import { listener, removeListener } from "./helpers"
 import { StateType } from "./State"
 import { DragabbleListenersParams, MouseEventOrTouchEvent } from "./types"

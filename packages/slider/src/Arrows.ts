@@ -1,7 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
-import { Slider } from "./Slider-ORIGINAL"
+import { Slider } from "./Slider"
 import { state, StateType } from "./State"
-import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TIMES } from "./constants"
+import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TIMES } from "./helpers"
 import { getElementAttribute, listener } from "./helpers"
 import { IndexData, IndexKey } from "./types"
 
@@ -24,10 +24,6 @@ export class Arrows extends BaseSlider {
 
     buttons.forEach(button => {
       const handler = () => {
-        // Atualiza o dot imediatamente
-        //this.updateDotInstant(button)
-
-        // Movimenta o slider apenas após o delay
         setTimeout(() => {
           this.updateClickSpeed()
         }, this.setTime())
@@ -90,7 +86,6 @@ export class Arrows extends BaseSlider {
     this.slider.setSlideTarget({ $root, from: eventType })
   }
 
-  /** Atualiza apenas o dot, sem mover o slider */
   private updateDotInstant(button: Element) {
     const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
     const eventType = getAttribute === "prev" ? "prev" : "next"

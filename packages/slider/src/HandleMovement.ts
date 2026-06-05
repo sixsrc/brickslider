@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { SLIDE_INDEX } from "./constants"
+import { SLIDE_INDEX } from "./helpers"
 import { StateType } from "./State"
 import { IndexData, IndexKey, IndexMap } from "./types"
 
