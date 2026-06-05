@@ -1,7 +1,7 @@
 {
   "name": "@sixsrc/brickslider",
   "author": "@malopestorres",
-  "description": "Simple slider plugin, made to be lightweight and practical and with tailwind classes support.",
+  "description": "Simple slider plugin, made to be lightweight and practical.",
   "license": "MIT",
   "version": "0.0.0",
   "keywords": [
@@ -32,11 +32,6 @@
       "require": "./dist/brick-slider.cjs",
       "default": "./dist/brick-slider.js"
     },
-    "./tailwind": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "default": "./dist/index.mjs"
-    },
     "./umd": "./dist/brick-slider.umd.cjs"
   },
   "scripts": {
@@ -44,6 +39,6 @@
     "build": "tsc --noEmit && vite build"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.0.0"
+    "@tailwindcss/postcss": "^4.3.0"
   }
 }

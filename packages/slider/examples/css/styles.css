@@ -1,100 +1,116 @@
 @import "tailwindcss";
+@import "../../../tailwind/src/preset.css";
+@plugin "../../../tailwind/src/index.ts";
+
 body {
   font-family: "Poppins", serif;
   font-style: normal;
 }
 
-.slider__track {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-  touch-action: pan-y;
-  box-sizing: border-box;
-  padding-left: 50px;
-  padding-right: 50px;
+/* Demo visual only */
+.active > .bs-content {
+  @apply border border-violet-800 rounded-lg;
 }
 
-.slider.brick-slider button {
-  position: absolute;
-  z-index: 10;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.3);
-  text-indent: -9999px;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  cursor: pointer;
-  margin-top: -1.5rem;
-}
-
-.slider.brick-slider button[data-direction="prev"] {
-  left: 15px;
-}
-
-.slider.brick-slider button[data-direction="next"] {
-  right: 15px;
-}
-
-.slider__container > * {
-  flex-shrink: 0;
-}
-
-.slider__container {
-  box-sizing: border-box;
-  display: inline-flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  will-change: transform;
-  position: relative;
-  white-space: nowrap;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-.slider__track > * {
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.slider__track img {
-  width: auto;
-  max-width: 100%;
-  pointer-events: none;
-  border-radius: 20px;
-}
-
-.slider-slide {
-  z-index: 15;
-  position: relative;
-}
-
-.slider__slide img {
-  position: relative;
-  z-index: 15;
-}
-
-.slider__dots {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  margin: 0;
-}
-
-.hide {
-  visibility: hidden !important;
-}
-
-.slider__dot--active {
+.bs-dot--active {
   @apply bg-violet-800 border border-violet-800;
 }
 
-.active {
-  @apply bg-violet-800 border border-violet-800 rounded-lg;
-}
+/*
+  BrickSlider with Tailwind
+  -------------------------
+  In Tailwind mode, the structural classes come from the HTML itself:
+
+  - bs-hidden
+  - bs-arrow
+  - bs-track
+  - bs-container
+  - bs-slide
+  - bs-content
+  - bs-label
+  - bs-dots
+  - bs-dot
+  - bs-prev
+  - bs-next
+  - bs-peek
+  - bs-peek-sm
+  - bs-peek-lg
+
+  Active states are intentionally left for the user to style.
+  Example:
+
+  .active > .bs-content {
+    @apply ring-2 ring-violet-700 rounded-lg;
+  }
+
+  .bs-dot--active {
+    @apply bg-violet-800 border-violet-800;
+  }
+
+  Peek variants are optional and should be used on `bs-track`:
+
+  - bs-peek-sm
+  - bs-peek
+  - bs-peek-lg
+*/
+
+/*
+  BrickSlider without Tailwind
+  ----------------------------
+  If the user does not want Tailwind, they should still use the same `bs-*`
+  markup classes and import a plain CSS file with the structural rules.
+
+  Suggested file:
+  - ./examples/css/brick-slider.css
+
+  Tailwind plugin package in this monorepo:
+  - packages/tailwind/src/index.ts
+
+  Example pure CSS:
+
+  .bs-root {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .bs-track {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    touch-action: pan-y;
+    box-sizing: border-box;
+  }
+
+  .bs-container {
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    will-change: transform;
+    box-sizing: border-box;
+  }
+
+  .bs-container > * {
+    flex-shrink: 0;
+  }
+
+  .bs-dots {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .bs-hidden {
+    visibility: hidden !important;
+  }
+*/

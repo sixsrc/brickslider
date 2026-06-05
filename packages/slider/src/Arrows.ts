@@ -1,8 +1,16 @@
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { state, StateType } from "./State"
-import { ATTRIBUTES, DOM_ELEMENTS, EVENTS, TIMES } from "./helpers"
-import { getElementAttribute, listener } from "./helpers"
+import {
+  DOM_ELEMENT_ALIASES,
+  EVENTS,
+  TIMES
+} from "./helpers"
+import {
+  getRootSelector,
+  hasClass,
+  listener
+} from "./helpers"
 import { IndexData, IndexKey } from "./types"
 
 export class Arrows extends BaseSlider {
@@ -18,8 +26,12 @@ export class Arrows extends BaseSlider {
   }
 
   public init(): void {
+    const arrowSelector = DOM_ELEMENT_ALIASES.ARROW.map(
+      className => `${this.$root} .${className}`
+    ).join(", ")
+
     const buttons = Array.from(
-      document.querySelectorAll(`${this.$root} ${DOM_ELEMENTS.BRICK_ARROWS}`)
+      document.querySelectorAll(arrowSelector)
     )
 
     buttons.forEach(button => {
@@ -29,9 +41,10 @@ export class Arrows extends BaseSlider {
         }, this.setTime())
       }
 
-      listener([EVENTS.CLICK], button, () =>
+      listener([EVENTS.CLICK], button, () => {
+        handler()
         this.arrowHandler(button, this.$root)
-      )
+      })
     })
   }
 
@@ -69,10 +82,40 @@ export class Arrows extends BaseSlider {
     return isAtEnd && hasRemainingSlides && isFast
   }
 
+  // Resolve a direção dos arrows pela classe semântica.
+  // Se nenhuma estiver presente, usa a ordem dos botões no root:
+  // primeiro = prev, segundo = next.
+  private getArrowEventType(button: Element): "prev" | "next" {
+    if (
+      DOM_ELEMENT_ALIASES.ARROW_PREV.some(className =>
+        hasClass(button as HTMLElement, className)
+      )
+    ) {
+      return "prev"
+    }
+
+    if (
+      DOM_ELEMENT_ALIASES.ARROW_NEXT.some(className =>
+        hasClass(button as HTMLElement, className)
+      )
+    ) {
+      return "next"
+    }
+
+    const root = getRootSelector(this.$root)
+    const scopedButtons =
+      root?.querySelectorAll(
+        DOM_ELEMENT_ALIASES.ARROW.map(className => `.${className}`).join(", ")
+      ) ?? []
+
+    const buttonIndex = Array.from(scopedButtons).indexOf(button)
+
+    return buttonIndex <= 0 ? "prev" : "next"
+  }
+
   private arrowHandler(button: Element, $root: string): void {
     const { slideIndex } = this.store
-    const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
-    const eventType = getAttribute === "prev" ? "prev" : "next"
+    const eventType = this.getArrowEventType(button)
     const slideMovement = eventType === "next" ? "increment" : "decrement"
 
     this.setState({
@@ -87,9 +130,8 @@ export class Arrows extends BaseSlider {
   }
 
   private updateDotInstant(button: Element) {
-    const getAttribute = getElementAttribute(button, ATTRIBUTES.DIRECTION)
-    const eventType = getAttribute === "prev" ? "prev" : "next"
-    const { dotIndex, numberOfPages, infinite } = this.store
+    const eventType = this.getArrowEventType(button)
+    const { dotIndex, numberOfPages } = this.store
 
     let newDotIndex = dotIndex ?? 1
     if (eventType === "next") newDotIndex++

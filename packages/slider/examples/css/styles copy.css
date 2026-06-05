@@ -25,7 +25,7 @@ body {
   position: relative;
 }
 
-.slider__track {
+.bs-track {
   position: relative;
   overflow: hidden;
   touch-action: pan-y pinch-zoom;
@@ -52,15 +52,15 @@ body {
   margin-top: -1.5rem;
 }
 
-.slider.brick-slider button[data-direction="prev"] {
+.slider.brick-slider .bs-prev {
   left: 15px;
 }
 
-.slider.brick-slider button[data-direction="next"] {
+.slider.brick-slider .bs-next {
   right: 15px;
 }
 
-.slider__container {
+.bs-container {
   white-space: nowrap;
   scale: 0.8;
   gap: 20px;
@@ -95,19 +95,19 @@ img {
   touch-action: none;
 }
 
-.slider__track:after {
+.bs-track:after {
   content: "";
   height: 1.5rem;
   display: block;
   width: 100%;
 }
 
-.slider__track > * {
+.bs-track > * {
   user-select: none;
   -webkit-user-select: none;
 }
 
-.slider__track img {
+.bs-track img {
   width: auto;
   max-width: 100%;
   pointer-events: none;
@@ -115,7 +115,7 @@ img {
   transition: all 0.3s ease;
 }
 
-.slider__slide {
+.bs-slide {
   width: 100%;
   flex-shrink: 0;
   position: relative;
@@ -129,21 +129,21 @@ img {
   position: relative;
 }
 
-.multiple-items .slider__slide {
+.multiple-items .bs-slide {
   /*flex: 0 0 50%; 
     max-width:50%;*/
   box-sizing: border-box;
   /*height: 100vh;*/
 }
 
-.slider__slide img {
+.bs-slide img {
   position: relative;
   z-index: 15;
   /* object-fit: cover;
   height: 100%;*/
 }
 
-.slider__dots {
+.bs-dots {
   width: 100%;
   position: absolute;
   bottom: -5px;
@@ -159,7 +159,7 @@ img {
   padding-right: 0;
 }
 
-.slider__dots li {
+.bs-dots li {
   margin-right: 10px;
   list-style: none;
   height: 8px;
@@ -170,10 +170,10 @@ img {
   cursor: pointer;
 }
 
-.slider__dots li.slider__dot--active {
+.bs-dots li.bs-dot--active {
   background: blue;
 }
 
-.hide {
+.bs-hidden {
   visibility: hidden !important;
 }

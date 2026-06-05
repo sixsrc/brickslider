@@ -1,0 +1,19 @@
+@layer components {
+  .bs-root {}
+  .bs-track {}
+  .bs-container {}
+  .bs-slide {}
+  .bs-dots {}
+  .bs-dot {}
+  .bs-dot--active {}
+  .bs-arrow {}
+  .bs-prev {}
+  .bs-next {}
+  .bs-hidden {}
+  .bs-peek {}
+  .bs-peek-sm {}
+  .bs-peek-lg {}
+  .bs-content {}
+  .bs-label {}
+  .bs-img {}
+}

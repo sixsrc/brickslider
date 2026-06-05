@@ -8,6 +8,7 @@ import { CLASS_VALUES } from "./helpers"
 import {
   appendToParent,
   getChildrenCount,
+  DOM_ELEMENT_ALIASES,
   getSliderNodeList,
   getSliderWidth,
   hasClass,
@@ -329,7 +330,7 @@ export class Mount extends BaseSlider {
   }
 
   private setVisibility(): void {
-    removeClass(this.getRootSelector!, CLASS_VALUES.HIDE)
+    removeClass(this.getRootSelector!, DOM_ELEMENT_ALIASES.HIDDEN[0])
   }
 
   private setActiveSlides(): void {

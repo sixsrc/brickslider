@@ -1,0 +1,35 @@
+{
+  "name": "@sixsrc/brickslider-tailwind",
+  "author": "@malopestorres",
+  "description": "Tailwind plugin package with BrickSlider structural utilities.",
+  "license": "MIT",
+  "version": "0.0.0",
+  "keywords": [
+    "brickslider",
+    "tailwindcss",
+    "tailwind-plugin",
+    "slider",
+    "carousel"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sixsrc/brickslider.git"
+  },
+  "type": "module",
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./preset.css": {
+      "default": "./src/preset.css"
+    }
+  },
+  "peerDependencies": {
+    "tailwindcss": "^4.3.0"
+  }
+}

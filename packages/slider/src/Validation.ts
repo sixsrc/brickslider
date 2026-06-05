@@ -1,4 +1,4 @@
-import { DOM_ELEMENTS, TAGS } from "./helpers"
+import { DOM_ELEMENT_ALIASES, DOM_ELEMENTS, TAGS } from "./helpers"
 import { TypeOptions } from "./State"
 import {
   $,
@@ -19,17 +19,11 @@ export class Validation {
   constructor($root: string) {
     this.$root = $root
     this.arrElements = this.getRoot()?.children
-    this.fixedOrder = this.getSliderClasses()
+    this.fixedOrder = ["track", "children", "slide"]
   }
 
   private getSliderClasses() {
-    const { TRACK_SELECTOR, CHILDREN_SELECTOR, SINGLE_SLIDE } = DOM_ELEMENTS
-
-    return [
-      removePart(TRACK_SELECTOR, 1),
-      removePart(CHILDREN_SELECTOR, 1),
-      removePart(SINGLE_SLIDE, 1)
-    ]
+    return DOM_ELEMENT_ALIASES
   }
 
   private getRoot(): HTMLElement | undefined {
@@ -39,30 +33,51 @@ export class Validation {
   private getElementClasses(
     arrayElements: HTMLCollection | undefined
   ): string[] {
-    const firstSlideClass = this.getSliderClasses()[0]
-
     if (!arrayElements) return []
 
     return Array.from(arrayElements).flatMap(element => {
-      if (hasClass(element as HTMLElement, firstSlideClass))
+      if (this.isTrackElement(element as HTMLElement))
         return this.getTrackClasses(element)
 
-      return [element.classList[0]]
+      const normalizedClass = this.normalizeElementRole(element as HTMLElement)
+
+      return normalizedClass ? [normalizedClass] : []
     })
   }
 
   private getTrackClasses(element: Element): string[] {
-    const { SINGLE_SLIDE } = DOM_ELEMENTS
     const firstChild = element.children[0]
-    const firstSlide = firstChild?.querySelector(SINGLE_SLIDE)
+    const firstSlide = firstChild?.querySelector(`.${DOM_ELEMENT_ALIASES.SLIDE[0]}`)
 
     if (!firstSlide) return []
 
     return [
-      element.classList[0],
-      firstChild.classList[0],
-      firstSlide.classList[0]
+      this.normalizeElementRole(element as HTMLElement) as string,
+      this.normalizeElementRole(firstChild as HTMLElement) as string,
+      this.normalizeElementRole(firstSlide as HTMLElement) as string
     ]
+  }
+
+  private normalizeElementRole(element?: HTMLElement): string | null {
+    if (!element) return null
+    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.TRACK)) return "track"
+    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.CHILDREN))
+      return "children"
+    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.SLIDE)) return "slide"
+    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.ARROW)) return "bs-arrow"
+
+    return element.classList[0] ?? null
+  }
+
+  private hasAliasClass(
+    element: HTMLElement,
+    aliases: readonly string[]
+  ): boolean {
+    return aliases.some(className => hasClass(element, className))
+  }
+
+  private isTrackElement(element: HTMLElement): boolean {
+    return this.hasAliasClass(element, DOM_ELEMENT_ALIASES.TRACK)
   }
 
   private getButtonElements(): Element[] {
@@ -74,7 +89,7 @@ export class Validation {
 
   private getBeforeTrack(): string[] {
     const elementClasses = this.getElementClasses(this.arrElements)
-    const trackIndex = elementClasses.indexOf(this.getSliderClasses()[0])
+    const trackIndex = elementClasses.indexOf("track")
     const arr = this.getElementClasses(this.arrElements)
 
     return removePart(arr, 0, trackIndex)
@@ -114,19 +129,17 @@ export class Validation {
   private isInvalidBeforeTrack(): boolean {
     const beforeTrack = this.getBeforeTrack()
     const buttons = this.getButtonElements()
-    const { BRICK_ARROWS } = DOM_ELEMENTS
-    const slider__arrows = removePart(BRICK_ARROWS, 1)
 
     return (
       beforeTrack.length > 2 ||
-      !beforeTrack.every(className => className === slider__arrows) ||
+      !beforeTrack.every(className => className === "bs-arrow") ||
       !buttons.every(el => el.tagName.toLowerCase() === TAGS.BUTTON)
     )
   }
 
   private hasAllElementsInOrder(): boolean {
     const elementClasses = this.getElementClasses(this.arrElements)
-    const trackIndex = elementClasses.indexOf(this.getSliderClasses()[0])
+    const trackIndex = elementClasses.indexOf("track")
 
     const endArr = removePart(elementClasses, trackIndex, trackIndex + 3)
 
@@ -137,11 +150,16 @@ export class Validation {
 
   private hasDuplicateClasses(): boolean {
     const classCounts: Record<string, number> = {}
-    const arrClasses = [this.getSliderClasses()[0], this.getSliderClasses()[1]]
+    const arrClasses = [
+      ...DOM_ELEMENT_ALIASES.TRACK,
+      ...DOM_ELEMENT_ALIASES.CHILDREN
+    ]
 
     getAllElements(this.$root).forEach(el => {
       arrClasses.forEach(className => {
-        hasClass(el as HTMLElement, className)
+        if (hasClass(el as HTMLElement, className)) {
+          classCounts[className] = (classCounts[className] ?? 0) + 1
+        }
       })
     })
 
@@ -294,7 +312,7 @@ export class Validation {
 
   protected hasSlide(): HTMLElement | undefined {
     return $(
-      `${this.$root} ${DOM_ELEMENTS.CHILDREN_SELECTOR} > ${DOM_ELEMENTS.SINGLE_SLIDE}`
+      `${this.$root} .${DOM_ELEMENT_ALIASES.CHILDREN[0]} > .${DOM_ELEMENT_ALIASES.SLIDE[0]}`
     )
   }
 }

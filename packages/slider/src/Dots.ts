@@ -1,7 +1,13 @@
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import { StateType } from "./State"
-import { CLASS_VALUES, EVENTS, FROM, TAGS } from "./helpers"
+import {
+  CLASS_VALUES,
+  DOM_ELEMENT_ALIASES,
+  EVENTS,
+  FROM,
+  TAGS
+} from "./helpers"
 import {
   addClass,
   appendToParent,
@@ -125,11 +131,16 @@ export class Dots extends BaseSlider {
       appendToParent(this.containerDots, clonedDot)
     }
 
-    // Adiciona a classe `slider__dot--active` ao primeiro dot
+    // Adiciona a classe `bs-dot--active` ao primeiro dot
     const allDots = getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
     allDots.forEach((dot, index) => {
-      if (index === 0) addClass([dot], CLASS_VALUES.SELECTED)
-      else dot.classList.remove(CLASS_VALUES.SELECTED)
+      if (index === 0) {
+        addClass([dot], CLASS_VALUES.SELECTED)
+        addClass([dot], DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
+      } else {
+        dot.classList.remove(CLASS_VALUES.SELECTED)
+        dot.classList.remove(DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
+      }
     })
 
     this.setState(this.numOfSlidesState(numberOfDots))

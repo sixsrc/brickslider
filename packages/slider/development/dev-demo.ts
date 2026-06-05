@@ -22,19 +22,17 @@ const options = [
   },
   {
     slidesPerView: 3,
-    slidesPerPage: 2,
-    spacing: 20,
-    infinite: false
-  }
-
-  /*
-  {
-    slidesPerView: 3,
     slidesPerPage: 10,
     spacing: 20,
-    infinite: true
+    infinite: true,
+    slideSizes: {
+      0: 70,
+      1: 100,
+      2: 50,
+      3: 80,
+      4: 120
+    }
   }
-  */
 ]
 
 export function startDemo() {

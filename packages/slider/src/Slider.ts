@@ -3,7 +3,7 @@ import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 import { Observer } from "./Observer"
 import { StateType } from "./State"
-import { CLASS_VALUES, TAGS } from "./helpers"
+import { CLASS_VALUES, DOM_ELEMENT_ALIASES, TAGS } from "./helpers"
 import {
   addClass,
   getAllElements,
@@ -212,8 +212,11 @@ export class Slider extends BaseSlider {
     dots.forEach((dot, i) => {
       if (hasClass(dot, CLASS_VALUES.SELECTED))
         removeClass(dot, CLASS_VALUES.SELECTED)
+      if (hasClass(dot, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0]))
+        removeClass(dot, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
       if (i === Math.abs(selectedIndex)) {
         addClass([dot], CLASS_VALUES.SELECTED)
+        addClass([dot], DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
         this.setState({ activePage: selectedIndex })
       }
     })

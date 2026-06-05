@@ -1,19 +1,32 @@
 export const DOM_ELEMENTS = {
-  CHILDREN_SELECTOR: ".slider__container",
-  SINGLE_SLIDE: ".slider__slide",
-  TRACK_SELECTOR: ".slider__track",
-  DOTS_SELECTOR: ".slider__dots ",
+  CHILDREN_SELECTOR: ".bs-container",
+  SINGLE_SLIDE: ".bs-slide",
+  TRACK_SELECTOR: ".bs-track",
+  DOTS_SELECTOR: ".bs-dots ",
   NEXT_BUTTON: "next-button",
   PREV_BUTTON: "prev-button",
-  BRICK_ARROWS: ".slider__arrows"
+  BRICK_ARROWS: ".bs-arrow"
 }
+
+export const DOM_ELEMENT_ALIASES = {
+  TRACK: ["bs-track"],
+  CHILDREN: ["bs-container"],
+  SLIDE: ["bs-slide"],
+  DOTS: ["bs-dots"],
+  DOT: ["bs-dot"],
+  DOT_ACTIVE: ["bs-dot--active"],
+  ARROW: ["bs-arrow"],
+  ARROW_PREV: ["bs-prev"],
+  ARROW_NEXT: ["bs-next"],
+  HIDDEN: ["bs-hidden"]
+} as const
 
 export const CLASS_VALUES = {
   ACTIVE: "active",
-  SLIDER_DOT: "slider__dot",
-  SELECTED: "slider__dot--active",
+  SLIDER_DOT: "bs-dot",
+  SELECTED: "bs-dot--active",
   CLONED: "cloned",
-  HIDE: "hide",
+  HIDE: "bs-hidden",
   START: "start",
   END: "end"
 }
@@ -43,7 +56,6 @@ export const ATTRIBUTES = {
   CLASS: "class",
   ARIA_HIDDEN: "aria-hidden",
   ROLE: "role",
-  DIRECTION: "data-direction",
   DRAGGABLE: "draggable"
 } as const
 
@@ -186,11 +198,11 @@ export function $(element: string): HTMLElement | undefined {
 export function getDotsContainer(
   rootSelector: string
 ): HTMLElement | undefined {
-  return $(`${rootSelector}  ${DOM_ELEMENTS.DOTS_SELECTOR}`)
+  return $(`${rootSelector} .${DOM_ELEMENT_ALIASES.DOTS[0]}`)
 }
 
 export function getChildren(rootSelector: string): HTMLElement | undefined {
-  return $(`${rootSelector}  ${DOM_ELEMENTS.CHILDREN_SELECTOR}`)
+  return $(`${rootSelector} .${DOM_ELEMENT_ALIASES.CHILDREN[0]}`)
 }
 
 export function getChildrenCount(el: HTMLElement | undefined): number {
@@ -198,14 +210,7 @@ export function getChildrenCount(el: HTMLElement | undefined): number {
 }
 
 export function getDotsSelector($root: string): HTMLElement | undefined {
-  return $(`${$root} ${DOM_ELEMENTS.DOTS_SELECTOR}`)
-}
-
-export function getElementAttribute(
-  element: Element | HTMLElement,
-  attributeName: string
-): string | null {
-  return element.getAttribute(attributeName)
+  return $(`${$root} .${DOM_ELEMENT_ALIASES.DOTS[0]}`)
 }
 
 export function getRootSelector($root: string): HTMLElement | undefined {
@@ -213,11 +218,10 @@ export function getRootSelector($root: string): HTMLElement | undefined {
 }
 
 export function getSliderNodeList($root: string, cloned: boolean = true) {
+  const slideSelectors = `:scope > .${DOM_ELEMENT_ALIASES.SLIDE[0]}${cloned ? "" : ":not(.cloned)"}`
+
   return Array.from(
-    getAllElements<HTMLElement>(
-      `${DOM_ELEMENTS.CHILDREN_SELECTOR} > *${cloned ? "" : ":not(.cloned)"}`,
-      getChildren($root)
-    )
+    getAllElements<HTMLElement>(slideSelectors, getChildren($root))
   )
 }
 
@@ -230,7 +234,7 @@ export function getSliderWidth(
 export function getTrackChildren(
   rootSelector: string
 ): HTMLElement | undefined {
-  return $(`${rootSelector} ${DOM_ELEMENTS.TRACK_SELECTOR}`)
+  return $(`${rootSelector} .${DOM_ELEMENT_ALIASES.TRACK[0]}`)
 }
 
 export function hasClass(el: HTMLElement, className: string): boolean {

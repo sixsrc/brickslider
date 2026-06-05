@@ -12,13 +12,11 @@
     />
     <title>Brick Slider - Examples</title>
   </head>
-  <body">
+  <body>
     <div class="max-w-[588px] h-[270px] w-full mx-auto mt-10 mb-5 box-border">
-      <div id="slider1" class="hide h-full flex items-center relative">
-
+      <div id="slider1" class="bs-hidden h-full flex items-center relative">
         <button
-          data-direction="prev"
-          class="slider__arrows absolute flex items-center justify-center -left-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+          class="bs-arrow bs-prev absolute flex items-center justify-center -left-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -35,8 +33,7 @@
         </button>
 
         <button
-          data-direction="next"
-          class="slider__arrows absolute flex items-center justify-center -right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+          class="bs-arrow bs-next absolute flex items-center justify-center -right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -52,62 +49,95 @@
           </svg>
         </button>
 
-        <div class="slider__track">
-          <div
-            class="slider__container box-border font-medium text-purple-100"
-          >
-
-            <div class="slider__slide">
+        <div class="bs-track bs-peek">
+          <div class="bs-container box-border font-medium text-purple-100">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">01</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >01</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">02</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >02</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">03</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >03</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">04</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >04</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">05</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >05</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">06</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >06</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">07</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >07</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">08</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >08</span
+                ></span
+              >
             </div>
-
           </div>
         </div>
 
-        <ul class="slider__dots top-64 pt-1.5">
+        <ul class="bs-dots top-64 pt-1.5">
           <li
-            class="slider__dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+            class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
           ></li>
         </ul>
       </div>
     </div>
 
-
     <div class="max-w-[588px] h-[270px] w-full mx-auto mt-10 mb-5 box-border">
-      <div id="slider2" class="hide h-full flex items-center relative">
-
+      <div id="slider2" class="bs-hidden h-full flex items-center relative">
         <button
-          data-direction="prev"
-          class="slider__arrows absolute flex items-center justify-center -left-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+          class="bs-arrow bs-prev absolute flex items-center justify-center -left-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -124,8 +154,7 @@
         </button>
 
         <button
-          data-direction="next"
-          class="slider__arrows absolute flex items-center justify-center -right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+          class="bs-arrow bs-next absolute flex items-center justify-center -right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -141,62 +170,95 @@
           </svg>
         </button>
 
-        <div class="slider__track">
-          <div
-            class="slider__container box-border font-medium text-purple-100"
-          >
-
-            <div class="slider__slide">
+        <div class="bs-track">
+          <div class="bs-container box-border font-medium text-purple-100">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">01</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >01</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">02</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >02</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">03</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >03</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">04</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >04</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">05</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >05</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">06</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >06</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">07</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >07</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">08</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >08</span
+                ></span
+              >
             </div>
-
           </div>
         </div>
 
-        <ul class="slider__dots top-64 pt-1.5">
+        <ul class="bs-dots top-64 pt-1.5">
           <li
-            class="slider__dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+            class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
           ></li>
         </ul>
       </div>
     </div>
-
 
     <div class="max-w-[988px] h-[270px] w-full mx-auto mt-10 mb-5 box-border">
-      <div id="slider3" class="hide h-full flex items-center relative">
-
+      <div id="slider3" class="bs-hidden h-full flex items-center relative">
         <button
-          data-direction="prev"
-          class="slider__arrows absolute flex items-center justify-center -left-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+          class="bs-arrow bs-prev absolute flex items-center justify-center -left-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -213,8 +275,7 @@
         </button>
 
         <button
-          data-direction="next"
-          class="slider__arrows absolute flex items-center justify-center -right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+          class="bs-arrow bs-next absolute flex items-center justify-center -right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -234,113 +295,148 @@
         gap-[20px]
         -->
 
-        <div class="slider__track">
-          <div
-            class="slider__container box-border font-medium text-purple-100"
-          >
-
-            <div class="slider__slide">
+        <div class="bs-track bs-peek-sm">
+          <div class="bs-container box-border font-medium text-purple-100">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">01</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >01</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">02</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >02</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">03</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >03</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">04</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >04</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">05</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >05</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">06</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >06</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">07</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >07</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">08</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >08</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">09</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >09</span
+                ></span
+              >
             </div>
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">10</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >10</span
+                ></span
+              >
             </div>
 
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">11</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >11</span
+                ></span
+              >
             </div>
 
-
-            <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">12</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >12</span
+                ></span
+              >
             </div>
 
-
-              <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">13</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >13</span
+                ></span
+              >
             </div>
 
-
-
-             <div class="slider__slide">
+            <div class="bs-slide">
               <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">14</span></span>
+                class="bs-content w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"
+                ><span
+                  class="bs-label block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]"
+                  >14</span
+                ></span
+              >
             </div>
-
-
-
-
-            <!--
-
-
-
-    <div class="slider__slide">
-              <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">15</span></span>
-            </div>
-
-
-
-               <div class="slider__slide">
-              <span
-                class="w-full h-full flex justify-center items-center bg-purple-200 rounded-lg overflow-hidden [container-type:inline-size]"><span class="block leading-none whitespace-nowrap text-[clamp(1rem,38cqw,4.5rem)]">16</span></span>
-            </div>
-
-
-
-        -->
           </div>
         </div>
 
-        <ul class="slider__dots top-72 pt-1.5 pb-3">
+        <ul class="bs-dots top-72 pt-1.5 pb-3">
           <li
-            class="slider__dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+            class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
           ></li>
         </ul>
       </div>
     </div>
-
-
-
-
-
 
     <script type="module" src="/src/index.ts"></script>
   </body>
