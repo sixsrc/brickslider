@@ -15,8 +15,10 @@ export class Observer extends BaseSlider {
   }
 
   private observeSlides(): void {
+    const { useLoop } = this.store
+
     this.slidesArr.forEach((slide, index) => {
-      if (this.store.infinite) {
+      if (useLoop) {
         this.elementToIndexMap.set(slide, index)
       }
     })
@@ -34,7 +36,7 @@ export class Observer extends BaseSlider {
     const trackRect = this.$track.getBoundingClientRect()
     const newlyVisibleIndexes = new Set<number>()
     const newlyVisibleDataIndexes = new Set<number>()
-    const { infinite } = this.store
+    const { useLoop } = this.store
 
     this.slidesArr.forEach(slide => {
       const rect = slide.getBoundingClientRect()
@@ -44,7 +46,7 @@ export class Observer extends BaseSlider {
       const ratio = visibleWidth / rect.width
 
       const slideNumber = parseInt(slide.dataset.slideNumber || "-1")
-      const index = infinite
+      const index = useLoop
         ? (this.elementToIndexMap.get(slide) ?? -1)
         : slideNumber - 1
 
@@ -62,15 +64,6 @@ export class Observer extends BaseSlider {
       this.visibleIndexes = newlyVisibleIndexes
       this.visibleDataIndexes = newlyVisibleDataIndexes
       this.updateLastIndex()
-
-      // ✅ Só loga quando houver mudança nos visíveis
-      /*console.log(
-        "[Observer] Slides visíveis (data-index):",
-
-        [...this.visibleDataIndexes].sort((a, b) => a - b),
-        "| Último data-index:",
-        this.lastIndex
-      )*/
     }
   }
 
@@ -85,7 +78,8 @@ export class Observer extends BaseSlider {
   protected updateLastIndex(): void {
     if (this.visibleDataIndexes.size > 0) {
       const sorted = [...this.visibleDataIndexes].sort((a, b) => a - b)
-      const limited = sorted.slice(0, this.store.slidesPerPage)
+      const { slidesPerPage } = this.store
+      const limited = sorted.slice(0, slidesPerPage)
       const adjustedLast = limited[limited.length - 1]
 
       this.lastIndex = adjustedLast

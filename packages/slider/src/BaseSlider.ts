@@ -1,5 +1,6 @@
 import { State, type StateType } from "./State"
-import { ANIMATION_OPTIONS, CLASS_VALUES } from "./helpers"
+import { EventEmitter } from "./EventEmitter"
+import { ANIMATION_OPTIONS, CLASS_VALUES, TIMES } from "./helpers"
 import {
   animateElement,
   getEventType,
@@ -19,17 +20,18 @@ import type {
 } from "./types"
 
 export class BaseSlider {
+  private static emitters = new Map<string, EventEmitter>()
   protected $root: string
   protected getRootSelector: HTMLElement | undefined
   protected state: State
   protected store: StateType
+  protected emitter: EventEmitter
   protected $children: HTMLElement
   protected $track: HTMLElement
   protected childrenCount: number
   protected sliderWidth: number | undefined
   protected slidesArr: HTMLElement[]
   protected slides: HTMLElement[]
-  protected targetSlides: HTMLElement[]
   protected translate: number
   movement: boolean
 
@@ -38,9 +40,9 @@ export class BaseSlider {
     this.getRootSelector = getRootSelector($root)
     this.slidesArr = getSliderNodeList($root)
     this.slides = getSliderNodeList($root)
-    this.targetSlides = []
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
+    this.emitter = BaseSlider.getEmitter(this.$root)
     this.$children = getChildren(this.$root) as HTMLElement
     this.$track = getTrackChildren($root) as HTMLElement
     this.childrenCount = getChildrenCount(this.$children)
@@ -53,9 +55,33 @@ export class BaseSlider {
     return getSliderNodeList($root, cloned)
   }
 
+  private static getEmitter($root: string): EventEmitter {
+    const currentEmitter = BaseSlider.emitters.get($root)
+    const emitter = new EventEmitter()
+
+    BaseSlider.emitters.set($root, emitter)
+
+    if (currentEmitter) return currentEmitter
+
+    return emitter
+  }
+
+  public on(event: string, listener: (...args: any[]) => void): void {
+    this.emitter.on(event, listener)
+  }
+
+  public off(event: string, listener: (...args: any[]) => void): void {
+    this.emitter.off(event, listener)
+  }
+
+  protected emit(event: string, ...args: any[]): void {
+    this.emitter.emit(event, ...args)
+  }
+
   protected defineEventTarget(event: MouseEventOrTouchEvent) {
     const clientX = getEventType(event).clientX
     const clientY = getEventType(event).clientY
+
     return { clientX, clientY }
   }
 
@@ -67,8 +93,17 @@ export class BaseSlider {
   }
 
   protected isDotTarget(numberOfSlides: number): void {
-    if (this.store.dotIndex === -1) this.store.dotIndex = numberOfSlides - 1
-    else if (this.store.dotIndex === numberOfSlides) this.store.dotIndex = 0
+    const { dotIndex } = this.store
+    let nextDotIndex: number | null = null
+
+    if (dotIndex === -1) nextDotIndex = numberOfSlides - 1
+    else if (dotIndex === numberOfSlides) nextDotIndex = 0
+
+    if (nextDotIndex === null) return
+
+    const dotState = { dotIndex: nextDotIndex }
+
+    this.setState(dotState)
   }
 
   protected animate(
@@ -80,12 +115,13 @@ export class BaseSlider {
   }
 
   protected calcTranslateForIndex(index: number): number {
-    const spacing = this.store.spacing || 0
+    const { gap: currentGap } = this.store
+    const gap = currentGap || 0
     let translate = 0
 
     for (let i = 0; i < index; i++) {
       const slide = this.slidesArr[i]
-      if (slide) translate += slide.offsetWidth + spacing
+      if (slide) translate += slide.offsetWidth + gap
     }
 
     return this.safeTranslate(translate)
@@ -99,11 +135,9 @@ export class BaseSlider {
   }
 
   protected safeTranslate(translate: number): number {
+    const { sliderWidth } = this.store
     const containerWidth =
-      this.store.sliderWidth ??
-      this.sliderWidth ??
-      getSliderWidth(this.$children) ??
-      0
+      sliderWidth ?? this.sliderWidth ?? getSliderWidth(this.$children) ?? 0
 
     this.sliderWidth = containerWidth
     let maxTranslate = this.getTotalWidth() - containerWidth
@@ -115,17 +149,76 @@ export class BaseSlider {
   }
 
   protected getTotalWidth(): number {
-    const { spacing } = this.store
+    const { gap } = this.store
 
     if (this.slides.length === 0) return 0
 
     return this.slides.reduce((total, slide, index) => {
       return (
-        total +
-        slide.offsetWidth +
-        (index < this.slides.length - 1 ? spacing : 0)
+        total + slide.offsetWidth + (index < this.slides.length - 1 ? gap : 0)
       )
     }, 0)
+  }
+
+  protected getVisibleSlidesForHeight(startIndex?: number): HTMLElement[] {
+    const { slidesPerView } = this.store
+    const initialIndex =
+      typeof startIndex === "number"
+        ? startIndex
+        : typeof this.store.slideIndex === "number"
+          ? this.store.slideIndex
+          : 0
+    const safeSlidesPerView = Math.max(1, slidesPerView || 1)
+
+    return this.slides.slice(initialIndex, initialIndex + safeSlidesPerView)
+  }
+
+  protected getMeasuredSlideHeight(slide: HTMLElement | undefined): number {
+    if (!slide) return 0
+
+    const firstChild = slide.firstElementChild as HTMLElement | null
+
+    return Math.max(
+      slide.offsetHeight,
+      slide.scrollHeight,
+      firstChild?.offsetHeight ?? 0,
+      firstChild?.scrollHeight ?? 0
+    )
+  }
+
+  protected getAutoHeightTarget(startIndex?: number): number {
+    const visibleSlides = this.getVisibleSlidesForHeight(startIndex)
+    const heights = visibleSlides.map(slide => this.getMeasuredSlideHeight(slide))
+
+    return Math.max(0, ...heights)
+  }
+
+  protected syncAutoHeight(
+    startIndex?: number,
+    duration: number = TIMES.DEFAULT_TRANSITION_TIME
+  ): void {
+    const { useAutoHeight, isJumpSlide, currentEventType } = this.store
+    const rootSelector = this.getRootSelector
+
+    if (!useAutoHeight || !rootSelector || !this.$track) return
+
+    const nextHeight = this.getAutoHeightTarget(startIndex)
+    const currentTrackHeight = this.$track.offsetHeight
+    const currentRootHeight = rootSelector.offsetHeight
+    const safeDuration =
+      isJumpSlide || currentEventType === "touchmove" ? 0 : duration
+    const keyframes = [{ height: `${nextHeight}px` }]
+    const animationOptions = this.options(safeDuration)
+
+    if (nextHeight <= 0) return
+
+    if (currentTrackHeight !== nextHeight) {
+      this.animate(this.$track, keyframes, animationOptions)
+    }
+
+    if (currentRootHeight !== nextHeight) {
+      this.animate(rootSelector, keyframes, animationOptions)
+    }
   }
 
   protected options(duration = 0): AnimationOptions {

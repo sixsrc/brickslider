@@ -11,6 +11,7 @@ export class Resize extends BaseSlider {
   private resizeObserver: ResizeObserver | null = null
   private onResize?: () => void
   private lastObservedWidth: number | null = null
+  private lastObservedViewportWidth: number | null = null
   private hasWindowListener = false
   private resizeFrame: number | null = null
 
@@ -35,6 +36,7 @@ export class Resize extends BaseSlider {
     this.resizeObserver = new ResizeObserver(() => this.handleSizeChange())
 
     this.lastObservedWidth = getSliderWidth(this.$children) ?? 0
+    this.lastObservedViewportWidth = this.getViewportWidth()
     this.resizeObserver.observe(target)
   }
 
@@ -55,31 +57,23 @@ export class Resize extends BaseSlider {
 
   private handleSizeChange(): void {
     const currentWidth = getSliderWidth(this.$children) ?? 0
+    const currentViewportWidth = this.getViewportWidth()
+    const hasContainerChange = this.lastObservedWidth !== currentWidth
+    const hasViewportChange =
+      this.lastObservedViewportWidth !== currentViewportWidth
 
-    if (this.lastObservedWidth === currentWidth) return
-
-    console.log("[BrickSlider][ResizeObserver]", {
-      root: this.$root,
-      previousWidth: this.lastObservedWidth,
-      currentWidth,
-      slideIndex: this.store.slideIndex,
-      currentTranslate: this.store.currentTranslate,
-      prevTranslate: this.store.prevTranslate,
-      activePage: this.store.activePage,
-      dotIndex: this.store.dotIndex,
-      infinite: this.store.infinite
-    })
+    if (!hasContainerChange && !hasViewportChange) return
 
     this.lastObservedWidth = currentWidth
+    this.lastObservedViewportWidth = currentViewportWidth
     this.applyResponsiveState()
     this.onResize?.()
   }
 
-  // Aplica o breakpoint ativo com base na largura real do slider, sem depender
-  // de Tailwind ou de media query global.
   private applyResponsiveState(): void {
     const sliderWidth = getSliderWidth(this.$children) ?? 0
-    const responsiveState = this.getResponsiveState(sliderWidth)
+    const viewportWidth = this.getViewportWidth()
+    const responsiveState = this.getResponsiveState(viewportWidth)
 
     this.setState({
       sliderWidth,
@@ -87,9 +81,22 @@ export class Resize extends BaseSlider {
     })
   }
 
+  private getViewportWidth(): number {
+    if (typeof window === "undefined") return 0
+
+    return window.innerWidth
+  }
+
   private getResponsiveState(sliderWidth: number): Partial<StateType> {
-    const screens = this.store.screens as ResponsiveScreensInput
-    const responsive = this.store.responsive as ResponsiveInput
+    const {
+      screens: rawScreens,
+      responsive: rawResponsive,
+      baseSlidesPerView,
+      baseSlidesPerPage,
+      baseSlideSizes
+    } = this.store
+    const screens = rawScreens as ResponsiveScreensInput
+    const responsive = rawResponsive as ResponsiveInput
     const activeBreakpoint = this.getActiveBreakpoint(
       sliderWidth,
       screens,
@@ -98,23 +105,32 @@ export class Resize extends BaseSlider {
     const matchedConfig =
       activeBreakpoint && responsive ? responsive[activeBreakpoint] : undefined
     const totalSlides = BaseSlider.getSlides(this.$root, false).length
+    const shouldIgnoreSlidesPerView = matchedConfig?.useSlidesPerView === false
+    const shouldIgnoreSlidesPerPage = matchedConfig?.useSlidesPerPage === false
     const slidesPerView = this.clampSlideCount(
-      matchedConfig?.slidesPerView ?? this.store.baseSlidesPerView,
+      shouldIgnoreSlidesPerView
+        ? baseSlidesPerView
+        : (matchedConfig?.slidesPerView ?? baseSlidesPerView),
       totalSlides
     )
     const slidesPerPage = this.clampSlideCount(
-      matchedConfig?.slidesPerPage ?? this.store.baseSlidesPerPage,
+      shouldIgnoreSlidesPerPage
+        ? baseSlidesPerPage
+        : (matchedConfig?.slidesPerPage ?? baseSlidesPerPage),
       totalSlides
     )
-    const slideSizes =
-      matchedConfig?.slideSizes &&
-      Object.keys(matchedConfig.slideSizes).length > 0
+    const shouldIgnoreSlideSizes = matchedConfig?.useSlideSizes === false
+    const slideSizes = shouldIgnoreSlideSizes
+      ? {}
+      : matchedConfig?.slideSizes &&
+          Object.keys(matchedConfig.slideSizes).length > 0
         ? matchedConfig.slideSizes
-        : this.store.baseSlideSizes
-    const maxStartIndex = Math.max(totalSlides - slidesPerView, 0)
-    const slideIndex = this.store.infinite
-      ? (this.store.slideIndex ?? 0)
-      : Math.min(this.store.slideIndex ?? 0, maxStartIndex)
+        : baseSlideSizes
+    const slideIndex = this.getResponsiveSlideIndex(
+      totalSlides,
+      slidesPerView,
+      slidesPerPage
+    )
 
     return {
       slidesPerView,
@@ -123,6 +139,48 @@ export class Resize extends BaseSlider {
       slideIndex,
       activeBreakpoint: activeBreakpoint ?? "base"
     }
+  }
+
+  private getResponsiveSlideIndex(
+    totalSlides: number,
+    slidesPerView: number,
+    slidesPerPage: number
+  ): number {
+    const { slideIndex, useLoop } = this.store
+    const currentIndex = typeof slideIndex === "number" ? slideIndex : 0
+
+    if (useLoop) return Math.max(0, currentIndex)
+
+    const positions = this.getValidPositions(
+      totalSlides,
+      slidesPerView,
+      slidesPerPage
+    )
+
+    if (positions.length === 0) return 0
+
+    return positions.reduce((closest, position) => {
+      return Math.abs(position - currentIndex) <
+        Math.abs(closest - currentIndex)
+        ? position
+        : closest
+    }, positions[0])
+  }
+
+  private getValidPositions(
+    totalSlides: number,
+    slidesPerView: number,
+    slidesPerPage: number
+  ): number[] {
+    const maxStartIndex = Math.max(totalSlides - slidesPerView, 0)
+    const step = Math.max(1, slidesPerPage)
+    const positions: number[] = []
+
+    for (let pos = 0; pos <= maxStartIndex; pos += step) positions.push(pos)
+
+    if (!positions.includes(maxStartIndex)) positions.push(maxStartIndex)
+
+    return positions
   }
 
   private getActiveBreakpoint(

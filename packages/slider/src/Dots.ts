@@ -16,7 +16,8 @@ import {
   getDotsContainer,
   getSliderNodeList,
   hasClass,
-  listener
+  listener,
+  removeClass
 } from "./helpers"
 
 export class Dots extends BaseSlider {
@@ -39,65 +40,25 @@ export class Dots extends BaseSlider {
     )
 
     appendToParent(this.getRootSelector, this.containerDots)*/
-
     this.createDots()
-
     this.eventMount()
   }
 
-  /*private calculateDots(): number {
-    const { slidesPerView, slidesPerPage, infinite } = this.store
-
-    // Número de slides reais (excluindo clones)
-    const numberOfActualSlides = this.slides.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    ).length
-
-    // Validação inicial para evitar cálculos inválidos
-    if (numberOfActualSlides <= 0 || slidesPerPage <= 0 || slidesPerView <= 0) {
-      return 0
-    }
-
-    // Cálculo correto para modo infinito e não infinito
-    let totalPages = 0
-
-    if (infinite) {
-      // No modo infinito, o número de páginas deve ser baseado no total de slides
-      // Cada dot representa uma "página" completa de slides
-      totalPages = Math.ceil(numberOfActualSlides / slidesPerPage)
-    } else {
-      // No modo não infinito, o número de páginas é baseado em quantos grupos de slidesPerPage podemos mostrar
-      // considerando que você já tem slidesPerView visíveis inicialmente
-      totalPages = Math.ceil(
-        (numberOfActualSlides - slidesPerView + slidesPerPage) / slidesPerPage
-      )
-    }
-
-    return Math.max(1, totalPages)
-  }*/
-
   private calculateDots(): number {
-    const { slidesPerView, slidesPerPage, infinite } = this.store
-    const { leftOver } = this.getMissingSlides()
-
-    // Número de slides reais (sem clones)
+    const { slidesPerView, slidesPerPage, useLoop } = this.store
     const numberOfActualSlides = this.slides.filter(
       slide => !hasClass(slide, CLASS_VALUES.CLONED)
     ).length
 
-    // Validação inicial para evitar cálculos inválidos
     if (numberOfActualSlides <= 0 || slidesPerPage <= 0 || slidesPerView <= 0) {
       return 0
     }
 
     let totalPages = 0
 
-    if (infinite) {
-      // Modo infinito → simplesmente divide pelos slidesPerPage
+    if (useLoop) {
       totalPages = Math.ceil(numberOfActualSlides / slidesPerPage)
     } else {
-      // Modo não infinito → primeira página é a visível (slidesPerView),
-      // depois avança de slidesPerPage em slidesPerPage
       totalPages =
         Math.ceil((numberOfActualSlides - slidesPerView) / slidesPerPage) + 1
     }
@@ -106,44 +67,89 @@ export class Dots extends BaseSlider {
   }
 
   private createDots(): void {
-    // Verifica se existe ao menos um dot no HTML inicial
-    const existingDots = getAllElements<HTMLElement>(
-      TAGS.LI,
-      this.containerDots
-    )
+    const numberOfDots = this.calculateDots()
+    const isDotsRenderable = this.canRenderDots()
+    const paginationState = this.paginationState(numberOfDots)
+    const templateDot = isDotsRenderable ? this.getTemplateDot() : undefined
+
+    this.setState(paginationState)
+
+    if (!isDotsRenderable) return
+    if (!templateDot) return
+
+    this.renderDots(templateDot, numberOfDots)
+    this.setInitialActiveDot()
+    this.setState(this.numOfSlidesState(numberOfDots))
+  }
+
+  private paginationState(numberOfDots: number): Partial<StateType> {
+    const { dotIndex } = this.store
+    const safeDotIndex = this.getSafeDotIndex(dotIndex, numberOfDots)
+
+    return {
+      numberOfPages: numberOfDots,
+      dotIndex: safeDotIndex,
+      activePage: safeDotIndex
+    }
+  }
+
+  private getSafeDotIndex(
+    dotIndex: number | undefined,
+    numberOfDots: number
+  ): number {
+    return Math.max(0, Math.min(dotIndex ?? 0, Math.max(0, numberOfDots - 1)))
+  }
+
+  private canRenderDots(): boolean {
+    const { dots: isDotsEnabled } = this.store
+
+    return !!isDotsEnabled && !!this.containerDots
+  }
+
+  private getExistingDots(): NodeListOf<HTMLElement> {
+    return getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
+  }
+
+  private getTemplateDot(): HTMLElement | undefined {
+    const existingDots = this.getExistingDots()
 
     if (existingDots.length === 0) return
 
-    // Pega o primeiro dot como modelo
-    const templateDot = existingDots[0]
-    const numberOfDots = this.calculateDots()
+    return existingDots[0].cloneNode(true) as HTMLElement
+  }
 
-    this.setState({ numberOfPages: numberOfDots })
+  private renderDots(templateDot: HTMLElement, numberOfDots: number): void {
+    this.clearExistingDots()
 
-    // Remove todos os dots existentes no HTML, exceto o template
-    Array.from(existingDots).forEach((dot, index) => {
-      if (index > 0) dot.remove()
-    })
-
-    // Duplica o dot template conforme necessário
-    for (let i = 1; i < numberOfDots; i++) {
-      const clonedDot = templateDot.cloneNode(true) as HTMLElement
-      appendToParent(this.containerDots, clonedDot)
+    for (let i = 0; i < numberOfDots; i++) {
+      const dot = templateDot.cloneNode(true) as HTMLElement
+      appendToParent(this.containerDots, dot)
     }
+  }
 
-    // Adiciona a classe `bs-dot--active` ao primeiro dot
-    const allDots = getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
+  private clearExistingDots(): void {
+    const existingDots = this.getExistingDots()
+
+    Array.from(existingDots).forEach(dot => dot.remove())
+  }
+
+  private setInitialActiveDot(): void {
+    const allDots = this.getExistingDots()
+
     allDots.forEach((dot, index) => {
-      if (index === 0) {
+      const isFirstDot = index === 0
+
+      if (isFirstDot) {
         addClass([dot], CLASS_VALUES.SELECTED)
         addClass([dot], DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
-      } else {
-        dot.classList.remove(CLASS_VALUES.SELECTED)
-        dot.classList.remove(DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
+        return
       }
-    })
 
-    this.setState(this.numOfSlidesState(numberOfDots))
+      removeClass(dot, [
+        CLASS_VALUES.SELECTED,
+        DOM_ELEMENT_ALIASES.DOT_ACTIVE[0]
+      ])
+    })
   }
 
   private dotHandler(touchIndex: number): void {
@@ -161,25 +167,27 @@ export class Dots extends BaseSlider {
   }
 
   private eventMount() {
-    const dots = getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
+    const { dots: isDotsEnabled } = this.store
 
-    Array.from(dots).forEach((dot, index) => {
+    if (!isDotsEnabled) return
+    if (!this.containerDots) return
+
+    const dotElements = getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
+
+    Array.from(dotElements).forEach((dot, index) => {
       this.handleClick(dot, index)
     })
   }
 
-  // Em modo normal usamos as posições válidas reais do viewport.
-  // Em modo infinite cada dot representa uma página cíclica de `slidesPerPage`,
-  // então o último dot precisa poder avançar para a direita até o grupo final.
   private getDotTargetIndex(dotIndex: number): number {
-    const { slidesPerPage, slidesPerView, infinite } = this.store
+    const { slidesPerPage, slidesPerView, useLoop } = this.store
     const realSlides = this.slides.filter(
       slide => !hasClass(slide, CLASS_VALUES.CLONED)
     )
     const totalSlides = realSlides.length
     const step = slidesPerPage || 1
 
-    if (infinite) {
+    if (useLoop) {
       const cyclicTargetIndex = Math.min(dotIndex * step, totalSlides - 1)
 
       return cyclicTargetIndex + this.slider.getInitialIndexFromClones()
@@ -197,17 +205,8 @@ export class Dots extends BaseSlider {
 
   private handleClick(dot: HTMLElement, dotIndex: number): void {
     listener([EVENTS.CLICK], dot, () => {
-      const { infinite } = this.store
       const slideIndex = this.getDotTargetIndex(dotIndex)
 
-      console.log(
-        "dot clicked",
-        dotIndex,
-        "→ slideIndex",
-        slideIndex,
-        "infinite:",
-        infinite
-      )
       this.setState(this.slideIndexState(slideIndex))
       this.dotHandler(slideIndex)
     })
@@ -224,11 +223,11 @@ export class Dots extends BaseSlider {
   }
 
   protected numberOfSlidesState(): Partial<StateType> {
-    const { infinite, slidesPerPage } = this.store
+    const { useLoop, slidesPerPage } = this.store
     const { $children } = this
 
     return {
-      numberOfSlides: calcNumberOfSlides(infinite, slidesPerPage, $children)
+      numberOfSlides: calcNumberOfSlides(useLoop, slidesPerPage, $children)
     }
   }
 }

@@ -11,7 +11,7 @@ export class TouchMove extends BaseSlider {
   private skipSlide: boolean
   private currentIndex: number
   protected translate: number
-  animation: AnimationFrame
+  private animation: AnimationFrame
 
   constructor($root: string) {
     super($root)

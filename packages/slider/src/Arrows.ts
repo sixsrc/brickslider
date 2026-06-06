@@ -1,17 +1,8 @@
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
-import { state, StateType } from "./State"
-import {
-  DOM_ELEMENT_ALIASES,
-  EVENTS,
-  TIMES
-} from "./helpers"
-import {
-  getRootSelector,
-  hasClass,
-  listener
-} from "./helpers"
-import { IndexData, IndexKey } from "./types"
+import { StateType } from "./State"
+import { DOM_ELEMENT_ALIASES, EVENTS, TIMES } from "./helpers"
+import { getRootSelector, hasClass, listener } from "./helpers"
 
 export class Arrows extends BaseSlider {
   public $root: string
@@ -30,9 +21,7 @@ export class Arrows extends BaseSlider {
       className => `${this.$root} .${className}`
     ).join(", ")
 
-    const buttons = Array.from(
-      document.querySelectorAll(arrowSelector)
-    )
+    const buttons = Array.from(document.querySelectorAll(arrowSelector))
 
     buttons.forEach(button => {
       const handler = () => {
@@ -75,16 +64,13 @@ export class Arrows extends BaseSlider {
   }
 
   private getTime(totalSlides: number): boolean {
-    const isAtEnd =
-      this.store[state.activePage] >= this.store[state.numberOfPages] - 1
+    const { activePage, numberOfPages } = this.store
+    const isAtEnd = activePage >= numberOfPages - 1
     const hasRemainingSlides = this.hasRemaining(totalSlides)
     const isFast = !!this.store["isFastNavigation"]
     return isAtEnd && hasRemainingSlides && isFast
   }
 
-  // Resolve a direção dos arrows pela classe semântica.
-  // Se nenhuma estiver presente, usa a ordem dos botões no root:
-  // primeiro = prev, segundo = next.
   private getArrowEventType(button: Element): "prev" | "next" {
     if (
       DOM_ELEMENT_ALIASES.ARROW_PREV.some(className =>
@@ -114,9 +100,13 @@ export class Arrows extends BaseSlider {
   }
 
   private arrowHandler(button: Element, $root: string): void {
-    const { slideIndex } = this.store
+    const { slideIndex, useDragFree } = this.store
     const eventType = this.getArrowEventType(button)
     const slideMovement = eventType === "next" ? "increment" : "decrement"
+    const navigationState = {
+      prevSlideIndex: slideIndex,
+      currentEventType: eventType
+    }
 
     this.setState({
       currentSlideMovement: slideMovement
@@ -124,30 +114,14 @@ export class Arrows extends BaseSlider {
 
     this.movement = true
     this.setState(this.startPosState())
-    this.setState({ prevSlideIndex: slideIndex, currentEventType: eventType })
+    this.setState(navigationState)
 
-    this.slider.setSlideTarget({ $root, from: eventType })
-  }
-
-  private updateDotInstant(button: Element) {
-    const eventType = this.getArrowEventType(button)
-    const { dotIndex, numberOfPages } = this.store
-
-    let newDotIndex = dotIndex ?? 1
-    if (eventType === "next") newDotIndex++
-    else newDotIndex--
-
-    if (newDotIndex > numberOfPages - 1) return
-
-    if (newDotIndex < 0) newDotIndex = numberOfPages - 1
-    if (newDotIndex > numberOfPages - 1) {
-      newDotIndex = 0
+    if (useDragFree) {
+      this.slider.goToFreeDirection(eventType)
+      return
     }
 
-    this.setState({ dotIndex: newDotIndex })
-
-    // Atualiza visualmente os dots imediatamente
-    this.slider.updateDots(this.$root)
+    this.slider.setSlideTarget({ $root, from: eventType })
   }
 
   protected evalSlideConditions(): Record<any, boolean> {
@@ -159,21 +133,6 @@ export class Arrows extends BaseSlider {
     return {
       FIRST: isFirstCloned,
       LAST: isLastCloned
-    }
-  }
-
-  private slideState(
-    indexes: Record<IndexKey, number>,
-    indexData: IndexData
-  ): Partial<StateType> {
-    const { slideIndex } = this.store
-    const { currentIndex, translate } = indexData
-
-    return {
-      prevSlideIndex: slideIndex,
-      slideIndex: indexes[currentIndex],
-      prevTranslate: translate,
-      currentTranslate: translate
     }
   }
 

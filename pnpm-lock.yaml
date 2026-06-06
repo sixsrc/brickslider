@@ -82,6 +82,12 @@ importers:
         specifier: ^4.1.8
         version: 4.1.8(@types/node@24.10.1)(vite@8.0.16(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1))
 
+  packages/accessibility:
+    dependencies:
+      '@sixsrc/brickslider':
+        specifier: workspace:*
+        version: link:../slider
+
   packages/slider:
     dependencies:
       '@tailwindcss/postcss':

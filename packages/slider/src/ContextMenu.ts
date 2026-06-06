@@ -13,7 +13,9 @@ export class ContextMenu extends BaseSlider {
   }
 
   private rightClick() {
-    this.setState({ currentEventType: FROM.RIGHT_CLICK })
+    const eventTypeState = { currentEventType: FROM.RIGHT_CLICK }
+
+    this.setState(eventTypeState)
   }
 
   private params(): ContextMenuListenersParams {

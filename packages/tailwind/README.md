@@ -64,6 +64,41 @@ Use `bs-arrow` como classe base e adicione:
 - `bs-prev` para o botão anterior
 - `bs-next` para o botão próximo
 
+## `slideSizes` no responsivo
+
+O `slideSizes` global funciona como fallback.
+
+Prioridade:
+
+- `responsive[breakpoint].useSlideSizes === false` → ignora todo `slideSizes`
+- `responsive[breakpoint].slideSizes` → sobrescreve o global
+- `slideSizes` global → fallback
+
+Exemplo:
+
+```ts
+{
+  slideSizes: {
+    0: 70,
+    1: 15,
+    2: 15
+  },
+  responsive: {
+    xs: {
+      slidesPerView: 1,
+      slidesPerPage: 1,
+      useSlideSizes: false
+    },
+    lg: {
+      slidesPerView: 4,
+      slidesPerPage: 4
+    }
+  }
+}
+```
+
+`useSlideSizes: true` é desnecessário, porque `slideSizes` já é implicitamente ativo.
+
 ## Sem Tailwind
 
 Se o usuário não quiser Tailwind, ele pode usar o mesmo markup `bs-*`

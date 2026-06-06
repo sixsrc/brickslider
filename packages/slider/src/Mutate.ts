@@ -10,37 +10,6 @@ export class Mutate extends BaseSlider {
   private getAllSlides(): HTMLElement[] {
     return Array.from(this.$children?.children || []) as HTMLElement[]
   }
-  /* public updateActiveSlides(visibleIndexes: number[] | null): void {
-    this.resetActiveClasses()
-    this.activateVisibleSlides(visibleIndexes as number[])
-  }*/
-
-  /*public updateActiveSlides(
-    visibleIndexes: number[] | null,
-    maxActive?: number
-  ): void {
-    this.resetActiveClasses()
-
-    if (!visibleIndexes) return
-
-    const toActivate =
-      maxActive !== undefined
-        ? visibleIndexes.slice(0, maxActive)
-        : visibleIndexes
-
-    this.activateVisibleSlides(toActivate)
-  }*/
-
-  /*public updateActiveSlides(visibleIndexes: number[]): void {
-    const { slidesPerPage } = this.store
-    this.resetActiveClasses()
-
-    // Adiciona active apenas nos que estão visíveis
-    visibleIndexes.slice(0, slidesPerPage).forEach(index => {
-      const slide = this.slidesArr[index]
-      if (slide) addClass([slide], CLASS_VALUES.ACTIVE)
-    })
-  }*/
 
   public updateActiveSlides(
     visibleIndexes: number[] | null,
@@ -50,7 +19,6 @@ export class Mutate extends BaseSlider {
 
     if (!visibleIndexes) return
 
-    // Limita o número de slides a ativar pelo maxActive, se definido
     const toActivate =
       maxActive !== undefined
         ? visibleIndexes.slice(0, maxActive)
@@ -67,42 +35,7 @@ export class Mutate extends BaseSlider {
     })
   }
 
-  /*public updateActiveSlides(
-    visibleIndexes: number[] | null,
-    maxActive?: number
-  ): void {
-    this.resetActiveClasses()
-    if (!visibleIndexes) return
-
-    const { slidesPerPage } = this.store
-    const firstIndex = Math.min(...visibleIndexes)
-    const fullRange = Array.from(
-      { length: slidesPerPage },
-      (_, i) => firstIndex + i
-    )
-
-    const toActivate =
-      maxActive !== undefined ? fullRange.slice(0, maxActive) : fullRange
-
-    const allSlides = this.getAllSlides()
-    allSlides.forEach(slide => {
-      const slideIndex = Number(slide.dataset.slideNumber)
-      if (toActivate.includes(slideIndex)) {
-        addClass([slide], CLASS_VALUES.ACTIVE)
-      } else {
-        removeClass(slide, CLASS_VALUES.ACTIVE)
-      }
-    })
-  }*/
-
   private resetActiveClasses(): void {
     this.slidesArr.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
-  }
-
-  private activateVisibleSlides(visibleIndexes: number[]): void {
-    visibleIndexes.forEach(index => {
-      const slide = this.slidesArr[index]
-      if (slide) addClass([slide], CLASS_VALUES.ACTIVE)
-    })
   }
 }

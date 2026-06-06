@@ -10,6 +10,7 @@
     "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["src/*"],
+      "@sixsrc/brickslider-accessibility": ["../accessibility/src/index.ts"],
       "*": ["*", "*.mts"]
     },
     "resolveJsonModule": true,

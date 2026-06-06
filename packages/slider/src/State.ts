@@ -1,73 +1,21 @@
 import {
   CurrentEventType,
   CurrentSlideMovement,
-  EventFrom,
   invalidationConditions
 } from "./types"
+import {
+  DOM_ELEMENT_ALIASES,
+  getAllElements,
+  getDotsContainer,
+  getRootSelector
+} from "./helpers"
 
-export const state = {
-  prevSlideIndex: "prevSlideIndex",
-  statelideIndex: "slideIndex",
-  jumpIndex: "jumpIndex",
-  activePage: "activePage",
-  activeDataIndex: "activeDataIndex",
-  slideSpacing: "spacing",
-  slidesPerPage: "slidesPerPage",
-  slidesPerView: "slidesPerView",
-  baseSlidesPerPage: "baseSlidesPerPage",
-  baseSlidesPerView: "baseSlidesPerView",
-  numberOfPages: "numberOfPages",
-  numberOfSlides: "numberOfSlides",
-  sliderWidth: "sliderWidth",
-  slideSizes: "slideSizes",
-  baseSlideSizes: "baseSlideSizes",
-  screens: "screens",
-  responsive: "responsive",
-  activeBreakpoint: "activeBreakpoint",
-  leftOverSlides: "leftOverSlides",
-  startX: "startX",
-  startY: "startY",
-  endX: "endX",
-  eventFrom: "eventFrom",
-  sliderReady: "sliderReady",
-  isPagedActive: "isPagedActive",
-  isInitialRender: "isInitialRender",
-  isTouch: "isTouch",
-  isCompleteGroup: "isCompleteGroup",
-  isDragging: "isDragging",
-  isJumpSlide: "isJumpSlide",
-  isFastNavigation: "isFastNavigation",
-  startPos: "startPos",
-  prevTranslate: "prevTranslate",
-  currentTranslate: "currentTranslate",
-  currentEventType: "currentEventType",
-  currentSlideMovement: "currentSlideMovement",
-  currentAnimation: "currentAnimation",
-  startTime: "startTime",
-  endTime: "endTime",
-  isMouseLeave: "isMouseLeave",
-  animationID: "animationID",
-  autoplay: "autoplay",
-  autoplaySpeed: "autoplaySpeed",
-  dots: "dots",
-  dotIndex: "dotIndex",
-  arrows: "arrows",
-  touch: "touch",
-  infinite: "infinite",
-  speed: "speed",
-  transition: "transition",
-  useTailwind: "useTailwind",
-  targetSlides: "targetSlides"
-} as const
-
-export enum State_Keys {
+export enum StateKey {
   PrevSlideIndex = "prevSlideIndex",
   SlideIndex = "slideIndex",
-  JumpIndex = "jumpIndex",
   ActivePage = "activePage",
-  ActivePosition = "activePosition",
   ActiveDataIndex = "activeDataIndex",
-  SlideSpacing = "spacing",
+  SlideGap = "gap",
   SlidesPerPage = "slidesPerPage",
   SlidesPerView = "slidesPerView",
   BaseSlidesPerPage = "baseSlidesPerPage",
@@ -80,98 +28,78 @@ export enum State_Keys {
   Screens = "screens",
   Responsive = "responsive",
   ActiveBreakpoint = "activeBreakpoint",
-  LeftOverSlides = "leftOverSlides",
   StartX = "startX",
   StartY = "startY",
   EndX = "endX",
-  EventFrom = "eventFrom",
-  SliderReady = "sliderReady",
-  isSlidesPerPageAdjusted = "isSlidesPerPageAdjusted",
-  isPagedActive = "isPagedActive",
-  isInitialRender = "isInitialRender",
+  IsPagedActive = "isPagedActive",
+  IsInitialRender = "isInitialRender",
   IsTouch = "isTouch",
-  isCompleteGroup = "isCompleteGroup",
-  isDragging = "isDragging",
+  IsCompleteGroup = "isCompleteGroup",
+  IsDragging = "isDragging",
   IsJumpSlide = "isJumpSlide",
-  isFastNavigation = "isFastNavigation",
+  IsFastNavigation = "isFastNavigation",
   StartPos = "startPos",
   PrevTranslate = "prevTranslate",
   CurrentTranslate = "currentTranslate",
   CurrentEventType = "currentEventType",
   CurrentSlideMovement = "currentSlideMovement",
-  CurrentAnimation = "currentAnimation",
   StartTime = "startTime",
   EndTime = "endTime",
   IsMouseLeave = "isMouseLeave",
   AnimationID = "animationID",
-  Autoplay = "autoplay",
-  AutoplaySpeed = "autoplaySpeed",
   Dots = "dots",
   DotIndex = "dotIndex",
   Arrows = "arrows",
   Touch = "touch",
-  Infinite = "infinite",
-  Speed = "speed",
-  Transition = "transition",
-  UseTailwind = "useTailwind",
-  TargetSlides = "targetSlides"
+  UseLoop = "useLoop",
+  UseDragFree = "useDragFree",
+  UseAutoHeight = "useAutoHeight"
 }
 
 export type StateType = {
   [key: string]: string | number | boolean | null | undefined | any[] | {}
-  [State_Keys.PrevSlideIndex]: number
-  [State_Keys.JumpIndex]: number
-  [State_Keys.SlideIndex]: number
-  [State_Keys.ActivePosition]: number
-  [State_Keys.ActiveDataIndex]: number
-  [State_Keys.ActivePage]: number
-  [State_Keys.SlideSpacing]: number
-  [State_Keys.SlidesPerPage]: number
-  [State_Keys.SlidesPerView]: number
-  [State_Keys.BaseSlidesPerPage]: number
-  [State_Keys.BaseSlidesPerView]: number
-  [State_Keys.NumberOfPages]: number
-  [State_Keys.NumberOfSlides]: number
-  [State_Keys.SliderWidth]: number
-  [State_Keys.SlideSizes]: Record<number, number>
-  [State_Keys.BaseSlideSizes]: Record<number, number>
-  [State_Keys.Screens]: ResponsiveScreensInput
-  [State_Keys.Responsive]: ResponsiveInput
-  [State_Keys.ActiveBreakpoint]: ResponsiveBreakpoint | "base" | null
-  [State_Keys.LeftOverSlides]: number
-  [State_Keys.StartX]: number
-  [State_Keys.StartY]: number
-  [State_Keys.EndX]: number
-  [State_Keys.EventFrom]: EventFrom
-  [State_Keys.SliderReady]: boolean | null
-  [State_Keys.isSlidesPerPageAdjusted]: boolean
-  [State_Keys.IsTouch]: boolean
-  [State_Keys.isInitialRender]: boolean
-  [State_Keys.isPagedActive]: boolean
-  [State_Keys.isCompleteGroup]: boolean
-  [State_Keys.isDragging]: boolean
-  [State_Keys.IsJumpSlide]: boolean
-  [State_Keys.StartPos]: number
-  [State_Keys.PrevTranslate]: number
-  [State_Keys.CurrentTranslate]: number
-  [State_Keys.CurrentEventType]: CurrentEventType
-  [State_Keys.CurrentSlideMovement]: CurrentSlideMovement
-  [State_Keys.CurrentAnimation]: any[]
-  [State_Keys.StartTime]: number
-  [State_Keys.EndTime]: number
-  [State_Keys.IsMouseLeave]: boolean
-  [State_Keys.AnimationID]: number
-  [State_Keys.Autoplay]: boolean
-  [State_Keys.AutoplaySpeed]: number
-  [State_Keys.Dots]: boolean
-  [State_Keys.DotIndex]: number
-  [State_Keys.Arrows]: boolean
-  [State_Keys.Touch]: boolean
-  [State_Keys.Infinite]: boolean
-  [State_Keys.Speed]: number
-  [State_Keys.Transition]: string
-  [State_Keys.UseTailwind]: boolean
-  [State_Keys.TargetSlides]: number[]
+  [StateKey.PrevSlideIndex]: number
+  [StateKey.SlideIndex]: number
+  [StateKey.ActiveDataIndex]: number
+  [StateKey.ActivePage]: number
+  [StateKey.SlideGap]: number
+  [StateKey.SlidesPerPage]: number
+  [StateKey.SlidesPerView]: number
+  [StateKey.BaseSlidesPerPage]: number
+  [StateKey.BaseSlidesPerView]: number
+  [StateKey.NumberOfPages]: number
+  [StateKey.NumberOfSlides]: number
+  [StateKey.SliderWidth]: number
+  [StateKey.SlideSizes]: Record<number, number>
+  [StateKey.BaseSlideSizes]: Record<number, number>
+  [StateKey.Screens]: ResponsiveScreensInput
+  [StateKey.Responsive]: ResponsiveInput
+  [StateKey.ActiveBreakpoint]: ResponsiveBreakpoint | "base" | null
+  [StateKey.StartX]: number
+  [StateKey.StartY]: number
+  [StateKey.EndX]: number
+  [StateKey.IsTouch]: boolean
+  [StateKey.IsInitialRender]: boolean
+  [StateKey.IsPagedActive]: boolean
+  [StateKey.IsCompleteGroup]: boolean
+  [StateKey.IsDragging]: boolean
+  [StateKey.IsJumpSlide]: boolean
+  [StateKey.StartPos]: number
+  [StateKey.PrevTranslate]: number
+  [StateKey.CurrentTranslate]: number
+  [StateKey.CurrentEventType]: CurrentEventType
+  [StateKey.CurrentSlideMovement]: CurrentSlideMovement
+  [StateKey.StartTime]: number
+  [StateKey.EndTime]: number
+  [StateKey.IsMouseLeave]: boolean
+  [StateKey.AnimationID]: number
+  [StateKey.Dots]: boolean
+  [StateKey.DotIndex]: number
+  [StateKey.Arrows]: boolean
+  [StateKey.Touch]: boolean
+  [StateKey.UseLoop]: boolean
+  [StateKey.UseDragFree]: boolean
+  [StateKey.UseAutoHeight]: boolean
 }
 
 export type SlideSizesInput = Record<number, number>
@@ -183,40 +111,36 @@ export type ResponsiveScreensInput = Partial<
 >
 
 export type ResponsiveOption = Partial<{
-  [State_Keys.SlidesPerPage]: number
-  [State_Keys.SlidesPerView]: number
-  [State_Keys.SlideSizes]: SlideSizesInput
+  slidesPerPage: number
+  slidesPerView: number
+  slideSizes: SlideSizesInput
+  useSlidesPerPage: boolean
+  useSlidesPerView: boolean
+  useSlideSizes: boolean
 }>
 
 export type ResponsiveInput = Partial<
   Record<ResponsiveBreakpoint, ResponsiveOption>
 >
 
-export type TypeOptions = Partial<{
-  [State_Keys.SlideSpacing]: number
-  [State_Keys.SlidesPerPage]: number
-  [State_Keys.SlidesPerView]: number
-  [State_Keys.SlideSizes]: SlideSizesInput
-  [State_Keys.Screens]: ResponsiveScreensInput
-  [State_Keys.Responsive]: ResponsiveInput
-  [State_Keys.Autoplay]: boolean
-  [State_Keys.AutoplaySpeed]: number
-  [State_Keys.Dots]: boolean
-  [State_Keys.StartX]: number
-  [State_Keys.EndX]: number
-  [State_Keys.Arrows]: boolean
-  [State_Keys.Touch]: boolean
-  [State_Keys.Infinite]: boolean
-  [State_Keys.Speed]: number
-  [State_Keys.Transition]: string
-  [State_Keys.UseTailwind]: boolean
+export type SliderOptions = Partial<{
+  gap: number
+  slidesPerPage: number
+  slidesPerView: number
+  slideSizes: SlideSizesInput
+  screens: ResponsiveScreensInput
+  responsive: ResponsiveInput
+  useTouch: boolean
+  useLoop: boolean
+  useDragFree: boolean
+  useAutoHeight: boolean
 }>
 
 class State {
   private static state: { [key: string]: StateType } = {}
   public key: string
 
-  constructor(key: string, options?: Partial<TypeOptions>) {
+  constructor(key: string, options?: Partial<SliderOptions>) {
     this.key = key
 
     if (!State.state[key]) {
@@ -225,75 +149,83 @@ class State {
     }
   }
 
-  private initializeState(options: TypeOptions): void {
-    State.state[this.key][State_Keys.PrevSlideIndex] = 0
-    State.state[this.key][State_Keys.ActivePage] = 0
-    State.state[this.key][State_Keys.ActiveDataIndex] = 0
-    State.state[this.key][State_Keys.ActivePosition] = 0
-    State.state[this.key][State_Keys.JumpIndex] = 0
-    State.state[this.key][State_Keys.SlideIndex] = 0
-    State.state[this.key][State_Keys.SlideSpacing] = options.spacing ?? 0
-    State.state[this.key][State_Keys.SlidesPerPage] = options.slidesPerPage ?? 1
-    State.state[this.key][State_Keys.SlidesPerView] = options.slidesPerView ?? 1
-    State.state[this.key][State_Keys.BaseSlidesPerPage] =
+  private initializeState(options: SliderOptions): void {
+    State.state[this.key][StateKey.PrevSlideIndex] = 0
+    State.state[this.key][StateKey.ActivePage] = 0
+    State.state[this.key][StateKey.ActiveDataIndex] = 0
+    State.state[this.key][StateKey.SlideIndex] = 0
+    State.state[this.key][StateKey.SlideGap] = options.gap ?? 0
+    State.state[this.key][StateKey.SlidesPerPage] = options.slidesPerPage ?? 1
+    State.state[this.key][StateKey.SlidesPerView] = options.slidesPerView ?? 1
+    State.state[this.key][StateKey.BaseSlidesPerPage] =
       options.slidesPerPage ?? 1
-    State.state[this.key][State_Keys.BaseSlidesPerView] =
+    State.state[this.key][StateKey.BaseSlidesPerView] =
       options.slidesPerView ?? 1
-    State.state[this.key][State_Keys.NumberOfPages] = 0
-    State.state[this.key][State_Keys.NumberOfSlides] = 0
-    State.state[this.key][State_Keys.SliderWidth] = 0
-    // Normaliza `slideSizes` como percentuais numéricos por posição.
-    // Se vier fora de ordem, o mapa final fica ordenado.
-    State.state[this.key][State_Keys.SlideSizes] = this.normalizeSlideSizes(
+    State.state[this.key][StateKey.NumberOfPages] = 0
+    State.state[this.key][StateKey.NumberOfSlides] = 0
+    State.state[this.key][StateKey.SliderWidth] = 0
+    State.state[this.key][StateKey.SlideSizes] = this.normalizeSlideSizes(
       options.slideSizes
     )
-    State.state[this.key][State_Keys.BaseSlideSizes] =
-      this.normalizeSlideSizes(options.slideSizes)
-    State.state[this.key][State_Keys.Screens] = this.normalizeScreens(
+    State.state[this.key][StateKey.BaseSlideSizes] = this.normalizeSlideSizes(
+      options.slideSizes
+    )
+    State.state[this.key][StateKey.Screens] = this.normalizeScreens(
       options.screens
     )
-    // Guarda os overrides responsivos fora do Tailwind para o ResizeObserver
-    // aplicar por largura real do slider.
-    State.state[this.key][State_Keys.Responsive] = this.normalizeResponsive(
+    State.state[this.key][StateKey.Responsive] = this.normalizeResponsive(
       options.responsive
     )
-    State.state[this.key][State_Keys.ActiveBreakpoint] = "base"
-    State.state[this.key][State_Keys.LeftOverSlides] = 0
-    State.state[this.key][State_Keys.SliderReady] = null
-    State.state[this.key][State_Keys.isSlidesPerPageAdjusted] = false
-    State.state[this.key][State_Keys.isInitialRender] = true
-    State.state[this.key][State_Keys.IsTouch] = false
-    State.state[this.key][State_Keys.isPagedActive] = true
-    State.state[this.key][State_Keys.isCompleteGroup] = true
-    State.state[this.key][State_Keys.isDragging] = false
-    State.state[this.key][State_Keys.IsJumpSlide] = false
-    State.state[this.key][State_Keys.isFastNavigation] = false
-    State.state[this.key][State_Keys.StartPos] = 0
-    State.state[this.key][State_Keys.StartX] = 0
-    State.state[this.key][State_Keys.StartY] = 0
-    State.state[this.key][State_Keys.EndX] = 0
-    State.state[this.key][State_Keys.EventFrom] = null
-    State.state[this.key][State_Keys.PrevTranslate] = 0
-    State.state[this.key][State_Keys.CurrentTranslate] = 0
-    State.state[this.key][State_Keys.CurrentEventType] = null
-    State.state[this.key][State_Keys.CurrentSlideMovement] = null
-    State.state[this.key][State_Keys.CurrentAnimation] = []
-    State.state[this.key][State_Keys.StartTime] = 0
-    State.state[this.key][State_Keys.EndTime] = 0
-    State.state[this.key][State_Keys.IsMouseLeave] = true
-    State.state[this.key][State_Keys.AnimationID] = 0
-    State.state[this.key][State_Keys.Autoplay] = options.autoplay ?? false
-    State.state[this.key][State_Keys.AutoplaySpeed] =
-      options.autoplaySpeed ?? 3000
-    State.state[this.key][State_Keys.Dots] = options.dots ?? true
-    State.state[this.key][State_Keys.DotIndex] = 0
-    State.state[this.key][State_Keys.Arrows] = options.arrows ?? true
-    State.state[this.key][State_Keys.Touch] = options.touch ?? true
-    State.state[this.key][State_Keys.Infinite] = options.infinite ?? false
-    State.state[this.key][State_Keys.Speed] = options.speed ?? 300
-    State.state[this.key][State_Keys.Transition] = options.transition ?? "slide"
-    State.state[this.key][State_Keys.UseTailwind] = options.useTailwind ?? true
-    State.state[this.key][State_Keys.TargetSlides] = []
+    State.state[this.key][StateKey.ActiveBreakpoint] = "base"
+    State.state[this.key][StateKey.IsInitialRender] = true
+    State.state[this.key][StateKey.IsTouch] = false
+    State.state[this.key][StateKey.IsPagedActive] = true
+    State.state[this.key][StateKey.IsCompleteGroup] = true
+    State.state[this.key][StateKey.IsDragging] = false
+    State.state[this.key][StateKey.IsJumpSlide] = false
+    State.state[this.key][StateKey.IsFastNavigation] = false
+    State.state[this.key][StateKey.StartPos] = 0
+    State.state[this.key][StateKey.StartX] = 0
+    State.state[this.key][StateKey.StartY] = 0
+    State.state[this.key][StateKey.EndX] = 0
+    State.state[this.key][StateKey.PrevTranslate] = 0
+    State.state[this.key][StateKey.CurrentTranslate] = 0
+    State.state[this.key][StateKey.CurrentEventType] = null
+    State.state[this.key][StateKey.CurrentSlideMovement] = null
+    State.state[this.key][StateKey.StartTime] = 0
+    State.state[this.key][StateKey.EndTime] = 0
+    State.state[this.key][StateKey.IsMouseLeave] = true
+    State.state[this.key][StateKey.AnimationID] = 0
+    State.state[this.key][StateKey.UseDragFree] = options.useDragFree ?? false
+    State.state[this.key][StateKey.Dots] =
+      !State.state[this.key][StateKey.UseDragFree] && this.hasDotsMarkup()
+    State.state[this.key][StateKey.DotIndex] = 0
+    State.state[this.key][StateKey.Arrows] = this.hasArrowsMarkup()
+    State.state[this.key][StateKey.Touch] = options.useTouch ?? true
+    State.state[this.key][StateKey.UseLoop] =
+      !State.state[this.key][StateKey.UseDragFree] && (options.useLoop ?? false)
+    State.state[this.key][StateKey.UseAutoHeight] =
+      options.useAutoHeight ?? false
+    State.state[this.key][StateKey.IsPagedActive] =
+      !State.state[this.key][StateKey.UseDragFree]
+  }
+
+  private hasDotsMarkup(): boolean {
+    const dotsContainer = getDotsContainer(this.key)
+
+    return !!dotsContainer
+  }
+
+  private hasArrowsMarkup(): boolean {
+    const root = getRootSelector(this.key)
+
+    if (!root) return false
+
+    const arrowSelector = DOM_ELEMENT_ALIASES.ARROW.map(
+      className => `.${className}`
+    ).join(", ")
+
+    return getAllElements<HTMLElement>(arrowSelector, root).length > 0
   }
 
   private normalizeSlideSizes(
@@ -346,9 +278,7 @@ class State {
     return size
   }
 
-  private normalizeResponsive(
-    responsive?: ResponsiveInput
-  ): ResponsiveInput {
+  private normalizeResponsive(responsive?: ResponsiveInput): ResponsiveInput {
     if (!responsive) return {}
 
     const normalizedResponsive: ResponsiveInput = {}
@@ -359,7 +289,10 @@ class State {
       normalizedResponsive[breakpoint] = {
         slidesPerView: this.getResponsiveNumber(config.slidesPerView),
         slidesPerPage: this.getResponsiveNumber(config.slidesPerPage),
-        slideSizes: this.normalizeSlideSizes(config.slideSizes)
+        slideSizes: this.normalizeSlideSizes(config.slideSizes),
+        useSlidesPerView: config.useSlidesPerView === false ? false : undefined,
+        useSlidesPerPage: config.useSlidesPerPage === false ? false : undefined,
+        useSlideSizes: config.useSlideSizes === false ? false : undefined
       }
     })
 
@@ -398,7 +331,7 @@ class State {
       : undefined
   }
 
-  setOptions(options: TypeOptions): void {
+  setOptions(options: SliderOptions): void {
     this.initializeState(options)
   }
 
@@ -412,7 +345,7 @@ class State {
   ): invalidationConditions {
     return {
       isPrevOrCurrent:
-        key === State_Keys.PrevTranslate || key === State_Keys.CurrentTranslate,
+        key === StateKey.PrevTranslate || key === StateKey.CurrentTranslate,
       isNumber: typeof value === "number",
       isNaNValue: typeof value === "number" && isNaN(value),
       isUndefined: value === undefined
@@ -420,10 +353,9 @@ class State {
   }
 
   private shouldInvalidateKey(key: keyof StateType, value: any): boolean {
-    const { isPrevOrCurrent, isNumber, isNaNValue, isUndefined } =
+    const { isPrevOrCurrent, isNaNValue, isUndefined } =
       this.invalidationConditions(key, value)
 
-    // Se for um campo específico e o valor for inválido
     return (isPrevOrCurrent && isNaNValue) || isUndefined
   }
 

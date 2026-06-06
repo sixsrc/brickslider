@@ -6,7 +6,7 @@ import { Slider } from "./Slider"
 import { StateType } from "./State"
 
 export class CloneSlides extends BaseSlider {
-  private slides: HTMLElement[]
+  protected slides: HTMLElement[]
   private clonedSlides: any[]
   private mount: Mount | undefined
   private dataIndex: string
@@ -55,9 +55,9 @@ export class CloneSlides extends BaseSlider {
   }
 
   private slidePositionState(): Partial<StateType> {
-    const { infinite } = this.store
+    const { useLoop } = this.store
     const translate = this.calcTranslate()
-    const index = infinite ? this.slider.getInitialIndexFromClones() : 0
+    const index = useLoop ? this.slider.getInitialIndexFromClones() : 0
 
     return {
       currentTranslate: translate,
@@ -67,64 +67,29 @@ export class CloneSlides extends BaseSlider {
     }
   }
 
-  /*private mountClonedSlides(end: number[], start: number[]): void {
-    for (const index of start) {
-      const original = this.slides[index]
-      const clone = original.cloneNode(true) as HTMLElement
-      addClass([clone], CLASS_VALUES.CLONED)
-
-      const dataIndex = original.getAttribute("data-index")
-      if (dataIndex) clone.setAttribute("data-index", dataIndex)
-
-      this.$children?.insertBefore(clone, this.slides[0])
-      this.clonedSlides.push(clone)
-    }
-
-    for (const index of end) {
-      const original = this.slides[index]
-      const clone = original.cloneNode(true) as HTMLElement
-      addClass([clone], CLASS_VALUES.CLONED)
-
-      const dataIndex = original.getAttribute("data-index")
-      if (dataIndex) clone.setAttribute("data-index", dataIndex)
-
-      this.$children?.appendChild(clone)
-      this.clonedSlides.push(clone)
-    }
-
-    this.mount = new Mount(this.$root)
-    this.mount.setSlidesWidth()
-  }*/
-
   private mountClonedSlides(end: number[], start: number[]): void {
-    // Clonar antes (início)
     for (const index of start) {
       const original = this.slides[index]
       const clone = original.cloneNode(true) as HTMLElement
+
       addClass([clone], CLASS_VALUES.CLONED)
 
-      // data-index do clone = data-index do original
       clone.setAttribute("data-index", original.getAttribute("data-index")!)
-
       this.$children?.insertBefore(clone, this.slides[0])
       this.clonedSlides.push(clone)
     }
 
-    // Clonar depois (fim)
     for (const index of end) {
       const original = this.slides[index]
       const clone = original.cloneNode(true) as HTMLElement
       addClass([clone], CLASS_VALUES.CLONED)
 
-      // data-index do clone = data-index do original
       clone.setAttribute("data-index", original.getAttribute("data-index")!)
 
       this.$children?.appendChild(clone)
       this.clonedSlides.push(clone)
     }
 
-    // Agora, percorre TODOS os slides no DOM (originais + clones)
-    // e atribui data-slide-number na ordem do DOM (1, 2, 3, ...)
     const allSlides = Array.from(this.$children!.children) as HTMLElement[]
     allSlides.forEach((slide, i) => {
       slide.setAttribute("data-slide-number", (i + 1).toString())
@@ -137,10 +102,10 @@ export class CloneSlides extends BaseSlider {
   protected calcTranslate() {
     const slides = Slider.getSlides(this.$root)
     const allSlides = Array.from(slides)
-    const { spacing } = this.store
+    const { gap } = this.store
 
     this.checkDataIndex(allSlides)
-    this.setTotalWidth(spacing)
+    this.setTotalWidth(gap)
 
     return -this.totalWidthBefore
   }
@@ -154,9 +119,9 @@ export class CloneSlides extends BaseSlider {
     }
   }
 
-  private setTotalWidth(spacing: number) {
+  private setTotalWidth(gap: number) {
     this.totalWidthBefore = this.slidesBefore.reduce((acc, slide) => {
-      return acc + slide.offsetWidth + spacing
+      return acc + slide.offsetWidth + gap
     }, 0)
   }
 

@@ -18,6 +18,7 @@ export { BrickSlider }
  */
 
 export { BrickSlider } from "./BrickSlider"
+export { BSPlugin } from "./BSPlugin"
 
 if (import.meta.env.DEV) {
   import("../development/dev-demo")

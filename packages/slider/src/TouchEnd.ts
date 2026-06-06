@@ -4,11 +4,7 @@ import { Slider } from "./Slider"
 import { StateType } from "./State"
 import { EVENTS, TOUCH_LIMIT } from "./helpers"
 import { getSliderNodeList, translate3d, waitFor } from "./helpers"
-import {
-  CurrentSlideMovement,
-  KeyframeAnimation,
-  UpdateSlideIndexType
-} from "./types"
+import { CurrentEventType, KeyframeAnimation } from "./types"
 
 export class TouchEnd extends BaseSlider {
   protected animation: AnimationFrame
@@ -64,7 +60,9 @@ export class TouchEnd extends BaseSlider {
   }
 
   protected action(): void {
-    this.setState({ endTime: Date.now() })
+    const endTimeState = { endTime: Date.now() }
+
+    this.setState(endTimeState)
     this.setState(this.eventTargetState())
     this.handleTouchMove()
     this.setState(this.mainState())
@@ -108,26 +106,72 @@ export class TouchEnd extends BaseSlider {
       isTouch,
       slideIndex,
       currentTranslate,
-      prevTranslate
+      prevTranslate,
+      useDragFree
     } = this.store
 
     this.moveSlider = currentTranslate - prevTranslate
     this.setState(this.prevSlideState(slideIndex))
 
+    if (useDragFree) {
+      this.handleDragFreeTouchEnd(isTouch, isMouseLeave, currentTranslate)
+      return
+    }
+
     const { isNext, isPrev } = this.actionsMove()
 
     if (isNext || isPrev) {
-      this.updateSlideIndex(isNext ? "increment" : "decrement")
+      this.navigateBySwipeDirection(isNext ? "next" : "prev")
+      this.cancelAnimationFrame()
       this.movement = true
     } else {
-      this.setState({ currentSlideMovement: null })
+      const movementState = { currentSlideMovement: null }
+
+      this.setState(movementState)
+
+      if (isTouch && !isMouseLeave) {
+        this.setPosition()
+        this.cancelAnimationFrame()
+        this.movement = false
+      }
     }
+  }
+
+  private handleDragFreeTouchEnd(
+    isTouch: boolean,
+    isMouseLeave: boolean,
+    currentTranslate: number
+  ): void {
+    const movementState = { currentSlideMovement: null }
+    const settleTranslate = currentTranslate + this.moveSlider * 0.12
+
+    this.setState(movementState)
 
     if (isTouch && !isMouseLeave) {
-      this.setPosition()
+      this.slider.commitFreeTranslate(settleTranslate)
       this.cancelAnimationFrame()
       this.movement = false
     }
+  }
+
+  private navigateBySwipeDirection(direction: "next" | "prev"): void {
+    const { slideIndex } = this.store
+    const slideMovement = direction === "next" ? "increment" : "decrement"
+    const snappedTranslate = this.calcTranslate()
+    const navigationState: Partial<StateType> = {
+      prevSlideIndex: slideIndex,
+      currentTranslate: -snappedTranslate,
+      prevTranslate: -snappedTranslate,
+      currentSlideMovement: slideMovement,
+      currentEventType: EVENTS.TOUCHEND as CurrentEventType
+    }
+
+    this.setState(navigationState)
+
+    this.slider.setSlideTarget({
+      from: direction,
+      $root: this.$root
+    })
   }
 
   private actionsMove() {
@@ -155,60 +199,6 @@ export class TouchEnd extends BaseSlider {
     }
   }
 
-  private updateSlideIndex(action: UpdateSlideIndexType): void {
-    const incrementOrDecrement = this.incrementOrDecrementState(action)
-    const currentSlideMovement = this.slideMovementState(action)
-    const objState = { ...incrementOrDecrement, ...currentSlideMovement }
-    const { slideIndex, slidesPerPage } = { ...this.store, ...objState }
-    objState.activePage = Math.floor(slideIndex / slidesPerPage)
-    this.setState(objState)
-  }
-
-  private slideMovementState(action: CurrentSlideMovement): Partial<StateType> {
-    return { currentSlideMovement: action }
-  }
-
-  private incrementOrDecrementState(
-    action: UpdateSlideIndexType
-  ): Partial<StateType> {
-    const { slideIndex, slidesPerPage, slidesPerView } = this.store
-    const step = slidesPerPage || 1
-    const totalSlides = this.slides.length
-    const view = slidesPerView || 1
-    const maxStartIndex = Math.max(totalSlides - view, 0)
-    let nextIndex = 0
-    const lastGroupStep = this.getLastGroupStep(
-      totalSlides,
-      slidesPerView,
-      slidesPerPage
-    )
-    const hasIncompleteGroup = lastGroupStep < slidesPerView
-
-    console.log("slideIndex", slideIndex)
-
-    if (
-      action === "decrement" &&
-      hasIncompleteGroup &&
-      slideIndex === maxStartIndex
-    ) {
-      nextIndex = slideIndex - lastGroupStep
-    } else {
-      // comportamento padrão
-      nextIndex =
-        action === "increment"
-          ? (slideIndex || 0) + step
-          : (slideIndex || 0) - step
-    }
-
-    console.log("slideIndex touch", nextIndex)
-
-    // clamp para não ultrapassar limites
-    if (nextIndex > maxStartIndex) nextIndex = maxStartIndex
-    if (nextIndex < 0) nextIndex = 0
-
-    return { slideIndex: nextIndex }
-  }
-
   private goToNextSlide(
     moveSlider: number,
     currentIndex: number,
@@ -234,11 +224,12 @@ export class TouchEnd extends BaseSlider {
   private setPosition() {
     const { slideIndex } = this.store
     const translate = this.calcTranslate()
-
-    this.setState({
+    const translateState = {
       currentTranslate: -translate,
       prevTranslate: -translate
-    })
+    }
+
+    this.setState(translateState)
 
     this.slider.setSlideTarget({
       from: "touchend",

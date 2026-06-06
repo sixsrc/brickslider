@@ -1,4 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
+import { Progress } from "./Progress"
 import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./helpers"
 import { animateElement, translate3d } from "./helpers"
 import { AnimationOptions, KeyframeAnimation } from "./types"
@@ -21,6 +22,8 @@ export class AnimationFrame extends BaseSlider {
           this.keyFrames(),
           this.options()
         )
+
+        new Progress(this.$root).sync()
 
         if (callbacks?.onStart) {
           queueMicrotask(() => {
@@ -46,23 +49,24 @@ export class AnimationFrame extends BaseSlider {
   protected options(
     time: number = TIMES.DEFAULT_TRANSITION_TIME
   ): AnimationOptions {
-    const { currentEventType, isJumpSlide } = this.store
+    const { currentEventType, isJumpSlide, useDragFree } = this.store
     const isTouchMove = currentEventType === EVENTS.TOUCHMOVE
+    const isDragFreeRelease =
+      useDragFree && currentEventType === EVENTS.TOUCHEND
     const duration = isTouchMove || isJumpSlide ? 0 : time
-    const actualDuration = duration > 0 ? duration : 0
+    const actualDuration = isDragFreeRelease
+      ? 1500
+      : duration > 0
+        ? duration
+        : 0
+    const easing = isDragFreeRelease
+      ? "cubic-bezier(0.22, 1, 0.36, 1)"
+      : ANIMATION_OPTIONS.EASEOUT
 
     return {
       duration: actualDuration,
-      easing: "ease",
+      easing,
       fill: ANIMATION_OPTIONS.FORWARDS
     }
   }
 }
-
-/*public init = (): number => {
-    const animationId = requestAnimationFrame(() => {
-      this.animate(this.$children, this.keyFrames(), this.options())
-    })
-
-    return animationId
-  }*/

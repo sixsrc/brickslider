@@ -3,6 +3,7 @@ export const DOM_ELEMENTS = {
   SINGLE_SLIDE: ".bs-slide",
   TRACK_SELECTOR: ".bs-track",
   DOTS_SELECTOR: ".bs-dots ",
+  PROGRESS_SELECTOR: ".bs-progress",
   NEXT_BUTTON: "next-button",
   PREV_BUTTON: "prev-button",
   BRICK_ARROWS: ".bs-arrow"
@@ -15,10 +16,13 @@ export const DOM_ELEMENT_ALIASES = {
   DOTS: ["bs-dots"],
   DOT: ["bs-dot"],
   DOT_ACTIVE: ["bs-dot--active"],
+  PROGRESS: ["bs-progress"],
+  PROGRESS_BAR: ["bs-progress-bar"],
   ARROW: ["bs-arrow"],
   ARROW_PREV: ["bs-prev"],
   ARROW_NEXT: ["bs-next"],
-  HIDDEN: ["bs-hidden"]
+  HIDDEN: ["bs-hidden"],
+  DESTROYED: ["bs-destroyed"]
 } as const
 
 export const CLASS_VALUES = {
@@ -52,11 +56,25 @@ export const FROM = {
 } as const
 
 export const ATTRIBUTES = {
+  ID: "id",
+  TYPE: "type",
+  TABINDEX: "tabindex",
   DATA_NUMBER: "data-slide-number",
   CLASS: "class",
+  STYLE: "style",
+  ARIA_LABEL: "aria-label",
   ARIA_HIDDEN: "aria-hidden",
+  ARIA_LIVE: "aria-live",
+  ARIA_ATOMIC: "aria-atomic",
+  ARIA_CURRENT: "aria-current",
+  ARIA_DISABLED: "aria-disabled",
+  ARIA_CONTROLS: "aria-controls",
+  ARIA_ROLEDESCRIPTION: "aria-roledescription",
   ROLE: "role",
-  DRAGGABLE: "draggable"
+  DRAGGABLE: "draggable",
+  ARIA_VALUE_MIN: "aria-valuemin",
+  ARIA_VALUE_MAX: "aria-valuemax",
+  ARIA_VALUE_NOW: "aria-valuenow"
 } as const
 
 export const TIMES = {
@@ -70,6 +88,7 @@ export const TRANSITIONS = {
 export const EVENTS = {
   RESIZE: "resize",
   CLICK: "click",
+  KEYDOWN: "keydown",
   TOUCHSTART: "touchstart",
   TOUCHEND: "touchend",
   TOUCHMOVE: "touchmove",
@@ -161,19 +180,19 @@ export function shouldApplyAdjustment(
 }
 
 export function calcNumberOfSlides(
-  infinite: boolean,
+  useLoop: boolean,
   slidesPerPage: number,
   $children: HTMLElement
 ) {
   const sliderCount = getChildrenCount($children)
 
-  if (infinite && slidesPerPage <= 1) {
+  if (useLoop && slidesPerPage <= 1) {
     return sliderCount - 2
   }
-  if (infinite && slidesPerPage > 1) {
+  if (useLoop && slidesPerPage > 1) {
     return Math.ceil(sliderCount / slidesPerPage) - slidesPerPage
   }
-  if (!infinite && slidesPerPage > 1) {
+  if (!useLoop && slidesPerPage > 1) {
     return Math.ceil(sliderCount / slidesPerPage)
   }
   return sliderCount
@@ -199,6 +218,12 @@ export function getDotsContainer(
   rootSelector: string
 ): HTMLElement | undefined {
   return $(`${rootSelector} .${DOM_ELEMENT_ALIASES.DOTS[0]}`)
+}
+
+export function getProgressContainer(
+  rootSelector: string
+): HTMLElement | undefined {
+  return $(`${rootSelector} .${DOM_ELEMENT_ALIASES.PROGRESS[0]}`)
 }
 
 export function getChildren(rootSelector: string): HTMLElement | undefined {
@@ -241,8 +266,13 @@ export function hasClass(el: HTMLElement, className: string): boolean {
   return el.classList.contains(className)
 }
 
-export function removeClass(el: HTMLElement, className: string): void {
-  el.classList.remove(className)
+export function removeClass(
+  el: HTMLElement,
+  className: string | string[]
+): void {
+  const classNames = Array.isArray(className) ? className : [className]
+
+  el.classList.remove(...classNames)
 }
 
 export function removePart<T extends string | any[]>(
@@ -300,6 +330,12 @@ export function isAppleDevice(): boolean {
   )
 }
 
+export function getSlideMovement(
+  direction: typeof FROM.NEXT | typeof FROM.PREV
+) {
+  return direction === FROM.NEXT ? "increment" : "decrement"
+}
+
 export function indexBasedBy(params: any) {
   const { from, slideIndex, touchIndex } = params
   switch (from) {
@@ -316,11 +352,11 @@ export function indexBasedBy(params: any) {
 }
 
 export function isNotMapped(
-  infinite: boolean,
+  useLoop: boolean,
   currentIndex: number,
   numberOfSlides: number
 ): boolean {
-  if (!infinite) {
+  if (!useLoop) {
     if (currentIndex < 0) return true
     if (currentIndex > numberOfSlides - 1) return true
   }

@@ -6,13 +6,17 @@
   .bs-dots {}
   .bs-dot {}
   .bs-dot--active {}
+  .bs-progress {}
+  .bs-progress-bar {}
   .bs-arrow {}
   .bs-prev {}
   .bs-next {}
   .bs-hidden {}
+  .bs-destroyed {}
   .bs-peek {}
   .bs-peek-sm {}
   .bs-peek-lg {}
+  .bs-auto-height-layout {}
   .bs-content {}
   .bs-label {}
   .bs-img {}

@@ -1,5 +1,5 @@
-import { DOM_ELEMENT_ALIASES, DOM_ELEMENTS, TAGS } from "./helpers"
-import { TypeOptions } from "./State"
+import { DOM_ELEMENT_ALIASES, TAGS } from "./helpers"
+import { ResponsiveBreakpoint, SliderOptions } from "./State"
 import {
   $,
   getAllElements,
@@ -13,6 +13,7 @@ import {
 export class Validation {
   private $root: string
   private ids: Set<string> = new Set<string>()
+  private details: Record<string, string[]> = {}
   private arrElements: HTMLCollection | undefined
   private fixedOrder: string[]
 
@@ -20,10 +21,6 @@ export class Validation {
     this.$root = $root
     this.arrElements = this.getRoot()?.children
     this.fixedOrder = ["track", "children", "slide"]
-  }
-
-  private getSliderClasses() {
-    return DOM_ELEMENT_ALIASES
   }
 
   private getRoot(): HTMLElement | undefined {
@@ -47,7 +44,9 @@ export class Validation {
 
   private getTrackClasses(element: Element): string[] {
     const firstChild = element.children[0]
-    const firstSlide = firstChild?.querySelector(`.${DOM_ELEMENT_ALIASES.SLIDE[0]}`)
+    const firstSlide = firstChild?.querySelector(
+      `.${DOM_ELEMENT_ALIASES.SLIDE[0]}`
+    )
 
     if (!firstSlide) return []
 
@@ -64,7 +63,8 @@ export class Validation {
     if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.CHILDREN))
       return "children"
     if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.SLIDE)) return "slide"
-    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.ARROW)) return "bs-arrow"
+    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.ARROW))
+      return "bs-arrow"
 
     return element.classList[0] ?? null
   }
@@ -110,11 +110,13 @@ export class Validation {
     )
   }
 
-  public sanitizeOptions(options?: TypeOptions): TypeOptions | undefined {
+  public sanitizeOptions(options?: SliderOptions): SliderOptions | undefined {
     if (!options) return options
 
     this.runValidations(options)
-    return this.sanitizeSlideSizesOptions(options)
+    return this.sanitizeDragFreeOptions(
+      this.sanitizeResponsiveOptions(this.sanitizeSlideSizesOptions(options))
+    )
   }
 
   private hasAllElements(): boolean {
@@ -166,7 +168,7 @@ export class Validation {
     return Object.values(classCounts).some(count => count > 1)
   }
 
-  public runValidations(options?: TypeOptions): void {
+  public runValidations(options?: SliderOptions): void {
     const validations = [
       { c: () => !this.hasRootContainer(), id: "NO_ROOT" },
       { c: () => !this.hasTrackContainer(), id: "NO_TRACK" },
@@ -181,21 +183,54 @@ export class Validation {
       {
         c: () => this.hasInvalidSlideSizesValues(options),
         id: "INVALID_SLIDE_SIZES_VALUES"
+      },
+      {
+        c: () => this.hasResponsiveWithoutScreens(options),
+        id: "RESPONSIVE_WITHOUT_SCREENS"
+      },
+      {
+        c: () => this.hasInvalidScreenBreakpointKeys(options),
+        id: "INVALID_SCREENS_BREAKPOINT_KEYS"
+      },
+      {
+        c: () => this.hasInvalidResponsiveBreakpointKeys(options),
+        id: "INVALID_RESPONSIVE_BREAKPOINT_KEYS"
+      },
+      {
+        c: () => this.hasResponsiveBreakpointsMissingInScreens(options),
+        id: "RESPONSIVE_BREAKPOINTS_MISSING_IN_SCREENS"
+      },
+      {
+        c: () => this.hasDotsWithDragFree(options),
+        id: "DRAG_FREE_WITH_DOTS"
       }
     ]
 
     this.ids.clear()
+    this.details = {}
 
     validations.forEach(({ c, id }) => {
       if (c()) this.ids.add(id)
     })
+
+    const missingResponsiveBreakpoints =
+      this.getResponsiveBreakpointsMissingInScreens(options)
+
+    if (missingResponsiveBreakpoints.length > 0) {
+      this.details.RESPONSIVE_BREAKPOINTS_MISSING_IN_SCREENS =
+        missingResponsiveBreakpoints
+    }
   }
 
   public getIds(): string[] {
     return Array.from(this.ids)
   }
 
-  private isSlideSizesValid(slideSizes?: TypeOptions["slideSizes"]): boolean {
+  public getDetails(id: string): string[] {
+    return this.details[id] ?? []
+  }
+
+  private isSlideSizesValid(slideSizes?: SliderOptions["slideSizes"]): boolean {
     if (!slideSizes) return true
 
     return !Object.entries(slideSizes).some(([key, value]) => {
@@ -205,7 +240,7 @@ export class Validation {
     })
   }
 
-  private hasUnsupportedSingleViewSlideSizes(options?: TypeOptions): boolean {
+  private hasUnsupportedSingleViewSlideSizes(options?: SliderOptions): boolean {
     if (!options) return false
 
     const hasUnsupportedBaseSlideSizes =
@@ -214,6 +249,7 @@ export class Validation {
     if (hasUnsupportedBaseSlideSizes) return true
 
     return Object.values(options.responsive ?? {}).some(config => {
+      if (config?.useSlideSizes === false) return false
       if (!config?.slideSizes) return false
 
       const effectiveSlidesPerView =
@@ -223,7 +259,7 @@ export class Validation {
     })
   }
 
-  private hasInvalidSlideSizesValues(options?: TypeOptions): boolean {
+  private hasInvalidSlideSizesValues(options?: SliderOptions): boolean {
     if (!options) return false
 
     const hasInvalidBaseSlideSizes =
@@ -234,6 +270,7 @@ export class Validation {
     if (hasInvalidBaseSlideSizes) return true
 
     return Object.values(options.responsive ?? {}).some(config => {
+      if (config?.useSlideSizes === false) return false
       if (!config?.slideSizes) return false
 
       const effectiveSlidesPerView =
@@ -245,8 +282,8 @@ export class Validation {
     })
   }
 
-  private sanitizeSlideSizesOptions(options: TypeOptions): TypeOptions {
-    const sanitizedOptions: TypeOptions = { ...options }
+  private sanitizeSlideSizesOptions(options: SliderOptions): SliderOptions {
+    const sanitizedOptions: SliderOptions = { ...options }
     const isBaseSlideSizesAllowed = this.isSlideSizesAllowed(
       options.slidesPerView
     )
@@ -262,7 +299,19 @@ export class Validation {
     sanitizedOptions.responsive = Object.entries(options.responsive).reduce(
       (acc, [breakpoint, config]) => {
         if (!config) {
-          acc[breakpoint] = config
+          ;(acc as NonNullable<SliderOptions["responsive"]>)[
+            breakpoint as keyof NonNullable<SliderOptions["responsive"]>
+          ] = config
+          return acc
+        }
+
+        if (config.useSlideSizes === false) {
+          ;(acc as NonNullable<SliderOptions["responsive"]>)[
+            breakpoint as keyof NonNullable<SliderOptions["responsive"]>
+          ] = {
+            ...config,
+            slideSizes: undefined
+          }
           return acc
         }
 
@@ -272,16 +321,136 @@ export class Validation {
           !this.isSlideSizesAllowed(effectiveSlidesPerView) ||
           !this.isSlideSizesValid(config.slideSizes)
 
-        acc[breakpoint] = hasInvalidResponsiveSlideSizes
+        ;(acc as NonNullable<SliderOptions["responsive"]>)[
+          breakpoint as keyof NonNullable<SliderOptions["responsive"]>
+        ] = hasInvalidResponsiveSlideSizes
           ? { ...config, slideSizes: undefined }
           : config
 
         return acc
       },
-      {} as TypeOptions["responsive"]
+      {} as SliderOptions["responsive"]
     )
 
     return sanitizedOptions
+  }
+
+  private sanitizeResponsiveOptions(options: SliderOptions): SliderOptions {
+    const sanitizedOptions: SliderOptions = { ...options }
+
+    if (this.hasResponsiveWithoutScreens(options)) {
+      sanitizedOptions.responsive = undefined
+      return sanitizedOptions
+    }
+
+    if (options.screens) {
+      sanitizedOptions.screens = Object.entries(options.screens).reduce(
+        (acc, [breakpoint, value]) => {
+          if (this.isSupportedBreakpoint(breakpoint)) {
+            acc[breakpoint] = value
+          }
+
+          return acc
+        },
+        {} as NonNullable<SliderOptions["screens"]>
+      )
+    }
+
+    if (options.responsive) {
+      sanitizedOptions.responsive = Object.entries(options.responsive).reduce(
+        (acc, [breakpoint, config]) => {
+          if (
+            this.isSupportedBreakpoint(breakpoint) &&
+            this.hasScreenBreakpointValue(options.screens, breakpoint)
+          ) {
+            acc[breakpoint] = config
+          }
+
+          return acc
+        },
+        {} as NonNullable<SliderOptions["responsive"]>
+      )
+    }
+
+    return sanitizedOptions
+  }
+
+  private sanitizeDragFreeOptions(options: SliderOptions): SliderOptions {
+    if (!options.useDragFree) return options
+
+    return {
+      ...options,
+      useLoop: false
+    }
+  }
+
+  private hasDotsWithDragFree(options?: SliderOptions): boolean {
+    if (!options?.useDragFree) return false
+
+    return !!this.getDotsMarkup()
+  }
+
+  private getDotsMarkup(): HTMLElement | undefined {
+    return $(`${this.$root} .${DOM_ELEMENT_ALIASES.DOTS[0]}`)
+  }
+
+  private hasResponsiveWithoutScreens(options?: SliderOptions): boolean {
+    if (!options?.responsive || Object.keys(options.responsive).length === 0) {
+      return false
+    }
+
+    return !options.screens || Object.keys(options.screens).length === 0
+  }
+
+  private hasInvalidScreenBreakpointKeys(options?: SliderOptions): boolean {
+    if (!options?.screens) return false
+
+    return Object.keys(options.screens).some(
+      breakpoint => !this.isSupportedBreakpoint(breakpoint)
+    )
+  }
+
+  private hasInvalidResponsiveBreakpointKeys(options?: SliderOptions): boolean {
+    if (!options?.responsive) return false
+
+    return Object.keys(options.responsive).some(
+      breakpoint => !this.isSupportedBreakpoint(breakpoint)
+    )
+  }
+
+  private hasResponsiveBreakpointsMissingInScreens(
+    options?: SliderOptions
+  ): boolean {
+    return this.getResponsiveBreakpointsMissingInScreens(options).length > 0
+  }
+
+  private getResponsiveBreakpointsMissingInScreens(
+    options?: SliderOptions
+  ): string[] {
+    if (!options?.responsive || !options.screens) return []
+
+    return Object.keys(options.responsive).filter(
+      breakpoint =>
+        this.isSupportedBreakpoint(breakpoint) &&
+        !this.hasScreenBreakpointValue(options.screens, breakpoint)
+    )
+  }
+
+  private hasScreenBreakpointValue(
+    screens: SliderOptions["screens"],
+    breakpoint: ResponsiveBreakpoint
+  ): boolean {
+    if (!screens) return false
+
+    const value = screens[breakpoint]
+
+    return typeof value === "number" && Number.isFinite(value) && value >= 0
+  }
+
+  private isSupportedBreakpoint(
+    breakpoint: string
+  ): breakpoint is ResponsiveBreakpoint {
+    return ["xs", "sm", "md", "lg", "xl", "2xl"].includes(breakpoint)
   }
 
   private isSlideSizesAllowed(slidesPerView?: number): boolean {

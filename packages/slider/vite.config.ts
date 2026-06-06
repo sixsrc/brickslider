@@ -11,6 +11,12 @@ export default defineConfig({
       {
         find: "@",
         replacement: fileURLToPath(new URL("./src", import.meta.url))
+      },
+      {
+        find: "@sixsrc/brickslider-accessibility",
+        replacement: fileURLToPath(
+          new URL("../accessibility/src/index.ts", import.meta.url)
+        )
       }
     ]
   },

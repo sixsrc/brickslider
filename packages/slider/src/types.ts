@@ -14,12 +14,9 @@ export type AnimationOptions = {
   iterationStart?: number
 }
 
-export type Attributes = {
-  "aria-label": string
-  "aria-hidden": string
+export type SlideDatasetAttributes = {
   "data-index": number
   "data-slide-number": number
-  role: string
 }
 
 export type CurrentEventType =
@@ -88,8 +85,6 @@ type Directions = "right" | "left"
 export type DirectionType = Partial<
   Record<Directions, boolean | undefined>
 > | null
-
-export type EventFrom = "dots" | "touchend" | "next" | "prev" | null
 
 export type getMissingSlides = {
   isMissing: boolean

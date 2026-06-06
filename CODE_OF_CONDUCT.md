@@ -20,7 +20,7 @@ O seguinte comportamento não será tolerado:
 
 ## Como reportar
 
-Se você observar ou experienciar um comportamento inaceitável, por favor reporte ao mantenedor do projeto por email: `maintainers@sixsrc.dev` (substitua pelo contato real) ou abra uma issue privada no repo com o rótulo `private` e marque `@sixsrc`.
+Se você observar ou experienciar um comportamento inaceitável, por favor reporte ao mantenedor do projeto por email: `sixsrcsoftware@gmail.com` ou abra uma issue privada no repo com o rótulo `private` e marque `@sixsrc`.
 
 Inclua o máximo de contexto possível: data, hora, participantes, e descrições do incidente.
 

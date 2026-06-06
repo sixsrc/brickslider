@@ -30,11 +30,14 @@ body {
   - bs-label
   - bs-dots
   - bs-dot
+  - bs-progress
+  - bs-progress-bar
   - bs-prev
   - bs-next
   - bs-peek
   - bs-peek-sm
   - bs-peek-lg
+  - bs-auto-height-layout
 
   Active states are intentionally left for the user to style.
   Example:
@@ -52,6 +55,17 @@ body {
   - bs-peek-sm
   - bs-peek
   - bs-peek-lg
+
+  Auto height helper is optional and should be used on the slider root:
+
+  - bs-auto-height-layout
+
+  Responsive `slideSizes` behavior:
+
+  - responsive[breakpoint].slideSizes overrides global slideSizes
+  - global slideSizes works as fallback
+  - useSlideSizes: false disables both local and global slideSizes for that breakpoint
+  - useSlideSizes: true is redundant because slideSizes is already implicitly enabled
 */
 
 /*
