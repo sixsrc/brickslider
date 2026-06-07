@@ -1,9 +1,9 @@
 import { BaseSlider } from "./BaseSlider"
 import { EVENTS } from "./helpers"
 import { Draggable } from "./Draggable"
-import { getAxisX } from "./helpers"
-import { StateType } from "./State"
-import { MouseEventOrTouchEvent } from "./types"
+import { getAxisX, isPrimaryInputButton } from "./helpers"
+import type { StateType } from "./types"
+import type { MouseEventOrTouchEvent } from "./types"
 
 export class TouchStart extends BaseSlider {
   private draggable: Draggable
@@ -14,6 +14,8 @@ export class TouchStart extends BaseSlider {
   }
 
   public init(event: MouseEventOrTouchEvent): void {
+    if (!isPrimaryInputButton(event)) return
+
     this.handleEvents()
     this.setState(this.mainState(event))
   }

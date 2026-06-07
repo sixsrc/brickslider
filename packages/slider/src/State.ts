@@ -1,6 +1,12 @@
 import {
   CurrentEventType,
   CurrentSlideMovement,
+  type ResponsiveBreakpoint,
+  type ResponsiveInput,
+  type ResponsiveScreensInput,
+  type SliderOptions,
+  type SlideSizesInput,
+  type StateType,
   invalidationConditions
 } from "./types"
 import {
@@ -55,86 +61,6 @@ export enum StateKey {
   UseDragFree = "useDragFree",
   UseAutoHeight = "useAutoHeight"
 }
-
-export type StateType = {
-  [key: string]: string | number | boolean | null | undefined | any[] | {}
-  [StateKey.PrevSlideIndex]: number
-  [StateKey.SlideIndex]: number
-  [StateKey.ActiveDataIndex]: number
-  [StateKey.ActivePage]: number
-  [StateKey.SlideGap]: number
-  [StateKey.SlidesPerPage]: number
-  [StateKey.SlidesPerView]: number
-  [StateKey.BaseSlidesPerPage]: number
-  [StateKey.BaseSlidesPerView]: number
-  [StateKey.NumberOfPages]: number
-  [StateKey.NumberOfSlides]: number
-  [StateKey.SliderWidth]: number
-  [StateKey.SlideSizes]: Record<number, number>
-  [StateKey.BaseSlideSizes]: Record<number, number>
-  [StateKey.Screens]: ResponsiveScreensInput
-  [StateKey.Responsive]: ResponsiveInput
-  [StateKey.ActiveBreakpoint]: ResponsiveBreakpoint | "base" | null
-  [StateKey.StartX]: number
-  [StateKey.StartY]: number
-  [StateKey.EndX]: number
-  [StateKey.IsTouch]: boolean
-  [StateKey.IsInitialRender]: boolean
-  [StateKey.IsPagedActive]: boolean
-  [StateKey.IsCompleteGroup]: boolean
-  [StateKey.IsDragging]: boolean
-  [StateKey.IsJumpSlide]: boolean
-  [StateKey.StartPos]: number
-  [StateKey.PrevTranslate]: number
-  [StateKey.CurrentTranslate]: number
-  [StateKey.CurrentEventType]: CurrentEventType
-  [StateKey.CurrentSlideMovement]: CurrentSlideMovement
-  [StateKey.StartTime]: number
-  [StateKey.EndTime]: number
-  [StateKey.IsMouseLeave]: boolean
-  [StateKey.AnimationID]: number
-  [StateKey.Dots]: boolean
-  [StateKey.DotIndex]: number
-  [StateKey.Arrows]: boolean
-  [StateKey.Touch]: boolean
-  [StateKey.UseLoop]: boolean
-  [StateKey.UseDragFree]: boolean
-  [StateKey.UseAutoHeight]: boolean
-}
-
-export type SlideSizesInput = Record<number, number>
-
-export type ResponsiveBreakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
-
-export type ResponsiveScreensInput = Partial<
-  Record<ResponsiveBreakpoint, number>
->
-
-export type ResponsiveOption = Partial<{
-  slidesPerPage: number
-  slidesPerView: number
-  slideSizes: SlideSizesInput
-  useSlidesPerPage: boolean
-  useSlidesPerView: boolean
-  useSlideSizes: boolean
-}>
-
-export type ResponsiveInput = Partial<
-  Record<ResponsiveBreakpoint, ResponsiveOption>
->
-
-export type SliderOptions = Partial<{
-  gap: number
-  slidesPerPage: number
-  slidesPerView: number
-  slideSizes: SlideSizesInput
-  screens: ResponsiveScreensInput
-  responsive: ResponsiveInput
-  useTouch: boolean
-  useLoop: boolean
-  useDragFree: boolean
-  useAutoHeight: boolean
-}>
 
 class State {
   private static state: { [key: string]: StateType } = {}
@@ -341,7 +267,7 @@ class State {
 
   private invalidationConditions(
     key: keyof StateType,
-    value: any
+    value: unknown
   ): invalidationConditions {
     return {
       isPrevOrCurrent:
@@ -352,7 +278,7 @@ class State {
     }
   }
 
-  private shouldInvalidateKey(key: keyof StateType, value: any): boolean {
+  private shouldInvalidateKey(key: keyof StateType, value: unknown): boolean {
     const { isPrevOrCurrent, isNaNValue, isUndefined } =
       this.invalidationConditions(key, value)
 

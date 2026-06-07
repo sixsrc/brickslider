@@ -1,9 +1,9 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { StateType } from "./State"
+import type { StateType } from "./types"
 import { EVENTS, MOVE_TO_LIMIT, POSITION } from "./helpers"
 import { getAxisX } from "./helpers"
-import { MouseEventOrTouchEvent, PositionSlider } from "./types"
+import type { MouseEventOrTouchEvent, PositionSlider } from "./types"
 
 export class TouchMove extends BaseSlider {
   private currentPosition: number
@@ -33,7 +33,7 @@ export class TouchMove extends BaseSlider {
     }
   }
 
-  protected updatePosition(event: MouseEvent | TouchEvent) {
+  protected updatePosition(event: MouseEvent | TouchEvent): void {
     this.previousPosition = this.currentPosition
     this.currentPosition = getAxisX(event)
   }
@@ -71,6 +71,7 @@ export class TouchMove extends BaseSlider {
     const limit = Math.abs(
       (this.sliderWidth! * MOVE_TO_LIMIT) / 100 - this.sliderWidth!
     )
+
     return position === POSITION.RIGHT ? translate <= limit : translate >= limit
   }
 }

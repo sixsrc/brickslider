@@ -1,11 +1,12 @@
 import { BaseSlider } from "./BaseSlider"
-import {
+import type {
   ResponsiveBreakpoint,
   ResponsiveInput,
+  ResponsiveOption,
   ResponsiveScreensInput,
   StateType
-} from "./State"
-import { getSliderWidth } from "./helpers"
+} from "./types"
+import { EVENTS, getSliderNodeList, getSliderWidth, listener } from "./helpers"
 
 export class Resize extends BaseSlider {
   private resizeObserver: ResizeObserver | null = null
@@ -34,25 +35,51 @@ export class Resize extends BaseSlider {
     if (this.resizeObserver || !target) return
 
     this.resizeObserver = new ResizeObserver(() => this.handleSizeChange())
-
     this.lastObservedWidth = getSliderWidth(this.$children) ?? 0
     this.lastObservedViewportWidth = this.getViewportWidth()
     this.resizeObserver.observe(target)
   }
 
   private listenWindowResize(): void {
-    if (this.hasWindowListener) return
+    const hasWindowListener = this.hasWindowListener
 
+    if (hasWindowListener) return
+
+    this.enableWindowListener()
+    this.bindWindowResize()
+  }
+
+  private enableWindowListener(): void {
     this.hasWindowListener = true
+  }
 
-    window.addEventListener("resize", () => {
-      if (this.resizeFrame !== null) cancelAnimationFrame(this.resizeFrame)
+  private bindWindowResize(): void {
+    listener([EVENTS.RESIZE], window, () => this.scheduleWindowResize())
+  }
 
-      this.resizeFrame = requestAnimationFrame(() => {
-        this.resizeFrame = null
-        this.handleSizeChange()
-      })
+  private scheduleWindowResize(): void {
+    const hasPendingResizeFrame = this.hasPendingResizeFrame()
+
+    if (hasPendingResizeFrame) this.cancelResizeFrame()
+
+    this.resizeFrame = requestAnimationFrame(() => {
+      this.clearResizeFrame()
+      this.handleSizeChange()
     })
+  }
+
+  private hasPendingResizeFrame(): boolean {
+    return this.resizeFrame !== null
+  }
+
+  private cancelResizeFrame(): void {
+    if (this.resizeFrame === null) return
+
+    cancelAnimationFrame(this.resizeFrame)
+  }
+
+  private clearResizeFrame(): void {
+    this.resizeFrame = null
   }
 
   private handleSizeChange(): void {
@@ -88,6 +115,40 @@ export class Resize extends BaseSlider {
   }
 
   private getResponsiveState(sliderWidth: number): Partial<StateType> {
+    const responsiveContext = this.getResponsiveContext(sliderWidth)
+    const responsiveSlideCounts = this.getResponsiveSlideCounts(
+      responsiveContext.matchedConfig,
+      responsiveContext.baseSlidesPerView,
+      responsiveContext.baseSlidesPerPage,
+      responsiveContext.totalSlides
+    )
+    const slideSizes = this.getResponsiveSlideSizes(
+      responsiveContext.matchedConfig,
+      responsiveContext.baseSlideSizes
+    )
+    const slideIndex = this.getResponsiveSlideIndex(
+      responsiveContext.totalSlides,
+      responsiveSlideCounts.slidesPerView,
+      responsiveSlideCounts.slidesPerPage
+    )
+
+    return this.createResponsiveState(
+      responsiveSlideCounts.slidesPerView,
+      responsiveSlideCounts.slidesPerPage,
+      slideSizes,
+      slideIndex,
+      responsiveContext.activeBreakpoint
+    )
+  }
+
+  private getResponsiveContext(sliderWidth: number): {
+    activeBreakpoint: ResponsiveBreakpoint | null
+    baseSlideSizes: Record<number, number>
+    baseSlidesPerPage: number
+    baseSlidesPerView: number
+    matchedConfig: ResponsiveOption | undefined
+    totalSlides: number
+  } {
     const {
       screens: rawScreens,
       responsive: rawResponsive,
@@ -102,36 +163,52 @@ export class Resize extends BaseSlider {
       screens,
       responsive
     )
-    const matchedConfig =
-      activeBreakpoint && responsive ? responsive[activeBreakpoint] : undefined
-    const totalSlides = BaseSlider.getSlides(this.$root, false).length
-    const shouldIgnoreSlidesPerView = matchedConfig?.useSlidesPerView === false
-    const shouldIgnoreSlidesPerPage = matchedConfig?.useSlidesPerPage === false
-    const slidesPerView = this.clampSlideCount(
-      shouldIgnoreSlidesPerView
-        ? baseSlidesPerView
-        : (matchedConfig?.slidesPerView ?? baseSlidesPerView),
+    const matchedConfig = this.getMatchedResponsiveConfig(
+      activeBreakpoint,
+      responsive
+    )
+    const totalSlides = getSliderNodeList(this.$root, false).length
+
+    return {
+      activeBreakpoint,
+      baseSlideSizes,
+      baseSlidesPerPage,
+      baseSlidesPerView,
+      matchedConfig,
+      totalSlides
+    }
+  }
+
+  private getResponsiveSlideCounts(
+    matchedConfig: ResponsiveOption | undefined,
+    baseSlidesPerView: number,
+    baseSlidesPerPage: number,
+    totalSlides: number
+  ): {
+    slidesPerPage: number
+    slidesPerView: number
+  } {
+    const slidesPerView = this.getResponsiveSlidesPerView(
+      matchedConfig,
+      baseSlidesPerView,
       totalSlides
     )
-    const slidesPerPage = this.clampSlideCount(
-      shouldIgnoreSlidesPerPage
-        ? baseSlidesPerPage
-        : (matchedConfig?.slidesPerPage ?? baseSlidesPerPage),
+    const slidesPerPage = this.getResponsiveSlidesPerPage(
+      matchedConfig,
+      baseSlidesPerPage,
       totalSlides
-    )
-    const shouldIgnoreSlideSizes = matchedConfig?.useSlideSizes === false
-    const slideSizes = shouldIgnoreSlideSizes
-      ? {}
-      : matchedConfig?.slideSizes &&
-          Object.keys(matchedConfig.slideSizes).length > 0
-        ? matchedConfig.slideSizes
-        : baseSlideSizes
-    const slideIndex = this.getResponsiveSlideIndex(
-      totalSlides,
-      slidesPerView,
-      slidesPerPage
     )
 
+    return { slidesPerPage, slidesPerView }
+  }
+
+  private createResponsiveState(
+    slidesPerView: number,
+    slidesPerPage: number,
+    slideSizes: Record<number, number>,
+    slideIndex: number,
+    activeBreakpoint: ResponsiveBreakpoint | null
+  ): Partial<StateType> {
     return {
       slidesPerView,
       slidesPerPage,
@@ -141,24 +218,86 @@ export class Resize extends BaseSlider {
     }
   }
 
+  private getMatchedResponsiveConfig(
+    activeBreakpoint: ResponsiveBreakpoint | null,
+    responsive?: ResponsiveInput
+  ): ResponsiveOption | undefined {
+    if (!activeBreakpoint || !responsive) return undefined
+
+    return responsive[activeBreakpoint]
+  }
+
+  private getResponsiveSlidesPerView(
+    matchedConfig: ResponsiveOption | undefined,
+    baseSlidesPerView: number,
+    totalSlides: number
+  ): number {
+    const shouldIgnoreSlidesPerView = matchedConfig?.useSlidesPerView === false
+    const slidesPerView = shouldIgnoreSlidesPerView
+      ? baseSlidesPerView
+      : (matchedConfig?.slidesPerView ?? baseSlidesPerView)
+
+    return this.clampSlideCount(slidesPerView, totalSlides)
+  }
+
+  private getResponsiveSlidesPerPage(
+    matchedConfig: ResponsiveOption | undefined,
+    baseSlidesPerPage: number,
+    totalSlides: number
+  ): number {
+    const shouldIgnoreSlidesPerPage = matchedConfig?.useSlidesPerPage === false
+    const slidesPerPage = shouldIgnoreSlidesPerPage
+      ? baseSlidesPerPage
+      : (matchedConfig?.slidesPerPage ?? baseSlidesPerPage)
+
+    return this.clampSlideCount(slidesPerPage, totalSlides)
+  }
+
+  private getResponsiveSlideSizes(
+    matchedConfig: ResponsiveOption | undefined,
+    baseSlideSizes: Record<number, number>
+  ): Record<number, number> {
+    const shouldIgnoreSlideSizes = matchedConfig?.useSlideSizes === false
+    const hasResponsiveSlideSizes = !!matchedConfig?.slideSizes &&
+      Object.keys(matchedConfig.slideSizes).length > 0
+
+    if (shouldIgnoreSlideSizes) return {}
+    if (hasResponsiveSlideSizes) return matchedConfig!.slideSizes!
+
+    return baseSlideSizes
+  }
+
   private getResponsiveSlideIndex(
     totalSlides: number,
     slidesPerView: number,
     slidesPerPage: number
   ): number {
     const { slideIndex, useLoop } = this.store
-    const currentIndex = typeof slideIndex === "number" ? slideIndex : 0
-
-    if (useLoop) return Math.max(0, currentIndex)
-
+    const currentIndex = this.getCurrentResponsiveSlideIndex(slideIndex)
     const positions = this.getValidPositions(
       totalSlides,
       slidesPerView,
       slidesPerPage
     )
 
+    if (useLoop) return this.getLoopResponsiveSlideIndex(currentIndex)
     if (positions.length === 0) return 0
 
+    return this.getClosestResponsiveSlideIndex(currentIndex, positions)
+  }
+
+  private getCurrentResponsiveSlideIndex(slideIndex: number): number {
+    return typeof slideIndex === "number" ? slideIndex : 0
+  }
+
+  private getLoopResponsiveSlideIndex(currentIndex: number): number {
+    return Math.max(0, currentIndex)
+  }
+
+  private getClosestResponsiveSlideIndex(
+    currentIndex: number,
+    positions: number[]
+  ): number {
     return positions.reduce((closest, position) => {
       return Math.abs(position - currentIndex) <
         Math.abs(closest - currentIndex)
@@ -188,27 +327,62 @@ export class Resize extends BaseSlider {
     screens?: ResponsiveScreensInput,
     responsive?: ResponsiveInput
   ): ResponsiveBreakpoint | null {
-    if (!screens || Object.keys(screens).length === 0) return null
-    if (!responsive || Object.keys(responsive).length === 0) return null
+    const hasResponsiveConfig = this.hasResponsiveConfig(screens, responsive)
+    const orderedBreakpoints = this.getOrderedBreakpoints(screens, responsive)
 
-    const orderedBreakpoints = Object.entries(screens)
+    if (!hasResponsiveConfig) return null
+
+    return this.resolveActiveBreakpoint(sliderWidth, orderedBreakpoints)
+  }
+
+  private hasResponsiveConfig(
+    screens?: ResponsiveScreensInput,
+    responsive?: ResponsiveInput
+  ): boolean {
+    return !!screens &&
+      Object.keys(screens).length > 0 &&
+      !!responsive &&
+      Object.keys(responsive).length > 0
+  }
+
+  private getOrderedBreakpoints(
+    screens?: ResponsiveScreensInput,
+    responsive?: ResponsiveInput
+  ): Array<[ResponsiveBreakpoint, number]> {
+    if (!screens || !responsive) return []
+
+    return Object.entries(screens)
       .filter(([breakpoint, minWidth]) => {
-        return (
-          responsive[breakpoint as ResponsiveBreakpoint] !== undefined &&
-          typeof minWidth === "number"
-        )
+        return this.isConfiguredBreakpoint(breakpoint, minWidth, responsive)
       })
       .sort(([, a], [, b]) => Number(a) - Number(b)) as Array<
       [ResponsiveBreakpoint, number]
     >
+  }
 
-    let activeBreakpoint: ResponsiveBreakpoint | null = null
+  private isConfiguredBreakpoint(
+    breakpoint: string,
+    minWidth: number | undefined,
+    responsive: ResponsiveInput
+  ): boolean {
+    return (
+      responsive[breakpoint as ResponsiveBreakpoint] !== undefined &&
+      typeof minWidth === "number"
+    )
+  }
 
-    orderedBreakpoints.forEach(([breakpoint, minWidth]) => {
-      if (sliderWidth >= minWidth) activeBreakpoint = breakpoint
-    })
+  private resolveActiveBreakpoint(
+    sliderWidth: number,
+    orderedBreakpoints: Array<[ResponsiveBreakpoint, number]>
+  ): ResponsiveBreakpoint | null {
+    return orderedBreakpoints.reduce<ResponsiveBreakpoint | null>(
+      (activeBreakpoint, [breakpoint, minWidth]) => {
+        if (sliderWidth >= minWidth) return breakpoint
 
-    return activeBreakpoint
+        return activeBreakpoint
+      },
+      null
+    )
   }
 
   private clampSlideCount(value: number, totalSlides: number): number {

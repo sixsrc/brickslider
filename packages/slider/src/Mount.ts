@@ -3,7 +3,6 @@ import { Dots } from "./Dots"
 import { Progress } from "./Progress"
 import { Resize } from "./Resize"
 import { CloneSlides } from "./CloneSlides"
-import { StateType } from "./State"
 import { Swipe } from "./Swipe"
 import { CLASS_VALUES } from "./helpers"
 import {
@@ -17,7 +16,11 @@ import {
   setAttributes,
   waitFor
 } from "./helpers"
-import { KeyframeAnimation, SlideDatasetAttributes } from "./types"
+import type {
+  KeyframeAnimation,
+  SlideDatasetAttributes,
+  StateType
+} from "./types"
 import { ContextMenu } from "./ContextMenu"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
@@ -58,28 +61,72 @@ export class Mount extends BaseSlider {
   public normalizeSlidesConfig(): void {
     const { slidesPerPage: originalPerPage, slidesPerView: originalPerView } =
       this.store
-    const totalSlides = this.slidesArr.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    ).length
-    const maxSlidesPerPage = Math.max(1, totalSlides - originalPerView)
+    const totalSlides = this.getTotalOriginalSlides()
+    const slidesConfig = this.getNormalizedSlidesConfig(
+      originalPerPage,
+      originalPerView,
+      totalSlides
+    )
 
     if (originalPerView > totalSlides) {
-      const slidesPerViewState = { slidesPerView: totalSlides }
-
-      this.setState(slidesPerViewState)
+      this.setState(this.slidesPerViewState(totalSlides))
     }
 
-    if (originalPerView + originalPerPage <= totalSlides) {
-      this.setState({
+    this.setState(slidesConfig)
+  }
+
+  private getTotalOriginalSlides(): number {
+    return this.slides.filter(slide => !hasClass(slide, CLASS_VALUES.CLONED))
+      .length
+  }
+
+  private getNormalizedSlidesConfig(
+    originalPerPage: number,
+    originalPerView: number,
+    totalSlides: number
+  ): Partial<StateType> {
+    if (
+      this.canUseOriginalSlidesConfig(
+        originalPerPage,
+        originalPerView,
+        totalSlides
+      )
+    ) {
+      return {
         slidesPerPage: originalPerPage,
         slidesPerView: originalPerView
-      })
-      return
+      }
     }
 
-    this.setState({
-      slidesPerPage: Math.min(originalPerPage, maxSlidesPerPage)
-    })
+    return {
+      slidesPerPage: this.getMaxSlidesPerPage(
+        originalPerPage,
+        originalPerView,
+        totalSlides
+      )
+    }
+  }
+
+  private canUseOriginalSlidesConfig(
+    originalPerPage: number,
+    originalPerView: number,
+    totalSlides: number
+  ): boolean {
+    return originalPerView + originalPerPage <= totalSlides
+  }
+
+  private getMaxSlidesPerPage(
+    originalPerPage: number,
+    originalPerView: number,
+    totalSlides: number
+  ): number {
+    const maxSlidesPerPage = Math.max(1, totalSlides - originalPerView)
+
+    return Math.min(originalPerPage, maxSlidesPerPage)
+  }
+
+  private slidesPerViewState(slidesPerView: number): Partial<StateType> {
+    return { slidesPerView }
   }
 
   private cloneSlides(): void {
@@ -87,7 +134,7 @@ export class Mount extends BaseSlider {
 
     if (useLoop) {
       this.clone.init()
-      this.slides = BaseSlider.getSlides(this.$root)
+      this.slides = getSliderNodeList(this.$root)
       this.slider = new Slider(this.$root)
     }
   }
@@ -133,12 +180,16 @@ export class Mount extends BaseSlider {
   }
 
   private getDefaultSlideWidth(): number {
-    const { gap, slidesPerView, sliderWidth } = this.store
-    const totalSpacing = (slidesPerView - 1) * gap
-    const availableWidth = sliderWidth - totalSpacing
-    const slideWidth = availableWidth / slidesPerView
+    const availableWidth = this.getAvailableWidth()
+    const slideWidth = this.getSlideWidthFromAvailableWidth(availableWidth)
 
     return Math.max(0, slideWidth)
+  }
+
+  private getSlideWidthFromAvailableWidth(availableWidth: number): number {
+    const { slidesPerView } = this.store
+
+    return availableWidth / slidesPerView
   }
 
   private getSlideWidth(index: number): string {
@@ -182,40 +233,127 @@ export class Mount extends BaseSlider {
     const groupPositions = this.getGroupPositions(position)
     const { slideSizes } = this.store
     const customSizes = slideSizes ?? {}
-    const customEntries = groupPositions
+    const customEntries = this.getCustomSlideSizeEntries(
+      groupPositions,
+      customSizes
+    )
+
+    if (customEntries.length === 0) return
+
+    const scale = this.getCustomSlideSizeScale(
+      groupPositions,
+      customEntries,
+      customSizes
+    )
+    const fallbackPercentage = this.getFallbackSlideSizePercentage(
+      groupPositions,
+      customEntries,
+      customSizes,
+      scale
+    )
+    const availableWidth = this.getAvailableWidth()
+
+    this.setResolvedGroupWidths(
+      groupPositions,
+      customSizes,
+      fallbackPercentage,
+      scale,
+      availableWidth
+    )
+  }
+
+  private getCustomSlideSizeEntries(
+    groupPositions: number[],
+    customSizes: Record<number, number>
+  ): Array<readonly [number, number]> {
+    return groupPositions
       .filter(groupPosition => typeof customSizes[groupPosition] === "number")
       .map(
         groupPosition => [groupPosition, customSizes[groupPosition]] as const
       )
+  }
 
-    if (customEntries.length === 0) return
+  private getCustomSlideSizeScale(
+    groupPositions: number[],
+    customEntries: Array<readonly [number, number]>,
+    customSizes: Record<number, number>
+  ): number {
+    const customTotal = this.getCustomSlideSizeTotal(customEntries)
+    const maxCustomBudget = this.getMaxCustomSlideSizeBudget(
+      groupPositions,
+      customSizes
+    )
 
-    const customTotal = customEntries.reduce(
-      (total, [, percentage]) => total + percentage,
-      0
-    )
-    const flexiblePositions = groupPositions.filter(
-      groupPosition => customSizes[groupPosition] === undefined
-    )
-    const totalSlots = Math.max(1, groupPositions.length)
-    const defaultSlotPercentage = 100 / totalSlots
-    const reservedFlexiblePercentage =
-      flexiblePositions.length * defaultSlotPercentage
-    const maxCustomBudget =
-      flexiblePositions.length > 0 ? 100 - reservedFlexiblePercentage : 100
-    const scale =
-      customTotal > maxCustomBudget ? maxCustomBudget / customTotal : 1
-    const normalizedCustomTotal = customEntries.reduce(
+    return customTotal > maxCustomBudget ? maxCustomBudget / customTotal : 1
+  }
+
+  private getCustomSlideSizeTotal(
+    customEntries: Array<readonly [number, number]>,
+    scale = 1
+  ): number {
+    return customEntries.reduce(
       (total, [, percentage]) => total + percentage * scale,
       0
     )
-    const remainingPercentage = Math.max(0, 100 - normalizedCustomTotal)
-    const fallbackPercentage =
-      flexiblePositions.length > 0
-        ? remainingPercentage / flexiblePositions.length
-        : 0
-    const availableWidth = this.getAvailableWidth()
+  }
 
+  private getMaxCustomSlideSizeBudget(
+    groupPositions: number[],
+    customSizes: Record<number, number>
+  ): number {
+    const flexiblePositions = this.getFlexibleSlideSizePositions(
+      groupPositions,
+      customSizes
+    )
+    const reservedFlexiblePercentage =
+      flexiblePositions.length * this.getDefaultSlotPercentage(groupPositions)
+
+    return flexiblePositions.length > 0 ? 100 - reservedFlexiblePercentage : 100
+  }
+
+  private getDefaultSlotPercentage(groupPositions: number[]): number {
+    const totalSlots = Math.max(1, groupPositions.length)
+
+    return 100 / totalSlots
+  }
+
+  private getFallbackSlideSizePercentage(
+    groupPositions: number[],
+    customEntries: Array<readonly [number, number]>,
+    customSizes: Record<number, number>,
+    scale: number
+  ): number {
+    const flexiblePositions = this.getFlexibleSlideSizePositions(
+      groupPositions,
+      customSizes
+    )
+    const normalizedCustomTotal = this.getCustomSlideSizeTotal(
+      customEntries,
+      scale
+    )
+    const remainingPercentage = Math.max(0, 100 - normalizedCustomTotal)
+
+    return flexiblePositions.length > 0
+      ? remainingPercentage / flexiblePositions.length
+      : 0
+  }
+
+  private getFlexibleSlideSizePositions(
+    groupPositions: number[],
+    customSizes: Record<number, number>
+  ): number[] {
+    return groupPositions.filter(
+      groupPosition => customSizes[groupPosition] === undefined
+    )
+  }
+
+  private setResolvedGroupWidths(
+    groupPositions: number[],
+    customSizes: Record<number, number>,
+    fallbackPercentage: number,
+    scale: number,
+    availableWidth: number
+  ): void {
     groupPositions.forEach(groupPosition => {
       const customPercentage = customSizes[groupPosition]
       const percentage =
@@ -233,7 +371,7 @@ export class Mount extends BaseSlider {
   private getGroupPositions(position: number): number[] {
     const { slidesPerView: currentSlidesPerView } = this.store
     const slidesPerView = currentSlidesPerView || 1
-    const totalSlides = BaseSlider.getSlides(this.$root, false).length
+    const totalSlides = getSliderNodeList(this.$root, false).length
     const groupStart = Math.floor(position / slidesPerView) * slidesPerView
     const groupEnd = Math.min(groupStart + slidesPerView, totalSlides)
 
@@ -302,7 +440,6 @@ export class Mount extends BaseSlider {
     }
 
     this.setState(translateState)
-
     this.animate(this.$children, super.keyFrames(-translate), this.options(0))
     this.setActiveSlides()
   }
@@ -344,10 +481,6 @@ export class Mount extends BaseSlider {
     this.mutate.updateActiveSlides(visibleIndexes, maxActive)
   }
 
-  private setPeekStyle(): void {
-    this.animate(this.$track, {} as any, this.options())
-  }
-
   public setSlidesWidth(): void {
     this.resolvedSlideWidths.clear()
 
@@ -380,7 +513,6 @@ export class Mount extends BaseSlider {
 
   private endMount(): void {
     this.setActiveSlides()
-    this.setPeekStyle()
     this.setSlidesWidth()
     this.setSlidesWidth()
     this.syncAutoHeight(0, 0)

@@ -1,6 +1,8 @@
-export type AnimationCondition = {
-  c: boolean
-  k: KeyframeAnimation[]
+import type { StateKey } from "./State"
+
+export type AnimationCallbacks = {
+  onStart?: (animations: Animation[]) => void
+  onEnd?: (animations: Animation[]) => void
 }
 
 export type AnimationOptions = {
@@ -32,24 +34,14 @@ export type CurrentEventType =
 
 export type ContextMenuListenersParams = {
   element: HTMLElement
-  rightClick: any
+  rightClick: EventListener
 }
 
-export type CurrentSlideMovement = "increment" | "decrement" | null
+export type CurrentSlideMovement = UpdateSlideIndexType | null
 
 export type DragabbleListenersParams = {
   element: HTMLElement
-  dragStart: any
-}
-export type EvalConditionsTouchMove = { [key: string]: boolean }
-
-export type IndexMap = Record<IndexKey, IndexData>
-
-export type IndexKey = "first" | "last"
-
-export type IndexData = {
-  currentIndex: IndexKey
-  translate: number
+  dragStart: EventListener
 }
 
 export type invalidationConditions = {
@@ -63,32 +55,12 @@ export type MouseEventOrTouchEvent = TouchEvent | MouseEvent
 
 export type PositionSlider = "right" | "left"
 
-export type shouldInvalidateKey = { shouldInvalidate: boolean }
-
 export type TouchListenersParams = {
   element: HTMLElement
   index: number
-  touchStart: any
-  touchEnd: any
+  touchStart: EventListener
+  touchEnd: EventListener
   touchMove: EventListener
-  // contextMenu: any
-}
-
-export type TypeIndexBaseSliderdBy = {
-  from: string | null
-  slideIndex: number
-  touchIndex?: number
-}
-
-type Directions = "right" | "left"
-
-export type DirectionType = Partial<
-  Record<Directions, boolean | undefined>
-> | null
-
-export type getMissingSlides = {
-  isMissing: boolean
-  leftOver: number
 }
 
 export type TypeTargetSlideParams = {
@@ -99,4 +71,87 @@ export type TypeTargetSlideParams = {
 
 export type UpdateSlideIndexType = "increment" | "decrement"
 
-export type KeyframeAnimation = Record<string, any>
+export type KeyframeAnimation = Keyframe
+
+export type TouchMoveAction = "dragFree" | "swipe" | "fallback"
+
+export type SlideSizesInput = Record<number, number>
+
+export type ResponsiveBreakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
+
+export type ResponsiveScreensInput = Partial<
+  Record<ResponsiveBreakpoint, number>
+>
+
+export type ResponsiveOption = Partial<{
+  slidesPerPage: number
+  slidesPerView: number
+  slideSizes: SlideSizesInput
+  useSlidesPerPage: boolean
+  useSlidesPerView: boolean
+  useSlideSizes: boolean
+}>
+
+export type ResponsiveInput = Partial<
+  Record<ResponsiveBreakpoint, ResponsiveOption>
+>
+
+export type SliderOptions = Partial<{
+  gap: number
+  slidesPerPage: number
+  slidesPerView: number
+  slideSizes: SlideSizesInput
+  screens: ResponsiveScreensInput
+  responsive: ResponsiveInput
+  useTouch: boolean
+  useLoop: boolean
+  useDragFree: boolean
+  useAutoHeight: boolean
+}>
+
+export type StateType = {
+  [key: string]: string | number | boolean | null | undefined | unknown[] | {}
+  [StateKey.PrevSlideIndex]: number
+  [StateKey.SlideIndex]: number
+  [StateKey.ActiveDataIndex]: number
+  [StateKey.ActivePage]: number
+  [StateKey.SlideGap]: number
+  [StateKey.SlidesPerPage]: number
+  [StateKey.SlidesPerView]: number
+  [StateKey.BaseSlidesPerPage]: number
+  [StateKey.BaseSlidesPerView]: number
+  [StateKey.NumberOfPages]: number
+  [StateKey.NumberOfSlides]: number
+  [StateKey.SliderWidth]: number
+  [StateKey.SlideSizes]: Record<number, number>
+  [StateKey.BaseSlideSizes]: Record<number, number>
+  [StateKey.Screens]: ResponsiveScreensInput
+  [StateKey.Responsive]: ResponsiveInput
+  [StateKey.ActiveBreakpoint]: ResponsiveBreakpoint | "base" | null
+  [StateKey.StartX]: number
+  [StateKey.StartY]: number
+  [StateKey.EndX]: number
+  [StateKey.IsTouch]: boolean
+  [StateKey.IsInitialRender]: boolean
+  [StateKey.IsPagedActive]: boolean
+  [StateKey.IsCompleteGroup]: boolean
+  [StateKey.IsDragging]: boolean
+  [StateKey.IsJumpSlide]: boolean
+  [StateKey.IsFastNavigation]: boolean
+  [StateKey.StartPos]: number
+  [StateKey.PrevTranslate]: number
+  [StateKey.CurrentTranslate]: number
+  [StateKey.CurrentEventType]: CurrentEventType
+  [StateKey.CurrentSlideMovement]: CurrentSlideMovement
+  [StateKey.StartTime]: number
+  [StateKey.EndTime]: number
+  [StateKey.IsMouseLeave]: boolean
+  [StateKey.AnimationID]: number
+  [StateKey.Dots]: boolean
+  [StateKey.DotIndex]: number
+  [StateKey.Arrows]: boolean
+  [StateKey.Touch]: boolean
+  [StateKey.UseLoop]: boolean
+  [StateKey.UseDragFree]: boolean
+  [StateKey.UseAutoHeight]: boolean
+}

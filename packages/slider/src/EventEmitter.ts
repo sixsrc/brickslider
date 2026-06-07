@@ -1,4 +1,4 @@
-type Listener = (...args: any[]) => void
+type Listener = (...args: unknown[]) => void
 
 export class EventEmitter {
   private listeners: { [event: string]: Listener[] } = {}
@@ -15,7 +15,7 @@ export class EventEmitter {
     this.listeners[event] = this.listeners[event].filter(l => l !== listener)
   }
 
-  public emit(event: string, ...args: any[]): void {
+  public emit(event: string, ...args: unknown[]): void {
     if (!this.listeners[event]) return
     this.listeners[event].forEach(listener => listener(...args))
   }

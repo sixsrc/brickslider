@@ -1,14 +1,22 @@
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
-import { StateType } from "./State"
-import { DOM_ELEMENT_ALIASES, EVENTS, TIMES } from "./helpers"
-import { getRootSelector, hasClass, listener } from "./helpers"
+import type { StateType, UpdateSlideIndexType } from "./types"
+import { DOM_ELEMENT_ALIASES, EVENTS, FROM, TIMES } from "./helpers"
+import {
+  getAllElements,
+  getSliderNodeList,
+  getSlideMovement,
+  getRootSelector,
+  hasClass,
+  listener,
+  NavigationDirection
+} from "./helpers"
 
 export class Arrows extends BaseSlider {
   public $root: string
   private slider: Slider
-  private buttons: HTMLElement[] = []
   private lastClickTimestamps: number[] = []
+  private isArrowClickLocked = false
 
   constructor($root: string) {
     super($root)
@@ -17,50 +25,113 @@ export class Arrows extends BaseSlider {
   }
 
   public init(): void {
+    const buttons = this.getArrowButtons()
+
+    this.bindArrowEvents(buttons)
+  }
+
+  private getArrowButtons(): NodeListOf<HTMLElement> {
     const arrowSelector = DOM_ELEMENT_ALIASES.ARROW.map(
       className => `${this.$root} .${className}`
     ).join(", ")
 
-    const buttons = Array.from(document.querySelectorAll(arrowSelector))
+    return getAllElements<HTMLElement>(arrowSelector)
+  }
 
-    buttons.forEach(button => {
-      const handler = () => {
-        setTimeout(() => {
-          this.updateClickSpeed()
-        }, this.setTime())
-      }
-
-      listener([EVENTS.CLICK], button, () => {
-        handler()
-        this.arrowHandler(button, this.$root)
-      })
+  private bindArrowEvents(buttons: NodeListOf<HTMLElement>): void {
+    this.forEachButton(buttons, button => {
+      listener([EVENTS.CLICK], button, () => this.handleArrowClick(button))
     })
+  }
+
+  private handleArrowClick(button: HTMLElement): void {
+    const delay = this.setTime()
+
+    if (this.isArrowClickLocked) return
+
+    this.lockArrowClick()
+    this.scheduleClickSpeedUpdate(delay)
+    this.arrowHandler(button, this.$root)
+  }
+
+  private lockArrowClick(): void {
+    this.isArrowClickLocked = true
+    window.setTimeout(() => {
+      this.unlockArrowClick()
+    }, TIMES.ARROW_CLICK_GUARD)
+  }
+
+  private unlockArrowClick(): void {
+    this.isArrowClickLocked = false
+  }
+
+  private scheduleClickSpeedUpdate(delay: number): void {
+    setTimeout(() => {
+      this.updateClickSpeed()
+    }, delay)
   }
 
   private updateClickSpeed(): void {
     const now = Date.now()
-    this.lastClickTimestamps.push(now)
+    const hasEnoughSamples = this.hasEnoughClickSamplesAfterNextClick()
+    const fastNavigationState = this.createFastNavigationState(now)
 
-    if (this.lastClickTimestamps.length > 3) {
-      this.lastClickTimestamps.shift()
-    }
+    if (!hasEnoughSamples) return
 
-    if (this.lastClickTimestamps.length >= 3) {
-      const deltas = this.lastClickTimestamps
-        .slice(1)
-        .map((t, i) => t - this.lastClickTimestamps[i])
+    this.registerClickTimestamp(now)
+    this.setFastNavigationState(fastNavigationState)
+  }
 
-      const avgDelta = deltas.reduce((a, b) => a + b, 0) / deltas.length
+  private createFastNavigationState(timestamp: number): Partial<StateType> {
+    const avgDelta = this.getAverageClickDelta(timestamp)
+    const fastNavigationState = this.getFastNavigationState(avgDelta)
 
-      this.setState({
-        isFastNavigation: avgDelta < TIMES.DEFAULT_TRANSITION_TIME - 100
-      })
+    return fastNavigationState
+  }
+
+  private getFastNavigationState(avgDelta: number): Partial<StateType> {
+    return {
+      isFastNavigation:
+        avgDelta < TIMES.DEFAULT_TRANSITION_TIME - TIMES.FAST_NAVIGATION_OFFSET
     }
   }
 
+  private setFastNavigationState(state: Partial<StateType>): void {
+    this.setState(state)
+  }
+
+  private hasEnoughClickSamplesAfterNextClick(): boolean {
+    return this.lastClickTimestamps.length + 1 >= 3
+  }
+
+  private registerClickTimestamp(timestamp: number): void {
+    this.lastClickTimestamps.push(timestamp)
+    this.trimClickTimestamps()
+  }
+
+  private trimClickTimestamps(): void {
+    if (this.lastClickTimestamps.length <= 3) return
+
+    this.lastClickTimestamps.shift()
+  }
+
+  private getAverageClickDelta(timestamp?: number): number {
+    const timestamps = timestamp
+      ? [...this.lastClickTimestamps, timestamp]
+      : this.lastClickTimestamps
+
+    const deltas = timestamps
+      .slice(1)
+      .map((currentTimestamp, index) => currentTimestamp - timestamps[index])
+
+    return deltas.reduce((sum, delta) => sum + delta, 0) / deltas.length
+  }
+
   private setTime(): number {
-    const totalSlides = Slider.getSlides(this.$root, false).length
-    return this.getTime(totalSlides) ? TIMES.DEFAULT_TRANSITION_TIME - 100 : 0
+    const totalSlides = getSliderNodeList(this.$root, false).length
+    return this.getTime(totalSlides)
+      ? TIMES.DEFAULT_TRANSITION_TIME - TIMES.FAST_NAVIGATION_OFFSET
+      : 0
   }
 
   private getTime(totalSlides: number): boolean {
@@ -68,63 +139,159 @@ export class Arrows extends BaseSlider {
     const isAtEnd = activePage >= numberOfPages - 1
     const hasRemainingSlides = this.hasRemaining(totalSlides)
     const isFast = !!this.store["isFastNavigation"]
+
     return isAtEnd && hasRemainingSlides && isFast
   }
 
-  private getArrowEventType(button: Element): "prev" | "next" {
-    if (
-      DOM_ELEMENT_ALIASES.ARROW_PREV.some(className =>
-        hasClass(button as HTMLElement, className)
-      )
-    ) {
-      return "prev"
+  private getArrowEventType(button: Element): NavigationDirection {
+    const explicitType = this.getExplicitArrowType(button)
+
+    if (explicitType) return explicitType
+
+    return this.getFallbackArrowType(button)
+  }
+
+  private getExplicitArrowType(
+    button: Element
+  ): NavigationDirection | undefined {
+    if (this.matchesArrowClass(button, DOM_ELEMENT_ALIASES.ARROW_PREV)) {
+      return FROM.PREV
     }
 
-    if (
-      DOM_ELEMENT_ALIASES.ARROW_NEXT.some(className =>
-        hasClass(button as HTMLElement, className)
-      )
-    ) {
-      return "next"
+    if (this.matchesArrowClass(button, DOM_ELEMENT_ALIASES.ARROW_NEXT)) {
+      return FROM.NEXT
     }
+  }
 
+  private matchesArrowClass(
+    button: Element,
+    classNames: readonly string[]
+  ): boolean {
+    return classNames.some(className =>
+      hasClass(button as HTMLElement, className)
+    )
+  }
+
+  private getFallbackArrowType(button: Element): NavigationDirection {
+    const scopedButtons = this.getScopedArrowButtons()
+    const buttonIndex = this.getArrowButtonIndex(scopedButtons, button)
+
+    return buttonIndex <= 0 ? FROM.PREV : FROM.NEXT
+  }
+
+  private getScopedArrowButtons(): Element[] {
     const root = getRootSelector(this.$root)
-    const scopedButtons =
-      root?.querySelectorAll(
-        DOM_ELEMENT_ALIASES.ARROW.map(className => `.${className}`).join(", ")
-      ) ?? []
 
-    const buttonIndex = Array.from(scopedButtons).indexOf(button)
+    if (!root) return []
 
-    return buttonIndex <= 0 ? "prev" : "next"
+    const arrowSelector = DOM_ELEMENT_ALIASES.ARROW.map(
+      className => `.${className}`
+    ).join(", ")
+
+    return Array.from(getAllElements<Element>(arrowSelector, root))
+  }
+
+  private getArrowButtonIndex(
+    scopedButtons: Element[],
+    button: Element
+  ): number {
+    return scopedButtons.indexOf(button)
   }
 
   private arrowHandler(button: Element, $root: string): void {
     const { slideIndex, useDragFree } = this.store
     const eventType = this.getArrowEventType(button)
-    const slideMovement = eventType === "next" ? "increment" : "decrement"
-    const navigationState = {
-      prevSlideIndex: slideIndex,
-      currentEventType: eventType
-    }
-
-    this.setState({
-      currentSlideMovement: slideMovement
-    })
-
-    this.movement = true
-    this.setState(this.startPosState())
-    this.setState(navigationState)
 
     if (useDragFree) {
-      this.slider.goToFreeDirection(eventType)
+      this.handleFreeArrowNavigation(slideIndex, eventType)
       return
     }
 
+    this.handlePagedArrowNavigation(slideIndex, $root, eventType)
+  }
+
+  private applyArrowNavigationState(
+    slideIndex: number,
+    eventType: NavigationDirection
+  ): void {
+    const slideMovement = this.getArrowSlideMovement(eventType)
+    const navigationState = this.getArrowNavigationState(slideIndex, eventType)
+
+    this.applyArrowSlideMovementState(slideMovement)
+    this.enableMovement()
+    this.applyArrowStartPosState()
+    this.applyArrowNavigationTargetState(navigationState)
+  }
+
+  private getArrowSlideMovement(
+    eventType: NavigationDirection
+  ): UpdateSlideIndexType {
+    return getSlideMovement(eventType)
+  }
+
+  private getArrowNavigationState(
+    slideIndex: number,
+    eventType: NavigationDirection
+  ): Partial<StateType> {
+    return {
+      prevSlideIndex: slideIndex,
+      currentEventType: eventType
+    }
+  }
+
+  private applyArrowSlideMovementState(
+    slideMovement: UpdateSlideIndexType
+  ): void {
+    this.setState({
+      currentSlideMovement: slideMovement
+    })
+  }
+
+  private enableMovement(): void {
+    this.movement = true
+  }
+
+  private applyArrowStartPosState(): void {
+    const startPosState = this.startPosState()
+
+    this.setState(startPosState)
+  }
+
+  private applyArrowNavigationTargetState(
+    navigationState: Partial<StateType>
+  ): void {
+    this.setState(navigationState)
+  }
+
+  private runFreeArrowNavigation(eventType: NavigationDirection): void {
+    this.slider.goToFreeDirection(eventType)
+  }
+
+  private runPagedArrowNavigation(
+    $root: string,
+    eventType: NavigationDirection
+  ): void {
     this.slider.setSlideTarget({ $root, from: eventType })
   }
 
-  protected evalSlideConditions(): Record<any, boolean> {
+  private handleFreeArrowNavigation(
+    slideIndex: number,
+    eventType: NavigationDirection
+  ): void {
+    this.applyArrowNavigationState(slideIndex, eventType)
+    this.runFreeArrowNavigation(eventType)
+  }
+
+  private handlePagedArrowNavigation(
+    slideIndex: number,
+    $root: string,
+    eventType: NavigationDirection
+  ): void {
+    this.applyArrowNavigationState(slideIndex, eventType)
+    this.runPagedArrowNavigation($root, eventType)
+  }
+
+  protected evalSlideConditions(): Record<string, boolean> {
     const { slideIndex, slidesPerPage } = this.store
     const isFirstCloned = slideIndex === 0
     const penultIndex = Math.ceil(this.childrenCount / slidesPerPage) - 1

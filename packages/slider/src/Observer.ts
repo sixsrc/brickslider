@@ -17,7 +17,7 @@ export class Observer extends BaseSlider {
   private observeSlides(): void {
     const { useLoop } = this.store
 
-    this.slidesArr.forEach((slide, index) => {
+    this.slides.forEach((slide, index) => {
       if (useLoop) {
         this.elementToIndexMap.set(slide, index)
       }
@@ -33,38 +33,85 @@ export class Observer extends BaseSlider {
   }
 
   private checkVisibleSlides(): void {
+    const visibleSlides = this.getVisibleSlides()
+    const newlyVisibleIndexes = this.getVisibleIndexes(visibleSlides)
+    const newlyVisibleDataIndexes = this.getVisibleDataIndexSet(visibleSlides)
+    const hasVisibleSlidesChanged = this.hasVisibleSlidesChanged(
+      newlyVisibleIndexes,
+      newlyVisibleDataIndexes
+    )
+
+    if (!hasVisibleSlidesChanged) return
+
+    this.updateVisibleSlides(newlyVisibleIndexes, newlyVisibleDataIndexes)
+  }
+
+  private getVisibleSlides(): HTMLElement[] {
     const trackRect = this.$track.getBoundingClientRect()
-    const newlyVisibleIndexes = new Set<number>()
-    const newlyVisibleDataIndexes = new Set<number>()
+
+    return this.slides.filter(slide => this.isSlideVisible(slide, trackRect))
+  }
+
+  private isSlideVisible(slide: HTMLElement, trackRect: DOMRect): boolean {
+    const ratio = this.getSlideVisibleRatio(slide, trackRect)
+    const slideNumber = this.getSlideNumber(slide)
+    const index = this.getSlideIndex(slide, slideNumber)
+
+    return ratio >= 0.75 && index !== -1 && slideNumber !== -1
+  }
+
+  private getSlideVisibleRatio(slide: HTMLElement, trackRect: DOMRect): number {
+    const rect = slide.getBoundingClientRect()
+    const visibleWidth =
+      Math.min(rect.right, trackRect.right) -
+      Math.max(rect.left, trackRect.left)
+
+    return visibleWidth / rect.width
+  }
+
+  private getVisibleIndexes(visibleSlides: HTMLElement[]): Set<number> {
+    return new Set(
+      visibleSlides.map(slide => {
+        const slideNumber = this.getSlideNumber(slide)
+
+        return this.getSlideIndex(slide, slideNumber)
+      })
+    )
+  }
+
+  private getVisibleDataIndexSet(visibleSlides: HTMLElement[]): Set<number> {
+    return new Set(visibleSlides.map(slide => this.getSlideNumber(slide)))
+  }
+
+  private getSlideNumber(slide: HTMLElement): number {
+    return parseInt(slide.dataset.slideNumber || "-1")
+  }
+
+  private getSlideIndex(slide: HTMLElement, slideNumber: number): number {
     const { useLoop } = this.store
 
-    this.slidesArr.forEach(slide => {
-      const rect = slide.getBoundingClientRect()
-      const visibleWidth =
-        Math.min(rect.right, trackRect.right) -
-        Math.max(rect.left, trackRect.left)
-      const ratio = visibleWidth / rect.width
+    if (useLoop) return this.elementToIndexMap.get(slide) ?? -1
 
-      const slideNumber = parseInt(slide.dataset.slideNumber || "-1")
-      const index = useLoop
-        ? (this.elementToIndexMap.get(slide) ?? -1)
-        : slideNumber - 1
+    return slideNumber - 1
+  }
 
-      if (ratio >= 0.75 && index !== -1 && slideNumber !== -1) {
-        newlyVisibleIndexes.add(index)
-        newlyVisibleDataIndexes.add(slideNumber)
-      }
-    })
-
-    const changed =
+  private hasVisibleSlidesChanged(
+    newlyVisibleIndexes: Set<number>,
+    newlyVisibleDataIndexes: Set<number>
+  ): boolean {
+    return (
       this.setsDiffer(this.visibleIndexes, newlyVisibleIndexes) ||
       this.setsDiffer(this.visibleDataIndexes, newlyVisibleDataIndexes)
+    )
+  }
 
-    if (changed) {
-      this.visibleIndexes = newlyVisibleIndexes
-      this.visibleDataIndexes = newlyVisibleDataIndexes
-      this.updateLastIndex()
-    }
+  private updateVisibleSlides(
+    newlyVisibleIndexes: Set<number>,
+    newlyVisibleDataIndexes: Set<number>
+  ): void {
+    this.visibleIndexes = newlyVisibleIndexes
+    this.visibleDataIndexes = newlyVisibleDataIndexes
+    this.updateLastIndex()
   }
 
   private setsDiffer(a: Set<number>, b: Set<number>): boolean {
@@ -87,7 +134,7 @@ export class Observer extends BaseSlider {
     }
   }
 
-  private setActiveDataIndexState() {
+  private setActiveDataIndexState(): { activeDataIndex: number } {
     return {
       activeDataIndex: this.lastIndex
     }

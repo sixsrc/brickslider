@@ -6,12 +6,12 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "baseUrl": ".",
     "types": ["node", "vite/client"],
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["./src/*"],
       "@sixsrc/brickslider-accessibility": ["../accessibility/src/index.ts"],
-      "*": ["*", "*.mts"]
+      "@sixsrc/brickslider-stories": ["../stories/src/index.ts"],
+      "*": ["./*", "./*.mts"]
     },
     "resolveJsonModule": true,
     "allowJs": true,

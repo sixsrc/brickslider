@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { CLASS_VALUES } from "./helpers"
+import { CLASS_VALUES, getSliderNodeList } from "./helpers"
 import { addClass, removeClass } from "./helpers"
 
 export class Mutate extends BaseSlider {
@@ -8,34 +8,56 @@ export class Mutate extends BaseSlider {
   }
 
   private getAllSlides(): HTMLElement[] {
-    return Array.from(this.$children?.children || []) as HTMLElement[]
+    return getSliderNodeList(this.$root)
   }
 
   public updateActiveSlides(
     visibleIndexes: number[] | null,
     maxActive?: number
   ): void {
+    const slides = this.getAllSlides()
+    const activeIndexes = this.getActiveIndexes(visibleIndexes, maxActive)
+
+    if (!activeIndexes) return
+
+    this.syncActiveSlides(slides, activeIndexes)
+  }
+
+  private syncActiveSlides(slides: HTMLElement[], activeIndexes: number[]): void {
     this.resetActiveClasses()
+    this.applyActiveSlides(slides, activeIndexes)
+  }
 
-    if (!visibleIndexes) return
+  private getActiveIndexes(
+    visibleIndexes: number[] | null,
+    maxActive?: number
+  ): number[] | null {
+    if (!visibleIndexes) return null
 
-    const toActivate =
-      maxActive !== undefined
-        ? visibleIndexes.slice(0, maxActive)
-        : visibleIndexes
+    return maxActive !== undefined
+      ? visibleIndexes.slice(0, maxActive)
+      : visibleIndexes
+  }
 
-    const allSlides = this.getAllSlides()
-
-    allSlides.forEach((slide, index) => {
-      if (toActivate.includes(index)) {
-        addClass([slide], CLASS_VALUES.ACTIVE)
-      } else {
-        removeClass(slide, CLASS_VALUES.ACTIVE)
-      }
+  private applyActiveSlides(
+    slides: HTMLElement[],
+    activeIndexes: number[]
+  ): void {
+    slides.forEach((slide, index) => {
+      this.toggleActiveSlide(slide, activeIndexes.includes(index))
     })
   }
 
+  private toggleActiveSlide(slide: HTMLElement, isActive: boolean): void {
+    if (isActive) {
+      addClass([slide], CLASS_VALUES.ACTIVE)
+      return
+    }
+
+    removeClass(slide, CLASS_VALUES.ACTIVE)
+  }
+
   private resetActiveClasses(): void {
-    this.slidesArr.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
+    this.slides.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
   }
 }

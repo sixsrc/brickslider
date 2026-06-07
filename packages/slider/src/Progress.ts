@@ -1,5 +1,11 @@
 import { BaseSlider } from "./BaseSlider"
-import { ATTRIBUTES, DOM_ELEMENT_ALIASES, EVENTS, TAGS } from "./helpers"
+import {
+  ATTRIBUTES,
+  DOM_ELEMENT_ALIASES,
+  EVENTS,
+  TAGS,
+  TIMES
+} from "./helpers"
 import {
   addClass,
   appendToParent,
@@ -25,44 +31,92 @@ export class Progress extends BaseSlider {
   }
 
   public sync(): void {
-    const { currentEventType } = this.store
     const progressBar = this.progressBar ?? this.ensureProgressBar()
     const containerProgress = this.containerProgress
 
     if (!progressBar || !containerProgress) return
 
+    this.updateProgress(progressBar, containerProgress)
+  }
+
+  private updateProgress(
+    progressBar: HTMLElement,
+    containerProgress: HTMLElement
+  ): void {
+    const progressAnimation = this.getProgressAnimation(progressBar)
+    const { progressKeyFrames, duration, progressNow } = progressAnimation
+
+    this.stopProgressAnimations(progressBar)
+    this.animate(progressBar, progressKeyFrames, this.options(duration))
+    this.setProgressNow(containerProgress, progressNow)
+  }
+
+  private stopProgressAnimations(progressBar: HTMLElement): void {
+    progressBar.getAnimations().forEach(animation => animation.cancel())
+  }
+
+  private getProgressAnimation(progressBar: HTMLElement): {
+    progressKeyFrames: Keyframe[]
+    duration: number
+    progressNow: number
+  } {
+    const { currentEventType, isFastNavigation } = this.store
     const progressValue = this.getProgressValue()
     const isTouchMove = currentEventType === EVENTS.TOUCHMOVE
-    const currentValue = this.getCurrentProgressValue(containerProgress)
-    const currentScale = currentValue / 100
+    const isInstantProgress = isTouchMove || isFastNavigation
+    const currentScale = this.getCurrentProgressScale(progressBar)
     const nextScale = progressValue / 100
-    const duration = isTouchMove ? 0 : 500
+    const duration = isInstantProgress ? 0 : TIMES.PROGRESS_TRANSITION_TIME
     const progressNow = Math.round(progressValue)
+    const progressKeyFrames = this.getProgressKeyFrames(currentScale, nextScale)
 
-    this.animate(
-      progressBar,
-      [
-        { transform: `scaleX(${currentScale})` },
-        { transform: `scaleX(${nextScale})` }
-      ],
-      this.options(duration)
-    )
+    return {
+      progressKeyFrames,
+      duration,
+      progressNow
+    }
+  }
+
+  private getProgressKeyFrames(
+    currentScale: number,
+    nextScale: number
+  ): Keyframe[] {
+    return [
+      { scale: `${currentScale} 1` },
+      { scale: `${nextScale} 1` }
+    ]
+  }
+
+  private setProgressNow(
+    containerProgress: HTMLElement,
+    progressNow: number
+  ): void {
     containerProgress.setAttribute(ATTRIBUTES.ARIA_VALUE_NOW, `${progressNow}`)
   }
 
   private ensureProgressBar(): HTMLElement | undefined {
-    if (!this.containerProgress) return
-
+    const containerProgress = this.containerProgress
     const existingProgressBar = this.getExistingProgressBar()
+    const progressBar = this.createProgressBar()
 
+    if (!containerProgress) return
     if (existingProgressBar) return existingProgressBar
 
-    const progressBar = createNewElement(TAGS.DIV)
-
-    addClass([progressBar], DOM_ELEMENT_ALIASES.PROGRESS_BAR[0])
-    appendToParent(this.containerProgress, progressBar)
+    this.mountProgressBar(containerProgress, progressBar)
 
     return progressBar
+  }
+
+  private createProgressBar(): HTMLElement {
+    return createNewElement(TAGS.DIV)
+  }
+
+  private mountProgressBar(
+    containerProgress: HTMLElement,
+    progressBar: HTMLElement
+  ): void {
+    addClass([progressBar], DOM_ELEMENT_ALIASES.PROGRESS_BAR[0])
+    appendToParent(containerProgress, progressBar)
   }
 
   private getExistingProgressBar(): HTMLElement | undefined {
@@ -88,10 +142,14 @@ export class Progress extends BaseSlider {
   }
 
   private getDragFreeProgressValue(): number {
-    const currentTranslate = Math.abs(this.store.currentTranslate ?? 0)
+    const {
+      currentTranslate: storedCurrentTranslate,
+      sliderWidth: storedSliderWidth
+    } = this.store
+    const currentTranslate = Math.abs(storedCurrentTranslate ?? 0)
     const maxTranslate = Math.max(
       0,
-      this.getTotalWidth() - (this.store.sliderWidth ?? this.sliderWidth ?? 0)
+      this.getTotalWidth() - (storedSliderWidth ?? this.sliderWidth ?? 0)
     )
 
     if (maxTranslate <= 0) return 100
@@ -99,13 +157,65 @@ export class Progress extends BaseSlider {
     return Math.max(0, Math.min((currentTranslate / maxTranslate) * 100, 100))
   }
 
-  private getCurrentProgressValue(containerProgress: HTMLElement): number {
-    const currentValue = Number(
-      containerProgress.getAttribute(ATTRIBUTES.ARIA_VALUE_NOW) ?? 0
+  private getCurrentProgressScale(progressBar: HTMLElement): number {
+    const computedStyle = window.getComputedStyle(progressBar)
+    const scaleFromProperty = this.getScaleFromProperty(computedStyle.scale)
+    const scaleFromTransform = this.getScaleFromTransform(
+      computedStyle.transform
     )
 
-    if (!Number.isFinite(currentValue)) return 0
+    if (scaleFromProperty !== null) return scaleFromProperty
 
-    return Math.max(0, Math.min(currentValue, 100))
+    return scaleFromTransform
+  }
+
+  private getScaleFromProperty(computedScale: string): number | null {
+    if (!computedScale || computedScale === "none") return null
+
+    return this.getScaleFromComputedScale(computedScale)
+  }
+
+  private getScaleFromTransform(computedTransform: string): number {
+    const matrix3dScale = this.getScaleFromMatrix(computedTransform, "matrix3d")
+    const matrixScale = this.getScaleFromMatrix(computedTransform, "matrix")
+
+    if (!computedTransform || computedTransform === "none") return 0
+    if (matrix3dScale !== null) return matrix3dScale
+    if (matrixScale !== null) return matrixScale
+
+    return 0
+  }
+
+  private getScaleFromMatrix(
+    computedTransform: string,
+    matrixType: "matrix" | "matrix3d"
+  ): number | null {
+    const matrixMatch = computedTransform.match(
+      new RegExp(`${matrixType}\\(([^)]+)\\)`)
+    )
+
+    if (!matrixMatch) return null
+
+    return this.getScaleFromMatrixValue(matrixMatch[1])
+  }
+
+  private getScaleFromMatrixValue(matrixValue: string): number {
+    const values = matrixValue.split(",").map(value => Number(value.trim()))
+    const scaleX = values[0] ?? 0
+
+    return this.clampProgressScale(scaleX)
+  }
+
+  private getScaleFromComputedScale(computedScale: string): number {
+    const [scaleXValue] = computedScale.split(" ")
+    const scaleX = Number(scaleXValue)
+
+    return this.clampProgressScale(scaleX)
+  }
+
+  private clampProgressScale(scale: number): number {
+    if (!Number.isFinite(scale)) return 0
+
+    return Math.max(0, Math.min(scale, 1))
   }
 }

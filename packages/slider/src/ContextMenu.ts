@@ -1,7 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { EVENTS, FROM } from "./helpers"
 import { listener } from "./helpers"
-import { ContextMenuListenersParams } from "./types"
+import type { ContextMenuListenersParams } from "./types"
 
 export class ContextMenu extends BaseSlider {
   constructor($root: string) {
@@ -12,10 +12,24 @@ export class ContextMenu extends BaseSlider {
     this.setContextListener(this.params())
   }
 
-  private rightClick() {
-    const eventTypeState = { currentEventType: FROM.RIGHT_CLICK }
+  private rightClick(_event: Event): void {
+    const eventTypeState = this.contextMenuState()
 
     this.setState(eventTypeState)
+  }
+
+  private contextMenuState(): {
+    currentEventType: typeof FROM.RIGHT_CLICK
+    isDragging: boolean
+    isTouch: boolean
+    isMouseLeave: boolean
+  } {
+    return {
+      currentEventType: FROM.RIGHT_CLICK,
+      isDragging: false,
+      isTouch: false,
+      isMouseLeave: true
+    }
   }
 
   private params(): ContextMenuListenersParams {

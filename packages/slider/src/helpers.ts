@@ -1,13 +1,4 @@
-export const DOM_ELEMENTS = {
-  CHILDREN_SELECTOR: ".bs-container",
-  SINGLE_SLIDE: ".bs-slide",
-  TRACK_SELECTOR: ".bs-track",
-  DOTS_SELECTOR: ".bs-dots ",
-  PROGRESS_SELECTOR: ".bs-progress",
-  NEXT_BUTTON: "next-button",
-  PREV_BUTTON: "prev-button",
-  BRICK_ARROWS: ".bs-arrow"
-}
+import type { MouseEventOrTouchEvent, UpdateSlideIndexType } from "./types"
 
 export const DOM_ELEMENT_ALIASES = {
   TRACK: ["bs-track"],
@@ -35,16 +26,13 @@ export const CLASS_VALUES = {
   END: "end"
 }
 
-export const STYLES = {
-  TRANSITION: "transition",
-  PEEK: 0.8
-}
-
 export const TAGS = {
   UL: "ul",
   LI: "li",
   BUTTON: "button",
-  DIV: "div"
+  DIV: "div",
+  STYLE: "style",
+  VIDEO: "video"
 }
 
 export const FROM = {
@@ -55,10 +43,13 @@ export const FROM = {
   TOUCH: "touch"
 } as const
 
+export type NavigationDirection = typeof FROM.PREV | typeof FROM.NEXT
+
 export const ATTRIBUTES = {
   ID: "id",
   TYPE: "type",
   TABINDEX: "tabindex",
+  DATA_INDEX: "data-index",
   DATA_NUMBER: "data-slide-number",
   CLASS: "class",
   STYLE: "style",
@@ -69,6 +60,7 @@ export const ATTRIBUTES = {
   ARIA_CURRENT: "aria-current",
   ARIA_DISABLED: "aria-disabled",
   ARIA_CONTROLS: "aria-controls",
+  ARIA_MODAL: "aria-modal",
   ARIA_ROLEDESCRIPTION: "aria-roledescription",
   ROLE: "role",
   DRAGGABLE: "draggable",
@@ -78,11 +70,12 @@ export const ATTRIBUTES = {
 } as const
 
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 500 //200
-}
-
-export const TRANSITIONS = {
-  TRANSFORM_EASE: `transform ${TIMES.DEFAULT_TRANSITION_TIME}ms cubic-bezier(0.25,1,0.5,1)`
+  DEFAULT_TRANSITION_TIME: 500,
+  DRAG_FREE_RELEASE_TIME: 1500,
+  FAST_NAVIGATION_OFFSET: 100,
+  ARROW_CLICK_GUARD: 400,
+  PROGRESS_TRANSITION_TIME: 500,
+  SWIPE_MOUSE_LEAVE_DELAY: 100
 }
 
 export const EVENTS = {
@@ -95,6 +88,7 @@ export const EVENTS = {
   MOUSEDOWN: "mousedown",
   MOUSEUP: "mouseup",
   MOUSELEAVE: "mouseleave",
+  MOUSEENTER: "mouseenter",
   MOUSEMOVE: "mousemove",
   CONTEXTMENU: "contextmenu",
   TRANSITIONSTART: "transitionstart",
@@ -105,25 +99,33 @@ export const EVENTS = {
   DRAGEND: "dragend"
 } as const
 
-export const ANIMATION_DELAY = 100
+export const SLIDER_EVENTS = {
+  MOUNTED: "mounted",
+  DESTROYED: "destroyed",
+  SLIDE_CHANGE: "slideChange"
+} as const
 
 export const ANIMATION_OPTIONS = {
   FORWARDS: "forwards",
-  EASEOUT: "ease-in-out"
+  EASEOUT: "ease-in-out",
+  DRAG_FREE_EASING: "cubic-bezier(0.22, 1, 0.36, 1)"
 } as const
 
 export const TOUCH_LIMIT = 0
 
 export const MOVE_TO_LIMIT = 3
 
+export const TOUCH_CONFIG = {
+  FAST_SWIPE_MAX_MS: 180,
+  FAST_VELOCITY_THRESHOLD: 0.35,
+  SLOW_LIMIT: 35,
+  MAX_LIMIT: 55,
+  DRAG_FREE_SETTLE_FACTOR: 0.12
+} as const
+
 export const POSITION = {
   RIGHT: "right",
   LEFT: "left"
-} as const
-
-export const SLIDE_INDEX = {
-  FIRST: "first",
-  LAST: "last"
 } as const
 
 export const DOCS = {
@@ -143,7 +145,7 @@ export function addClass(
 export function animateElement(
   element: HTMLElement | HTMLElement[],
   keyframes: Keyframe[],
-  options: any
+  options: KeyframeAnimationOptions
 ): Animation[] {
   if (!element) {
     throw new Error("Element is required for animation.")
@@ -164,26 +166,28 @@ export function appendToParent(
   }
 }
 
-export function shouldApplyAdjustment(
-  totalSlides: number,
-  slidesPerPage: number,
-  clonedSlides: number
-) {
-  const totalPages = Math.ceil(totalSlides / slidesPerPage)
+export function insertBefore(
+  parent: HTMLElement | undefined,
+  element: HTMLElement | undefined,
+  referenceElement: HTMLElement | undefined
+): HTMLElement | undefined {
+  if (parent && element && referenceElement) {
+    parent.insertBefore(element, referenceElement)
+    return element
+  }
+}
 
-  const minimumClonesRequired = Math.max(
-    slidesPerPage,
-    totalSlides - slidesPerPage
-  )
-
-  return clonedSlides < minimumClonesRequired
+export function removeElement(
+  element: HTMLElement | Element | null | undefined
+): void {
+  element?.remove()
 }
 
 export function calcNumberOfSlides(
   useLoop: boolean,
   slidesPerPage: number,
   $children: HTMLElement
-) {
+): number {
   const sliderCount = getChildrenCount($children)
 
   if (useLoop && slidesPerPage <= 1) {
@@ -242,7 +246,10 @@ export function getRootSelector($root: string): HTMLElement | undefined {
   return $(`${$root}`)
 }
 
-export function getSliderNodeList($root: string, cloned: boolean = true) {
+export function getSliderNodeList(
+  $root: string,
+  cloned: boolean = true
+): HTMLElement[] {
   const slideSelectors = `:scope > .${DOM_ELEMENT_ALIASES.SLIDE[0]}${cloned ? "" : ":not(.cloned)"}`
 
   return Array.from(
@@ -275,7 +282,7 @@ export function removeClass(
   el.classList.remove(...classNames)
 }
 
-export function removePart<T extends string | any[]>(
+export function removePart<T extends string | unknown[]>(
   input: T,
   start?: number,
   end?: number
@@ -291,17 +298,18 @@ export function setAttribute(
   el.setAttribute(attribute, value)
 }
 
-export function setAttributes(element: HTMLElement, attributes: Object): void {
+export function setAttributes(
+  element: HTMLElement,
+  attributes: Record<string, string | number | boolean>
+): void {
   for (const [key, value] of Object.entries(attributes)) {
-    setAttribute(element, key, value)
+    setAttribute(element, key, String(value))
   }
 }
 
-export function setInnerHTML(el: HTMLElement, html: string): void {
-  el.innerHTML = html
-}
-
-export function getEventType(event: any): MouseEvent | Touch {
+export function getEventType(
+  event: MouseEventOrTouchEvent
+): MouseEvent | Touch {
   if (event.type.includes("mouse")) {
     return event as MouseEvent
   } else {
@@ -310,7 +318,15 @@ export function getEventType(event: any): MouseEvent | Touch {
   }
 }
 
-export function getAxisX(event: any): number {
+export function isPrimaryInputButton(event: MouseEventOrTouchEvent): boolean {
+  if (event instanceof MouseEvent) {
+    return event.button === 0
+  }
+
+  return true
+}
+
+export function getAxisX(event: MouseEventOrTouchEvent): number {
   if (event.type.includes("mouse")) {
     return (event as MouseEvent).pageX
   } else if (
@@ -323,44 +339,10 @@ export function getAxisX(event: any): number {
   }
 }
 
-export function isAppleDevice(): boolean {
-  const ua = navigator.userAgent.toLowerCase()
-  return (
-    ua.includes("safari") && !ua.includes("chrome") && !ua.includes("android")
-  )
-}
-
 export function getSlideMovement(
   direction: typeof FROM.NEXT | typeof FROM.PREV
-) {
+): UpdateSlideIndexType {
   return direction === FROM.NEXT ? "increment" : "decrement"
-}
-
-export function indexBasedBy(params: any) {
-  const { from, slideIndex, touchIndex } = params
-  switch (from) {
-    case "next":
-      return slideIndex + 1
-    case "prev":
-      return slideIndex - 1
-    case "dots":
-    case "touchend":
-      return touchIndex ?? slideIndex
-    default:
-      return slideIndex
-  }
-}
-
-export function isNotMapped(
-  useLoop: boolean,
-  currentIndex: number,
-  numberOfSlides: number
-): boolean {
-  if (!useLoop) {
-    if (currentIndex < 0) return true
-    if (currentIndex > numberOfSlides - 1) return true
-  }
-  return false
 }
 
 export function isValidSelector(string: string): boolean {
@@ -392,184 +374,18 @@ export function removeListener(
   }
 }
 
-export function removeProperty(element: HTMLElement, prop: string) {
-  element.style.removeProperty(prop)
-}
-
 export function removeAttribute(el: HTMLElement, attribute: string): void {
   el.removeAttribute(attribute)
 }
 
-export function reorderIdx(
-  displayedIndex: number,
-  numberOfSlides: number,
-  slidesPerPage: number
-) {
-  slidesPerPage > 1
-    ? (numberOfSlides = numberOfSlides - (slidesPerPage + slidesPerPage))
-    : numberOfSlides
-
-  const reorder =
-    displayedIndex < 0
-      ? numberOfSlides - 1
-      : displayedIndex >= numberOfSlides
-        ? displayedIndex
-        : displayedIndex === numberOfSlides - 1
-          ? 0
-          : displayedIndex === 0
-            ? numberOfSlides - 3
-            : displayedIndex - 1
-
-  return reorder
-}
-
-export function updateDataIndexes(
-  slides: HTMLElement[],
-  slidesPerPage: number
-) {
-  let groupIndex = 0
-
-  slides.forEach((slide, index) => {
-    const isStartOfGroup = index % slidesPerPage === 0
-
-    if (isStartOfGroup && index !== 0) {
-      groupIndex++
-    }
-
-    slide.setAttribute("data-index", String(groupIndex))
-  })
-}
-
-export function shouldChangePage(
-  allSlides: Record<number, number[]>,
-  activeSlides: Record<number, number[]>
-): boolean {
-  for (const page in activeSlides) {
-    const activeGroup = activeSlides[page]
-
-    for (const group in allSlides) {
-      const allGroup = allSlides[group]
-
-      const isEqual =
-        activeGroup.length === allGroup.length &&
-        activeGroup.every(value => allGroup.includes(value))
-
-      if (isEqual) {
-        return true
-      }
-    }
-  }
-
-  return false
-}
-export function toggleClass2(
-  slides: HTMLElement[],
-  slidesPerView: number,
-  slidesPerPage: number,
-  slideMovement: any
-): Map<number, number[]> {
-  if (slidesPerView > slidesPerPage) {
-    slidesPerView = slidesPerPage
-  }
-
-  let activeStartIndex = -1
-  let activeEndIndex = -1
-
-  slides.forEach((slide, index) => {
-    if (slide.classList.contains(CLASS_VALUES.ACTIVE)) {
-      if (activeStartIndex === -1) {
-        activeStartIndex = index
-      }
-      activeEndIndex = index
-    }
-  })
-
-  slides.forEach(slide => removeClass(slide, CLASS_VALUES.ACTIVE))
-
-  let targetStartIndex: number
-
-  if (slideMovement === "increment") {
-    targetStartIndex = activeStartIndex + slidesPerView
-  } else {
-    targetStartIndex = activeStartIndex - slidesPerView
-  }
-
-  targetStartIndex = Math.max(
-    0,
-    Math.min(slides.length - slidesPerPage, targetStartIndex)
-  )
-
-  const activeSlidesMap = new Map<number, number[]>()
-  const activeIndices: number[] = []
-
-  for (let i = 0; i < slidesPerPage; i++) {
-    const index = targetStartIndex + i
-    if (index < slides.length) {
-      addClass([slides[index]], CLASS_VALUES.ACTIVE)
-      activeIndices.push(index)
-    }
-  }
-
-  const currentPage = Math.floor(targetStartIndex / slidesPerPage) + 1
-  activeSlidesMap.set(currentPage, activeIndices)
-
-  return activeSlidesMap
-}
-
-export function toggleClass(
-  slides: HTMLElement[],
-  slideIndex: number,
-  slidesPerPage: number
-): void {
-  let i = 0
-
-  slides.forEach(slide => {
-    removeClass(slide, CLASS_VALUES.ACTIVE)
-  })
-
-  for (i; i < slidesPerPage; i++) {
-    const index = slideIndex * slidesPerPage + i
-
-    addClass([slides[index]], CLASS_VALUES.ACTIVE)
-  }
-}
-
-export function translate3d(x: number): string | undefined {
+export function translate3d(x: number): string {
   return `translate3d(${x}px, 0px, 0px)`
 }
 
-export function isSafariBrowser() {
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-  return isSafari
-}
-
-export function waitUntil<T>(
-  predicate: () => T | false,
-  interval = 16,
-  timeout = 2000
-): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const start = performance.now()
-
-    const check = () => {
-      const result = predicate()
-      if (result) {
-        resolve(result)
-      } else if (performance.now() - start > timeout) {
-        reject(new Error("Timeout"))
-      } else {
-        setTimeout(check, interval)
-      }
-    }
-
-    check()
-  })
-}
-
-export function waitFor(time: number, callback: () => void) {
+export function waitFor(time: number, callback: () => void): void {
   let start: number
 
-  function wait(timestamp: number) {
+  function wait(timestamp: number): void {
     if (!start) start = timestamp
     if (timestamp - start < time) {
       requestAnimationFrame(wait)

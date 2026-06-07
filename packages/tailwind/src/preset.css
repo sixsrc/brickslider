@@ -20,4 +20,16 @@
   .bs-content {}
   .bs-label {}
   .bs-img {}
+  .bs-stories {}
+  .bs-stories--open {}
+  .bs-stories-backdrop {}
+  .bs-stories-shell {}
+  .bs-stories-close {}
+  .bs-stories-mute {}
+  .bs-stories-muted {}
+  .bs-stories-progress {}
+  .bs-stories-progress-item {}
+  .bs-stories-progress-item--active {}
+  .bs-stories-progress-item--completed {}
+  .bs-stories-progress-bar {}
 }

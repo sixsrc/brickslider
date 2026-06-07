@@ -1,4 +1,5 @@
-import { State, type StateType } from "./State"
+import { State } from "./State"
+import type { StateType } from "./types"
 import { EventEmitter } from "./EventEmitter"
 import { ANIMATION_OPTIONS, CLASS_VALUES, TIMES } from "./helpers"
 import {
@@ -30,7 +31,6 @@ export class BaseSlider {
   protected $track: HTMLElement
   protected childrenCount: number
   protected sliderWidth: number | undefined
-  protected slidesArr: HTMLElement[]
   protected slides: HTMLElement[]
   protected translate: number
   movement: boolean
@@ -38,7 +38,6 @@ export class BaseSlider {
   constructor($root: string) {
     this.$root = $root
     this.getRootSelector = getRootSelector($root)
-    this.slidesArr = getSliderNodeList($root)
     this.slides = getSliderNodeList($root)
     this.state = new State(this.$root)
     this.store = State.store(this.$root)
@@ -49,10 +48,6 @@ export class BaseSlider {
     this.sliderWidth = getSliderWidth(this.$children)
     this.translate = 0
     this.movement = false
-  }
-
-  public static getSlides($root: string, cloned?: boolean) {
-    return getSliderNodeList($root, cloned)
   }
 
   private static getEmitter($root: string): EventEmitter {
@@ -66,19 +61,22 @@ export class BaseSlider {
     return emitter
   }
 
-  public on(event: string, listener: (...args: any[]) => void): void {
+  public on(event: string, listener: (...args: unknown[]) => void): void {
     this.emitter.on(event, listener)
   }
 
-  public off(event: string, listener: (...args: any[]) => void): void {
+  public off(event: string, listener: (...args: unknown[]) => void): void {
     this.emitter.off(event, listener)
   }
 
-  protected emit(event: string, ...args: any[]): void {
+  protected emit(event: string, ...args: unknown[]): void {
     this.emitter.emit(event, ...args)
   }
 
-  protected defineEventTarget(event: MouseEventOrTouchEvent) {
+  protected defineEventTarget(event: MouseEventOrTouchEvent): {
+    clientX: number
+    clientY: number
+  } {
     const clientX = getEventType(event).clientX
     const clientY = getEventType(event).clientY
 
@@ -90,6 +88,13 @@ export class BaseSlider {
     callback: (slide: HTMLElement, index: number) => void
   ): void {
     slides.forEach((slide, index) => callback(slide, index))
+  }
+
+  protected forEachButton(
+    buttons: NodeListOf<HTMLElement> | HTMLElement[],
+    callback: (button: HTMLElement, index: number) => void
+  ): void {
+    Array.from(buttons).forEach((button, index) => callback(button, index))
   }
 
   protected isDotTarget(numberOfSlides: number): void {
@@ -120,7 +125,7 @@ export class BaseSlider {
     let translate = 0
 
     for (let i = 0; i < index; i++) {
-      const slide = this.slidesArr[i]
+      const slide = this.slides[i]
       if (slide) translate += slide.offsetWidth + gap
     }
 
@@ -161,12 +166,12 @@ export class BaseSlider {
   }
 
   protected getVisibleSlidesForHeight(startIndex?: number): HTMLElement[] {
-    const { slidesPerView } = this.store
+    const { slideIndex, slidesPerView } = this.store
     const initialIndex =
       typeof startIndex === "number"
         ? startIndex
-        : typeof this.store.slideIndex === "number"
-          ? this.store.slideIndex
+        : typeof slideIndex === "number"
+          ? slideIndex
           : 0
     const safeSlidesPerView = Math.max(1, slidesPerView || 1)
 
@@ -204,7 +209,6 @@ export class BaseSlider {
 
     const nextHeight = this.getAutoHeightTarget(startIndex)
     const currentTrackHeight = this.$track.offsetHeight
-    const currentRootHeight = rootSelector.offsetHeight
     const safeDuration =
       isJumpSlide || currentEventType === "touchmove" ? 0 : duration
     const keyframes = [{ height: `${nextHeight}px` }]
@@ -214,10 +218,6 @@ export class BaseSlider {
 
     if (currentTrackHeight !== nextHeight) {
       this.animate(this.$track, keyframes, animationOptions)
-    }
-
-    if (currentRootHeight !== nextHeight) {
-      this.animate(rootSelector, keyframes, animationOptions)
     }
   }
 
@@ -234,7 +234,7 @@ export class BaseSlider {
     return [{ transform: translate3d(translate ?? currentTranslate) }]
   }
 
-  protected setState(state: Partial<StateType>) {
+  protected setState(state: Partial<StateType>): void {
     this.state.set(state)
   }
 
@@ -298,13 +298,13 @@ export class BaseSlider {
     return (totalSlides - slidesPerView) % slidesPerPage !== 0
   }
 
-  protected isAlign(totalSlides: number, slidesPerPage: number) {
+  protected isAlign(totalSlides: number, slidesPerPage: number): boolean {
     return totalSlides % slidesPerPage === 0
   }
 
   protected getMissingSlides(): { isMissing: boolean; leftOver: number } {
     const { slidesPerPage, slidesPerView } = this.store
-    const totalSlides = BaseSlider.getSlides(this.$root, false).length
+    const totalSlides = getSliderNodeList(this.$root, false).length
     const fullPages = Math.floor(totalSlides / slidesPerPage)
     const remainingSlides = totalSlides - fullPages * slidesPerPage
     const leftOver = Math.max(0, slidesPerView - remainingSlides)

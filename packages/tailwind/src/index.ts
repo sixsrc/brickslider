@@ -4,7 +4,13 @@ import plugin from "tailwindcss/plugin"
 // Plugin estrutural do BrickSlider.
 // Ele abstrai as classes repetitivas de layout sem acoplar tema/cores
 // para que o usuário aplique só o visual que quiser no HTML.
-export default plugin(function ({ addComponents }: { addComponents: any }) {
+type TailwindComponentStyles = Record<string, string | number>
+type TailwindComponents = Record<string, TailwindComponentStyles>
+type TailwindPluginApi = {
+  addComponents: (components: TailwindComponents) => void
+}
+
+export default plugin(function ({ addComponents }: TailwindPluginApi): void {
   addComponents({
     ".bs-root, .brick-slider": {
       position: "relative",
@@ -99,7 +105,7 @@ export default plugin(function ({ addComponents }: { addComponents: any }) {
       height: "100%",
       display: "block",
       transformOrigin: "left center",
-      transform: "scaleX(0)"
+      scale: "0 1"
     },
     ".bs-dot--active": {},
     ".bs-arrow": {},

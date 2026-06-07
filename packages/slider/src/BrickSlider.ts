@@ -1,11 +1,11 @@
 import { BaseSlider } from "./BaseSlider"
 import { Messages } from "./Messages"
-import { SliderOptions, StateType } from "./State"
 import { Validation } from "./Validation"
 import {
   ATTRIBUTES,
   DOM_ELEMENT_ALIASES,
   FROM,
+  SLIDER_EVENTS,
   addClass,
   getSlideMovement,
   isValidSelector,
@@ -17,6 +17,7 @@ import {
 import { Mount } from "./Mount"
 import { Slider } from "./Slider"
 import { BSPlugin } from "./BSPlugin"
+import type { SliderOptions, StateType } from "./types"
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: SliderOptions
@@ -39,20 +40,20 @@ export class BrickSlider extends BaseSlider {
     this.validation($root, this.validate.sanitizeOptions(options))
   }
 
-  private validation($root: string, options?: SliderOptions) {
+  private validation($root: string, options?: SliderOptions): void {
     const isValid = isValidSelector($root) && this.validate.isValid()
 
     if (isValid) this.defineConfigs($root, options)
     else this.message.displayMessage()
   }
 
-  private defineConfigs($root: string, options?: SliderOptions) {
+  private defineConfigs($root: string, options?: SliderOptions): void {
     this.userOptions = options
     this.mount = new Mount($root)
     this.setOptions(options)
   }
 
-  private setOptions(options: SliderOptions | undefined) {
+  private setOptions(options: SliderOptions | undefined): void {
     const userOptions = this.userOptions
 
     if (!options || !userOptions) return
@@ -65,7 +66,7 @@ export class BrickSlider extends BaseSlider {
     this.mount?.init()
 
     waitFor(0, () => {
-      this.emit("mounted", {
+      this.emit(SLIDER_EVENTS.MOUNTED, {
         root: this.$root,
         options: this.userOptions
       })
@@ -81,9 +82,11 @@ export class BrickSlider extends BaseSlider {
   }
 
   public goTo(index: number): void {
+    const { useDragFree } = this.store
+
     if (!this.canInteract()) return
 
-    if (this.store.useDragFree) {
+    if (useDragFree) {
       this.message.displayDragFreeGoToIgnored()
       return
     }
@@ -104,7 +107,7 @@ export class BrickSlider extends BaseSlider {
     this.destroyPlugins()
     this.restoreRootElement(rootSelector)
     this.resetMountState()
-    this.emit("destroyed", {
+    this.emit(SLIDER_EVENTS.DESTROYED, {
       root: this.$root
     })
   }

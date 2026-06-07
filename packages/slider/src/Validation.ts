@@ -1,5 +1,4 @@
 import { DOM_ELEMENT_ALIASES, TAGS } from "./helpers"
-import { ResponsiveBreakpoint, SliderOptions } from "./State"
 import {
   $,
   getAllElements,
@@ -9,6 +8,7 @@ import {
   hasClass,
   removePart
 } from "./helpers"
+import type { ResponsiveBreakpoint, SliderOptions } from "./types"
 
 export class Validation {
   private $root: string

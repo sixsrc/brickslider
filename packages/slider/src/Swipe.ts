@@ -4,7 +4,7 @@ import { TouchMove } from "./TouchMove"
 import { TouchStart } from "./TouchStart"
 import { EVENTS } from "./helpers"
 import { listener } from "./helpers"
-import { TouchListenersParams } from "./types"
+import type { TouchListenersParams } from "./types"
 
 export class Swipe extends BaseSlider {
   private touchStart: TouchStart
@@ -45,16 +45,3 @@ export class Swipe extends BaseSlider {
     listener(touchMoveEvents, element, touchMove)
   }
 }
-
-/*  slides.forEach((slide, index) => {
-      const params: TouchListenersParams = {
-        element: slide,
-        index,
-        touchStart: touchStart.init(0),
-        touchEnd: touchEnd.init.bind(touchEnd),
-        touchMove: touchMove.init.bind(touchMove)
-      }
-      initTouchListeners(params)
-    })
-
-    */

@@ -13,7 +13,7 @@ export class Messages extends Validation {
     this.levelMap = Messages.TextLevels()
   }
 
-  static TextMessages($root: string) {
+  static TextMessages($root: string): Record<string, string> {
     return {
       NO_ROOT: `Root selector ${$root} is invalid or not found.\nSee: ${DOCS.GET_STARTED}`,
       NO_TRACK: `Track container for ${$root} is invalid or not found.\nSee: ${DOCS.BASIC_HTML_DOC}`,
@@ -31,7 +31,7 @@ export class Messages extends Validation {
     }
   }
 
-  static TextLevels() {
+  static TextLevels(): Record<string, "warn" | "error"> {
     return {
       NO_ROOT: "error",
       NO_TRACK: "error",

@@ -1,15 +1,23 @@
 // packages/slider/src/dev-demo.ts
 import { BrickSlider } from "../src/BrickSlider"
+import type { SliderOptions } from "../src/types"
+import { SLIDER_EVENTS } from "../src/helpers"
 import {
   BSAccessibilityPlugin,
   type BSAccessibilityPluginOptions
 } from "@sixsrc/brickslider-accessibility"
+import { BSStoriesPlugin } from "@sixsrc/brickslider-stories"
+
+type DemoSlideChangePayload = {
+  slideIndex: number
+  activePage: number
+}
 
 function createInstance(
   selector: string,
-  options: Record<string, any>,
+  options: SliderOptions,
   accessibilityOptions?: BSAccessibilityPluginOptions
-) {
+): BrickSlider {
   const slider = new BrickSlider(selector, options)
   const accessibilityPlugin = new BSAccessibilityPlugin(
     selector,
@@ -21,7 +29,7 @@ function createInstance(
   return slider
 }
 
-function bindMethodsDemo(sliders: BrickSlider[]) {
+function bindMethodsDemo(sliders: BrickSlider[]): void {
   const controls: Array<[string, () => void]> = [
     ["#methods-prev", () => sliders.forEach(slider => slider.prev())],
     ["#methods-next", () => sliders.forEach(slider => slider.next())],
@@ -39,18 +47,20 @@ function bindMethodsDemo(sliders: BrickSlider[]) {
   })
 }
 
-function bindSlider3EventsDemo(slider: BrickSlider) {
-  slider.on("mounted", () => {
+function bindSlider3EventsDemo(slider: BrickSlider): void {
+  slider.on(SLIDER_EVENTS.MOUNTED, () => {
     alert("slider3 mounted")
   })
 
-  slider.on("destroyed", () => {
+  slider.on(SLIDER_EVENTS.DESTROYED, () => {
     alert("slider3 destroyed")
   })
 
-  slider.on("slideChange", payload => {
+  slider.on(SLIDER_EVENTS.SLIDE_CHANGE, payload => {
+    const slideChangePayload = payload as DemoSlideChangePayload
+
     alert(
-      `slider3 slideChange: slide ${payload.slideIndex}, page ${payload.activePage}`
+      `slider3 slideChange: slide ${slideChangePayload.slideIndex}, page ${slideChangePayload.activePage}`
     )
   })
 }
@@ -101,6 +111,31 @@ const options = [
     responsive: {
       xs: {
         slidesPerView: 1,
+        slidesPerPage: 1
+      },
+      md: {
+        slidesPerView: 2,
+        slidesPerPage: 2
+      },
+      lg: {
+        slidesPerView: 3,
+        slidesPerPage: 3
+      }
+    },
+    useLoop: true
+  },
+  {
+    slidesPerView: 1,
+    slidesPerPage: 1,
+    gap: 20,
+    screens: {
+      xs: 320,
+      md: 768,
+      lg: 1024
+    },
+    responsive: {
+      xs: {
+        slidesPerView: 1,
         slidesPerPage: 1,
         useSlideSizes: false
       },
@@ -136,6 +171,12 @@ const options = [
     gap: 20,
     useAutoHeight: true,
     useLoop: true
+  },
+  {
+    slidesPerView: 1,
+    slidesPerPage: 1,
+    gap: 0,
+    useLoop: false
   }
 ]
 
@@ -159,7 +200,7 @@ const slider3AccessibilityOptions: BSAccessibilityPluginOptions = {
   }
 }
 
-export function startDemo() {
+export function startDemo(): void {
   const slider1 = createInstance("#slider1", options[0])
   const slider2 = createInstance("#slider2", options[1])
   const slider3 = createInstance(
@@ -168,23 +209,37 @@ export function startDemo() {
     slider3AccessibilityOptions
   )
   const slider4 = createInstance("#slider4", options[3])
-  const slider5 = createInstance("#slider5", options[4])
-  const slider6 = createInstance("#slider6", options[5])
-  const slider7 = createInstance("#slider7", options[6])
+  const slider8 = createInstance("#slider8", options[4])
+  const slider5 = createInstance("#slider5", options[5])
+  const slider6 = createInstance("#slider6", options[6])
+  const slider7 = createInstance("#slider7", options[7])
+  const slider9 = createInstance("#slider9", options[8])
+  const storiesPlugin = new BSStoriesPlugin("#slider9", {
+    trigger: "#open-stories",
+    duration: 5000,
+    maxVideoDuration: 60000,
+    maxStories: 10,
+    pauseOnHover: true,
+    useMuted: true
+  })
 
   // bindSlider3EventsDemo(slider3)
   slider1.init()
   slider2.init()
   slider3.init()
   slider4.init()
+  slider8.init()
   slider5.init()
   slider6.init()
   slider7.init()
+  slider9.init()
+  slider9.use(storiesPlugin)
   bindMethodsDemo([
     slider1,
     slider2,
     slider3,
     slider4,
+    slider8,
     slider5,
     slider6,
     slider7

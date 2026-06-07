@@ -2,12 +2,11 @@ import { BaseSlider } from "./BaseSlider"
 import { Progress } from "./Progress"
 import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./helpers"
 import { animateElement, translate3d } from "./helpers"
-import { AnimationOptions, KeyframeAnimation } from "./types"
-
-type AnimationCallbacks = {
-  onStart?: (animations: Animation[]) => void
-  onEnd?: (animations: Animation[]) => void
-}
+import type {
+  AnimationCallbacks,
+  AnimationOptions,
+  KeyframeAnimation
+} from "./types"
 
 export class AnimationFrame extends BaseSlider {
   constructor($root: string) {
@@ -55,12 +54,12 @@ export class AnimationFrame extends BaseSlider {
       useDragFree && currentEventType === EVENTS.TOUCHEND
     const duration = isTouchMove || isJumpSlide ? 0 : time
     const actualDuration = isDragFreeRelease
-      ? 1500
+      ? TIMES.DRAG_FREE_RELEASE_TIME
       : duration > 0
         ? duration
         : 0
     const easing = isDragFreeRelease
-      ? "cubic-bezier(0.22, 1, 0.36, 1)"
+      ? ANIMATION_OPTIONS.DRAG_FREE_EASING
       : ANIMATION_OPTIONS.EASEOUT
 
     return {

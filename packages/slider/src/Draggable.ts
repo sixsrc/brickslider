@@ -1,9 +1,12 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { EVENTS } from "./helpers"
-import { listener, removeListener } from "./helpers"
-import { StateType } from "./State"
-import { DragabbleListenersParams, MouseEventOrTouchEvent } from "./types"
+import { isPrimaryInputButton, listener, removeListener } from "./helpers"
+import type { StateType } from "./types"
+import type {
+  DragabbleListenersParams,
+  MouseEventOrTouchEvent
+} from "./types"
 
 export class Draggable extends BaseSlider {
   animation: AnimationFrame
@@ -34,16 +37,16 @@ export class Draggable extends BaseSlider {
   }
 
   private dragStart(event: MouseEventOrTouchEvent): void {
+    if (!isPrimaryInputButton(event)) return
+
     const startX = this.defineEventTarget(event).clientX
     const startY = this.defineEventTarget(event).clientY
     const handleMoveEvents = [EVENTS.MOUSEMOVE, EVENTS.TOUCHMOVE]
     const handleEndEvents = [EVENTS.MOUSEUP, EVENTS.TOUCHEND]
 
     this.setState(this.axisState(startX, startY))
-
-    listener(handleMoveEvents, document, this.handleMove as any)
+    listener(handleMoveEvents, document, this.handleMove as EventListener)
     listener(handleEndEvents, document, this.handleEnd)
-
     event.preventDefault()
   }
 
@@ -62,9 +65,8 @@ export class Draggable extends BaseSlider {
     const handleMoveEvents = [EVENTS.MOUSEMOVE, EVENTS.TOUCHMOVE]
     const handleEndEvents = [EVENTS.MOUSEUP, EVENTS.TOUCHEND]
 
-    removeListener(handleMoveEvents, document, this.handleMove as any)
+    removeListener(handleMoveEvents, document, this.handleMove as EventListener)
     removeListener(handleEndEvents, document, this.handleEnd)
-
     this.setState(this.draggingState(false))
   }
 
@@ -75,7 +77,7 @@ export class Draggable extends BaseSlider {
     }
   }
 
-  private draggingState(condition: boolean) {
+  private draggingState(condition: boolean): Partial<StateType> {
     return {
       isDragging: condition
     }

@@ -1,0 +1,21 @@
+{
+  "name": "@sixsrc/brickslider-stories",
+  "author": "@malopestorres",
+  "description": "Stories plugin package for BrickSlider.",
+  "license": "MIT",
+  "version": "0.0.0",
+  "type": "module",
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "peerDependencies": {
+    "@sixsrc/brickslider": "workspace:*"
+  }
+}

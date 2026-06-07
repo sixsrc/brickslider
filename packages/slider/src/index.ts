@@ -1,8 +1,3 @@
-/*
-export { BrickSlider }
-;(window as any).BrickSlider = BrickSlider
-*/
-
 // packages/slider/src/index.ts
 // Library entry — re-export only the class and avoid running demo code on import.
 // In development, dynamically load the dev-demo module so HMR works, but DCE removes it in production.

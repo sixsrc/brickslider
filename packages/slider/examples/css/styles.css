@@ -128,3 +128,150 @@ body {
     visibility: hidden !important;
   }
 */
+
+.bs-demo-frame {
+  height: 22rem;
+}
+
+.bs-demo-slider {
+  --bs-demo-controls-inset: 0px;
+  --bs-demo-arrow-gap: 0.875rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 1.25rem;
+}
+
+.bs-demo-slider:has(> .bs-track.bs-peek-sm) {
+  --bs-demo-controls-inset: 48px;
+}
+
+.bs-demo-slider:has(> .bs-track.bs-peek) {
+  --bs-demo-controls-inset: 80px;
+}
+
+.bs-demo-slider:has(> .bs-track.bs-peek-lg) {
+  --bs-demo-controls-inset: 120px;
+}
+
+.bs-demo-slider > .bs-track {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.bs-demo-slider > .bs-prev {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  margin-left: var(--bs-demo-controls-inset);
+}
+
+.bs-demo-slider > .bs-next {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  margin-left: calc(var(--bs-demo-controls-inset) + 44px + var(--bs-demo-arrow-gap));
+}
+
+.bs-demo-slider > .bs-dots {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  margin-right: var(--bs-demo-controls-inset);
+}
+
+.bs-demo-slider > .bs-arrow {
+  @apply flex h-11 w-11 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50;
+}
+
+.bs-demo-slider > .bs-arrow svg {
+  @apply h-5 w-5;
+}
+
+.bs-demo-slider > .bs-dots {
+  @apply m-0 flex w-auto items-center justify-end gap-3 p-0;
+}
+
+.bs-demo-slider > .bs-dot {
+  @apply m-0 inline-block h-4 w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent;
+}
+
+.bs-demo-slider > .bs-dot.bs-dot--active {
+  @apply border-violet-950 bg-white;
+}
+
+.bs-progress-layout {
+  grid-template-rows: minmax(0, 1fr) auto auto;
+}
+
+.bs-progress-layout > .bs-progress {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  position: static;
+  inset: auto;
+  transform: none;
+  display: block;
+  justify-self: stretch;
+  margin-inline: var(--bs-demo-controls-inset);
+  width: auto;
+}
+
+.bs-progress-layout > .bs-progress > .bs-progress-bar {
+  @apply origin-left bg-violet-950;
+}
+
+.bs-auto-height-demo {
+  margin-top: 0;
+}
+
+.bs-auto-height-demo .bs-demo-slider {
+  row-gap: 1.25rem;
+}
+
+.bs-auto-height-demo .bs-auto-height-layout > .bs-arrow {
+  position: static;
+  top: auto;
+  transform: none;
+}
+
+.bs-auto-height-demo .bs-auto-height-layout > .bs-dots {
+  position: static;
+  bottom: auto;
+  width: auto;
+}
+
+.bs-auto-height-layout.bs-demo-slider > .bs-track {
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .bs-demo-frame {
+    height: 20rem;
+  }
+
+  .bs-demo-slider {
+    --bs-demo-arrow-gap: 0.75rem;
+    column-gap: 0.5rem;
+  }
+
+  .bs-demo-slider > .bs-next {
+    margin-left: calc(var(--bs-demo-controls-inset) + 40px + var(--bs-demo-arrow-gap));
+  }
+
+  .bs-demo-slider > .bs-arrow {
+    @apply h-10 w-10;
+  }
+
+  .bs-demo-slider > .bs-dots {
+    justify-self: start;
+    grid-column: 1 / -1;
+  }
+
+  .bs-progress-layout > .bs-progress {
+    margin-inline: 0;
+  }
+}
