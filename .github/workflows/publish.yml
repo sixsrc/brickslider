@@ -17,7 +17,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
@@ -36,6 +36,4 @@ jobs:
         run: pnpm build
 
       - name: Publish changed packages with Changesets
-        run: pnpm publish:changeset
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm exec changeset publish
