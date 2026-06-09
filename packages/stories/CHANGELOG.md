@@ -1,5 +1,13 @@
 # @sixsrc/brick-slider-stories
 
+## 1.0.1
+
+### Patch Changes
+
+- 9d8a62c: Add npm package metadata and search keywords.
+- Updated dependencies [9d8a62c]
+  - @sixsrc/brick-slider@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

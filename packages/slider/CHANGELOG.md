@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+### Patch Changes
+
+- 9d8a62c: Add npm package metadata and search keywords.
+
 ## 1.0.0
 
 ### Major Changes
