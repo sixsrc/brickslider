@@ -6,14 +6,21 @@
   "version": "1.0.0",
   "keywords": [
     "brickslider",
-    "typescript-slider",
-    "vanilla-slider",
-    "carousel-slider",
-    "tailwind-slider"
+    "brick-slider",
+    "slider",
+    "carousel",
+    "typescript",
+    "vanilla-js",
+    "web-animation-api",
+    "tailwindcss"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sixsrc/brickslider.git"
+  },
+  "homepage": "https://github.com/sixsrc/brickslider#readme",
+  "bugs": {
+    "url": "https://github.com/sixsrc/brickslider/issues"
   },
   "type": "module",
   "files": [

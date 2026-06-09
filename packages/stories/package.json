@@ -4,6 +4,24 @@
   "description": "Stories plugin package for BrickSlider.",
   "license": "MIT",
   "version": "1.0.0",
+  "keywords": [
+    "brickslider",
+    "brick-slider",
+    "stories",
+    "instagram-stories",
+    "carousel",
+    "slider",
+    "typescript",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sixsrc/brickslider.git"
+  },
+  "homepage": "https://github.com/sixsrc/brickslider#readme",
+  "bugs": {
+    "url": "https://github.com/sixsrc/brickslider/issues"
+  },
   "type": "module",
   "files": [
     "lib",
