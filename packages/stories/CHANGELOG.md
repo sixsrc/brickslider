@@ -1,4 +1,4 @@
-# Changelog
+# @sixsrc/brick-slider-stories
 
 ## 1.0.0
 
@@ -7,3 +7,8 @@
 - 479195b: Initial public release of the BrickSlider ecosystem.
 
   Includes the core carousel engine, accessibility plugin, stories plugin, and Tailwind preset package with npm, CDN, and TypeScript support.
+
+### Patch Changes
+
+- Updated dependencies [479195b]
+  - @sixsrc/brick-slider@1.0.0

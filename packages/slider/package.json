@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Simple slider plugin, made to be lightweight and practical.",
   "license": "MIT",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "keywords": [
     "brickslider",
     "typescript-slider",

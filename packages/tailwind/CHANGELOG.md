@@ -1,4 +1,4 @@
-# Changelog
+# @sixsrc/brick-slider-tailwind
 
 ## 1.0.0
 

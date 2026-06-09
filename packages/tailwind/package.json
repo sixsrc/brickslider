@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Tailwind plugin package with BrickSlider structural utilities.",
   "license": "MIT",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "keywords": [
     "brickslider",
     "tailwindcss",
