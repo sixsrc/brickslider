@@ -7,6 +7,7 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  NPM_CONFIG_PROVENANCE: true
 
 permissions:
   contents: write
@@ -30,7 +31,15 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          registry-url: https://registry.npmjs.org
+
+      - name: Use latest npm
+        run: npm install -g npm@latest
+
+      - name: Show package manager versions
+        run: |
+          node --version
+          npm --version
+          pnpm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
