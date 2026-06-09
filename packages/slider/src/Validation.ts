@@ -1,8 +1,15 @@
-import { DOM_ELEMENT_ALIASES, TAGS } from "./helpers"
+import {
+  DOM_ELEMENT_ALIASES,
+  NORMALIZED_ELEMENT_ROLES,
+  RESPONSIVE_BREAKPOINTS,
+  TAGS
+} from "./helpers"
 import {
   $,
+  containsElement,
   getAllElements,
   getChildren,
+  getElement,
   getRootSelector,
   getTrackChildren,
   hasClass,
@@ -20,7 +27,11 @@ export class Validation {
   constructor($root: string) {
     this.$root = $root
     this.arrElements = this.getRoot()?.children
-    this.fixedOrder = ["track", "children", "slide"]
+    this.fixedOrder = [
+      NORMALIZED_ELEMENT_ROLES.TRACK,
+      NORMALIZED_ELEMENT_ROLES.CHILDREN,
+      NORMALIZED_ELEMENT_ROLES.SLIDE
+    ]
   }
 
   private getRoot(): HTMLElement | undefined {
@@ -44,9 +55,9 @@ export class Validation {
 
   private getTrackClasses(element: Element): string[] {
     const firstChild = element.children[0]
-    const firstSlide = firstChild?.querySelector(
-      `.${DOM_ELEMENT_ALIASES.SLIDE[0]}`
-    )
+    const firstSlide = firstChild
+      ? getElement<HTMLElement>(`.${DOM_ELEMENT_ALIASES.SLIDE[0]}`, firstChild)
+      : undefined
 
     if (!firstSlide) return []
 
@@ -59,12 +70,19 @@ export class Validation {
 
   private normalizeElementRole(element?: HTMLElement): string | null {
     if (!element) return null
-    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.TRACK)) return "track"
+    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.TRACK)) {
+      return NORMALIZED_ELEMENT_ROLES.TRACK
+    }
     if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.CHILDREN))
-      return "children"
-    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.SLIDE)) return "slide"
+      return NORMALIZED_ELEMENT_ROLES.CHILDREN
+    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.SLIDE)) {
+      return NORMALIZED_ELEMENT_ROLES.SLIDE
+    }
     if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.ARROW))
-      return "bs-arrow"
+      return NORMALIZED_ELEMENT_ROLES.ARROW
+    if (this.hasAliasClass(element, DOM_ELEMENT_ALIASES.PAGES)) {
+      return NORMALIZED_ELEMENT_ROLES.PAGES
+    }
 
     return element.classList[0] ?? null
   }
@@ -89,7 +107,7 @@ export class Validation {
 
   private getBeforeTrack(): string[] {
     const elementClasses = this.getElementClasses(this.arrElements)
-    const trackIndex = elementClasses.indexOf("track")
+    const trackIndex = elementClasses.indexOf(NORMALIZED_ELEMENT_ROLES.TRACK)
     const arr = this.getElementClasses(this.arrElements)
 
     return removePart(arr, 0, trackIndex)
@@ -131,19 +149,37 @@ export class Validation {
   private isInvalidBeforeTrack(): boolean {
     const beforeTrack = this.getBeforeTrack()
     const buttons = this.getButtonElements()
+    const buttonLikeElements = Array.from(this.arrElements || []).slice(
+      0,
+      beforeTrack.length
+    )
+    const pageElements = buttonLikeElements.filter(element =>
+      hasClass(element as HTMLElement, DOM_ELEMENT_ALIASES.PAGES[0])
+    )
+    const arrowButtons = buttons.filter(element =>
+      hasClass(element as HTMLElement, DOM_ELEMENT_ALIASES.ARROW[0])
+    )
 
     return (
-      beforeTrack.length > 2 ||
-      !beforeTrack.every(className => className === "bs-arrow") ||
-      !buttons.every(el => el.tagName.toLowerCase() === TAGS.BUTTON)
+      beforeTrack.length > 3 ||
+      !beforeTrack.every(className =>
+        (
+          [
+            NORMALIZED_ELEMENT_ROLES.ARROW,
+            NORMALIZED_ELEMENT_ROLES.PAGES
+          ] as readonly string[]
+        ).includes(className)
+      ) ||
+      pageElements.length > 1 ||
+      !arrowButtons.every(el => el.tagName.toLowerCase() === TAGS.BUTTON)
     )
   }
 
   private hasAllElementsInOrder(): boolean {
     const elementClasses = this.getElementClasses(this.arrElements)
-    const trackIndex = elementClasses.indexOf("track")
-
-    const endArr = removePart(elementClasses, trackIndex, trackIndex + 3)
+    const trackIndex = elementClasses.indexOf(NORMALIZED_ELEMENT_ROLES.TRACK)
+    const endArr =
+      trackIndex >= 0 ? removePart(elementClasses, trackIndex, trackIndex + 3) : []
 
     if (this.isInvalidBeforeTrack()) return false
 
@@ -151,21 +187,7 @@ export class Validation {
   }
 
   private hasDuplicateClasses(): boolean {
-    const classCounts: Record<string, number> = {}
-    const arrClasses = [
-      ...DOM_ELEMENT_ALIASES.TRACK,
-      ...DOM_ELEMENT_ALIASES.CHILDREN
-    ]
-
-    getAllElements(this.$root).forEach(el => {
-      arrClasses.forEach(className => {
-        if (hasClass(el as HTMLElement, className)) {
-          classCounts[className] = (classCounts[className] ?? 0) + 1
-        }
-      })
-    })
-
-    return Object.values(classCounts).some(count => count > 1)
+    return this.getDuplicateClassNames().length > 0
   }
 
   public runValidations(options?: SliderOptions): void {
@@ -213,6 +235,14 @@ export class Validation {
       if (c()) this.ids.add(id)
     })
 
+    if (this.ids.has("DUPLICATE_ELEMENTS")) {
+      this.details.DUPLICATE_ELEMENTS = this.getDuplicateClassNames()
+    }
+
+    if (this.ids.has("INVALID_ORDER")) {
+      this.details.INVALID_ORDER = this.getInvalidOrderDetails()
+    }
+
     const missingResponsiveBreakpoints =
       this.getResponsiveBreakpointsMissingInScreens(options)
 
@@ -228,6 +258,69 @@ export class Validation {
 
   public getDetails(id: string): string[] {
     return this.details[id] ?? []
+  }
+
+  private getDuplicateClassNames(): string[] {
+    const classCounts: Record<string, number> = {}
+    const duplicateAliases = [
+      ...DOM_ELEMENT_ALIASES.TRACK,
+      ...DOM_ELEMENT_ALIASES.CHILDREN
+    ]
+
+    getAllElements(this.$root).forEach(el => {
+      duplicateAliases.forEach(className => {
+        if (hasClass(el as HTMLElement, className)) {
+          classCounts[className] = (classCounts[className] ?? 0) + 1
+        }
+      })
+    })
+
+    return Object.entries(classCounts)
+      .filter(([, count]) => count > 1)
+      .map(([className]) => className)
+  }
+
+  private getInvalidOrderDetails(): string[] {
+    const track = getTrackChildren(this.$root)
+    const children = getChildren(this.$root)
+    const beforeTrack = this.getBeforeTrack()
+    const details: string[] = []
+    const hasSlideInsideChildren = Boolean(
+      children &&
+        getElement<HTMLElement>(`.${DOM_ELEMENT_ALIASES.SLIDE[0]}`, children)
+    )
+
+    if (this.isInvalidBeforeTrack()) {
+      details.push(
+        `Optional arrows must be <button> elements, and optional .${DOM_ELEMENT_ALIASES.PAGES[0]} must stay before .${DOM_ELEMENT_ALIASES.TRACK[0]}.`
+      )
+    }
+
+    if (children && track && !containsElement(track, children)) {
+      details.push(
+        `Found .${DOM_ELEMENT_ALIASES.CHILDREN[0]} outside .${DOM_ELEMENT_ALIASES.TRACK[0]}.`
+      )
+    }
+
+    if (track && children && track.firstElementChild !== children) {
+      details.push(
+        `.${DOM_ELEMENT_ALIASES.CHILDREN[0]} must be the first child inside .${DOM_ELEMENT_ALIASES.TRACK[0]}.`
+      )
+    }
+
+    if (children && !hasSlideInsideChildren) {
+      details.push(
+        `Could not find any .${DOM_ELEMENT_ALIASES.SLIDE[0]} inside .${DOM_ELEMENT_ALIASES.CHILDREN[0]}.`
+      )
+    }
+
+    if (details.length === 0) {
+      details.push(
+        `Expected structure: .${DOM_ELEMENT_ALIASES.TRACK[0]} > .${DOM_ELEMENT_ALIASES.CHILDREN[0]} > .${DOM_ELEMENT_ALIASES.SLIDE[0]}.`
+      )
+    }
+
+    return details
   }
 
   private isSlideSizesValid(slideSizes?: SliderOptions["slideSizes"]): boolean {
@@ -450,7 +543,7 @@ export class Validation {
   private isSupportedBreakpoint(
     breakpoint: string
   ): breakpoint is ResponsiveBreakpoint {
-    return ["xs", "sm", "md", "lg", "xl", "2xl"].includes(breakpoint)
+    return (RESPONSIVE_BREAKPOINTS as readonly string[]).includes(breakpoint)
   }
 
   private isSlideSizesAllowed(slidesPerView?: number): boolean {

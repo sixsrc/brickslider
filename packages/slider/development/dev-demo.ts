@@ -1,28 +1,26 @@
 // packages/slider/src/dev-demo.ts
 import { BrickSlider } from "../src/BrickSlider"
-import type { SliderOptions } from "../src/types"
+import type { BrickSliderOptions } from "../src/types"
 import { SLIDER_EVENTS } from "../src/helpers"
 import {
-  BSAccessibilityPlugin,
-  type BSAccessibilityPluginOptions
-} from "@sixsrc/brickslider-accessibility"
-import { BSStoriesPlugin } from "@sixsrc/brickslider-stories"
+  BrickSliderAccessibility,
+  type BrickSliderAccessibilityOptions
+} from "@sixsrc/brick-slider-accessibility"
+import { BrickSliderStories, STORIES_EVENTS } from "@sixsrc/brick-slider-stories"
 
 type DemoSlideChangePayload = {
+  rootSelector: string
   slideIndex: number
   activePage: number
 }
 
 function createInstance(
   selector: string,
-  options: SliderOptions,
-  accessibilityOptions?: BSAccessibilityPluginOptions
+  options: BrickSliderOptions,
+  accessibilityOptions?: BrickSliderAccessibilityOptions
 ): BrickSlider {
   const slider = new BrickSlider(selector, options)
-  const accessibilityPlugin = new BSAccessibilityPlugin(
-    selector,
-    accessibilityOptions
-  )
+  const accessibilityPlugin = new BrickSliderAccessibility(accessibilityOptions)
 
   slider.use(accessibilityPlugin)
 
@@ -35,6 +33,7 @@ function bindMethodsDemo(sliders: BrickSlider[]): void {
     ["#methods-next", () => sliders.forEach(slider => slider.next())],
     ["#methods-goto-0", () => sliders.forEach(slider => slider.goTo(0))],
     ["#methods-goto-2", () => sliders.forEach(slider => slider.goTo(2))],
+    ["#methods-init", () => sliders.forEach(slider => slider.init())],
     ["#methods-destroy", () => sliders.forEach(slider => slider.destroy())]
   ]
 
@@ -47,21 +46,81 @@ function bindMethodsDemo(sliders: BrickSlider[]): void {
   })
 }
 
-function bindSlider3EventsDemo(slider: BrickSlider): void {
-  slider.on(SLIDER_EVENTS.MOUNTED, () => {
-    alert("slider3 mounted")
+
+
+function bindStoriesEventsPanel(
+  slider: BrickSlider,
+  stories: BrickSliderStories
+): void {
+  const controls: Array<[string, () => void]> = [
+    ["#stories-events-open", () => stories.open()],
+    ["#stories-events-close", () => stories.close()],
+    ["#stories-events-destroy", () => slider.destroy()],
+    ["#stories-events-init", () => slider.init()]
+  ]
+
+  controls.forEach(([selector, action]) => {
+    const element = document.querySelector<HTMLButtonElement>(selector)
+
+    if (!element) return
+
+    element.onclick = action
+  })
+}
+
+function bindStoriesMethodsDemo(
+  slider: BrickSlider,
+  stories: BrickSliderStories
+): void {
+  const controls: Array<[string, () => void]> = [
+    ["#stories-methods-prev", () => slider.prev()],
+    ["#stories-methods-next", () => slider.next()],
+    ["#stories-methods-goto-0", () => slider.goTo(0)],
+    ["#stories-methods-goto-2", () => slider.goTo(2)],
+    ["#stories-methods-pause", () => stories.pause()],
+    ["#stories-methods-resume", () => stories.resume()],
+    ["#stories-methods-destroy", () => slider.destroy()],
+    ["#stories-methods-init", () => slider.init()],
+    ["#stories-methods-close", () => stories.close()]
+  ]
+
+  controls.forEach(([selector, action]) => {
+    const element = document.querySelector<HTMLButtonElement>(selector)
+
+    if (!element) return
+
+    element.onclick = action
+  })
+}
+
+function bindStoriesEventsDemo(slider: BrickSlider): void {
+  slider.on(STORIES_EVENTS.OPENED, payload => {
+    console.log("storiesOpened", payload as string)
+  })
+
+  slider.on(STORIES_EVENTS.MOUNTED, payload => {
+    console.log("storiesMounted", payload as string)
+  })
+
+  slider.on(STORIES_EVENTS.CLOSED, payload => {
+    console.log("storiesClosed", payload as string)
+  })
+}
+
+function bindSlider3EventsDemo(slider: BrickSlider): void {  slider.on(SLIDER_EVENTS.MOUNTED, () => {
+    // alert("slider3 mounted")
   })
 
   slider.on(SLIDER_EVENTS.DESTROYED, () => {
-    alert("slider3 destroyed")
+    // alert("slider3 destroyed")
   })
 
   slider.on(SLIDER_EVENTS.SLIDE_CHANGE, payload => {
     const slideChangePayload = payload as DemoSlideChangePayload
 
-    alert(
-      `slider3 slideChange: slide ${slideChangePayload.slideIndex}, page ${slideChangePayload.activePage}`
-    )
+    // alert(
+    //   `slider3 slideChange: slide ${slideChangePayload.slideIndex}, page ${slideChangePayload.activePage}`
+    // )
   })
 }
 
@@ -180,7 +239,7 @@ const options = [
   }
 ]
 
-const slider3AccessibilityOptions: BSAccessibilityPluginOptions = {
+const slider3AccessibilityOptions: BrickSliderAccessibilityOptions = {
   useKeyboardNavigation: true,
   useFocusManagement: true,
   labels: {
@@ -214,16 +273,18 @@ export function startDemo(): void {
   const slider6 = createInstance("#slider6", options[6])
   const slider7 = createInstance("#slider7", options[7])
   const slider9 = createInstance("#slider9", options[8])
-  const storiesPlugin = new BSStoriesPlugin("#slider9", {
+  const storiesPlugin = new BrickSliderStories({
     trigger: "#open-stories",
     duration: 5000,
     maxVideoDuration: 60000,
-    maxStories: 10,
+    maxStories: 3,
+    closeOnEnd: false,
     pauseOnHover: true,
     useMuted: true
   })
-
-  // bindSlider3EventsDemo(slider3)
+  bindSlider3EventsDemo(slider3)
+  bindStoriesEventsDemo(slider9)
+  slider9.use(storiesPlugin)
   slider1.init()
   slider2.init()
   slider3.init()
@@ -233,7 +294,8 @@ export function startDemo(): void {
   slider6.init()
   slider7.init()
   slider9.init()
-  slider9.use(storiesPlugin)
+  bindStoriesMethodsDemo(slider9, storiesPlugin)
+  bindStoriesEventsPanel(slider9, storiesPlugin)
   bindMethodsDemo([
     slider1,
     slider2,

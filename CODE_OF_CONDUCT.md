@@ -1,35 +1,38 @@
-# Código de Conduta
+# Code of Conduct
 
-Este projeto adota o Código de Conduta do Contributor Covenant v2.1 para promover um ambiente acolhedor e seguro para todos.
+This project adopts the Contributor Covenant v2.1 Code of Conduct to support a welcoming and safe environment for everyone.
 
-## Padrões esperados de comportamento
+## Expected behavior
 
-Contribuintes ao projeto se comprometem a:
+By participating in this project, contributors agree to:
 
-- Ser respeitosos e profissionais em todas as interações.
-- Ajudar a criar um ambiente inclusivo para pessoas de todas as origens.
-- Fornecer críticas construtivas e evitar ataques pessoais.
+- Be respectful and professional in all interactions.
+- Help create an inclusive environment for people from all backgrounds.
+- Give constructive feedback and avoid personal attacks.
 
-## Comportamento inaceitável
+## Unacceptable behavior
 
-O seguinte comportamento não será tolerado:
+The following behavior will not be tolerated:
 
-- Assédio, linguagem de ódio ou discriminação.
-- Ameaças, stalking, perseguição ou divulgação de informações pessoais.
-- Comentários racistas, sexistas, homofóbicos, transfóbicos ou qualquer forma de exclusão.
+- Harassment, hate speech, or discrimination
+- Threats, stalking, intimidation, or sharing private information without consent
+- Racist, sexist, homophobic, transphobic, or exclusionary comments of any kind
 
-## Como reportar
+## Reporting
 
-Se você observar ou experienciar um comportamento inaceitável, por favor reporte ao mantenedor do projeto por email: `sixsrcsoftware@gmail.com` ou abra uma issue privada no repo com o rótulo `private` e marque `@sixsrc`.
+If you witness or experience unacceptable behavior, please contact the project maintainer at `sixsrcsoftware@gmail.com` or open a private issue in the repository using the `private` label and mention `@sixsrc`.
 
-Inclua o máximo de contexto possível: data, hora, participantes, e descrições do incidente.
+Please include as much context as possible, such as:
+- date and time
+- people involved
+- a description of what happened
 
-## Aplicação
+## Enforcement
 
-Os mantenedores podem responder com ações que incluem:
+Maintainers may respond with actions including:
 
-- Avisos formais
-- Remoção de conteúdo ofensivo
-- Bloqueio/removal de acesso de contribuidores que violem repetidamente o código de conduta
+- formal warnings
+- removal of offensive content
+- suspension or removal of access for repeat violations
 
-Ao contribuir com este projeto você concorda em seguir este código.
+By contributing to this project, you agree to follow this Code of Conduct.

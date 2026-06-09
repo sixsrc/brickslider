@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./examples/css/styles.css" />
+    <link rel="stylesheet" href="./development/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,14 +18,17 @@
         <div class="text-center">
           <h2 class="text-2xl font-semibold text-violet-950">Basic</h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            A simple starting point with one slide per view and standard navigation.
+            A simple starting point with one slide per view and standard
+            navigation.
           </p>
         </div>
 
-        <div class="bs-demo-frame max-w-[588px] h-[270px] w-full mx-auto box-border">
+        <div
+          class="bs-demo-frame max-w-[588px] h-[270px] w-full mx-auto box-border"
+        >
           <div id="slider1" class="bs-hidden h-full relative bs-demo-slider">
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +45,7 @@
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -57,6 +60,8 @@
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
+
+            <div class="bs-pages"></div>
 
             <div class="bs-track">
               <div class="bs-container box-border font-medium text-purple-100">
@@ -137,7 +142,7 @@
 
             <ul class="bs-dots">
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -148,14 +153,17 @@
         <div class="text-center">
           <h2 class="text-2xl font-semibold text-violet-950">Per Page</h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Moves through the carousel in groups, keeping each navigation step aligned to the page size.
+            Moves through the carousel in groups, keeping each navigation step
+            aligned to the page size.
           </p>
         </div>
 
-        <div class="bs-demo-frame max-w-[588px] h-[270px] w-full mx-auto box-border">
+        <div
+          class="bs-demo-frame max-w-[588px] h-[270px] w-full mx-auto box-border"
+        >
           <div id="slider2" class="bs-hidden h-full relative bs-demo-slider">
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +180,7 @@
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -187,6 +195,8 @@
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
+
+            <div class="bs-pages"></div>
 
             <div class="bs-track bs-peek-sm">
               <div class="bs-container box-border font-medium text-purple-100">
@@ -267,7 +277,7 @@
 
             <ul class="bs-dots">
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -278,14 +288,17 @@
         <div class="text-center">
           <h2 class="text-2xl font-semibold text-violet-950">SlideSizes</h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Mixes fixed pagination with custom percentage-based widths for selected slide positions.
+            Mixes fixed pagination with custom percentage-based widths for
+            selected slide positions.
           </p>
         </div>
 
-        <div class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border">
+        <div
+          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+        >
           <div id="slider3" class="bs-hidden h-full relative bs-demo-slider">
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -302,7 +315,7 @@
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -317,6 +330,8 @@
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
+
+            <div class="bs-pages"></div>
 
             <div class="bs-track bs-peek-sm">
               <div class="bs-container box-border font-medium text-purple-100">
@@ -451,7 +466,7 @@
 
             <ul class="bs-dots">
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -462,14 +477,17 @@
         <div class="text-center">
           <h2 class="text-2xl font-semibold text-violet-950">Responsive</h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Changes the number of visible slides and page size across breakpoints without custom slide widths.
+            Changes the number of visible slides and page size across
+            breakpoints without custom slide widths.
           </p>
         </div>
 
-        <div class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border">
+        <div
+          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+        >
           <div id="slider8" class="bs-hidden h-full relative bs-demo-slider">
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -486,7 +504,7 @@
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -501,6 +519,8 @@
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
+
+            <div class="bs-pages"></div>
 
             <div class="bs-track bs-peek-sm">
               <div class="bs-container box-border font-medium text-purple-100">
@@ -581,7 +601,7 @@
 
             <ul class="bs-dots">
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -594,14 +614,17 @@
             Responsive + SlideSizes
           </h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Combines breakpoint-driven layouts with slide size overrides that adapt across screen sizes.
+            Combines breakpoint-driven layouts with slide size overrides that
+            adapt across screen sizes.
           </p>
         </div>
 
-        <div class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border">
+        <div
+          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+        >
           <div id="slider5" class="bs-hidden h-full relative bs-demo-slider">
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -618,7 +641,7 @@
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -633,6 +656,8 @@
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
+
+            <div class="bs-pages"></div>
 
             <div class="bs-track bs-peek-sm">
               <div class="bs-container box-border font-medium text-purple-100">
@@ -713,7 +738,7 @@
 
             <ul class="bs-dots">
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -724,14 +749,17 @@
         <div class="text-center">
           <h2 class="text-2xl font-semibold text-violet-950">Drag Free</h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Lets the track move freely with touch or mouse drag, without loop or page snapping.
+            Lets the track move freely with touch or mouse drag, without loop or
+            page snapping.
           </p>
         </div>
 
-        <div class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border">
+        <div
+          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+        >
           <div id="slider4" class="bs-hidden h-full relative bs-demo-slider">
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -748,7 +776,7 @@
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -763,6 +791,8 @@
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
+
+            <div class="bs-pages"></div>
 
             <div class="bs-track bs-peek-sm">
               <div class="bs-container box-border font-medium text-purple-100">
@@ -848,14 +878,20 @@
         <div class="text-center">
           <h2 class="text-2xl font-semibold text-violet-950">Progress</h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Uses a progress rail instead of pagination dots to show how far the slider has advanced.
+            Uses a progress rail instead of pagination dots to show how far the
+            slider has advanced.
           </p>
         </div>
 
-        <div class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border">
-          <div id="slider6" class="bs-hidden h-full relative bs-demo-slider bs-progress-layout">
+        <div
+          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+        >
+          <div
+            id="slider6"
+            class="bs-hidden h-full relative bs-demo-slider bs-progress-layout"
+          >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -872,7 +908,7 @@
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -887,6 +923,8 @@
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
+
+            <div class="bs-pages"></div>
 
             <div class="bs-track bs-peek-sm">
               <div class="bs-container box-border font-medium text-purple-100">
@@ -984,17 +1022,20 @@
         <div class="text-center">
           <h2 class="text-2xl font-semibold text-violet-950">Auto Height</h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Adjusts the slider height to the currently visible content instead of forcing a fixed block.
+            Adjusts the slider height to the currently visible content instead
+            of forcing a fixed block.
           </p>
         </div>
 
-        <div class="bs-auto-height-demo max-w-[588px] w-full mx-auto box-border pt-4">
+        <div
+          class="bs-auto-height-demo max-w-[588px] w-full mx-auto box-border pt-4"
+        >
           <div
             id="slider7"
             class="bs-hidden bs-auto-height-layout relative bs-demo-slider"
           >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1011,7 +1052,7 @@
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer"
+              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1026,6 +1067,8 @@
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
+
+            <div class="bs-pages"></div>
 
             <div class="bs-track">
               <div class="bs-container box-border font-medium text-purple-100">
@@ -1063,7 +1106,7 @@
 
             <ul class="bs-dots">
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer"
+                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -1074,64 +1117,310 @@
         <div class="text-center">
           <h2 class="text-2xl font-semibold text-violet-950">Stories</h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Opens the carousel as a story-style modal with timed progress and media controls.
+            Opens the carousel as a story-style modal with timed progress and
+            media controls.
           </p>
         </div>
 
         <button
           id="open-stories"
-          class="rounded-full bg-violet-800 px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
         >
           Open Stories
         </button>
 
-        <div id="slider9" class="bs-hidden">
-          <div class="bs-track">
-            <div class="bs-container text-white">
-              <div class="bs-slide">
+        <div
+          id="slider9"
+          class="hidden pointer-events-none fixed inset-0 z-[10000] flex select-none items-center justify-center p-6 max-md:p-0"
+        >
+          <div
+            class="bs-track group/stories pointer-events-auto relative z-[10001] aspect-[9/16] h-[min(86vh,760px)] w-[min(92vw,calc(86vh*9/16),430px)] max-w-[min(92vw,430px)] overflow-hidden max-md:h-[100dvh] max-md:w-screen max-md:max-w-none"
+          >
+            <div class="bs-container h-full text-white">
+              <div class="bs-slide h-full">
                 <article
-                  class="flex h-full w-full flex-col justify-between bg-gradient-to-br from-violet-950 via-red-950 to-red-600 p-8"
+                  class="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-violet-950 p-8 text-center md:justify-start md:pt-24"
                 >
-                  <div class="flex items-center gap-3 text-sm font-semibold">
-                    <span
-                      class="flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-                      >B</span
-                    >
-                    <span>brick</span>
+                  <div
+                    class="relative text-xs font-semibold uppercase tracking-[0.18em] opacity-80 md:mt-4"
+                  >
+                    <span>Stories Plugin</span>
                   </div>
-                  <div>
-                    <strong class="block text-4xl font-bold leading-tight">
-                      Build sliders without the drama.
+
+                  <div class="relative mt-4 max-w-[18rem] md:max-w-[14rem]">
+                    <strong
+                      class="block break-words text-[clamp(2.5rem,10vw,3.8rem)] font-bold leading-[0.96] md:text-[clamp(1.55rem,3vw,2rem)] md:leading-[1.08]"
+                    >
+                      <span class="block">Visual stories</span>
+                      <span class="block">for sliders.</span>
                     </strong>
                   </div>
-                  <span class="text-sm opacity-80">brickslider.dev</span>
+
+                  <span
+                    class="relative mt-5 text-sm opacity-70 md:mt-4 md:text-xs"
+                    >Open from any trigger.</span
+                  >
                 </article>
               </div>
 
-              <div class="bs-slide">
+              <div class="bs-slide h-full">
                 <article
-                  class="flex h-full w-full flex-col justify-end bg-gradient-to-br from-violet-900 via-fuchsia-700 to-orange-500 p-8"
+                  class="relative flex h-full w-full flex-col items-center justify-start overflow-hidden bg-violet-950 p-8 pt-20 text-center"
                 >
-                  <span class="mb-3 text-sm uppercase tracking-[0.25em] opacity-80">
-                    Story content
-                  </span>
-                  <strong class="block text-4xl font-bold leading-tight">
-                    Text, image, video — same slider core.
-                  </strong>
+                  <video
+                    class="absolute inset-0 h-full w-full object-cover opacity-85"
+                    src="/video-storie-1.mp4"
+                    playsinline
+                    muted
+                  ></video>
+                  <div
+                    class="absolute inset-0 bg-gradient-to-t from-violet-950 via-violet-950/35 to-pink-500/20"
+                  ></div>
+                  <div class="relative max-w-[16rem]">
+                    <span
+                      class="mb-4 block text-sm uppercase tracking-[0.25em] opacity-80"
+                    >
+                      Video ready
+                    </span>
+                    <strong
+                      class="block break-words text-[clamp(1.5rem,5.5vw,2.35rem)] font-bold leading-[0.98]"
+                    >
+                      Rio de Janeiro
+                    </strong>
+                  </div>
                 </article>
               </div>
 
-              <div class="bs-slide">
+              <div class="bs-slide h-full">
                 <article
-                  class="flex h-full w-full flex-col justify-between bg-gradient-to-br from-slate-950 via-violet-950 to-indigo-500 p-8"
+                  class="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-violet-950 p-8 text-center md:justify-start md:pt-24"
                 >
-                  <span class="text-sm font-semibold opacity-80">Plugin API</span>
-                  <strong class="block text-4xl font-bold leading-tight">
-                    One trigger opens the full experience.
+                  <span
+                    class="relative text-xs font-semibold uppercase tracking-[0.18em] opacity-70 md:mt-4"
+                    >Plugin API</span
+                  >
+                  <strong
+                    class="relative mt-4 block max-w-[18rem] break-words text-[clamp(2.35rem,9.5vw,3.35rem)] font-bold leading-[0.98] md:max-w-[14rem] md:text-[clamp(1.5rem,3vw,1.95rem)] md:leading-[1.08]"
+                  >
+                    <span class="block">One trigger</span>
+                    <span class="block">opens the flow.</span>
                   </strong>
-                  <span class="text-sm opacity-80">maxStories: 10</span>
+                  <span
+                    class="relative mt-5 text-sm opacity-70 md:mt-4 md:text-xs"
+                    >Text, image, or video.</span
+                  >
                 </article>
               </div>
+            </div>
+
+            <button
+              class="bs-stories-mute pointer-events-auto absolute bottom-12 right-5 z-[10004] flex h-6 w-6 cursor-pointer items-center justify-center text-white/60 transition-colors transition-opacity hover:text-white/85 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 md:pointer-events-none md:opacity-0 md:group-hover/stories:pointer-events-auto md:group-hover/stories:opacity-100"
+              type="button"
+              aria-label="Mute story sound"
+            >
+              <span class="bs-stories-mute-on">
+                <svg
+                  class="h-5 w-5 fill-current"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12zm-2.5-8.7v2.1A7.5 7.5 0 0 1 18.5 12a7.5 7.5 0 0 1-4.5 6.6v2.1A9.5 9.5 0 0 0 20.5 12 9.5 9.5 0 0 0 14 3.3z"
+                  ></path>
+                </svg>
+              </span>
+              <span class="bs-stories-mute-off hidden">
+                <svg
+                  class="h-5 w-5 fill-current"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 9v6h4l5 4V5L8 9H4zm10.59 3L12 9.41 13.41 8 16 10.59 18.59 8 20 9.41 17.41 12 20 14.59 18.59 16 16 13.41 13.41 16 12 14.59 14.59 12z"
+                  ></path>
+                </svg>
+              </span>
+            </button>
+
+            <ul
+              class="bs-stories-progress pointer-events-auto absolute left-4 right-4 top-[calc(env(safe-area-inset-top)+12px)] z-[10003] flex list-none items-center gap-1 p-0 m-0 md:top-4"
+            >
+              <li
+                class="bs-stories-progress-item h-1 flex-1 overflow-hidden rounded-full bg-white/20 [&.bs-stories-progress-item--active]:bg-white/35 [&.bs-stories-progress-item--completed]:bg-white/45"
+              >
+                <span
+                  class="bs-stories-progress-bar block h-full w-full origin-left bg-white"
+                ></span>
+              </li>
+            </ul>
+
+            <button
+              class="bs-stories-close pointer-events-auto absolute right-4 top-[6dvh] z-[10004] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 md:fixed md:right-6 md:top-8"
+              type="button"
+              aria-label="Close stories"
+            >
+              <svg
+                class="h-5 w-5 fill-current"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="m6.4 5 12.6 12.6-1.4 1.4L5 6.4 6.4 5Zm12.6 1.4L6.4 19 5 17.6 17.6 5 19 6.4Z"
+                ></path>
+              </svg>
+            </button>
+
+            <button
+              class="bs-stories-pause-indicator pointer-events-none absolute left-1/2 top-1/2 z-[10004] hidden h-16 w-16 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white opacity-0 transition-colors transition-opacity hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:flex"
+              type="button"
+              aria-label="Toggle pause"
+            >
+              <span class="bs-stories-pause">
+                <svg
+                  class="h-8 w-8 fill-current"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M8 6h3v12H8zM13 6h3v12h-3z"></path>
+                </svg>
+              </span>
+              <span class="bs-stories-play hidden">
+                <svg
+                  class="h-8 w-8 fill-current"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M8 5v14l11-7z"></path>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="bs-stories-layer hidden pointer-events-auto fixed inset-0 select-none"
+        >
+          <div
+            class="bs-stories-backdrop pointer-events-auto fixed inset-0 z-[9999] bg-violet-950/95"
+          ></div>
+
+          <div
+            class="pointer-events-auto fixed right-6 top-[126px] z-[10002] hidden w-[150px] flex-col gap-2 rounded-2xl bg-white/12 p-3 text-white backdrop-blur-sm max-md:top-[124px]"
+          >
+            <div
+              class="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70"
+            >
+              Stories events
+            </div>
+            <button
+              id="stories-events-open"
+              class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+              type="button"
+            >
+              open()
+            </button>
+            <button
+              id="stories-events-close"
+              class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+              type="button"
+            >
+              close()
+            </button>
+            <button
+              id="stories-events-destroy"
+              class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+              type="button"
+            >
+              destroy()
+            </button>
+            <button
+              id="stories-events-init"
+              class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+              type="button"
+            >
+              init()
+            </button>
+          </div>
+
+          <div
+            class="fixed right-6 top-[322px] z-[10002] hidden w-[180px] flex-col items-center gap-2 rounded-2xl bg-white/12 px-3 py-3 text-white backdrop-blur-sm max-md:top-[300px]"
+          >
+            <div
+              class="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70"
+            >
+              Core methods
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-2">
+              <button
+                id="stories-methods-prev"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                prev()
+              </button>
+              <button
+                id="stories-methods-next"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                next()
+              </button>
+              <button
+                id="stories-methods-goto-0"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                goTo(0)
+              </button>
+              <button
+                id="stories-methods-goto-2"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                goTo(2)
+              </button>
+              <button
+                id="stories-methods-destroy"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                destroy()
+              </button>
+              <button
+                id="stories-methods-init"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                init()
+              </button>
+            </div>
+            <div
+              class="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70"
+            >
+              Stories methods
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-2">
+              <button
+                id="stories-methods-pause"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                pause()
+              </button>
+              <button
+                id="stories-methods-resume"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                resume()
+              </button>
+              <button
+                id="stories-methods-close"
+                class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                type="button"
+              >
+                close()
+              </button>
             </div>
           </div>
         </div>
@@ -1143,40 +1432,47 @@
             Brick Slider Methods
           </h2>
           <p class="mt-2 text-sm text-violet-800/80">
-            Quick controls for testing the public API across every example on the page.
+            Quick controls for testing the public API across every example on
+            the page.
           </p>
         </div>
 
         <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
           <button
             id="methods-prev"
-            class="rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
+            class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
           >
             prev()
           </button>
           <button
             id="methods-next"
-            class="rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
+            class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
           >
             next()
           </button>
           <button
             id="methods-goto-0"
-            class="rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
+            class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
           >
             goTo(0)
           </button>
           <button
             id="methods-goto-2"
-            class="rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
+            class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
           >
             goTo(2)
           </button>
           <button
             id="methods-destroy"
-            class="rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
+            class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
           >
             destroy()
+          </button>
+          <button
+            id="methods-init"
+            class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-4 py-2 text-white transition-opacity hover:opacity-90"
+          >
+            init()
           </button>
         </div>
       </section>

@@ -1,4 +1,4 @@
-import { BSPlugin } from "../../slider/src/BSPlugin"
+import { Plugin } from "@sixsrc/brick-slider/plugin-api"
 import {
   ATTRIBUTES,
   DOM_ELEMENT_ALIASES,
@@ -10,14 +10,19 @@ import {
   $,
   appendToParent,
   createNewElement,
+  getAttribute,
   getAllElements,
+  getElement,
   getSliderNodeList,
+  hasAttribute,
   hasClass,
+  listener,
   removeAttribute,
   removeElement,
+  removeListener,
   setAttribute,
   waitFor
-} from "../../slider/src/helpers"
+} from "@sixsrc/brick-slider/plugin-api"
 import {
   A11Y_LIVE_REGION_CLASS,
   A11Y_STYLE_ID,
@@ -25,15 +30,15 @@ import {
   MIN_VISIBLE_RATIO
 } from "./constants"
 import type {
-  BSAccessibilityPluginOptions,
-  ResolvedAccessibilityLabels,
-  ResolvedBSAccessibilityPluginOptions,
+  BrickSliderAccessibilityOptions,
+  ResolvedBrickSliderAccessibilityLabels,
+  ResolvedBrickSliderAccessibilityOptions,
   SyncAccessibilityParams
 } from "./types"
 
-export class BSAccessibilityPlugin extends BSPlugin {
+export class BrickSliderAccessibility extends Plugin {
   private dotCleanupCallbacks: Array<() => void> = []
-  private readonly pluginOptions: ResolvedBSAccessibilityPluginOptions
+  private readonly pluginOptions: ResolvedBrickSliderAccessibilityOptions
   private rootCleanupCallback: (() => void) | null = null
 
   private readonly handleMounted = (): void => {
@@ -54,7 +59,16 @@ export class BSAccessibilityPlugin extends BSPlugin {
     })
   }
 
-  constructor($root: string, options: BSAccessibilityPluginOptions = {}) {
+  constructor(options?: BrickSliderAccessibilityOptions)
+  constructor($root: string, options?: BrickSliderAccessibilityOptions)
+  constructor(
+    rootOrOptions: string | BrickSliderAccessibilityOptions = {},
+    maybeOptions: BrickSliderAccessibilityOptions = {}
+  ) {
+    const hasExplicitRoot = typeof rootOrOptions === "string"
+    const $root = hasExplicitRoot ? rootOrOptions : undefined
+    const options = hasExplicitRoot ? maybeOptions : rootOrOptions
+
     super($root)
     this.pluginOptions = this.resolveOptions(options)
   }
@@ -74,7 +88,7 @@ export class BSAccessibilityPlugin extends BSPlugin {
     host.on(SLIDER_EVENTS.MOUNTED, this.handleMounted)
     host.on(SLIDER_EVENTS.SLIDE_CHANGE, this.handleSlideChange)
     host.on(SLIDER_EVENTS.DESTROYED, this.handleDestroyed)
-    window.addEventListener(EVENTS.RESIZE, this.handleResize)
+    listener([EVENTS.RESIZE], window, this.handleResize)
   }
 
   public destroy(): void {
@@ -89,7 +103,7 @@ export class BSAccessibilityPlugin extends BSPlugin {
     this.clearDotsAccessibility()
     this.clearRootAccessibility()
     this.removeLiveRegion()
-    window.removeEventListener(EVENTS.RESIZE, this.handleResize)
+    removeListener([EVENTS.RESIZE], window, this.handleResize)
   }
 
   private syncAccessibility({
@@ -156,7 +170,7 @@ export class BSAccessibilityPlugin extends BSPlugin {
 
     if (!root) return
 
-    if (!root.hasAttribute(ATTRIBUTES.ARIA_LABEL)) {
+    if (!hasAttribute(root, ATTRIBUTES.ARIA_LABEL)) {
       setAttribute(root, ATTRIBUTES.ARIA_LABEL, this.getRootAriaLabel())
     }
 
@@ -178,7 +192,7 @@ export class BSAccessibilityPlugin extends BSPlugin {
   private setupArrowAccessibility(): void {
     const root = this.getRootSelector
     const arrows = root ? this.getArrowElements(root) : []
-    const rootId = root?.getAttribute(ATTRIBUTES.ID)
+    const rootId = getAttribute(root, ATTRIBUTES.ID)
 
     if (!root) return
 
@@ -194,7 +208,7 @@ export class BSAccessibilityPlugin extends BSPlugin {
     const isDisabled = this.isArrowDisabled(direction)
 
     setAttribute(arrow, ATTRIBUTES.ARIA_LABEL, label)
-    setAttribute(arrow, ATTRIBUTES.TYPE, "button")
+    setAttribute(arrow, ATTRIBUTES.TYPE, TAGS.BUTTON)
     setAttribute(arrow, ATTRIBUTES.ARIA_DISABLED, String(isDisabled))
     this.setArrowControls(arrow, rootId)
   }
@@ -222,7 +236,7 @@ export class BSAccessibilityPlugin extends BSPlugin {
     const dotsContainer = this.getDotsContainerElement()
     const dots = dotsContainer ? this.getDotElements(dotsContainer) : []
     const currentFocusedDot = this.getCurrentFocusedDot(dots)
-    const rootId = root?.getAttribute(ATTRIBUTES.ID)
+    const rootId = getAttribute(root, ATTRIBUTES.ID)
 
     if (!root) return
     if (!dotsContainer) return
@@ -307,9 +321,9 @@ export class BSAccessibilityPlugin extends BSPlugin {
     dot: HTMLElement,
     keydownHandler: (event: KeyboardEvent) => void
   ): void {
-    dot.addEventListener(EVENTS.KEYDOWN, keydownHandler)
+    listener([EVENTS.KEYDOWN], dot, keydownHandler)
     this.dotCleanupCallbacks.push(() => {
-      dot.removeEventListener(EVENTS.KEYDOWN, keydownHandler)
+      removeListener([EVENTS.KEYDOWN], dot, keydownHandler)
     })
   }
 
@@ -419,14 +433,15 @@ export class BSAccessibilityPlugin extends BSPlugin {
   private getLiveRegionMessage(): string {
     const totalSlides = getSliderNodeList(this.$root, false).length
     const visibleSlides = this.getVisibleSlidesForLiveRegion()
-    const firstSlideNumber = this.getFirstLiveRegionSlideNumber(visibleSlides)
-    const lastSlideNumber = this.getLastLiveRegionSlideNumber(visibleSlides)
     const hasVisibleSlides = visibleSlides.length > 0
-    const hasSingleVisibleSlide = firstSlideNumber === lastSlideNumber
 
     if (!hasVisibleSlides) {
       return this.pluginOptions.labels.liveRegionFallback(totalSlides)
     }
+
+    const firstSlideNumber = this.getFirstLiveRegionSlideNumber(visibleSlides)
+    const lastSlideNumber = this.getLastLiveRegionSlideNumber(visibleSlides)
+    const hasSingleVisibleSlide = firstSlideNumber === lastSlideNumber
 
     if (hasSingleVisibleSlide) {
       return this.pluginOptions.labels.liveRegionSingle(
@@ -517,9 +532,9 @@ export class BSAccessibilityPlugin extends BSPlugin {
     root: HTMLElement,
     keydownHandler: (event: KeyboardEvent) => void
   ): void {
-    root.addEventListener(EVENTS.KEYDOWN, keydownHandler)
+    listener([EVENTS.KEYDOWN], root, keydownHandler)
     this.rootCleanupCallback = () => {
-      root.removeEventListener(EVENTS.KEYDOWN, keydownHandler)
+      removeListener([EVENTS.KEYDOWN], root, keydownHandler)
     }
   }
 
@@ -528,8 +543,11 @@ export class BSAccessibilityPlugin extends BSPlugin {
     this.rootCleanupCallback = null
   }
 
-  private getSlideNumber(slide: HTMLElement, fallbackIndex: number): number {
-    const dataIndex = Number(slide.dataset.index)
+  private getSlideNumber(
+    slide: HTMLElement | undefined,
+    fallbackIndex: number
+  ): number {
+    const dataIndex = Number(slide?.dataset.index)
 
     if (Number.isInteger(dataIndex) && dataIndex > 0) return dataIndex
 
@@ -587,7 +605,10 @@ export class BSAccessibilityPlugin extends BSPlugin {
   }
 
   private getDotsContainerElement(): HTMLElement | undefined {
-    return $(`${this.$root} .${DOM_ELEMENT_ALIASES.DOTS[0]}`)
+    return getElement<HTMLElement>(
+      `.${DOM_ELEMENT_ALIASES.DOTS[0]}`,
+      this.getRootSelector
+    )
   }
 
   private getDotElements(dotsContainer: HTMLElement): HTMLElement[] {
@@ -600,7 +621,10 @@ export class BSAccessibilityPlugin extends BSPlugin {
   }
 
   private getLiveRegionElement(): HTMLElement | undefined {
-    return $(`${this.$root} .${A11Y_LIVE_REGION_CLASS}`)
+    return getElement<HTMLElement>(
+      `.${A11Y_LIVE_REGION_CLASS}`,
+      this.getRootSelector
+    )
   }
 
   private isArrowDisabled(direction: typeof FROM.PREV | typeof FROM.NEXT): boolean {
@@ -635,9 +659,9 @@ export class BSAccessibilityPlugin extends BSPlugin {
   }
 
   private resolveOptions(
-    options: BSAccessibilityPluginOptions
-  ): ResolvedBSAccessibilityPluginOptions {
-    const defaultLabels: ResolvedAccessibilityLabels = {
+    options: BrickSliderAccessibilityOptions
+  ): ResolvedBrickSliderAccessibilityOptions {
+    const defaultLabels: ResolvedBrickSliderAccessibilityLabels = {
       root: "BrickSlider carousel",
       pagination: "Slider pagination",
       previousSlide: "Previous slide",

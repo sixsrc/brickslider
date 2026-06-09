@@ -1,5 +1,7 @@
 import type { StateKey } from "./State"
 
+export type Listener = (...args: unknown[]) => void
+
 export type AnimationCallbacks = {
   onStart?: (animations: Animation[]) => void
   onEnd?: (animations: Animation[]) => void
@@ -20,6 +22,14 @@ export type SlideDatasetAttributes = {
   "data-index": number
   "data-slide-number": number
 }
+
+export type BrickSliderSlideChangePayload = {
+  rootSelector: string
+  slideIndex: number
+  activePage: number
+}
+
+export type SlideChangePayload = BrickSliderSlideChangePayload
 
 export type CurrentEventType =
   | "loadDOM"
@@ -96,7 +106,7 @@ export type ResponsiveInput = Partial<
   Record<ResponsiveBreakpoint, ResponsiveOption>
 >
 
-export type SliderOptions = Partial<{
+export type BrickSliderOptions = Partial<{
   gap: number
   slidesPerPage: number
   slidesPerView: number
@@ -108,6 +118,8 @@ export type SliderOptions = Partial<{
   useDragFree: boolean
   useAutoHeight: boolean
 }>
+
+export type SliderOptions = BrickSliderOptions
 
 export type StateType = {
   [key: string]: string | number | boolean | null | undefined | unknown[] | {}
@@ -154,4 +166,5 @@ export type StateType = {
   [StateKey.UseLoop]: boolean
   [StateKey.UseDragFree]: boolean
   [StateKey.UseAutoHeight]: boolean
+  [StateKey.NavigationLockUntil]: number
 }

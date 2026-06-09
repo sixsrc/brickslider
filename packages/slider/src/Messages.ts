@@ -15,12 +15,12 @@ export class Messages extends Validation {
 
   static TextMessages($root: string): Record<string, string> {
     return {
-      NO_ROOT: `Root selector ${$root} is invalid or not found.\nSee: ${DOCS.GET_STARTED}`,
-      NO_TRACK: `Track container for ${$root} is invalid or not found.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      NO_CHILDREN: `Children for ${$root} container is invalid or not found.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      NO_SLIDES: `The slides for ${$root} are missing or invalid.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      DUPLICATE_ELEMENTS: `Duplicate elements for ${$root} detected in the DOM.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      INVALID_ORDER: `Elements for ${$root} are not in the expected order.\nSee: ${DOCS.BASIC_HTML_DOC}`,
+      NO_ROOT: `Could not find root selector ${$root}.\nSee: ${DOCS.GET_STARTED}`,
+      NO_TRACK: `Could not find .bs-track inside ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
+      NO_CHILDREN: `Could not find .bs-container inside .bs-track for ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
+      NO_SLIDES: `Could not find any .bs-slide inside .bs-container for ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
+      DUPLICATE_ELEMENTS: `Found duplicated core slider elements in ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
+      INVALID_ORDER: `Found invalid core slider markup order in ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
       INVALID_SLIDE_SIZES_VALUES: `slideSizes for ${$root} is invalid and will be ignored. Use only non-negative numbers. String values such as "30px", "50%" or "2rem" are not supported.\nSee: ${DOCS.BASIC_HTML_DOC}`,
       UNSUPPORTED_SLIDE_SIZES_SINGLE_VIEW: `slideSizes for ${$root} will be ignored because this option is not supported when slidesPerView is 1. To use slideSizes, set slidesPerView to 2 or greater.\nSee: ${DOCS.BASIC_HTML_DOC}`,
       RESPONSIVE_WITHOUT_SCREENS: `responsive for ${$root} will be ignored because no screens object was provided. Define screens with the breakpoint widths before using responsive.\nSee: ${DOCS.BASIC_HTML_DOC}`,
@@ -83,13 +83,7 @@ export class Messages extends Validation {
 
   public displayInvalidPluginType(): void {
     this.displayError(
-      `[BrickSlider] Plugin rejected. Official plugins must extend BSPlugin.`
-    )
-  }
-
-  public displayInvalidPluginName(pluginName: string): void {
-    this.displayError(
-      `[BrickSlider] Plugin rejected. "${pluginName}" must start with "BS" and end with "Plugin".`
+      `[BrickSlider] Plugin rejected. Official plugins must extend Plugin.`
     )
   }
 
@@ -100,6 +94,30 @@ export class Messages extends Validation {
   }
 
   private getMessageById(id: string): string {
+    if (id === "DUPLICATE_ELEMENTS") {
+      const duplicateElements = this.getDetails(id)
+
+      if (duplicateElements.length > 0) {
+        return (
+          `Found duplicated core slider elements in ${this.rootSelector}: ` +
+          `${duplicateElements.map(className => `.${className}`).join(", ")}.\n` +
+          `See: ${DOCS.BASIC_HTML_DOC}`
+        )
+      }
+    }
+
+    if (id === "INVALID_ORDER") {
+      const orderDetails = this.getDetails(id)
+
+      if (orderDetails.length > 0) {
+        return (
+          `Found invalid core slider markup order in ${this.rootSelector}.\n` +
+          `${orderDetails.join("\n")}\n` +
+          `See: ${DOCS.BASIC_HTML_DOC}`
+        )
+      }
+    }
+
     if (id === "RESPONSIVE_BREAKPOINTS_MISSING_IN_SCREENS") {
       const breakpoints = this.getDetails(id)
 

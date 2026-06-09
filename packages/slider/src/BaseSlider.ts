@@ -22,20 +22,26 @@ import type {
 
 export class BaseSlider {
   private static emitters = new Map<string, EventEmitter>()
-  protected $root: string
+  protected $root!: string
   protected getRootSelector: HTMLElement | undefined
-  protected state: State
-  protected store: StateType
-  protected emitter: EventEmitter
-  protected $children: HTMLElement
-  protected $track: HTMLElement
-  protected childrenCount: number
+  protected state!: State
+  protected store!: StateType
+  protected emitter!: EventEmitter
+  protected $children!: HTMLElement
+  protected $track!: HTMLElement
+  protected childrenCount!: number
   protected sliderWidth: number | undefined
-  protected slides: HTMLElement[]
+  protected slides!: HTMLElement[]
   protected translate: number
   movement: boolean
 
   constructor($root: string) {
+    this.syncRootContext($root)
+    this.translate = 0
+    this.movement = false
+  }
+
+  protected syncRootContext($root: string): void {
     this.$root = $root
     this.getRootSelector = getRootSelector($root)
     this.slides = getSliderNodeList($root)
@@ -46,8 +52,10 @@ export class BaseSlider {
     this.$track = getTrackChildren($root) as HTMLElement
     this.childrenCount = getChildrenCount(this.$children)
     this.sliderWidth = getSliderWidth(this.$children)
-    this.translate = 0
-    this.movement = false
+  }
+
+  public getRootKey(): string {
+    return this.$root
   }
 
   private static getEmitter($root: string): EventEmitter {

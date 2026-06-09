@@ -1,136 +1,149 @@
-# Contributing to brickslider
+# Contributing to BrickSlider
 
-Obrigado por contribuir! Este guia descreve como configurar o projeto localmente, rodar testes/build, padronizar commits, criar changesets e abrir PRs de forma que o CI consiga gerar PRs de release automaticamente.
+Thank you for contributing. This guide explains how to set up the project locally, run tests/builds, standardize commits, create changesets, and open pull requests in a way that works smoothly with the release workflow.
 
-**Local (pré-requisitos)**
-- Node.js 18+ (recomendado)
-- pnpm (instale globalmente: `npm install -g pnpm`)
-- Git configurado com seu nome/email
+**Local prerequisites**
+- Node.js 18+
+- `pnpm` installed globally: `npm install -g pnpm`
+- Git configured with your name and email
 
-**Instalação (uma vez)**
+**Installation (one time)**
 ```bash
 # clone
 git clone https://github.com/sixsrc/brickslider.git
 cd brickslider
 
-# instalar dependências (gera pnpm-lock.yaml)
+# install dependencies (generates pnpm-lock.yaml)
 pnpm install
 
-# preparar ganchos (Husky)
+# prepare hooks (Husky)
 pnpm prepare
 ```
 
-**Estrutura básica**
-- `packages/slider` — o pacote principal do slider.
-- `pnpm-workspace.yaml` — workspaces configurados
-- `.changeset/` — arquivos de changeset para versionamento
-- `.github/workflows/` — CI (release PR + publish)
+**Basic structure**
+- `packages/slider` — the main slider package
+- `pnpm-workspace.yaml` — configured workspaces
+- `.changeset/` — changeset files used for versioning
+- `.github/workflows/` — CI workflows (release PR + publish)
 
-**Rodando o projeto**
-- Rodar demo / dev server do pacote (no workspace):
+**Running the project**
+- Run the demo / dev server for the package:
 ```bash
-pnpm --filter @sixsrc/brickslider start
-# ou, de forma recursiva para todos workspaces:
+pnpm --filter @sixsrc/brick-slider start
+```
+- Or run dev scripts recursively across workspaces:
+```bash
 pnpm -w -r start
 ```
-- Build de todos pacotes:
+- Build all packages:
 ```bash
 pnpm -w -r build
 ```
 
-**Testes, lint e formatação**
-- Rodar testes em todos workspaces:
+**Tests, linting, and formatting**
+- Run tests in all workspaces:
 ```bash
 pnpm -w -r test
 ```
-- Rodar lint:
+- Run lint:
 ```bash
 pnpm -w -r run lint
 ```
-- Corrigir lint automaticamente (quando possível):
+- Auto-fix lint issues when possible:
 ```bash
 pnpm -w -r run lint -- --fix
 ```
-- Formatar código com Prettier:
+- Format code with Prettier:
 ```bash
 pnpm -w -r run format
 ```
 
-**Como contribuir (fluxo recomendado)**
-1. Crie um ramo (branch) a partir de `main` seguindo um padrão: `feat/xxx`, `fix/xxx`, `chore/xxx`.
-2. Faça mudanças pequenas e focadas.
-3. Escreva/atualize testes quando aplicável.
-4. Rode `pnpm -w -r test` e `pnpm -w -r lint` localmente antes de commitar.
+**Recommended contribution flow**
+1. Create a branch from `main` using a clear prefix such as `feat/xxx`, `fix/xxx`, or `chore/xxx`.
+2. Keep changes focused and small whenever possible.
+3. Write or update tests when applicable.
+4. Run `pnpm -w -r test` and `pnpm -w -r lint` locally before committing.
 
-**Commits padronizados (Conventional Commits)**
-- Use `pnpm commit` para abrir o `commitizen` que auxilia a criar um commit no formato Conventional Commits.
-- Ou escreva manualmente mensagens como: `feat(slider): add autoplay option` ou `fix(core): prevent crash on resize`.
-- O hook Husky `commit-msg` executa `commitlint` e bloqueará commits que não seguem o padrão.
+**Standardized commits (Conventional Commits)**
+- Use `pnpm commit` to open Commitizen and generate a Conventional Commit message.
+- Or write commit messages manually, for example:
+  - `feat(slider): add autoplay option`
+  - `fix(core): prevent crash on resize`
+- The Husky `commit-msg` hook runs `commitlint` and blocks invalid commit messages.
 
-**Criar Changeset (para version bumps)**
-Se a sua alteração deve resultar em um novo release (mudança pública), crie uma changeset:
+**Creating a changeset (for version bumps)**
+If your change should produce a public release, create a changeset:
 ```bash
 pnpm changeset
 ```
-- Siga as perguntas para indicar quais pacotes e qual tipo de bump (patch/minor/major).
-- Isso criará um arquivo em `.changeset/`.
-- Commit e push sua branch com a changeset.
+- Follow the prompts to choose affected packages and the bump type (`patch`, `minor`, or `major`).
+- This generates a file inside `.changeset/`.
+- Commit and push your branch with the changeset included.
 
-**Abrir PR**
-- Ao pushar para `main` (ou acionar manualmente o workflow), o CI `release-pr.yml` irá:
-  - rodar `test` e `build` em todos workspaces;
-  - executar `pnpm version:changeset` para aplicar os bumps;
-  - gerar um resumo dos changesets e criar um branch `release/bump-<timestamp>` com os bumps;
-  - abrir um PR rotulado `release` cujo corpo contém o template + o resumo de changesets.
-- Revise o PR de release, verifique changelog e alterações em `package.json`/`CHANGELOG.md`.
+**Opening a pull request**
+- When changes are pushed to `main` (or the workflow is triggered manually), `release-pr.yml` will:
+  - run tests and builds across workspaces;
+  - run `pnpm version:changeset` to apply version bumps;
+  - generate a summary of the changesets and create a `release/bump-<timestamp>` branch;
+  - open a release PR with the generated summary.
+- Review the release PR carefully, including changelog changes and updated package versions.
 
-**Publicação**
-- A publicação automática está configurada via workflow `publish.yml` que é disparado quando uma tag `v*` é pushada para o repositório.
-- Para publicar manualmente (local):
+**Publishing**
+- Automatic publishing is configured through `publish.yml`, which runs when a `v*` tag is pushed to the repository.
+- To publish manually from your machine:
 ```bash
-pnpm version:changeset    # opcional: aplica bumps localmente
+pnpm version:changeset
 pnpm -w -r publish --access public
 ```
-- Para permitir publicação automática pelo CI, adicione o secret `NPM_TOKEN` no GitHub (Settings > Secrets) com um token do npm com permissões de publish.
+- To allow CI publishing, add an `NPM_TOKEN` GitHub secret with npm publish permissions.
 
-**Dicas de revisão de PR**
-- Verifique se testes passaram e build completou com sucesso.
-- Confira `CHANGELOG.md` gerado e a corretude das versões.
-- Se o PR for um release, confirme que o body contém o resumo gerado por Changesets.
+**Pull request review checklist**
+- Confirm tests passed and the build completed successfully.
+- Check that `CHANGELOG.md` entries are correct.
+- If the PR is a release PR, confirm the summary generated by Changesets is present and accurate.
 
-**Boas práticas de código**
-- Mantenha mudanças pequenas e focadas.
-- Atualize/adicione testes para bugs e features.
-- Evite quebrar APIs sem marcar `major` via changeset.
+**Code best practices**
+- Keep changes focused and intentional.
+- Add or update tests for bug fixes and new features.
+- Avoid breaking public APIs unless the release is marked as `major`.
 
-**Como ajudar com issues**
-- Indique nos comentários quais partes do código você pretende tocar.
-- Abra PRs pequenos e marque a issue correspondente com `Fixes #<issue>` quando apropriado.
+**Helping with issues**
+- Leave a comment explaining which area you plan to work on.
+- Open small PRs when possible.
+- Reference related issues with `Fixes #<issue>` when appropriate.
 
-**Contato / Suporte**
-- Abra uma issue no repositório para problemas ou dúvidas maiores.
+**Framework usage guides**
+- BrickSlider stays framework-agnostic, but community-written framework guides are welcome.
+- Use the template at `website/content/frameworks/TEMPLATE.md` when creating a guide for React, Vue, Svelte, Angular, or any other framework.
+- Add the new Markdown file inside `website/content/frameworks/` using a clear file name such as `vue.md` or `svelte.md`.
+- Keep the tutorial focused on using the core package unless the guide is explicitly about a plugin.
+
+**Support**
+- Open a GitHub issue if you hit a bug, have a question, or want to discuss an idea.
 
 ---
 
-Obrigado por contribuir — seu trabalho é muito apreciado!
+Thank you again for contributing — your work helps move BrickSlider forward.
 
-## Código de Conduta
+## Code of Conduct
 
-Este projeto adota o Código de Conduta do Contributor Covenant para promover um ambiente saudável e acolhedor para todos os contribuintes.
+This project follows the Contributor Covenant Code of Conduct to help keep the community respectful, welcoming, and safe.
 
-- Leia o arquivo `CODE_OF_CONDUCT.md` para detalhes sobre comportamento esperado e como reportar incidentes.
+- Please read `CODE_OF_CONDUCT.md` for expected behavior and reporting steps.
 
-Resumo rápido:
-- Seja respeitoso e construtivo.
-- Comentários de ódio, assédio, intimidação e linguagem discriminatória não serão tolerados.
-- Se você sofrer ou testemunhar um comportamento inapropriado, reporte seguindo as instruções em `CODE_OF_CONDUCT.md`.
+Quick summary:
+- Be respectful and constructive.
+- Harassment, hate speech, intimidation, and discriminatory language are not tolerated.
+- If you experience or witness inappropriate behavior, report it using the instructions in `CODE_OF_CONDUCT.md`.
 
-## Templates de Issues e Pull Requests
+## Issue and Pull Request Templates
 
-Colocamos templates para issues e pull requests em `.github/ISSUE_TEMPLATE/` e `.github/PULL_REQUEST_TEMPLATE/`.
+Issue and pull request templates are available in:
+- `.github/ISSUE_TEMPLATE/`
+- `.github/PULL_REQUEST_TEMPLATE/`
 
-- Use o template de `bug_report` para relatar um bug, incluindo passos para reproduzir, ambiente e comportamento esperado/observado.
-- Use o template de `feature_request` para propor novas funcionalidades.
-- Use o template de PR padrão quando abrir mudanças regulares — inclua a referência a issues que resolve e passos para testar.
+- Use the `bug_report` template when reporting a bug, including reproduction steps, environment details, and expected vs. actual behavior.
+- Use the `feature_request` template when proposing new ideas.
+- Use the default PR template for regular contributions and include linked issues plus validation steps.
 
-Esses templates ajudam a manter consistência e acelerar a triagem.
+These templates help keep triage consistent and make review faster.

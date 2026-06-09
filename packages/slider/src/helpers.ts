@@ -7,6 +7,7 @@ export const DOM_ELEMENT_ALIASES = {
   DOTS: ["bs-dots"],
   DOT: ["bs-dot"],
   DOT_ACTIVE: ["bs-dot--active"],
+  PAGES: ["bs-pages"],
   PROGRESS: ["bs-progress"],
   PROGRESS_BAR: ["bs-progress-bar"],
   ARROW: ["bs-arrow"],
@@ -31,6 +32,7 @@ export const TAGS = {
   LI: "li",
   BUTTON: "button",
   DIV: "div",
+  SPAN: "span",
   STYLE: "style",
   VIDEO: "video"
 }
@@ -40,7 +42,8 @@ export const FROM = {
   RIGHT_CLICK: "contextmenu",
   PREV: "prev",
   NEXT: "next",
-  TOUCH: "touch"
+  TOUCH: "touch",
+  TOUCHEND: "touchend"
 } as const
 
 export type NavigationDirection = typeof FROM.PREV | typeof FROM.NEXT
@@ -51,6 +54,7 @@ export const ATTRIBUTES = {
   TABINDEX: "tabindex",
   DATA_INDEX: "data-index",
   DATA_NUMBER: "data-slide-number",
+  DATA_PROGRESS_SYNCED_AT: "data-progress-synced-at",
   CLASS: "class",
   STYLE: "style",
   ARIA_LABEL: "aria-label",
@@ -63,6 +67,7 @@ export const ATTRIBUTES = {
   ARIA_MODAL: "aria-modal",
   ARIA_ROLEDESCRIPTION: "aria-roledescription",
   ROLE: "role",
+  DISABLED: "disabled",
   DRAGGABLE: "draggable",
   ARIA_VALUE_MIN: "aria-valuemin",
   ARIA_VALUE_MAX: "aria-valuemax",
@@ -70,17 +75,20 @@ export const ATTRIBUTES = {
 } as const
 
 export const TIMES = {
-  DEFAULT_TRANSITION_TIME: 500,
+  DEFAULT_TRANSITION_TIME: 560,
   DRAG_FREE_RELEASE_TIME: 1500,
   FAST_NAVIGATION_OFFSET: 100,
-  ARROW_CLICK_GUARD: 400,
-  PROGRESS_TRANSITION_TIME: 500,
+  NAVIGATION_GUARD: 220,
+  PROGRESS_TRANSITION_TIME: 560,
   SWIPE_MOUSE_LEAVE_DELAY: 100
 }
 
 export const EVENTS = {
   RESIZE: "resize",
   CLICK: "click",
+  POINTERDOWN: "pointerdown",
+  POINTERUP: "pointerup",
+  POINTERCANCEL: "pointercancel",
   KEYDOWN: "keydown",
   TOUCHSTART: "touchstart",
   TOUCHEND: "touchend",
@@ -107,8 +115,30 @@ export const SLIDER_EVENTS = {
 
 export const ANIMATION_OPTIONS = {
   FORWARDS: "forwards",
-  EASEOUT: "ease-in-out",
+  LINEAR: "linear",
+  EASEOUT: "cubic-bezier(0.22, 0.61, 0.36, 1)",
   DRAG_FREE_EASING: "cubic-bezier(0.22, 1, 0.36, 1)"
+} as const
+
+export const RESPONSIVE_BREAKPOINTS = [
+  "xs",
+  "sm",
+  "md",
+  "lg",
+  "xl",
+  "2xl"
+] as const
+
+export const NORMALIZED_ELEMENT_ROLES = {
+  TRACK: "track",
+  CHILDREN: "children",
+  SLIDE: "slide",
+  ARROW: "bs-arrow",
+  PAGES: "bs-pages"
+} as const
+
+export const INTERNAL_SELECTORS = {
+  PLUGIN_ROOT_PLACEHOLDER: "#__brickslider_plugin_root__"
 } as const
 
 export const TOUCH_LIMIT = 0
@@ -213,9 +243,17 @@ export function getAllElements<T extends Element>(
   return parent.querySelectorAll(selector) as NodeListOf<T>
 }
 
-export function $(element: string): HTMLElement | undefined {
-  const selectedElement: HTMLElement | null = document.querySelector(element)
+export function getElement<T extends Element>(
+  selector: string,
+  parent: Document | Element = document
+): T | undefined {
+  const selectedElement = parent.querySelector(selector) as T | null
+
   return selectedElement ?? undefined
+}
+
+export function $(element: string): HTMLElement | undefined {
+  return getElement<HTMLElement>(element)
 }
 
 export function getDotsContainer(
@@ -240,6 +278,12 @@ export function getChildrenCount(el: HTMLElement | undefined): number {
 
 export function getDotsSelector($root: string): HTMLElement | undefined {
   return $(`${$root} .${DOM_ELEMENT_ALIASES.DOTS[0]}`)
+}
+
+export function getPagesContainer(
+  rootSelector: string
+): HTMLElement | undefined {
+  return $(`${rootSelector} .${DOM_ELEMENT_ALIASES.PAGES[0]}`)
 }
 
 export function getRootSelector($root: string): HTMLElement | undefined {
@@ -271,6 +315,42 @@ export function getTrackChildren(
 
 export function hasClass(el: HTMLElement, className: string): boolean {
   return el.classList.contains(className)
+}
+
+export function containsElement(
+  parent: HTMLElement | undefined | null,
+  child: Node | null | undefined
+): boolean {
+  if (!parent || !child) return false
+
+  return parent.contains(child)
+}
+
+export function closestElement(
+  element: Element | null | undefined,
+  selector: string
+): HTMLElement | undefined {
+  if (!element) return undefined
+
+  return (element.closest(selector) as HTMLElement | null) ?? undefined
+}
+
+export function hasAttribute(
+  el: HTMLElement | undefined | null,
+  attribute: string
+): boolean {
+  if (!el) return false
+
+  return el.hasAttribute(attribute)
+}
+
+export function getAttribute(
+  el: HTMLElement | undefined | null,
+  attribute: string
+): string | null {
+  if (!el) return null
+
+  return el.getAttribute(attribute)
 }
 
 export function removeClass(
@@ -353,11 +433,12 @@ export function isValidSelector(string: string): boolean {
 export function listener(
   events: string[],
   target: EventTarget,
-  callback: EventListenerOrEventListenerObject
+  callback: EventListenerOrEventListenerObject | ((event: any) => void),
+  options?: boolean | AddEventListenerOptions
 ): void {
   if (Array.isArray(events)) {
     events.forEach(event => {
-      target.addEventListener(event, callback)
+      target.addEventListener(event, callback as EventListener, options)
     })
   }
 }
@@ -365,11 +446,12 @@ export function listener(
 export function removeListener(
   events: string[],
   target: EventTarget,
-  callback: EventListenerOrEventListenerObject
+  callback: EventListenerOrEventListenerObject | ((event: any) => void),
+  options?: boolean | EventListenerOptions
 ): void {
   if (Array.isArray(events)) {
     events.forEach(event => {
-      target.removeEventListener(event, callback)
+      target.removeEventListener(event, callback as EventListener, options)
     })
   }
 }
@@ -393,5 +475,6 @@ export function waitFor(time: number, callback: () => void): void {
       callback()
     }
   }
+
   requestAnimationFrame(wait)
 }

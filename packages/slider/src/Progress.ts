@@ -10,7 +10,9 @@ import {
   addClass,
   appendToParent,
   createNewElement,
-  getProgressContainer
+  getAttribute,
+  getProgressContainer,
+  setAttribute
 } from "./helpers"
 
 export class Progress extends BaseSlider {
@@ -49,6 +51,7 @@ export class Progress extends BaseSlider {
     this.stopProgressAnimations(progressBar)
     this.animate(progressBar, progressKeyFrames, this.options(duration))
     this.setProgressNow(containerProgress, progressNow)
+    this.setProgressSyncedAt(progressBar)
   }
 
   private stopProgressAnimations(progressBar: HTMLElement): void {
@@ -62,11 +65,16 @@ export class Progress extends BaseSlider {
   } {
     const { currentEventType, isFastNavigation } = this.store
     const progressValue = this.getProgressValue()
-    const isTouchMove = currentEventType === EVENTS.TOUCHMOVE
-    const isInstantProgress = isTouchMove || isFastNavigation
+    const elapsedSinceLastSync = this.getElapsedSinceLastSync(progressBar)
+    const isTouchProgress =
+      currentEventType === EVENTS.TOUCHMOVE ||
+      currentEventType === EVENTS.TOUCHEND
+    const isInstantProgress = isTouchProgress || isFastNavigation
     const currentScale = this.getCurrentProgressScale(progressBar)
     const nextScale = progressValue / 100
-    const duration = isInstantProgress ? 0 : TIMES.PROGRESS_TRANSITION_TIME
+    const duration = isInstantProgress
+      ? 0
+      : this.getResponsiveProgressDuration(elapsedSinceLastSync)
     const progressNow = Math.round(progressValue)
     const progressKeyFrames = this.getProgressKeyFrames(currentScale, nextScale)
 
@@ -75,6 +83,38 @@ export class Progress extends BaseSlider {
       duration,
       progressNow
     }
+  }
+
+
+  private getResponsiveProgressDuration(
+    elapsedSinceLastSync: number | null
+  ): number {
+    const minimumResponsiveDuration = 90
+
+    if (elapsedSinceLastSync === null) return TIMES.PROGRESS_TRANSITION_TIME
+    if (elapsedSinceLastSync <= 32) return minimumResponsiveDuration
+
+    return Math.max(
+      minimumResponsiveDuration,
+      Math.min(TIMES.PROGRESS_TRANSITION_TIME, elapsedSinceLastSync)
+    )
+  }
+
+  private getElapsedSinceLastSync(progressBar: HTMLElement): number | null {
+    const syncedAt = getAttribute(progressBar, ATTRIBUTES.DATA_PROGRESS_SYNCED_AT)
+    const syncedAtNumber = Number(syncedAt)
+
+    if (!syncedAt || !Number.isFinite(syncedAtNumber)) return null
+
+    return Math.max(0, Date.now() - syncedAtNumber)
+  }
+
+  private setProgressSyncedAt(progressBar: HTMLElement): void {
+    setAttribute(
+      progressBar,
+      ATTRIBUTES.DATA_PROGRESS_SYNCED_AT,
+      String(Date.now())
+    )
   }
 
   private getProgressKeyFrames(

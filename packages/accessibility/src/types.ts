@@ -1,13 +1,15 @@
-export type SlideChangePayload = {
+export type BrickSliderAccessibilitySlideChangePayload = {
   slideIndex?: number
   activePage?: number
 }
+
+export type SlideChangePayload = BrickSliderAccessibilitySlideChangePayload
 
 export type SyncAccessibilityParams = {
   announce?: boolean
 }
 
-export type AccessibilityLabels = Partial<{
+export type BrickSliderAccessibilityLabels = Partial<{
   root: string
   pagination: string
   previousSlide: string
@@ -23,13 +25,15 @@ export type AccessibilityLabels = Partial<{
   liveRegionFallback: (totalSlides: number) => string
 }>
 
-export type BSAccessibilityPluginOptions = Partial<{
+export type AccessibilityLabels = BrickSliderAccessibilityLabels
+
+export type BrickSliderAccessibilityOptions = Partial<{
   useKeyboardNavigation: boolean
   useFocusManagement: boolean
-  labels: AccessibilityLabels
+  labels: BrickSliderAccessibilityLabels
 }>
 
-export type ResolvedAccessibilityLabels = {
+export type ResolvedBrickSliderAccessibilityLabels = {
   root: string
   pagination: string
   previousSlide: string
@@ -45,8 +49,10 @@ export type ResolvedAccessibilityLabels = {
   liveRegionFallback: (totalSlides: number) => string
 }
 
-export type ResolvedBSAccessibilityPluginOptions = {
+export type ResolvedAccessibilityLabels = ResolvedBrickSliderAccessibilityLabels
+
+export type ResolvedBrickSliderAccessibilityOptions = {
   useKeyboardNavigation: boolean
   useFocusManagement: boolean
-  labels: ResolvedAccessibilityLabels
+  labels: ResolvedBrickSliderAccessibilityLabels
 }

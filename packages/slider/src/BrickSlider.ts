@@ -7,22 +7,22 @@ import {
   FROM,
   SLIDER_EVENTS,
   addClass,
+  getSliderNodeList,
   getSlideMovement,
   isValidSelector,
   removeAttribute,
   removeClass,
-  setAttribute,
-  waitFor
+  setAttribute
 } from "./helpers"
 import { Mount } from "./Mount"
 import { Slider } from "./Slider"
-import { BSPlugin } from "./BSPlugin"
+import { Plugin } from "./Plugin"
 import type { SliderOptions, StateType } from "./types"
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: SliderOptions
   private mount: Mount | null = null
-  private plugins: BSPlugin[] = []
+  private plugins: Plugin[] = []
   private validate: Validation
   private message: Messages
   private readonly initialInnerHTML: string
@@ -44,7 +44,6 @@ export class BrickSlider extends BaseSlider {
     const isValid = isValidSelector($root) && this.validate.isValid()
 
     if (isValid) this.defineConfigs($root, options)
-    else this.message.displayMessage()
   }
 
   private defineConfigs($root: string, options?: SliderOptions): void {
@@ -64,13 +63,86 @@ export class BrickSlider extends BaseSlider {
   public init(): void {
     this.clearDestroyedState()
     this.mount?.init()
+    this.emitMountedWhenReady()
+  }
 
-    waitFor(0, () => {
-      this.emit(SLIDER_EVENTS.MOUNTED, {
-        root: this.$root,
-        options: this.userOptions
+  private emitMountedWhenReady(): void {
+    const rootSelector = this.getRootSelector
+
+    if (!rootSelector) return
+
+    let observer: MutationObserver | null = null
+    let isMountedEventDispatched = false
+    let pendingFrame = 0
+    let attempts = 0
+    const maxAttempts = 30
+
+    const disconnectObserver = (): void => {
+      observer?.disconnect()
+      observer = null
+    }
+
+    const emitMounted = (): void => {
+      if (isMountedEventDispatched) return
+
+      isMountedEventDispatched = true
+      disconnectObserver()
+      this.emit(SLIDER_EVENTS.MOUNTED, this.$root)
+    }
+
+    const hasMountedDomStructure = (): boolean => {
+      const track = rootSelector.querySelector<HTMLElement>(
+        `.${DOM_ELEMENT_ALIASES.TRACK[0]}`
+      )
+      const children = track?.querySelector<HTMLElement>(
+        `.${DOM_ELEMENT_ALIASES.CHILDREN[0]}`
+      )
+      const slides = getSliderNodeList(this.$root)
+      const firstSlide = slides[0]
+      const rootWidth = rootSelector.getBoundingClientRect().width
+      const isHidden = rootSelector.classList.contains(
+        DOM_ELEMENT_ALIASES.HIDDEN[0]
+      )
+
+      if (!track || !children || slides.length === 0) return false
+      if (isHidden || rootWidth <= 0) return false
+
+      return (firstSlide?.getBoundingClientRect().width ?? 0) > 0
+    }
+
+    const scheduleMountedCheck = (): void => {
+      if (isMountedEventDispatched || pendingFrame) return
+
+      pendingFrame = requestAnimationFrame(() => {
+        pendingFrame = 0
+        attempts += 1
+
+        if (hasMountedDomStructure()) {
+          requestAnimationFrame(() => emitMounted())
+          return
+        }
+
+        if (attempts < maxAttempts) {
+          scheduleMountedCheck()
+          return
+        }
+
+        emitMounted()
       })
+    }
+
+    observer = new MutationObserver(() => {
+      scheduleMountedCheck()
     })
+
+    observer.observe(rootSelector, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: [ATTRIBUTES.CLASS, ATTRIBUTES.STYLE]
+    })
+
+    scheduleMountedCheck()
   }
 
   public next(): void {
@@ -107,12 +179,10 @@ export class BrickSlider extends BaseSlider {
     this.destroyPlugins()
     this.restoreRootElement(rootSelector)
     this.resetMountState()
-    this.emit(SLIDER_EVENTS.DESTROYED, {
-      root: this.$root
-    })
+    this.emit(SLIDER_EVENTS.DESTROYED, this.$root)
   }
 
-  public use(plugin: BSPlugin): void {
+  public use(plugin: Plugin): void {
     const pluginName = this.getPluginName(plugin)
     const isValidPlugin = this.isValidPluginType(plugin)
 
@@ -121,12 +191,7 @@ export class BrickSlider extends BaseSlider {
       return
     }
 
-    if (!this.isValidPluginName(pluginName)) {
-      this.message.displayInvalidPluginName(pluginName)
-      return
-    }
-
-    if (!this.isMatchingPluginRoot(plugin)) {
+    if (plugin.usesExplicitRoot() && !this.isMatchingPluginRoot(plugin)) {
       this.message.displayPluginRootMismatch(pluginName)
       return
     }
@@ -152,19 +217,15 @@ export class BrickSlider extends BaseSlider {
     return new Slider(this.$root)
   }
 
-  private getPluginName(plugin: BSPlugin): string {
+  private getPluginName(plugin: Plugin): string {
     return plugin.constructor?.name ?? "UnknownPlugin"
   }
 
-  private isValidPluginType(plugin: unknown): plugin is BSPlugin {
-    return plugin instanceof BSPlugin
+  private isValidPluginType(plugin: unknown): plugin is Plugin {
+    return plugin instanceof Plugin
   }
 
-  private isValidPluginName(pluginName: string): boolean {
-    return /^BS[A-Z][A-Za-z0-9]*Plugin$/.test(pluginName)
-  }
-
-  private isMatchingPluginRoot(plugin: BSPlugin): boolean {
+  private isMatchingPluginRoot(plugin: Plugin): boolean {
     return plugin.getPluginRoot() === this.$root
   }
 

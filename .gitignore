@@ -44,6 +44,7 @@ bower_components
 
 # Dependency directories
 node_modules/
+.pnpm-store/
 jspm_packages/
 
 # TypeScript cache
@@ -82,3 +83,7 @@ jspm_packages/
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+
+packages/slider/public/*.mp4
+packages/slider/lib/*.mp4
+packages/slider/dist/*.mp4

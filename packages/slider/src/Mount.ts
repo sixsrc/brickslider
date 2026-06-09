@@ -1,5 +1,6 @@
 import { Arrows } from "./Arrows"
 import { Dots } from "./Dots"
+import { Pages } from "./Pages"
 import { Progress } from "./Progress"
 import { Resize } from "./Resize"
 import { CloneSlides } from "./CloneSlides"
@@ -160,6 +161,7 @@ export class Mount extends BaseSlider {
 
     if ($root) new ContextMenu($root).init()
     if (!useDragFree) new Dots($root).init()
+    new Pages($root).init()
     new Progress($root).init()
     if (arrows) new Arrows($root).init()
     if (touch) new Swipe($root).init()

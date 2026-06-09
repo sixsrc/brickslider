@@ -1,5 +1,4 @@
 import { BaseSlider } from "./BaseSlider"
-import { CLASS_VALUES, hasClass } from "./helpers"
 
 export class Observer extends BaseSlider {
   private visibleIndexes = new Set<number>()

@@ -59,7 +59,8 @@ export enum StateKey {
   Touch = "touch",
   UseLoop = "useLoop",
   UseDragFree = "useDragFree",
-  UseAutoHeight = "useAutoHeight"
+  UseAutoHeight = "useAutoHeight",
+  NavigationLockUntil = "navigationLockUntil"
 }
 
 class State {
@@ -132,6 +133,7 @@ class State {
       !State.state[this.key][StateKey.UseDragFree] && (options.useLoop ?? false)
     State.state[this.key][StateKey.UseAutoHeight] =
       options.useAutoHeight ?? false
+    State.state[this.key][StateKey.NavigationLockUntil] = 0
     State.state[this.key][StateKey.IsPagedActive] =
       !State.state[this.key][StateKey.UseDragFree]
   }

@@ -4,13 +4,7 @@ import plugin from "tailwindcss/plugin"
 // Plugin estrutural do BrickSlider.
 // Ele abstrai as classes repetitivas de layout sem acoplar tema/cores
 // para que o usuário aplique só o visual que quiser no HTML.
-type TailwindComponentStyles = Record<string, string | number>
-type TailwindComponents = Record<string, TailwindComponentStyles>
-type TailwindPluginApi = {
-  addComponents: (components: TailwindComponents) => void
-}
-
-export default plugin(function ({ addComponents }: TailwindPluginApi): void {
+export default plugin(function ({ addComponents }): void {
   addComponents({
     ".bs-root, .brick-slider": {
       position: "relative",
@@ -123,15 +117,49 @@ export default plugin(function ({ addComponents }: TailwindPluginApi): void {
     ".bs-hidden": {
       visibility: "hidden !important"
     },
+    ".bs-destroyed": {
+      display: "block !important"
+    },
     ".bs-destroyed .bs-track": {
-      overflow: "visible !important"
+      overflow: "visible !important",
+      height: "auto !important",
+      paddingLeft: "0 !important",
+      paddingRight: "0 !important"
     },
     ".bs-destroyed .bs-container": {
       display: "grid !important",
       whiteSpace: "normal !important",
       transform: "none !important",
       height: "auto !important",
+      width: "100% !important",
       gap: "16px !important"
+    },
+    ".bs-destroyed .bs-slide": {
+      width: "100% !important"
+    },
+    ".bs-destroyed > .bs-arrow, .bs-destroyed > .bs-dots, .bs-destroyed > .bs-progress, .bs-destroyed > .bs-pages": {
+      position: "static !important",
+      inset: "auto !important",
+      transform: "none !important"
+    },
+    ".bs-destroyed > .bs-arrow": {
+      display: "inline-flex !important",
+      marginRight: "12px"
+    },
+    ".bs-destroyed > .bs-pages": {
+      display: "inline-flex !important",
+      alignItems: "center",
+      marginTop: "16px"
+    },
+    ".bs-destroyed > .bs-dots": {
+      display: "flex !important",
+      width: "auto !important",
+      marginTop: "16px"
+    },
+    ".bs-destroyed > .bs-progress": {
+      display: "block !important",
+      width: "100% !important",
+      marginTop: "16px"
     },
     ".bs-no-select > *": {
       userSelect: "none",

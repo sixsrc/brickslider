@@ -1,5 +1,5 @@
 {
-  "name": "@sixsrc/brickslider",
+  "name": "@sixsrc/brick-slider",
   "author": "@malopestorres",
   "description": "Simple slider plugin, made to be lightweight and practical.",
   "license": "MIT",
@@ -16,29 +16,39 @@
     "url": "git+https://github.com/sixsrc/brickslider.git"
   },
   "type": "module",
-  "typings": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "lib",
+    "README.md",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/brick-slider.cjs",
-  "module": "./dist/brick-slider.js",
+  "unpkg": "./lib/brick-slider.umd.cjs",
+  "main": "lib/brick-slider.cjs",
+  "module": "./lib/brick-slider.js",
   "exports": {
     ".": {
-      "import": "./dist/brick-slider.js",
-      "require": "./dist/brick-slider.cjs",
-      "default": "./dist/brick-slider.js"
+      "types": "./lib/index.d.ts",
+      "import": "./lib/brick-slider.js",
+      "require": "./lib/brick-slider.cjs",
+      "default": "./lib/brick-slider.js"
     },
-    "./umd": "./dist/brick-slider.umd.cjs"
+    "./plugin-api": {
+      "types": "./lib/plugin-api.d.ts",
+      "import": "./lib/plugin-api.js",
+      "require": "./lib/plugin-api.cjs",
+      "default": "./lib/plugin-api.js"
+    },
+    "./umd": "./lib/brick-slider.umd.cjs",
+    "./plugin-api/umd": "./lib/plugin-api.umd.cjs"
   },
   "scripts": {
     "start": "vite --host",
-    "build": "tsc --noEmit && vite build"
+    "build": "tsc --noEmit && vite build && vite build --config vite.plugin-api.config.ts && vite build --config vite.cdn.config.ts && vite build --config vite.plugin-api.cdn.config.ts"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.0"
-  }
+  },
+  "types": "lib/index.d.ts"
 }

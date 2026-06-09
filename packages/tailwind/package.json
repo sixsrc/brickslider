@@ -1,5 +1,5 @@
 {
-  "name": "@sixsrc/brickslider-tailwind",
+  "name": "@sixsrc/brick-slider-tailwind",
   "author": "@malopestorres",
   "description": "Tailwind plugin package with BrickSlider structural utilities.",
   "license": "MIT",
@@ -16,20 +16,33 @@
     "url": "git+https://github.com/sixsrc/brickslider.git"
   },
   "type": "module",
+  "typings": "lib/index.d.ts",
   "files": [
-    "src",
+    "lib",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/brick-slider-tailwind.cjs",
+  "module": "./lib/brick-slider-tailwind.js",
   "exports": {
     ".": {
-      "import": "./src/index.ts",
-      "default": "./src/index.ts"
+      "import": "./lib/brick-slider-tailwind.js",
+      "require": "./lib/brick-slider-tailwind.cjs",
+      "default": "./lib/brick-slider-tailwind.js"
     },
     "./preset.css": {
-      "default": "./src/preset.css"
+      "default": "./lib/preset.css"
     }
   },
+  "scripts": {
+    "build": "tsc --noEmit && vite build && node build.mjs"
+  },
   "peerDependencies": {
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
     "tailwindcss": "^4.3.0"
   }
 }

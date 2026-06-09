@@ -1,5 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
+import { ArrowSync } from "./ArrowSync"
 import { BaseSlider } from "./BaseSlider"
+import { Pages } from "./Pages"
 import { Progress } from "./Progress"
 import { Mutate } from "./Mutate"
 import { Observer } from "./Observer"
@@ -8,8 +10,10 @@ import {
   CLASS_VALUES,
   DOM_ELEMENT_ALIASES,
   FROM,
+  NavigationDirection,
   SLIDER_EVENTS,
   TAGS,
+  TIMES,
   getSlideMovement
 } from "./helpers"
 import {
@@ -47,17 +51,19 @@ export class Slider extends BaseSlider {
 
   private computeValidPositions(): number[] {
     const { useLoop, slidesPerPage, slidesPerView } = this.store
+    const step = slidesPerPage || 1
+    const view = slidesPerView || 1
+    const maxStartIndex = Math.max(this.slides.length - view, 0)
+    const positions: number[] = []
 
     if (useLoop) {
       return this.computeLoopValidPositions()
     }
 
-    const step = slidesPerPage || 1
-    const view = slidesPerView || 1
-    const maxStartIndex = Math.max(this.slides.length - view, 0)
-    const positions: number[] = []
     for (let pos = 0; pos <= maxStartIndex; pos += step) positions.push(pos)
+
     if (!positions.includes(maxStartIndex)) positions.push(maxStartIndex)
+
     return positions
   }
 
@@ -80,7 +86,9 @@ export class Slider extends BaseSlider {
 
   private getPositions(): number[] {
     const positions = this.computeValidPositions()
+
     this.validPositions = positions
+
     return positions
   }
 
@@ -101,7 +109,9 @@ export class Slider extends BaseSlider {
 
   private resolveStartIndex(rawStart: number): number {
     const slideEl = this.slides[rawStart]
+
     if (!slideEl) return rawStart
+
     return parseInt(slideEl.dataset.index || "1", 10) - 1
   }
 
@@ -126,6 +136,8 @@ export class Slider extends BaseSlider {
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
+    if (this.shouldBlockPagedNavigation(params.from)) return
+
     this.updateCurrentIndexFromTranslate()
 
     this.currentIndex = this.setIndexBased(params)
@@ -134,19 +146,24 @@ export class Slider extends BaseSlider {
   }
 
   public goToDotIndex(targetIndex: number): void {
+    if (this.shouldBlockPagedNavigation(FROM.DOTS)) return
+
     const normalizedIndex = this.normalizeIndex(targetIndex)
     const navigationState: Partial<StateType> = {
       currentSlideMovement: null,
-      currentEventType: "dots" as CurrentEventType
+      currentEventType: FROM.DOTS as CurrentEventType
     }
 
     this.setState(navigationState)
 
     this.currentIndex = normalizedIndex
+
     this.commitCurrentIndex()
   }
 
   public goToPageIndex(targetIndex: number): void {
+    if (this.shouldBlockPagedNavigation(FROM.DOTS)) return
+
     const positions = [...new Set(this.getPositions())]
     const maxPageIndex = Math.max(0, positions.length - 1)
     const safePageIndex = Math.max(
@@ -156,7 +173,7 @@ export class Slider extends BaseSlider {
     const rawTarget = positions[safePageIndex] ?? positions[0] ?? 0
     const navigationState: Partial<StateType> = {
       currentSlideMovement: null,
-      currentEventType: "dots" as CurrentEventType
+      currentEventType: FROM.DOTS as CurrentEventType
     }
 
     this.setState(navigationState)
@@ -165,12 +182,14 @@ export class Slider extends BaseSlider {
     this.commitCurrentIndex()
   }
 
-  public goToFreeDirection(direction: "next" | "prev"): void {
+  public goToFreeDirection(direction: NavigationDirection): void {
+    if (this.shouldBlockPagedNavigation(direction)) return
+
     const { currentTranslate: storedTranslate } = this.store
     const currentTranslate = storedTranslate ?? 0
     const offset = this.getDragFreeOffset()
     const nextTranslate =
-      direction === "next"
+      direction === FROM.NEXT
         ? currentTranslate - offset
         : currentTranslate + offset
 
@@ -196,6 +215,7 @@ export class Slider extends BaseSlider {
     this.animationFrame()
     this.updateDOM()
     this.mutate.updateActiveSlides(activeIndexes, activeIndexes.length)
+    this.updateSlider()
     this.emitSlideChange()
   }
 
@@ -206,47 +226,113 @@ export class Slider extends BaseSlider {
 
   private setIndexBased(params: TypeTargetSlideParams): number {
     const positions = [...new Set(this.getPositions())]
+    const { from, touchIndex } = params
 
-    let nextIndex = this.currentIndex
-
-    if (params.from === "next") {
-      const next = positions.find(vp => vp > this.currentIndex)
-      if (next !== undefined) nextIndex = next
-    } else if (params.from === "prev") {
-      const prev = positions
-        .slice()
-        .reverse()
-        .find(vp => vp < this.currentIndex)
-      if (prev !== undefined) nextIndex = prev
-    } else if (params.from === "dots" || params.from === "touchend") {
-      if (params.touchIndex !== undefined) {
-        const { useLoop } = this.store
-        const targetIndex =
-          params.from === "touchend" && useLoop
-            ? params.touchIndex
-            : this.resolveStartIndex(params.touchIndex)
-
-        nextIndex = this.normalizeIndex(targetIndex)
-      }
+    if (from === FROM.NEXT) {
+      return this.getNextPositionIndex(positions)
     }
 
-    return nextIndex
+    if (from === FROM.PREV) {
+      return this.getPrevPositionIndex(positions)
+    }
+
+    if (from === FROM.DOTS || from === FROM.TOUCHEND) {
+      return this.getTargetIndexFromInput(from, touchIndex)
+    }
+
+    return this.currentIndex
+  }
+
+  private getNextPositionIndex(positions: number[]): number {
+    const nextIndex = positions.find(position => position > this.currentIndex)
+
+    return nextIndex ?? this.currentIndex
+  }
+
+  private shouldBlockPagedNavigation(
+    from: TypeTargetSlideParams["from"] | typeof FROM.DOTS
+  ): boolean {
+    const canGuardNavigation = this.canGuardNavigation(from)
+
+    if (!canGuardNavigation) return false
+
+    const isNavigationLocked = this.isNavigationLocked()
+
+    if (isNavigationLocked) return true
+
+    this.lockNavigation()
+
+    return false
+  }
+
+  private canGuardNavigation(
+    from: TypeTargetSlideParams["from"] | typeof FROM.DOTS
+  ): boolean {
+    const guardedEvents = [FROM.NEXT, FROM.PREV, FROM.TOUCHEND, FROM.DOTS]
+
+    return guardedEvents.includes(from)
+  }
+
+  private isNavigationLocked(): boolean {
+    const { navigationLockUntil = 0 } = this.store
+
+    return Date.now() < navigationLockUntil
+  }
+
+  private lockNavigation(): void {
+    const navigationLockUntil = Date.now() + TIMES.NAVIGATION_GUARD
+
+    this.setState({ navigationLockUntil })
+  }
+
+  private getPrevPositionIndex(positions: number[]): number {
+    const prevIndex = positions
+      .slice()
+      .reverse()
+      .find(position => position < this.currentIndex)
+
+    return prevIndex ?? this.currentIndex
+  }
+
+  private getTargetIndexFromInput(
+    from: TypeTargetSlideParams["from"],
+    touchIndex?: number
+  ): number {
+    const { useLoop } = this.store
+
+    if (touchIndex === undefined) return this.currentIndex
+
+    const targetIndex =
+      from === FROM.TOUCHEND && useLoop
+        ? touchIndex
+        : this.resolveStartIndex(touchIndex)
+
+    return this.normalizeIndex(targetIndex)
   }
 
   private mapDotIndexForLoop(dotIndex: number, startIndex: number): number {
     const { useLoop, slidesPerPage } = this.store
-    if (!useLoop) return dotIndex
+    const realSlides = this.slides.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    )
+    const safeSlidesPerPage = slidesPerPage || 1
+    const totalRealSlides = realSlides.length
+    const totalGroups = Math.ceil(totalRealSlides / safeSlidesPerPage)
+    const firstRealIndex = this.getRealSlideDataIndex(realSlides[0])
+    const lastRealIndex = this.getRealSlideDataIndex(
+      realSlides[realSlides.length - 1]
+    )
 
-    const realSlides = this.slides.filter(slide => !hasClass(slide, "cloned"))
-    const totalReal = realSlides.length
-    const totalGroups = Math.ceil(totalReal / (slidesPerPage || 1))
-    const firstRealIndex = parseInt(realSlides[0]?.dataset.index || "1", 10) - 1
-    const lastRealIndex =
-      parseInt(realSlides[realSlides.length - 1]?.dataset.index || "1", 10) - 1
+    if (!useLoop) return dotIndex
 
     if (startIndex < firstRealIndex) return totalGroups - 1
     if (startIndex > lastRealIndex) return 0
-    return Math.floor(startIndex / (slidesPerPage || 1))
+
+    return Math.floor(startIndex / safeSlidesPerPage)
+  }
+
+  private getRealSlideDataIndex(slide: HTMLElement | undefined): number {
+    return parseInt(slide?.dataset.index || "1", 10) - 1
   }
 
   public defineDotIndex(): void {
@@ -273,10 +359,7 @@ export class Slider extends BaseSlider {
     return typeof slideIndex === "number" ? slideIndex : this.currentIndex
   }
 
-  private getComputedDotIndex(
-    positions: number[],
-    startIndex: number
-  ): number {
+  private getComputedDotIndex(positions: number[], startIndex: number): number {
     const dotIndex = this.getDotIndexFromPositions(positions, startIndex)
     const safeDotIndex = this.getSafeDotIndex(dotIndex, positions)
 
@@ -316,6 +399,8 @@ export class Slider extends BaseSlider {
   public updateSlider(): void {
     this.defineDotIndex()
     this.updateDots(this.$root)
+    new Pages(this.$root).sync()
+    new ArrowSync(this.$root).sync()
     new Progress(this.$root).sync()
   }
 
@@ -355,12 +440,8 @@ export class Slider extends BaseSlider {
   }
 
   private getLoopJumpAction(): CurrentSlideMovement {
-    const {
-      useLoop,
-      activePage,
-      currentSlideMovement,
-      numberOfPages
-    } = this.store
+    const { useLoop, activePage, currentSlideMovement, numberOfPages } =
+      this.store
     const incrementMovement = getSlideMovement(FROM.NEXT)
     const decrementMovement = getSlideMovement(FROM.PREV)
     const shouldJumpForward =
@@ -417,7 +498,8 @@ export class Slider extends BaseSlider {
   private runBackwardLoopJump(): void {
     const { slidesPerPage, numberOfPages } = this.store
     const firstClonedIndex = this.getFirstClonedIndex()
-    const targetIndex = this.getFirstIndex() + slidesPerPage * (numberOfPages - 1)
+    const targetIndex =
+      this.getFirstIndex() + slidesPerPage * (numberOfPages - 1)
 
     this.currentIndex = firstClonedIndex
     this.enableJumpSlide()
@@ -459,7 +541,10 @@ export class Slider extends BaseSlider {
     if (useDragFree) return
 
     const maxActive = this.getMaxActiveSlides()
-    const activeIndexes = this.getPagedActiveIndexes(this.currentIndex, maxActive)
+    const activeIndexes = this.getPagedActiveIndexes(
+      this.currentIndex,
+      maxActive
+    )
     const canSyncTargetIndexes = this.canSyncTargetActiveIndexes(activeIndexes)
 
     if (!canSyncTargetIndexes) return
@@ -488,22 +573,45 @@ export class Slider extends BaseSlider {
   private resolveIndexFromTranslate(currentTranslate: number): number {
     const { gap: currentGap } = this.store
     const gap = currentGap || 0
-    let remaining = Math.abs(currentTranslate)
-    let idx = 0
+    const remainingTranslate = Math.abs(currentTranslate)
+    const resolvedIndex = this.getResolvedIndexFromRemainingTranslate(
+      remainingTranslate,
+      gap
+    )
 
-    for (let i = 0; i < this.slides.length; i++) {
-      const widthWithGap = this.slides[i].offsetWidth + gap
+    return this.getSafeSlideIndex(resolvedIndex)
+  }
+
+  private getResolvedIndexFromRemainingTranslate(
+    remainingTranslate: number,
+    gap: number
+  ): number {
+    let remaining = remainingTranslate
+    let resolvedIndex = 0
+
+    for (let index = 0; index < this.slides.length; index++) {
+      const widthWithGap = this.getSlideWidthWithGap(index, gap)
 
       if (remaining < widthWithGap) {
-        idx = i
+        resolvedIndex = index
         break
       }
 
       remaining -= widthWithGap
-      idx = i + 1
+      resolvedIndex = index + 1
     }
 
-    return Math.max(0, Math.min(idx, this.slides.length - 1))
+    return resolvedIndex
+  }
+
+  private getSlideWidthWithGap(index: number, gap: number): number {
+    const slide = this.slides[index]
+
+    return (slide?.offsetWidth ?? 0) + gap
+  }
+
+  private getSafeSlideIndex(index: number): number {
+    return Math.max(0, Math.min(index, this.slides.length - 1))
   }
 
   private mainState(): Partial<StateType> {
@@ -535,14 +643,16 @@ export class Slider extends BaseSlider {
     const maxActive = this.getMaxActiveSlides()
     let intervalId: number | null = null
 
-    this.animation.init({
-      onStart: () => {
-        intervalId = this.startActiveSlidesSync(maxActive)
-      },
-      onEnd: () => {
-        intervalId = this.stopActiveSlidesSync(intervalId)
-      }
-    }).then(() => {})
+    this.animation
+      .init({
+        onStart: () => {
+          intervalId = this.startActiveSlidesSync(maxActive)
+        },
+        onEnd: () => {
+          intervalId = this.stopActiveSlidesSync(intervalId)
+        }
+      })
+      .then(() => {})
   }
 
   private startActiveSlidesSync(maxActive: number): number {
@@ -597,21 +707,12 @@ export class Slider extends BaseSlider {
   }
 
   private emitSlideChange(): void {
-    const {
-      slideIndex,
-      prevSlideIndex,
-      activePage,
-      dotIndex,
-      currentEventType
-    } = this.store
+    const { slideIndex, activePage } = this.store
 
     this.emit(SLIDER_EVENTS.SLIDE_CHANGE, {
-      root: this.$root,
+      rootSelector: this.$root,
       slideIndex,
-      prevSlideIndex,
-      activePage,
-      dotIndex,
-      currentEventType
+      activePage
     })
   }
 
@@ -621,7 +722,7 @@ export class Slider extends BaseSlider {
 
     for (let i = 0; i < slides.length; i++) {
       const slide = slides[i]
-      if (slide.classList.contains("cloned")) {
+      if (hasClass(slide, CLASS_VALUES.CLONED)) {
         cloneCountLeft++
       } else {
         break

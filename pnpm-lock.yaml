@@ -83,8 +83,8 @@ importers:
         version: 4.1.8(@types/node@24.10.1)(vite@8.0.16(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1))
 
   packages/accessibility:
-    dependencies:
-      '@sixsrc/brickslider':
+    devDependencies:
+      '@sixsrc/brick-slider':
         specifier: workspace:*
         version: link:../slider
 
@@ -95,13 +95,13 @@ importers:
         version: 4.3.0
 
   packages/stories:
-    dependencies:
-      '@sixsrc/brickslider':
+    devDependencies:
+      '@sixsrc/brick-slider':
         specifier: workspace:*
         version: link:../slider
 
   packages/tailwind:
-    dependencies:
+    devDependencies:
       tailwindcss:
         specifier: ^4.3.0
         version: 4.3.0

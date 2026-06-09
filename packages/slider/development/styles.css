@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@import "../../../tailwind/src/preset.css";
-@plugin "../../../tailwind/src/index.ts";
+@import "../../tailwind/src/preset.css";
+@plugin "../../tailwind/src/index.ts";
 
 body {
   font-family: "Poppins", serif;
@@ -74,9 +74,6 @@ body {
   If the user does not want Tailwind, they should still use the same `bs-*`
   markup classes and import a plain CSS file with the structural rules.
 
-  Suggested file:
-  - ./examples/css/brick-slider.css
-
   Tailwind plugin package in this monorepo:
   - packages/tailwind/src/index.ts
 
@@ -133,15 +130,28 @@ body {
   height: 22rem;
 }
 
+.bs-demo-frame:has(.bs-destroyed) {
+  height: auto;
+  min-height: 22rem;
+}
+
+.bs-demo-frame:has(.bs-destroyed) > .bs-demo-slider {
+  height: auto !important;
+}
+
+
 .bs-demo-slider {
   --bs-demo-controls-inset: 0px;
   --bs-demo-arrow-gap: 0.875rem;
+  --bs-demo-controls-gap: 0.625rem;
+  --bs-demo-controls-row-height: 56px;
+  --bs-demo-dots-row-height: 32px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) var(--bs-demo-controls-row-height) var(--bs-demo-dots-row-height);
   align-items: center;
   column-gap: 0.75rem;
-  row-gap: 1.25rem;
+  row-gap: var(--bs-demo-controls-gap);
 }
 
 .bs-demo-slider:has(> .bs-track.bs-peek-sm) {
@@ -167,6 +177,7 @@ body {
   grid-column: 1;
   grid-row: 2;
   justify-self: start;
+  align-self: center;
   margin-left: var(--bs-demo-controls-inset);
 }
 
@@ -174,30 +185,51 @@ body {
   grid-column: 1;
   grid-row: 2;
   justify-self: start;
+  align-self: center;
   margin-left: calc(var(--bs-demo-controls-inset) + 44px + var(--bs-demo-arrow-gap));
 }
 
-.bs-demo-slider > .bs-dots {
-  grid-column: 2;
+.bs-demo-slider > .bs-pages {
+  grid-column: 3;
   grid-row: 2;
   justify-self: end;
+  align-self: center;
+  height: var(--bs-demo-controls-row-height);
   margin-right: var(--bs-demo-controls-inset);
+}
+
+.bs-demo-slider > .bs-dots {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  justify-self: center;
+  align-self: center;
+  height: var(--bs-demo-dots-row-height);
+  margin-right: 0;
 }
 
 .bs-demo-slider > .bs-arrow {
   @apply flex h-11 w-11 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50;
 }
 
+.bs-demo-slider > .bs-arrow:disabled {
+  @apply cursor-not-allowed border-violet-800/30 text-violet-800/30 hover:bg-white;
+}
+
 .bs-demo-slider > .bs-arrow svg {
   @apply h-5 w-5;
 }
 
+.bs-demo-slider > .bs-pages {
+  @apply flex items-center text-sm font-semibold tabular-nums text-violet-950/70;
+}
+
 .bs-demo-slider > .bs-dots {
-  @apply m-0 flex w-auto items-center justify-end gap-3 p-0;
+  @apply m-0 flex w-auto items-center justify-center gap-3 p-0;
+  line-height: 0;
 }
 
 .bs-demo-slider > .bs-dot {
-  @apply m-0 inline-block h-4 w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent;
+  @apply m-0 block h-4 w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent;
 }
 
 .bs-demo-slider > .bs-dot.bs-dot--active {
@@ -205,7 +237,7 @@ body {
 }
 
 .bs-progress-layout {
-  grid-template-rows: minmax(0, 1fr) auto auto;
+  grid-template-rows: minmax(0, 1fr) var(--bs-demo-controls-row-height) auto;
 }
 
 .bs-progress-layout > .bs-progress {
@@ -253,8 +285,15 @@ body {
     height: 20rem;
   }
 
+  .bs-demo-frame:has(.bs-destroyed) {
+    min-height: 20rem;
+  }
+
   .bs-demo-slider {
     --bs-demo-arrow-gap: 0.75rem;
+    --bs-demo-controls-gap: 0.875rem;
+    --bs-demo-controls-row-height: 52px;
+    --bs-demo-dots-row-height: 36px;
     column-gap: 0.5rem;
   }
 
@@ -266,9 +305,13 @@ body {
     @apply h-10 w-10;
   }
 
+  .bs-demo-slider > .bs-pages {
+    margin-right: 0;
+  }
+
   .bs-demo-slider > .bs-dots {
-    justify-self: start;
     grid-column: 1 / -1;
+    justify-self: center;
   }
 
   .bs-progress-layout > .bs-progress {

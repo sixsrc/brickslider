@@ -15,7 +15,7 @@ This is especially useful when:
 ## Basic Usage
 
 ```ts
-import { BrickSlider } from "@sixsrc/brickslider"
+import { BrickSlider } from "@sixsrc/brick-slider"
 
 const slider = new BrickSlider("#slider", {
   slidesPerView: 1,

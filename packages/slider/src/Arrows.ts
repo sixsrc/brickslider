@@ -1,4 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
+import { ArrowSync } from "./ArrowSync"
 import { Slider } from "./Slider"
 import type { StateType, UpdateSlideIndexType } from "./types"
 import { DOM_ELEMENT_ALIASES, EVENTS, FROM, TIMES } from "./helpers"
@@ -16,7 +17,7 @@ export class Arrows extends BaseSlider {
   public $root: string
   private slider: Slider
   private lastClickTimestamps: number[] = []
-  private isArrowClickLocked = false
+  private lastTouchArrowTimestamp = 0
 
   constructor($root: string) {
     super($root)
@@ -28,6 +29,7 @@ export class Arrows extends BaseSlider {
     const buttons = this.getArrowButtons()
 
     this.bindArrowEvents(buttons)
+    new ArrowSync(this.$root).sync()
   }
 
   private getArrowButtons(): NodeListOf<HTMLElement> {
@@ -40,29 +42,53 @@ export class Arrows extends BaseSlider {
 
   private bindArrowEvents(buttons: NodeListOf<HTMLElement>): void {
     this.forEachButton(buttons, button => {
-      listener([EVENTS.CLICK], button, () => this.handleArrowClick(button))
+      listener([EVENTS.POINTERDOWN], button, (event: Event) =>
+        this.handleArrowPointerDown(event as PointerEvent, button)
+      )
+      listener([EVENTS.CLICK], button, (event: Event) =>
+        this.handleArrowClick(event as MouseEvent, button)
+      )
     })
   }
 
-  private handleArrowClick(button: HTMLElement): void {
+  private handleArrowPointerDown(
+    event: PointerEvent,
+    button: HTMLElement
+  ): void {
+    const isTouchPointer =
+      event.pointerType === "touch" || event.pointerType === "pen"
+
+    if (!isTouchPointer) return
+
+    event.preventDefault()
+    this.lastTouchArrowTimestamp = Date.now()
+    this.handleArrowInteraction(button)
+  }
+
+  private handleArrowClick(event: MouseEvent, button: HTMLElement): void {
+    if (this.shouldIgnoreSyntheticTouchClick(event)) return
+
+    this.handleArrowInteraction(button)
+  }
+
+  private shouldIgnoreSyntheticTouchClick(event: MouseEvent): boolean {
+    const hasRecentTouchArrow =
+      Date.now() - this.lastTouchArrowTimestamp < TIMES.DEFAULT_TRANSITION_TIME
+
+    if (!hasRecentTouchArrow) return false
+
+    event.preventDefault()
+    return true
+  }
+
+  private handleArrowInteraction(button: HTMLElement): void {
     const delay = this.setTime()
+    const targetButton = button as HTMLButtonElement
 
-    if (this.isArrowClickLocked) return
+    if (targetButton.disabled) return
 
-    this.lockArrowClick()
     this.scheduleClickSpeedUpdate(delay)
     this.arrowHandler(button, this.$root)
-  }
-
-  private lockArrowClick(): void {
-    this.isArrowClickLocked = true
-    window.setTimeout(() => {
-      this.unlockArrowClick()
-    }, TIMES.ARROW_CLICK_GUARD)
-  }
-
-  private unlockArrowClick(): void {
-    this.isArrowClickLocked = false
   }
 
   private scheduleClickSpeedUpdate(delay: number): void {
@@ -129,6 +155,7 @@ export class Arrows extends BaseSlider {
 
   private setTime(): number {
     const totalSlides = getSliderNodeList(this.$root, false).length
+
     return this.getTime(totalSlides)
       ? TIMES.DEFAULT_TRANSITION_TIME - TIMES.FAST_NAVIGATION_OFFSET
       : 0
@@ -204,6 +231,7 @@ export class Arrows extends BaseSlider {
 
     if (useDragFree) {
       this.handleFreeArrowNavigation(slideIndex, eventType)
+
       return
     }
 

@@ -2,11 +2,17 @@ name: Release
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
 
 jobs:
   release:
-    name: Release packages via Changesets
+    name: Create release PR or publish packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,20 +20,31 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'pnpm'
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 11.4.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Create Release / Publish
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Create release PR or publish
         uses: changesets/action@v1
         with:
-          publish: pnpm
+          version: pnpm version:changeset
+          publish: pnpm publish:changeset
+          commit: "chore(release): version packages"
+          title: "chore(release): version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

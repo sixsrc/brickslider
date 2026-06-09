@@ -9,8 +9,10 @@
     "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["./src/*"],
-      "@sixsrc/brickslider-accessibility": ["../accessibility/src/index.ts"],
-      "@sixsrc/brickslider-stories": ["../stories/src/index.ts"],
+      "@sixsrc/brick-slider": ["./src/index.ts"],
+      "@sixsrc/brick-slider/plugin-api": ["./src/plugin-api.ts"],
+      "@sixsrc/brick-slider-accessibility": ["../accessibility/src/index.ts"],
+      "@sixsrc/brick-slider-stories": ["../stories/src/index.ts"],
       "*": ["./*", "./*.mts"]
     },
     "resolveJsonModule": true,
@@ -24,5 +26,5 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true
   },
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["lib", "dist", "node_modules"]
 }

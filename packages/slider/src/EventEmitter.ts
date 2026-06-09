@@ -1,4 +1,4 @@
-type Listener = (...args: unknown[]) => void
+import type { Listener } from "./types"
 
 export class EventEmitter {
   private listeners: { [event: string]: Listener[] } = {}

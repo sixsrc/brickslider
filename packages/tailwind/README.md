@@ -1,29 +1,33 @@
-# `@sixsrc/brickslider-tailwind`
+# `@sixsrc/brick-slider-tailwind`
 
-Plugin estrutural do BrickSlider para Tailwind CSS.
+Structural Tailwind package for BrickSlider.
 
-Ele abstrai as classes base de layout do slider sem impor tema visual.
-Ou seja: o plugin resolve a estrutura e o usuário estiliza o visual final.
+It provides the structural slider classes without forcing a visual theme.
+In practice, the package handles the layout layer and leaves the final styling in the user's hands.
 
-## Instalação
+## Installation
 
 ```bash
-pnpm add @sixsrc/brickslider @sixsrc/brickslider-tailwind tailwindcss
+pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 ```
 
-## Uso com Tailwind v4
+```bash
+npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
+```
+
+## CSS Setup
+
+Add the plugin and preset to your main stylesheet, for example `app.css`:
 
 ```css
 @import "tailwindcss";
-@import "@sixsrc/brickslider-tailwind/preset.css";
-@plugin "@sixsrc/brickslider-tailwind";
+@import "@sixsrc/brick-slider-tailwind/preset.css";
+@plugin "@sixsrc/brick-slider-tailwind";
 ```
 
-O `preset.css` faz parte da integração do pacote em ambiente Tailwind.
-Ele ajuda a expor as classes do BrickSlider no fluxo de desenvolvimento e o
-plugin continua sendo o responsável pelas regras estruturais do slider.
+This is the required CSS configuration for a Tailwind v4 project.
 
-## Classes disponibilizadas
+## Exported Classes
 
 - `bs-root`
 - `bs-track`
@@ -39,13 +43,13 @@ plugin continua sendo o responsável pelas regras estruturais do slider.
 - `bs-peek-sm`
 - `bs-peek-lg`
 
-As classes `bs-peek`, `bs-peek-sm` e `bs-peek-lg` são opcionais e devem ser aplicadas no elemento `bs-track`.
+The `bs-peek`, `bs-peek-sm`, and `bs-peek-lg` classes are optional and should be applied to the `bs-track` element.
 
-- `bs-peek-sm` = `48px` por lado
-- `bs-peek` = `80px` por lado
-- `bs-peek-lg` = `120px` por lado
+- `bs-peek-sm` = `48px` per side
+- `bs-peek` = `80px` per side
+- `bs-peek-lg` = `120px` per side
 
-## Exemplo de active state
+## Active State Example
 
 ```css
 .active > .bs-content {
@@ -57,21 +61,21 @@ As classes `bs-peek`, `bs-peek-sm` e `bs-peek-lg` são opcionais e devem ser apl
 }
 ```
 
-## Navegação por arrows
+## Arrow Navigation
 
-Use `bs-arrow` como classe base e adicione:
+Use `bs-arrow` as the base class and add:
 
-- `bs-prev` para o botão anterior
-- `bs-next` para o botão próximo
+- `bs-prev` for the previous button
+- `bs-next` for the next button
 
-## `slideSizes` no responsivo
+## Responsive `slideSizes`
 
-O `slideSizes` global funciona como fallback.
+Global `slideSizes` works as a fallback.
 
-Prioridade:
+Priority:
 
-- `responsive[breakpoint].useSlideSizes === false` → ignora todo `slideSizes`
-- `responsive[breakpoint].slideSizes` → sobrescreve o global
+- `responsive[breakpoint].useSlideSizes === false` → ignores all `slideSizes`
+- `responsive[breakpoint].slideSizes` → overrides the global config
 - `slideSizes` global → fallback
 
 Exemplo:
@@ -97,18 +101,15 @@ Exemplo:
 }
 ```
 
-`useSlideSizes: true` é desnecessário, porque `slideSizes` já é implicitamente ativo.
+`useSlideSizes: true` is unnecessary because `slideSizes` is already implicitly enabled.
 
-## Sem Tailwind
+## Without Tailwind
 
-Se o usuário não quiser Tailwind, ele pode usar o mesmo markup `bs-*`
-e importar a versão CSS pura disponível no pacote de slider:
+If you do not want Tailwind, keep the same `bs-*` markup classes and generate your own plain CSS output from the Tailwind-based markup when needed.
 
-- `packages/slider/examples/css/brick-slider.css`
+## Monorepo Development
 
-## Desenvolvimento no monorepo
-
-No demo local deste repositório, o plugin é carregado assim:
+In the local demo of this repository, the plugin is loaded like this:
 
 ```css
 @import "../../../tailwind/src/preset.css";

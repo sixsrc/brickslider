@@ -1,34 +1,41 @@
-name: Publish on tag
+name: Manual Publish
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
-    name: Publish packages
+    name: Publish packages manually
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'pnpm'
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 11.4.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Publish via Changesets
-        uses: changesets/action@v1
-        with:
-          publish: pnpm
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Publish changed packages with Changesets
+        run: pnpm publish:changeset
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

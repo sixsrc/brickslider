@@ -13,13 +13,21 @@ export default defineConfig({
         replacement: fileURLToPath(new URL("./src", import.meta.url))
       },
       {
-        find: "@sixsrc/brickslider-accessibility",
+        find: "@sixsrc/brick-slider/plugin-api",
+        replacement: fileURLToPath(new URL("./src/plugin-api.ts", import.meta.url))
+      },
+      {
+        find: "@sixsrc/brick-slider",
+        replacement: fileURLToPath(new URL("./src/index.ts", import.meta.url))
+      },
+      {
+        find: "@sixsrc/brick-slider-accessibility",
         replacement: fileURLToPath(
           new URL("../accessibility/src/index.ts", import.meta.url)
         )
       },
       {
-        find: "@sixsrc/brickslider-stories",
+        find: "@sixsrc/brick-slider-stories",
         replacement: fileURLToPath(
           new URL("../stories/src/index.ts", import.meta.url)
         )
@@ -27,11 +35,12 @@ export default defineConfig({
     ]
   },
   build: {
+    outDir: "lib",
     minify: true,
     lib: {
       name: "BrickSlider",
       entry: "./src/index.ts",
-      formats: ["es", "cjs", "umd"],
+      formats: ["es", "cjs"],
       fileName: "brick-slider"
     },
     rolldownOptions: {

@@ -1,7 +1,13 @@
-export { BSAccessibilityPlugin } from "./BSAccessibilityPlugin"
+export { BrickSliderAccessibility } from "./BrickSliderAccessibility"
+export { BrickSliderAccessibility as AccessibilityPlugin } from "./BrickSliderAccessibility"
+export { BrickSliderAccessibility as default } from "./BrickSliderAccessibility"
 export type {
+  BrickSliderAccessibilitySlideChangePayload,
+  SlideChangePayload,
+  BrickSliderAccessibilityLabels,
   AccessibilityLabels,
-  BSAccessibilityPluginOptions,
+  BrickSliderAccessibilityOptions,
+  ResolvedBrickSliderAccessibilityLabels,
   ResolvedAccessibilityLabels,
-  ResolvedBSAccessibilityPluginOptions
+  ResolvedBrickSliderAccessibilityOptions
 } from "./types"

@@ -6,9 +6,9 @@
   "scripts": {
     "build": "pnpm -r --if-present run build",
     "format": "prettier . --write --parser typescript \"**/*.[tj]s?(x)\"",
-    "lint": "pnpm -w -r run lint",
-    "lint:fix": "pnpm -w -r run lint -- --fix",
-    "test": "pnpm -w -r run test",
+    "lint": "pnpm -r --if-present run lint",
+    "lint:fix": "pnpm -r --if-present run lint -- --fix",
+    "test": "pnpm -r --if-present run test",
     "start": "pnpm --filter=./packages/slider start",
     "commit": "git-cz",
     "changelog": "standard-changelog",
