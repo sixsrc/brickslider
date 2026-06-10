@@ -6,7 +6,7 @@ export default defineConfig({
     outDir: "lib",
     minify: true,
     lib: {
-      name: "BrickSliderAccessibility",
+      name: "AccessibilityPlugin",
       entry: "./src/cdn.ts",
       formats: ["umd"],
       fileName: "brick-slider-accessibility"

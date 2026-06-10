@@ -6,7 +6,7 @@ export default defineConfig({
     outDir: "lib",
     minify: true,
     lib: {
-      name: "BrickSliderStories",
+      name: "StoriesPlugin",
       entry: "./src/cdn.ts",
       formats: ["umd"],
       fileName: "brick-slider-stories"
