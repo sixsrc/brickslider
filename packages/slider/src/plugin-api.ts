@@ -1,4 +1,5 @@
 export { Plugin } from "./Plugin"
+export { Validation } from "./Validation"
 export {
   ANIMATION_OPTIONS,
   ATTRIBUTES,
@@ -19,6 +20,8 @@ export {
   getAttribute,
   getAllElements,
   getElement,
+  getChildren,
+  getRootSelector,
   getSliderNodeList,
   getTrackChildren,
   hasAttribute,
@@ -31,3 +34,4 @@ export {
   setAttribute,
   waitFor
 } from "./helpers"
+

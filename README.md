@@ -18,11 +18,23 @@ BrickSlider is a TypeScript-first, Tailwind-first carousel engine focused on mod
 
 The core stays small and framework-agnostic, while the default authoring experience is built around Tailwind-friendly markup and plugins for accessibility helpers and story-style flows.
 
+
+
 <p align="center">
-  <a href="https://www.jsdelivr.com/package/npm/@sixsrc/brick-slider">
-    <img src="https://data.jsdelivr.com/v1/package/npm/@sixsrc/brick-slider/badge" alt="jsDelivr downloads" />
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/npm/l/@sixsrc/brick-slider?color=%23A855F7" />
+  </a>
+
+ <p align="center">
+  <a href="https://www.npmjs.com/package/@sixsrc/brick-slider">
+    <img src="https://img.shields.io/npm/v/@sixsrc/brick-slider?color=%23A855F7" />
+  </a>
+
+  <a href="https://bundlephobia.com/package/@sixsrc/brick-slider">
+    <img src="https://img.shields.io/bundlephobia/minzip/@sixsrc/brick-slider?color=%23A855F7&label=gzip%20size" />
   </a>
 </p>
+
 
 ## Table of Contents
 

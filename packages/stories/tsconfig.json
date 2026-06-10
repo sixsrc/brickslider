@@ -12,11 +12,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@sixsrc/brick-slider": ["../slider/src/index.ts"],
-      "@sixsrc/brick-slider/plugin-api": ["../slider/src/plugin-api.ts"]
-    }
+    "skipLibCheck": true
   },
   "exclude": ["lib", "dist", "node_modules"]
 }

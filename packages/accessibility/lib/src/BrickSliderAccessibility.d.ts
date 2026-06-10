@@ -1,4 +1,4 @@
-import { Plugin } from '../../slider/src/plugin-api.ts';
+import { Plugin } from '@sixsrc/brick-slider/plugin-api';
 import { BrickSliderAccessibilityOptions } from './types';
 export declare class BrickSliderAccessibility extends Plugin {
     private dotCleanupCallbacks;

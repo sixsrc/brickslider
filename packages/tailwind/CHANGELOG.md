@@ -1,5 +1,11 @@
 # @sixsrc/brick-slider-tailwind
 
+## 1.0.2
+
+### Patch Changes
+
+- fix: clean build outputs and prevent iCloud duplicate files
+
 ## 1.0.1
 
 ### Patch Changes

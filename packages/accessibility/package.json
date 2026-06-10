@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Accessibility plugin package for BrickSlider.",
   "license": "MIT",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "keywords": [
     "brickslider",
     "brick-slider",
@@ -49,7 +49,7 @@
     "build": "tsc --noEmit && vite build && vite build --config vite.cdn.config.ts --emptyOutDir false"
   },
   "peerDependencies": {
-    "@sixsrc/brick-slider": "^1.0.2"
+    "@sixsrc/brick-slider": "^1.0.4"
   },
   "devDependencies": {
     "@sixsrc/brick-slider": "workspace:*"

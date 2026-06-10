@@ -99,97 +99,113 @@ var e = {
 	LINEAR: "linear",
 	EASEOUT: "cubic-bezier(0.22, 0.61, 0.36, 1)",
 	DRAG_FREE_EASING: "cubic-bezier(0.22, 1, 0.36, 1)"
-}, l = { PLUGIN_ROOT_PLACEHOLDER: "#__brickslider_plugin_root__" };
-function u(e, t) {
+}, l = [
+	"xs",
+	"sm",
+	"md",
+	"lg",
+	"xl",
+	"2xl"
+], u = {
+	TRACK: "track",
+	CHILDREN: "children",
+	SLIDE: "slide",
+	ARROW: "bs-arrow",
+	PAGES: "bs-pages"
+}, d = { PLUGIN_ROOT_PLACEHOLDER: "#__brickslider_plugin_root__" };
+function f(e, t) {
 	e.forEach((e) => {
 		e.classList.add(t);
 	});
 }
-function d(e, t, n) {
+function p(e, t, n) {
 	if (!e) throw Error("Element is required for animation.");
 	return (Array.isArray(e) ? e : [e]).map((e) => e.animate(t, n));
 }
-function f(e, t) {
+function m(e, t) {
 	if (e && t) return e.appendChild(t), t;
 }
-function p(e) {
+function h(e) {
 	e?.remove();
 }
-function m(e) {
+function g(e) {
 	return document.createElement(e);
 }
-function h(e, t = document) {
+function _(e, t = document) {
 	return t.querySelectorAll(e);
 }
-function g(e, t = document) {
+function v(e, t = document) {
 	return t.querySelector(e) ?? void 0;
 }
-function _(e) {
-	return g(e);
+function y(e) {
+	return v(e);
 }
-function v(t) {
-	return _(`${t} .${e.DOTS[0]}`);
+function b(t) {
+	return y(`${t} .${e.DOTS[0]}`);
 }
-function y(t) {
-	return _(`${t} .${e.CHILDREN[0]}`);
+function x(t) {
+	return y(`${t} .${e.CHILDREN[0]}`);
 }
-function b(e) {
+function S(e) {
 	return e ? e.children.length : 0;
 }
-function x(e) {
-	return _(`${e}`);
-}
-function S(t, n = !0) {
-	let r = `:scope > .${e.SLIDE[0]}${n ? "" : ":not(.cloned)"}`;
-	return Array.from(h(r, y(t)));
-}
 function C(e) {
+	return y(`${e}`);
+}
+function w(t, n = !0) {
+	let r = `:scope > .${e.SLIDE[0]}${n ? "" : ":not(.cloned)"}`;
+	return Array.from(_(r, x(t)));
+}
+function T(e) {
 	if (e) return e.offsetWidth;
 }
-function w(t) {
-	return _(`${t} .${e.TRACK[0]}`);
-}
-function T(e, t) {
-	return e.classList.contains(t);
-}
-function E(e, t) {
-	return !e || !t ? !1 : e.contains(t);
+function E(t) {
+	return y(`${t} .${e.TRACK[0]}`);
 }
 function D(e, t) {
-	if (e) return e.closest(t) ?? void 0;
+	return e.classList.contains(t);
 }
 function O(e, t) {
-	return e ? e.hasAttribute(t) : !1;
+	return !e || !t ? !1 : e.contains(t);
 }
 function k(e, t) {
-	return e ? e.getAttribute(t) : null;
+	if (e) return e.closest(t) ?? void 0;
 }
 function A(e, t) {
+	return e ? e.hasAttribute(t) : !1;
+}
+function j(e, t) {
+	return e ? e.getAttribute(t) : null;
+}
+function M(e, t) {
 	e.classList.remove(...Array.isArray(t) ? t : [t]);
 }
-function j(e, t, n) {
+function N(e, t, n) {
+	return e.slice(t, n);
+}
+function P(e, t, n) {
 	e.setAttribute(t, n);
 }
-function M(e) {
+function F(e) {
 	return e.type.includes("mouse") ? e : e.touches[0];
 }
-function N(e, t, n, r) {
+function I(e, t, n, r) {
 	Array.isArray(e) && e.forEach((e) => {
 		t.addEventListener(e, n, r);
 	});
 }
-function P(e, t, n, r) {
+function L(e, t, n, r) {
 	Array.isArray(e) && e.forEach((e) => {
 		t.removeEventListener(e, n, r);
 	});
 }
-function F(e, t) {
+function R(e, t) {
 	e.removeAttribute(t);
 }
-function I(e) {
+function z(e) {
 	return `translate3d(${e}px, 0px, 0px)`;
 }
-function L(e, t) {
+function B(e, t) {
 	let n;
 	function r(i) {
 		n ||= i, i - n < e ? requestAnimationFrame(r) : t();
@@ -198,7 +214,7 @@ function L(e, t) {
 }
 //#endregion
 //#region src/State.ts
-var R = class t {
+var V = class t {
 	static state = {};
 	key;
 	constructor(e, n) {
@@ -208,11 +224,11 @@ var R = class t {
 		t.state[this.key].prevSlideIndex = 0, t.state[this.key].activePage = 0, t.state[this.key].activeDataIndex = 0, t.state[this.key].slideIndex = 0, t.state[this.key].gap = e.gap ?? 0, t.state[this.key].slidesPerPage = e.slidesPerPage ?? 1, t.state[this.key].slidesPerView = e.slidesPerView ?? 1, t.state[this.key].baseSlidesPerPage = e.slidesPerPage ?? 1, t.state[this.key].baseSlidesPerView = e.slidesPerView ?? 1, t.state[this.key].numberOfPages = 0, t.state[this.key].numberOfSlides = 0, t.state[this.key].sliderWidth = 0, t.state[this.key].slideSizes = this.normalizeSlideSizes(e.slideSizes), t.state[this.key].baseSlideSizes = this.normalizeSlideSizes(e.slideSizes), t.state[this.key].screens = this.normalizeScreens(e.screens), t.state[this.key].responsive = this.normalizeResponsive(e.responsive), t.state[this.key].activeBreakpoint = "base", t.state[this.key].isInitialRender = !0, t.state[this.key].isTouch = !1, t.state[this.key].isPagedActive = !0, t.state[this.key].isCompleteGroup = !0, t.state[this.key].isDragging = !1, t.state[this.key].isJumpSlide = !1, t.state[this.key].isFastNavigation = !1, t.state[this.key].startPos = 0, t.state[this.key].startX = 0, t.state[this.key].startY = 0, t.state[this.key].endX = 0, t.state[this.key].prevTranslate = 0, t.state[this.key].currentTranslate = 0, t.state[this.key].currentEventType = null, t.state[this.key].currentSlideMovement = null, t.state[this.key].startTime = 0, t.state[this.key].endTime = 0, t.state[this.key].isMouseLeave = !0, t.state[this.key].animationID = 0, t.state[this.key].useDragFree = e.useDragFree ?? !1, t.state[this.key].dots = !t.state[this.key].useDragFree && this.hasDotsMarkup(), t.state[this.key].dotIndex = 0, t.state[this.key].arrows = this.hasArrowsMarkup(), t.state[this.key].touch = e.useTouch ?? !0, t.state[this.key].useLoop = !t.state[this.key].useDragFree && (e.useLoop ?? !1), t.state[this.key].useAutoHeight = e.useAutoHeight ?? !1, t.state[this.key].navigationLockUntil = 0, t.state[this.key].isPagedActive = !t.state[this.key].useDragFree;
 	}
 	hasDotsMarkup() {
-		return !!v(this.key);
+		return !!b(this.key);
 	}
 	hasArrowsMarkup() {
-		let t = x(this.key);
-		return t ? h(e.ARROW.map((e) => `.${e}`).join(", "), t).length > 0 : !1;
+		let t = C(this.key);
+		return t ? _(e.ARROW.map((e) => `.${e}`).join(", "), t).length > 0 : !1;
 	}
 	normalizeSlideSizes(e) {
 		if (!e || Object.entries(e).some(([e, t]) => !this.isValidSlideSizePosition(Number(e)) || !this.hasSlideSize(t))) return {};
@@ -291,7 +307,7 @@ var R = class t {
 			this.shouldInvalidateKey(n, r) || (t.state[this.key][n] = r);
 		}
 	}
-}, z = class {
+}, H = class {
 	listeners = {};
 	on(e, t) {
 		this.listeners[e] || (this.listeners[e] = []), this.listeners[e].push(t);
@@ -302,7 +318,7 @@ var R = class t {
 	emit(e, ...t) {
 		this.listeners[e] && this.listeners[e].forEach((e) => e(...t));
 	}
-}, B = class e {
+}, U = class e {
 	static emitters = /* @__PURE__ */ new Map();
 	$root;
 	getRootSelector;
@@ -320,13 +336,13 @@ var R = class t {
 		this.syncRootContext(e), this.translate = 0, this.movement = !1;
 	}
 	syncRootContext(t) {
-		this.$root = t, this.getRootSelector = x(t), this.slides = S(t), this.state = new R(this.$root), this.store = R.store(this.$root), this.emitter = e.getEmitter(this.$root), this.$children = y(this.$root), this.$track = w(t), this.childrenCount = b(this.$children), this.sliderWidth = C(this.$children);
+		this.$root = t, this.getRootSelector = C(t), this.slides = w(t), this.state = new V(this.$root), this.store = V.store(this.$root), this.emitter = e.getEmitter(this.$root), this.$children = x(this.$root), this.$track = E(t), this.childrenCount = S(this.$children), this.sliderWidth = T(this.$children);
 	}
 	getRootKey() {
 		return this.$root;
 	}
 	static getEmitter(t) {
-		let n = e.emitters.get(t), r = new z();
+		let n = e.emitters.get(t), r = new H();
 		return e.emitters.set(t, r), n || r;
 	}
 	on(e, t) {
@@ -340,8 +356,8 @@ var R = class t {
 	}
 	defineEventTarget(e) {
 		return {
-			clientX: M(e).clientX,
-			clientY: M(e).clientY
+			clientX: F(e).clientX,
+			clientY: F(e).clientY
 		};
 	}
 	forEachSlide(e, t) {
@@ -357,7 +373,7 @@ var R = class t {
 		this.setState(r);
 	}
 	animate(e, t, n) {
-		return d(e, t, n);
+		return p(e, t, n);
 	}
 	calcTranslateForIndex(e) {
 		let { gap: t } = this.store, n = t || 0, r = 0;
@@ -372,7 +388,7 @@ var R = class t {
 		return this.calcTranslateForIndex(t);
 	}
 	safeTranslate(e) {
-		let { sliderWidth: t } = this.store, n = t ?? this.sliderWidth ?? C(this.$children) ?? 0;
+		let { sliderWidth: t } = this.store, n = t ?? this.sliderWidth ?? T(this.$children) ?? 0;
 		this.sliderWidth = n;
 		let r = this.getTotalWidth() - n;
 		return e > r ? r : e < 0 ? 0 : e;
@@ -409,7 +425,7 @@ var R = class t {
 	}
 	keyFrames(e) {
 		let { currentTranslate: t } = this.store;
-		return [{ transform: I(e ?? t) }];
+		return [{ transform: z(e ?? t) }];
 	}
 	setState(e) {
 		this.state.set(e);
@@ -418,17 +434,17 @@ var R = class t {
 		return this.slides.findIndex((e) => e.dataset.index === "1");
 	}
 	getDataSlideNumber(e) {
-		return this.slides.findIndex((n) => n.dataset.slideNumber === e && !T(n, t.CLONED));
+		return this.slides.findIndex((n) => n.dataset.slideNumber === e && !D(n, t.CLONED));
 	}
 	getDataIndex(e) {
-		return Number(this.slides.find((n) => n.dataset.slideNumber === e && !T(n, t.CLONED))?.dataset.index ?? -1);
+		return Number(this.slides.find((n) => n.dataset.slideNumber === e && !D(n, t.CLONED))?.dataset.index ?? -1);
 	}
 	getClonePreviousPosition(e) {
-		let n = this.getDataIndex(e), r = this.slides.find((e) => e.dataset.index === String(n) && T(e, t.CLONED));
+		let n = this.getDataIndex(e), r = this.slides.find((e) => e.dataset.index === String(n) && D(e, t.CLONED));
 		return Number(r?.dataset.slideNumber) - 1;
 	}
 	getFirstClonedIndex() {
-		return this.slides.findIndex((e) => e.dataset.index === "1" && T(e, t.CLONED));
+		return this.slides.findIndex((e) => e.dataset.index === "1" && D(e, t.CLONED));
 	}
 	getLastGroupStep(e, t, n) {
 		let r = n, i = Math.max(e - t, 0), a = i - Math.floor(i / r) * r;
@@ -442,17 +458,17 @@ var R = class t {
 		return e % t === 0;
 	}
 	getMissingSlides() {
-		let { slidesPerPage: e, slidesPerView: t } = this.store, n = S(this.$root, !1).length, r = n - Math.floor(n / e) * e, i = Math.max(0, t - r);
+		let { slidesPerPage: e, slidesPerView: t } = this.store, n = w(this.$root, !1).length, r = n - Math.floor(n / e) * e, i = Math.max(0, t - r);
 		return {
 			isMissing: i > 0,
 			leftOver: i
 		};
 	}
-}, V = class extends B {
+}, W = class extends U {
 	host = null;
 	hasConfiguredRoot;
 	constructor(e) {
-		super(e ?? l.PLUGIN_ROOT_PLACEHOLDER), this.hasConfiguredRoot = !!e;
+		super(e ?? d.PLUGIN_ROOT_PLACEHOLDER), this.hasConfiguredRoot = !!e;
 	}
 	init() {}
 	destroy() {}
@@ -465,6 +481,254 @@ var R = class t {
 	usesExplicitRoot() {
 		return this.hasConfiguredRoot;
 	}
+}, G = class {
+	$root;
+	ids = /* @__PURE__ */ new Set();
+	details = {};
+	arrElements;
+	fixedOrder;
+	constructor(e) {
+		this.$root = e, this.arrElements = this.getRoot()?.children, this.fixedOrder = [
+			u.TRACK,
+			u.CHILDREN,
+			u.SLIDE
+		];
+	}
+	getRoot() {
+		return C(this.$root);
+	}
+	getElementClasses(e) {
+		return e ? Array.from(e).flatMap((e) => {
+			if (this.isTrackElement(e)) return this.getTrackClasses(e);
+			let t = this.normalizeElementRole(e);
+			return t ? [t] : [];
+		}) : [];
+	}
+	getTrackClasses(t) {
+		let n = t.children[0], r = n ? v(`.${e.SLIDE[0]}`, n) : void 0;
+		return r ? [
+			this.normalizeElementRole(t),
+			this.normalizeElementRole(n),
+			this.normalizeElementRole(r)
+		] : [];
+	}
+	normalizeElementRole(t) {
+		return t ? this.hasAliasClass(t, e.TRACK) ? u.TRACK : this.hasAliasClass(t, e.CHILDREN) ? u.CHILDREN : this.hasAliasClass(t, e.SLIDE) ? u.SLIDE : this.hasAliasClass(t, e.ARROW) ? u.ARROW : this.hasAliasClass(t, e.PAGES) ? u.PAGES : t.classList[0] ?? null : null;
+	}
+	hasAliasClass(e, t) {
+		return t.some((t) => D(e, t));
+	}
+	isTrackElement(t) {
+		return this.hasAliasClass(t, e.TRACK);
+	}
+	getButtonElements() {
+		return Array.from(this.arrElements || []).slice(0, this.getBeforeTrack().length);
+	}
+	getBeforeTrack() {
+		let e = this.getElementClasses(this.arrElements).indexOf(u.TRACK);
+		return N(this.getElementClasses(this.arrElements), 0, e);
+	}
+	areArraysEqual(e, t) {
+		return e.length === t.length && e.every((e, n) => e === t[n]);
+	}
+	isValid() {
+		return this.hasAllElements() && this.hasAllElementsInOrder() && !this.hasDuplicateClasses();
+	}
+	sanitizeOptions(e) {
+		return e && (this.runValidations(e), this.sanitizeDragFreeOptions(this.sanitizeResponsiveOptions(this.sanitizeSlideSizesOptions(e))));
+	}
+	hasAllElements() {
+		return [
+			this.hasRootContainer(),
+			this.hasTrackContainer(),
+			this.hasChildrenContainer(),
+			this.hasSlide()
+		].every((e) => e !== void 0);
+	}
+	isInvalidBeforeTrack() {
+		let t = this.getBeforeTrack(), r = this.getButtonElements(), i = Array.from(this.arrElements || []).slice(0, t.length).filter((t) => D(t, e.PAGES[0])), a = r.filter((t) => D(t, e.ARROW[0]));
+		return t.length > 3 || !t.every((e) => [u.ARROW, u.PAGES].includes(e)) || i.length > 1 || !a.every((e) => e.tagName.toLowerCase() === n.BUTTON);
+	}
+	hasAllElementsInOrder() {
+		let e = this.getElementClasses(this.arrElements), t = e.indexOf(u.TRACK), n = t >= 0 ? N(e, t, t + 3) : [];
+		return this.isInvalidBeforeTrack() ? !1 : this.areArraysEqual(n, this.fixedOrder);
+	}
+	hasDuplicateClasses() {
+		return this.getDuplicateClassNames().length > 0;
+	}
+	runValidations(e) {
+		let t = [
+			{
+				c: () => !this.hasRootContainer(),
+				id: "NO_ROOT"
+			},
+			{
+				c: () => !this.hasTrackContainer(),
+				id: "NO_TRACK"
+			},
+			{
+				c: () => !this.hasChildrenContainer(),
+				id: "NO_CHILDREN"
+			},
+			{
+				c: () => !this.hasSlide(),
+				id: "NO_SLIDES"
+			},
+			{
+				c: () => this.hasDuplicateClasses(),
+				id: "DUPLICATE_ELEMENTS"
+			},
+			{
+				c: () => !this.hasAllElementsInOrder(),
+				id: "INVALID_ORDER"
+			},
+			{
+				c: () => this.hasUnsupportedSingleViewSlideSizes(e),
+				id: "UNSUPPORTED_SLIDE_SIZES_SINGLE_VIEW"
+			},
+			{
+				c: () => this.hasInvalidSlideSizesValues(e),
+				id: "INVALID_SLIDE_SIZES_VALUES"
+			},
+			{
+				c: () => this.hasResponsiveWithoutScreens(e),
+				id: "RESPONSIVE_WITHOUT_SCREENS"
+			},
+			{
+				c: () => this.hasInvalidScreenBreakpointKeys(e),
+				id: "INVALID_SCREENS_BREAKPOINT_KEYS"
+			},
+			{
+				c: () => this.hasInvalidResponsiveBreakpointKeys(e),
+				id: "INVALID_RESPONSIVE_BREAKPOINT_KEYS"
+			},
+			{
+				c: () => this.hasResponsiveBreakpointsMissingInScreens(e),
+				id: "RESPONSIVE_BREAKPOINTS_MISSING_IN_SCREENS"
+			},
+			{
+				c: () => this.hasDotsWithDragFree(e),
+				id: "DRAG_FREE_WITH_DOTS"
+			}
+		];
+		this.ids.clear(), this.details = {}, t.forEach(({ c: e, id: t }) => {
+			e() && this.ids.add(t);
+		}), this.ids.has("DUPLICATE_ELEMENTS") && (this.details.DUPLICATE_ELEMENTS = this.getDuplicateClassNames()), this.ids.has("INVALID_ORDER") && (this.details.INVALID_ORDER = this.getInvalidOrderDetails());
+		let n = this.getResponsiveBreakpointsMissingInScreens(e);
+		n.length > 0 && (this.details.RESPONSIVE_BREAKPOINTS_MISSING_IN_SCREENS = n);
+	}
+	getIds() {
+		return Array.from(this.ids);
+	}
+	getDetails(e) {
+		return this.details[e] ?? [];
+	}
+	getDuplicateClassNames() {
+		let t = {}, n = [...e.TRACK, ...e.CHILDREN];
+		return _(this.$root).forEach((e) => {
+			n.forEach((n) => {
+				D(e, n) && (t[n] = (t[n] ?? 0) + 1);
+			});
+		}), Object.entries(t).filter(([, e]) => e > 1).map(([e]) => e);
+	}
+	getInvalidOrderDetails() {
+		let t = E(this.$root), n = x(this.$root);
+		this.getBeforeTrack();
+		let r = [], i = !!(n && v(`.${e.SLIDE[0]}`, n));
+		return this.isInvalidBeforeTrack() && r.push(`Optional arrows must be <button> elements, and optional .${e.PAGES[0]} must stay before .${e.TRACK[0]}.`), n && t && !O(t, n) && r.push(`Found .${e.CHILDREN[0]} outside .${e.TRACK[0]}.`), t && n && t.firstElementChild !== n && r.push(`.${e.CHILDREN[0]} must be the first child inside .${e.TRACK[0]}.`), n && !i && r.push(`Could not find any .${e.SLIDE[0]} inside .${e.CHILDREN[0]}.`), r.length === 0 && r.push(`Expected structure: .${e.TRACK[0]} > .${e.CHILDREN[0]} > .${e.SLIDE[0]}.`), r;
+	}
+	isSlideSizesValid(e) {
+		return e ? !Object.entries(e).some(([e, t]) => {
+			let n = Number(e);
+			return !this.isValidSlideSizeEntry(n, t);
+		}) : !0;
+	}
+	hasUnsupportedSingleViewSlideSizes(e) {
+		return e ? e.slideSizes && !this.isSlideSizesAllowed(e.slidesPerView) ? !0 : Object.values(e.responsive ?? {}).some((t) => {
+			if (t?.useSlideSizes === !1 || !t?.slideSizes) return !1;
+			let n = t.slidesPerView ?? e.slidesPerView ?? 1;
+			return !this.isSlideSizesAllowed(n);
+		}) : !1;
+	}
+	hasInvalidSlideSizesValues(e) {
+		return e ? e.slideSizes && this.isSlideSizesAllowed(e.slidesPerView) && !this.isSlideSizesValid(e.slideSizes) ? !0 : Object.values(e.responsive ?? {}).some((t) => {
+			if (t?.useSlideSizes === !1 || !t?.slideSizes) return !1;
+			let n = t.slidesPerView ?? e.slidesPerView ?? 1;
+			return this.isSlideSizesAllowed(n) ? !this.isSlideSizesValid(t.slideSizes) : !1;
+		}) : !1;
+	}
+	sanitizeSlideSizesOptions(e) {
+		let t = { ...e };
+		return (!this.isSlideSizesAllowed(e.slidesPerView) || !this.isSlideSizesValid(e.slideSizes)) && (t.slideSizes = void 0), e.responsive && (t.responsive = Object.entries(e.responsive).reduce((t, [n, r]) => {
+			if (!r) return t[n] = r, t;
+			if (r.useSlideSizes === !1) return t[n] = {
+				...r,
+				slideSizes: void 0
+			}, t;
+			let i = r.slidesPerView ?? e.slidesPerView ?? 1;
+			return t[n] = !this.isSlideSizesAllowed(i) || !this.isSlideSizesValid(r.slideSizes) ? {
+				...r,
+				slideSizes: void 0
+			} : r, t;
+		}, {})), t;
+	}
+	sanitizeResponsiveOptions(e) {
+		let t = { ...e };
+		return this.hasResponsiveWithoutScreens(e) ? (t.responsive = void 0, t) : (e.screens && (t.screens = Object.entries(e.screens).reduce((e, [t, n]) => (this.isSupportedBreakpoint(t) && (e[t] = n), e), {})), e.responsive && (t.responsive = Object.entries(e.responsive).reduce((t, [n, r]) => (this.isSupportedBreakpoint(n) && this.hasScreenBreakpointValue(e.screens, n) && (t[n] = r), t), {})), t);
+	}
+	sanitizeDragFreeOptions(e) {
+		return e.useDragFree ? {
+			...e,
+			useLoop: !1
+		} : e;
+	}
+	hasDotsWithDragFree(e) {
+		return e?.useDragFree ? !!this.getDotsMarkup() : !1;
+	}
+	getDotsMarkup() {
+		return y(`${this.$root} .${e.DOTS[0]}`);
+	}
+	hasResponsiveWithoutScreens(e) {
+		return !e?.responsive || Object.keys(e.responsive).length === 0 ? !1 : !e.screens || Object.keys(e.screens).length === 0;
+	}
+	hasInvalidScreenBreakpointKeys(e) {
+		return e?.screens ? Object.keys(e.screens).some((e) => !this.isSupportedBreakpoint(e)) : !1;
+	}
+	hasInvalidResponsiveBreakpointKeys(e) {
+		return e?.responsive ? Object.keys(e.responsive).some((e) => !this.isSupportedBreakpoint(e)) : !1;
+	}
+	hasResponsiveBreakpointsMissingInScreens(e) {
+		return this.getResponsiveBreakpointsMissingInScreens(e).length > 0;
+	}
+	getResponsiveBreakpointsMissingInScreens(e) {
+		return !e?.responsive || !e.screens ? [] : Object.keys(e.responsive).filter((t) => this.isSupportedBreakpoint(t) && !this.hasScreenBreakpointValue(e.screens, t));
+	}
+	hasScreenBreakpointValue(e, t) {
+		if (!e) return !1;
+		let n = e[t];
+		return typeof n == "number" && Number.isFinite(n) && n >= 0;
+	}
+	isSupportedBreakpoint(e) {
+		return l.includes(e);
+	}
+	isSlideSizesAllowed(e) {
+		return (e ?? 1) >= 2;
+	}
+	isValidSlideSizeEntry(e, t) {
+		return Number.isInteger(e) && e >= 0 && typeof t == "number" && Number.isFinite(t) && t >= 0;
+	}
+	hasRootContainer() {
+		return this.getRoot();
+	}
+	hasTrackContainer() {
+		return E(this.$root);
+	}
+	hasChildrenContainer() {
+		return x(this.$root);
+	}
+	hasSlide() {
+		return y(`${this.$root} .${e.CHILDREN[0]} > .${e.SLIDE[0]}`);
+	}
 };
 //#endregion
-export { _ as $, c as ANIMATION_OPTIONS, i as ATTRIBUTES, t as CLASS_VALUES, e as DOM_ELEMENT_ALIASES, o as EVENTS, r as FROM, l as INTERNAL_SELECTORS, V as Plugin, s as SLIDER_EVENTS, n as TAGS, a as TIMES, u as addClass, f as appendToParent, D as closestElement, E as containsElement, m as createNewElement, h as getAllElements, k as getAttribute, g as getElement, S as getSliderNodeList, w as getTrackChildren, O as hasAttribute, T as hasClass, N as listener, F as removeAttribute, A as removeClass, p as removeElement, P as removeListener, j as setAttribute, L as waitFor };
+export { y as $, c as ANIMATION_OPTIONS, i as ATTRIBUTES, t as CLASS_VALUES, e as DOM_ELEMENT_ALIASES, o as EVENTS, r as FROM, d as INTERNAL_SELECTORS, W as Plugin, s as SLIDER_EVENTS, n as TAGS, a as TIMES, G as Validation, f as addClass, m as appendToParent, k as closestElement, O as containsElement, g as createNewElement, _ as getAllElements, j as getAttribute, x as getChildren, v as getElement, C as getRootSelector, w as getSliderNodeList, E as getTrackChildren, A as hasAttribute, D as hasClass, I as listener, R as removeAttribute, M as removeClass, h as removeElement, L as removeListener, P as setAttribute, B as waitFor };

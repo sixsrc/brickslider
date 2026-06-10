@@ -1,5 +1,5 @@
-import { Validation as SliderValidation } from "../../slider/src/Validation"
 import {
+  Validation as SliderValidation,
   containsElement,
   DOM_ELEMENT_ALIASES,
   getChildren,
@@ -8,7 +8,7 @@ import {
   getElement,
   getRootSelector,
   hasClass
-} from "../../slider/src/helpers"
+} from "@sixsrc/brick-slider/plugin-api"
 import { STORIES_CLASSES } from "./constants"
 import type { BrickSliderStoriesValidationId } from "./types"
 

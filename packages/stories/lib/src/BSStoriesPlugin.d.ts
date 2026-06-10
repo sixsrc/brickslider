@@ -1,4 +1,4 @@
-import { Plugin } from '../../slider/src/plugin-api.ts';
+import { Plugin } from '@sixsrc/brick-slider/plugin-api';
 import { BSStoriesPluginOptions } from './types';
 export declare class BrickSliderStories extends Plugin {
     private activeAnimation;

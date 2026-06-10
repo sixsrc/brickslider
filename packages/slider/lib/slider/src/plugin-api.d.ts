@@ -1,2 +1,3 @@
 export { Plugin } from './Plugin';
-export { ANIMATION_OPTIONS, ATTRIBUTES, CLASS_VALUES, DOM_ELEMENT_ALIASES, EVENTS, FROM, INTERNAL_SELECTORS, SLIDER_EVENTS, TAGS, TIMES, $, addClass, appendToParent, closestElement, containsElement, createNewElement, getAttribute, getAllElements, getElement, getSliderNodeList, getTrackChildren, hasAttribute, hasClass, listener, removeAttribute, removeClass, removeElement, removeListener, setAttribute, waitFor } from './helpers';
+export { Validation } from './Validation';
+export { ANIMATION_OPTIONS, ATTRIBUTES, CLASS_VALUES, DOM_ELEMENT_ALIASES, EVENTS, FROM, INTERNAL_SELECTORS, SLIDER_EVENTS, TAGS, TIMES, $, addClass, appendToParent, closestElement, containsElement, createNewElement, getAttribute, getAllElements, getElement, getChildren, getRootSelector, getSliderNodeList, getTrackChildren, hasAttribute, hasClass, listener, removeAttribute, removeClass, removeElement, removeListener, setAttribute, waitFor } from './helpers';

@@ -1,5 +1,13 @@
 # @sixsrc/brick-slider-accessibility
 
+## 1.0.4
+
+### Patch Changes
+
+- fix: clean build outputs and prevent iCloud duplicate files
+- Updated dependencies
+  - @sixsrc/brick-slider@1.0.4
+
 ## 1.0.1
 
 ### Patch Changes
