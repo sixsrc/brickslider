@@ -5,6 +5,8 @@ import { ViteMinifyPlugin } from "vite-plugin-minify"
 // @ts-ignore
 import tailwindcss from "@tailwindcss/vite"
 
+const isLibBuild = process.env.BUILD_TARGET === "lib"
+
 export default defineConfig({
   resolve: {
     alias: [
@@ -34,9 +36,30 @@ export default defineConfig({
       }
     ]
   },
+  // Elimina o bloco `if (import.meta.env.DEV)` do bundle da lib
+  define: isLibBuild
+    ? { "import.meta.env.DEV": "false", "import.meta.env.PROD": "true" }
+    : {},
   build: {
     outDir: "lib",
-    minify: true,
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        passes: 3,          // múltiplas passagens de compressão
+        drop_console: true, // remove console.* do bundle
+        drop_debugger: true,
+        dead_code: true,
+        pure_getters: true,
+        unsafe_methods: true,
+        pure_funcs: ["console.log", "console.warn", "console.error"]
+      },
+      mangle: {
+        properties: false   // não mangle props públicas (quebraria a API)
+      },
+      format: {
+        comments: false     // remove todos os comentários incluindo #region
+      }
+    },
     lib: {
       name: "BrickSlider",
       entry: "./src/index.ts",
@@ -50,5 +73,8 @@ export default defineConfig({
       }
     }
   },
-  plugins: [dts(), tailwindcss(), ViteMinifyPlugin()]
+  // tailwindcss() só para dev server, não para build da lib
+  plugins: isLibBuild
+    ? [dts(), ViteMinifyPlugin()]
+    : [dts(), tailwindcss(), ViteMinifyPlugin()]
 })

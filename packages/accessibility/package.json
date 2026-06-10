@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Accessibility plugin package for BrickSlider.",
   "license": "MIT",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [
     "brickslider",
     "brick-slider",
@@ -24,9 +24,7 @@
   },
   "type": "module",
   "files": [
-    "lib/*.js",
-    "lib/*.cjs",
-    "lib/*.d.ts",
+    "lib/",
     "README.md",
     "LICENSE"
   ],
@@ -38,7 +36,7 @@
   "module": "./lib/brick-slider-accessibility.js",
   "exports": {
     ".": {
-      "types": "./lib/index.d.ts",
+      "types": "./lib/accessibility/src/index.d.ts",
       "import": "./lib/brick-slider-accessibility.js",
       "require": "./lib/brick-slider-accessibility.cjs",
       "default": "./lib/brick-slider-accessibility.js"
@@ -49,10 +47,10 @@
     "build": "tsc --noEmit && vite build && vite build --config vite.cdn.config.ts --emptyOutDir false"
   },
   "peerDependencies": {
-    "@sixsrc/brick-slider": "^1.0.1"
+    "@sixsrc/brick-slider": "^1.0.2"
   },
   "devDependencies": {
     "@sixsrc/brick-slider": "workspace:*"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/accessibility/src/index.d.ts"
 }

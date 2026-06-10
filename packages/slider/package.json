@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Simple slider plugin, made to be lightweight and practical.",
   "license": "MIT",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [
     "brickslider",
     "brick-slider",
@@ -24,9 +24,7 @@
   },
   "type": "module",
   "files": [
-    "lib/*.js",
-    "lib/*.cjs",
-    "lib/*.d.ts",
+    "lib/",
     "README.md",
     "LICENSE"
   ],
@@ -38,13 +36,13 @@
   "module": "./lib/brick-slider.js",
   "exports": {
     ".": {
-      "types": "./lib/index.d.ts",
+      "types": "./lib/slider/src/index.d.ts",
       "import": "./lib/brick-slider.js",
       "require": "./lib/brick-slider.cjs",
       "default": "./lib/brick-slider.js"
     },
     "./plugin-api": {
-      "types": "./lib/plugin-api.d.ts",
+      "types": "./lib/slider/src/plugin-api.d.ts",
       "import": "./lib/plugin-api.js",
       "require": "./lib/plugin-api.cjs",
       "default": "./lib/plugin-api.js"
@@ -54,10 +52,11 @@
   },
   "scripts": {
     "start": "vite --host",
-    "build": "tsc --noEmit && vite build && vite build --config vite.plugin-api.config.ts --emptyOutDir false && vite build --config vite.cdn.config.ts --emptyOutDir false && vite build --config vite.plugin-api.cdn.config.ts --emptyOutDir false"
+    "build": "tsc --noEmit && BUILD_TARGET=lib vite build && BUILD_TARGET=lib vite build --config vite.plugin-api.config.ts --emptyOutDir false && vite build --config vite.cdn.config.ts --emptyOutDir false && vite build --config vite.plugin-api.cdn.config.ts --emptyOutDir false"
   },
-  "dependencies": {
-    "@tailwindcss/postcss": "^4.3.0"
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "terser": "^5.48.0"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/slider/src/index.d.ts"
 }
