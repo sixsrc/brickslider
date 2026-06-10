@@ -1,0 +1,30 @@
+import { BaseSlider } from './BaseSlider';
+export declare class Progress extends BaseSlider {
+    private containerProgress;
+    private progressBar;
+    constructor($root: string);
+    init(): void;
+    sync(): void;
+    private updateProgress;
+    private stopProgressAnimations;
+    private getProgressAnimation;
+    private getResponsiveProgressDuration;
+    private getElapsedSinceLastSync;
+    private setProgressSyncedAt;
+    private getProgressKeyFrames;
+    private setProgressNow;
+    private ensureProgressBar;
+    private createProgressBar;
+    private mountProgressBar;
+    private getExistingProgressBar;
+    private getProgressValue;
+    private getPagedProgressValue;
+    private getDragFreeProgressValue;
+    private getCurrentProgressScale;
+    private getScaleFromProperty;
+    private getScaleFromTransform;
+    private getScaleFromMatrix;
+    private getScaleFromMatrixValue;
+    private getScaleFromComputedScale;
+    private clampProgressScale;
+}

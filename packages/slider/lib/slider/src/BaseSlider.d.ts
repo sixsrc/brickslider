@@ -1,0 +1,56 @@
+import { State } from './State';
+import { StateType, AnimationOptions, KeyframeAnimation, MouseEventOrTouchEvent } from './types';
+import { EventEmitter } from './EventEmitter';
+export declare class BaseSlider {
+    private static emitters;
+    protected $root: string;
+    protected getRootSelector: HTMLElement | undefined;
+    protected state: State;
+    protected store: StateType;
+    protected emitter: EventEmitter;
+    protected $children: HTMLElement;
+    protected $track: HTMLElement;
+    protected childrenCount: number;
+    protected sliderWidth: number | undefined;
+    protected slides: HTMLElement[];
+    protected translate: number;
+    movement: boolean;
+    constructor($root: string);
+    protected syncRootContext($root: string): void;
+    getRootKey(): string;
+    private static getEmitter;
+    on(event: string, listener: (...args: unknown[]) => void): void;
+    off(event: string, listener: (...args: unknown[]) => void): void;
+    protected emit(event: string, ...args: unknown[]): void;
+    protected defineEventTarget(event: MouseEventOrTouchEvent): {
+        clientX: number;
+        clientY: number;
+    };
+    protected forEachSlide(slides: HTMLElement[], callback: (slide: HTMLElement, index: number) => void): void;
+    protected forEachButton(buttons: NodeListOf<HTMLElement> | HTMLElement[], callback: (button: HTMLElement, index: number) => void): void;
+    protected isDotTarget(numberOfSlides: number): void;
+    protected animate(element: HTMLElement, keyFrames: KeyframeAnimation[], options: AnimationOptions): Animation[];
+    protected calcTranslateForIndex(index: number): number;
+    protected calcTranslate(): number;
+    protected safeTranslate(translate: number): number;
+    protected getTotalWidth(): number;
+    protected getVisibleSlidesForHeight(startIndex?: number): HTMLElement[];
+    protected getMeasuredSlideHeight(slide: HTMLElement | undefined): number;
+    protected getAutoHeightTarget(startIndex?: number): number;
+    protected syncAutoHeight(startIndex?: number, duration?: number): void;
+    protected options(duration?: number): AnimationOptions;
+    protected keyFrames(translate?: number): KeyframeAnimation[];
+    protected setState(state: Partial<StateType>): void;
+    protected getFirstIndex(): number;
+    protected getDataSlideNumber(dataNumber: string): number;
+    protected getDataIndex(dataNumber: string): number;
+    protected getClonePreviousPosition(dataNumber: string): number;
+    protected getFirstClonedIndex(): number;
+    protected getLastGroupStep(totalSlides: number, slidesPerView: number, slidesPerPage: number): number;
+    protected hasRemaining(totalSlides: number): boolean;
+    protected isAlign(totalSlides: number, slidesPerPage: number): boolean;
+    protected getMissingSlides(): {
+        isMissing: boolean;
+        leftOver: number;
+    };
+}

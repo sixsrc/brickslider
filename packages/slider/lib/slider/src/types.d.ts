@@ -1,0 +1,131 @@
+import { StateKey } from './State';
+export type Listener = (...args: unknown[]) => void;
+export type AnimationCallbacks = {
+    onStart?: (animations: Animation[]) => void;
+    onEnd?: (animations: Animation[]) => void;
+};
+export type AnimationOptions = {
+    duration?: number;
+    easing?: string;
+    fill?: "none" | "forwards" | "backwards" | "both" | "auto";
+    delay?: number;
+    iterations?: number;
+    direction?: "normal" | "reverse" | "alternate" | "alternate-reverse";
+    endDelay?: number;
+    iterationStart?: number;
+};
+export type SlideDatasetAttributes = {
+    "data-index": number;
+    "data-slide-number": number;
+};
+export type BrickSliderSlideChangePayload = {
+    rootSelector: string;
+    slideIndex: number;
+    activePage: number;
+};
+export type SlideChangePayload = BrickSliderSlideChangePayload;
+export type CurrentEventType = "loadDOM" | "dots" | "touchstart" | "touchmove" | "touchend" | "next" | "prev" | "contextmenu" | null;
+export type ContextMenuListenersParams = {
+    element: HTMLElement;
+    rightClick: EventListener;
+};
+export type CurrentSlideMovement = UpdateSlideIndexType | null;
+export type DragabbleListenersParams = {
+    element: HTMLElement;
+    dragStart: EventListener;
+};
+export type invalidationConditions = {
+    isPrevOrCurrent: boolean;
+    isNumber: boolean;
+    isNaNValue: boolean;
+    isUndefined: boolean;
+};
+export type MouseEventOrTouchEvent = TouchEvent | MouseEvent;
+export type PositionSlider = "right" | "left";
+export type TouchListenersParams = {
+    element: HTMLElement;
+    index: number;
+    touchStart: EventListener;
+    touchEnd: EventListener;
+    touchMove: EventListener;
+};
+export type TypeTargetSlideParams = {
+    from: "next" | "prev" | "dots" | "touchend";
+    touchIndex?: number;
+    $root: string;
+};
+export type UpdateSlideIndexType = "increment" | "decrement";
+export type KeyframeAnimation = Keyframe;
+export type TouchMoveAction = "dragFree" | "swipe" | "fallback";
+export type SlideSizesInput = Record<number, number>;
+export type ResponsiveBreakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+export type ResponsiveScreensInput = Partial<Record<ResponsiveBreakpoint, number>>;
+export type ResponsiveOption = Partial<{
+    slidesPerPage: number;
+    slidesPerView: number;
+    slideSizes: SlideSizesInput;
+    useSlidesPerPage: boolean;
+    useSlidesPerView: boolean;
+    useSlideSizes: boolean;
+}>;
+export type ResponsiveInput = Partial<Record<ResponsiveBreakpoint, ResponsiveOption>>;
+export type BrickSliderOptions = Partial<{
+    gap: number;
+    slidesPerPage: number;
+    slidesPerView: number;
+    slideSizes: SlideSizesInput;
+    screens: ResponsiveScreensInput;
+    responsive: ResponsiveInput;
+    useTouch: boolean;
+    useLoop: boolean;
+    useDragFree: boolean;
+    useAutoHeight: boolean;
+}>;
+export type SliderOptions = BrickSliderOptions;
+export type StateType = {
+    [key: string]: string | number | boolean | null | undefined | unknown[] | {};
+    [StateKey.PrevSlideIndex]: number;
+    [StateKey.SlideIndex]: number;
+    [StateKey.ActiveDataIndex]: number;
+    [StateKey.ActivePage]: number;
+    [StateKey.SlideGap]: number;
+    [StateKey.SlidesPerPage]: number;
+    [StateKey.SlidesPerView]: number;
+    [StateKey.BaseSlidesPerPage]: number;
+    [StateKey.BaseSlidesPerView]: number;
+    [StateKey.NumberOfPages]: number;
+    [StateKey.NumberOfSlides]: number;
+    [StateKey.SliderWidth]: number;
+    [StateKey.SlideSizes]: Record<number, number>;
+    [StateKey.BaseSlideSizes]: Record<number, number>;
+    [StateKey.Screens]: ResponsiveScreensInput;
+    [StateKey.Responsive]: ResponsiveInput;
+    [StateKey.ActiveBreakpoint]: ResponsiveBreakpoint | "base" | null;
+    [StateKey.StartX]: number;
+    [StateKey.StartY]: number;
+    [StateKey.EndX]: number;
+    [StateKey.IsTouch]: boolean;
+    [StateKey.IsInitialRender]: boolean;
+    [StateKey.IsPagedActive]: boolean;
+    [StateKey.IsCompleteGroup]: boolean;
+    [StateKey.IsDragging]: boolean;
+    [StateKey.IsJumpSlide]: boolean;
+    [StateKey.IsFastNavigation]: boolean;
+    [StateKey.StartPos]: number;
+    [StateKey.PrevTranslate]: number;
+    [StateKey.CurrentTranslate]: number;
+    [StateKey.CurrentEventType]: CurrentEventType;
+    [StateKey.CurrentSlideMovement]: CurrentSlideMovement;
+    [StateKey.StartTime]: number;
+    [StateKey.EndTime]: number;
+    [StateKey.IsMouseLeave]: boolean;
+    [StateKey.AnimationID]: number;
+    [StateKey.Dots]: boolean;
+    [StateKey.DotIndex]: number;
+    [StateKey.Arrows]: boolean;
+    [StateKey.Touch]: boolean;
+    [StateKey.UseLoop]: boolean;
+    [StateKey.UseDragFree]: boolean;
+    [StateKey.UseAutoHeight]: boolean;
+    [StateKey.NavigationLockUntil]: number;
+};

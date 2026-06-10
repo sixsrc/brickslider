@@ -1,0 +1,37 @@
+export declare class Validation {
+    private readonly $root;
+    private readonly sliderValidation;
+    private ids;
+    private details;
+    constructor($root: string);
+    isValid(): boolean;
+    runValidations(): void;
+    getIds(): string[];
+    getDetails(id: string): string[];
+    getLevel(id: string): "warn" | "error";
+    private getRoot;
+    private getTrack;
+    private getChildren;
+    private getLayer;
+    private getProgress;
+    private getPauseIndicator;
+    private getBackdrop;
+    private getClose;
+    private getMute;
+    private getScopedStoryElements;
+    private getOwnedStoryElements;
+    private getExternalLayer;
+    private getStoriesLayers;
+    private hasDuplicateStoriesElements;
+    private getDuplicateStoriesClassNames;
+    private hasInvalidTrackChildOrder;
+    private hasInvalidProgressPosition;
+    private hasInvalidProgressStructure;
+    private hasInvalidPausePosition;
+    private hasInvalidLayerPosition;
+    private hasInvalidBackdropPosition;
+    private hasInvalidClosePosition;
+    private hasInvalidMutePosition;
+    private hasMultipleVideosInSingleStory;
+    private getStoriesWithMultipleVideos;
+}
