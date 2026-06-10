@@ -22,9 +22,6 @@ The core stays small and framework-agnostic, while the default authoring experie
   <a href="https://www.jsdelivr.com/package/npm/@sixsrc/brick-slider">
     <img src="https://data.jsdelivr.com/v1/package/npm/@sixsrc/brick-slider/badge" alt="jsDelivr downloads" />
   </a>
-  <a href="https://www.npmjs.com/package/@sixsrc/brick-slider">
-    <img src="https://img.shields.io/bundlephobia/minzip/@sixsrc/brick-slider?label=size" alt="Bundle size" />
-  </a>
 </p>
 
 ## Table of Contents
