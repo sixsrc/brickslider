@@ -40,6 +40,8 @@ export default defineConfig({
   define: isLibBuild
     ? { "import.meta.env.DEV": "false", "import.meta.env.PROD": "true" }
     : {},
+  // impede que public/ (vídeos/imagens de demo) vá pra lib/ durante o build da lib
+  publicDir: isLibBuild ? false : "public",
   build: {
     outDir: "lib",
     minify: "terser",

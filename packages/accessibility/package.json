@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Accessibility plugin package for BrickSlider.",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "keywords": [
     "brickslider",
     "brick-slider",
@@ -24,7 +24,9 @@
   },
   "type": "module",
   "files": [
-    "lib/",
+    "lib/**/*.js",
+    "lib/**/*.cjs",
+    "lib/**/*.d.ts",
     "README.md",
     "LICENSE"
   ],
