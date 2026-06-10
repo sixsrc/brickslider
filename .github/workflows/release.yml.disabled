@@ -59,6 +59,7 @@ jobs:
         with:
           version: pnpm version:changeset
           publish: pnpm exec changeset publish
+          createGithubReleases: true
           commit: "chore(release): version packages"
           title: "chore(release): version packages"
         env:
