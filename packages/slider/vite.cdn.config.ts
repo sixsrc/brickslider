@@ -2,6 +2,7 @@ import { defineConfig } from "vite"
 import { ViteMinifyPlugin } from "vite-plugin-minify"
 
 export default defineConfig({
+  publicDir: false,
   build: {
     outDir: "lib",
     minify: true,
