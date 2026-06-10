@@ -56,15 +56,15 @@ If this project helps you, please consider supporting its development.
 
 ## Why BrickSlider?
 
-| Area | BrickSlider |
-| --- | --- |
-| Core architecture | TypeScript-first, framework-agnostic |
-| Motion model | Web Animations API |
-| Dependencies | No runtime dependencies in core |
-| Stories experience | Dedicated plugin |
-| Accessibility | Dedicated plugin |
-| Styling approach | Tailwind-friendly markup with user-controlled classes |
-| Extensibility | `slider.use(plugin)` |
+| Area               | BrickSlider                                           |
+| ------------------ | ----------------------------------------------------- |
+| Core architecture  | TypeScript-first, framework-agnostic                  |
+| Motion model       | Web Animations API                                    |
+| Dependencies       | No runtime dependencies in core                       |
+| Stories experience | Dedicated plugin                                      |
+| Accessibility      | Dedicated plugin                                      |
+| Styling approach   | Tailwind-friendly markup with user-controlled classes |
+| Extensibility      | `slider.use(plugin)`                                  |
 
 - ✅ Written in TypeScript with no runtime dependencies
 - ✅ Native Tailwind integration, no freakish inline CSS layout hacks
@@ -94,19 +94,19 @@ npm install @sixsrc/brick-slider
 pnpm add @sixsrc/brick-slider
 ```
 
-### Accessibility Plugin
+### Accessibility
 
 ```bash
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
 ```
 
-### Stories Plugin
+### Stories
 
 ```bash
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-stories
 ```
 
-### Tailwind Package
+### Tailwind
 
 ```bash
 npm install @sixsrc/brick-slider-tailwind
@@ -127,11 +127,13 @@ Load the core first, then any plugins you want:
 <script>
   const slider = new BrickSlider("#slider", {
     slidesPerView: 1,
-    slidesPerPage: 1,
+    slidesPerPage: 1
   })
 
   slider.use(new BrickSliderAccessibility({ useKeyboardNavigation: true }))
-  slider.use(new BrickSliderStories({ trigger: "#open-stories", duration: 5000 }))
+  slider.use(
+    new BrickSliderStories({ trigger: "#open-stories", duration: 5000 })
+  )
   slider.init()
 </script>
 ```
@@ -147,7 +149,7 @@ const slider = new BrickSlider("#slider", {
   slidesPerView: 1,
   slidesPerPage: 1,
   gap: 16,
-  useLoop: false,
+  useLoop: false
 })
 
 slider.init()
@@ -194,29 +196,39 @@ import type {
   ResponsiveInput
 } from "@sixsrc/brick-slider"
 
-const slider = new BrickSlider("#slider", { slidesPerView: 1, slidesPerPage: 1 })
+const slider = new BrickSlider("#slider", {
+  slidesPerView: 1,
+  slidesPerPage: 1
+})
 
 slider.on("slideChange", (payload: BrickSliderSlideChangePayload) => {
   console.log(payload.slideIndex, payload.activePage)
 })
 ```
 
-### Accessibility plugin
+### Accessibility
 
 ```ts
 import AccessibilityPlugin from "@sixsrc/brick-slider-accessibility"
 import type { BrickSliderAccessibilityOptions } from "@sixsrc/brick-slider-accessibility"
 
-slider.use(new AccessibilityPlugin({ useKeyboardNavigation: true, useFocusManagement: true }))
+slider.use(
+  new AccessibilityPlugin({
+    useKeyboardNavigation: true,
+    useFocusManagement: true
+  })
+)
 ```
 
-### Stories plugin
+### Stories
 
 ```ts
 import StoriesPlugin from "@sixsrc/brick-slider-stories"
 import type { BrickSliderStoriesOptions } from "@sixsrc/brick-slider-stories"
 
-slider.use(new StoriesPlugin({ duration: 5000, maxStories: 10, closeOnEnd: true }))
+slider.use(
+  new StoriesPlugin({ duration: 5000, maxStories: 10, closeOnEnd: true })
+)
 ```
 
 ## Options
@@ -228,49 +240,53 @@ const slider = new BrickSlider("#slider", {
   slidesPerView: 1,
   slideSizes: {
     0: 60,
-    1: 40,
+    1: 40
   },
   screens: {
     xs: 320,
     md: 768,
-    lg: 1024,
+    lg: 1024
   },
   responsive: {
     xs: {
       slidesPerView: 1,
       slidesPerPage: 1,
-      slideSizes: { 0: 100 },
+      slideSizes: { 0: 100 }
     },
     md: {
       slidesPerView: 2,
       slidesPerPage: 2,
-      slideSizes: { 0: 60, 1: 40 },
+      slideSizes: { 0: 60, 1: 40 }
     },
     lg: {
       slidesPerView: 3,
       slidesPerPage: 3,
-      useSlideSizes: false,
-    },
+      useSlideSizes: false
+    }
   },
   useTouch: true,
   useLoop: true,
   useDragFree: false,
-  useAutoHeight: false,
+  useAutoHeight: false
 })
 ```
 
 ### Option Reference
 
 #### `gap`
+
 Spacing between slides in pixels.
 
 #### `slidesPerPage`
+
 How many slides are advanced per paginated navigation step.
 
 #### `slidesPerView`
+
 How many slides are visible at once.
 
 #### `slideSizes`
+
 A map of custom width percentages per slide index.
 
 ```ts
@@ -278,51 +294,65 @@ slideSizes: { 0: 65, 1: 35, 2: 25, 3: 75 }
 ```
 
 #### `screens`
+
 Breakpoint values used by the responsive config. Supported keys: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`.
 
 #### `responsive`
+
 Responsive overrides per breakpoint. Available keys: `slidesPerView`, `slidesPerPage`, `slideSizes`, `useSlideSizes`.
 
 Use `useSlideSizes: false` inside a breakpoint to ignore both local and global `slideSizes` at that screen size.
 
 #### `useTouch`
+
 Enables touch and drag interactions.
 
 #### `useLoop`
+
 Creates an infinite carousel by cloning slides.
 
 #### `useDragFree`
+
 Disables paged snapping and allows free dragging.
 
 #### `useAutoHeight`
+
 Adjusts the slider height to the current visible content.
 
 ## Methods
 
 ### `init()`
+
 Mounts the slider.
 
 ### `next()` / `prev()`
+
 Moves to the next or previous page.
 
 ### `goTo(index)`
+
 Moves to a specific page index.
 
 ### `destroy()`
+
 Restores the original markup snapshot.
 
 ### `use(plugin)`
+
 Attaches a plugin instance to the slider.
 
 ## Events
 
 ### `mounted`
+
 Fired when the slider DOM and layout are ready. Payload: `rootSelector`.
 
 ### `slideChange`
+
 Fired whenever the active page changes. Payload: `rootSelector`, `slideIndex`, `activePage`.
 
 ### `destroyed`
+
 Fired after the slider is torn down. Payload: `rootSelector`.
 
 ```ts
@@ -349,26 +379,32 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
 import { BrickSlider } from "@sixsrc/brick-slider"
 import AccessibilityPlugin from "@sixsrc/brick-slider-accessibility"
 
-const slider = new BrickSlider("#slider", { slidesPerView: 1, slidesPerPage: 1 })
+const slider = new BrickSlider("#slider", {
+  slidesPerView: 1,
+  slidesPerPage: 1
+})
 
-slider.use(new AccessibilityPlugin({
-  useKeyboardNavigation: true,
-  useFocusManagement: true,
-  labels: {
-    root: "Featured products carousel",
-    pagination: "Featured products pagination",
-    previousSlide: "Show previous product",
-    nextSlide: "Show next product",
-    slide: (slideNumber, totalSlides) => `Product ${slideNumber} of ${totalSlides}`,
-    page: pageNumber => `Go to page ${pageNumber}`,
-    liveRegionSingle: (slideNumber, totalSlides) =>
-      `Showing product ${slideNumber} of ${totalSlides}`,
-    liveRegionRange: (firstSlideNumber, lastSlideNumber, totalSlides) =>
-      `Showing products ${firstSlideNumber} to ${lastSlideNumber} of ${totalSlides}`,
-    liveRegionFallback: totalSlides =>
-      `Carousel updated. ${totalSlides} slides available.`,
-  },
-}))
+slider.use(
+  new AccessibilityPlugin({
+    useKeyboardNavigation: true,
+    useFocusManagement: true,
+    labels: {
+      root: "Featured products carousel",
+      pagination: "Featured products pagination",
+      previousSlide: "Show previous product",
+      nextSlide: "Show next product",
+      slide: (slideNumber, totalSlides) =>
+        `Product ${slideNumber} of ${totalSlides}`,
+      page: pageNumber => `Go to page ${pageNumber}`,
+      liveRegionSingle: (slideNumber, totalSlides) =>
+        `Showing product ${slideNumber} of ${totalSlides}`,
+      liveRegionRange: (firstSlideNumber, lastSlideNumber, totalSlides) =>
+        `Showing products ${firstSlideNumber} to ${lastSlideNumber} of ${totalSlides}`,
+      liveRegionFallback: totalSlides =>
+        `Carousel updated. ${totalSlides} slides available.`
+    }
+  })
+)
 
 slider.init()
 ```
@@ -383,12 +419,15 @@ slider.init()
 ### Options
 
 #### `useKeyboardNavigation`
+
 Enables arrow-key navigation on the slider root.
 
 #### `useFocusManagement`
+
 Moves focus to the active pagination control when appropriate.
 
 #### `labels`
+
 Overrides all accessible strings, including slide labels and live region messages.
 
 ### Notes
@@ -451,33 +490,35 @@ import StoriesPlugin from "@sixsrc/brick-slider-stories"
 const slider = new BrickSlider("#stories-slider", {
   slidesPerView: 1,
   slidesPerPage: 1,
-  useLoop: false,
+  useLoop: false
 })
 
-slider.use(new StoriesPlugin({
-  trigger: "#open-stories",
-  duration: 5000,
-  maxVideoDuration: 60000,
-  maxStories: 10,
-  closeOnEnd: true,
-  pauseOnHover: true,
-  useMuted: true,
-}))
+slider.use(
+  new StoriesPlugin({
+    trigger: "#open-stories",
+    duration: 5000,
+    maxVideoDuration: 60000,
+    maxStories: 10,
+    closeOnEnd: true,
+    pauseOnHover: true,
+    useMuted: true
+  })
+)
 
 slider.init()
 ```
 
 ### Options
 
-| Option | Description |
-| --- | --- |
-| `trigger` | Element or selector that opens the stories modal |
-| `duration` | Duration in ms for non-video stories |
-| `maxVideoDuration` | Maximum video duration before clamping to this value |
-| `maxStories` | Maximum number of progress bars the UI should represent |
-| `pauseOnHover` | Pauses the story on pointer hover (desktop) |
-| `closeOnEnd` | Closes the modal after the last story finishes |
-| `useMuted` | Starts video stories muted and enables the mute toggle |
+| Option             | Description                                             |
+| ------------------ | ------------------------------------------------------- |
+| `trigger`          | Element or selector that opens the stories modal        |
+| `duration`         | Duration in ms for non-video stories                    |
+| `maxVideoDuration` | Maximum video duration before clamping to this value    |
+| `maxStories`       | Maximum number of progress bars the UI should represent |
+| `pauseOnHover`     | Pauses the story on pointer hover (desktop)             |
+| `closeOnEnd`       | Closes the modal after the last story finishes          |
+| `useMuted`         | Starts video stories muted and enables the mute toggle  |
 
 ### Interactions
 
@@ -518,32 +559,32 @@ Add the plugin and preset to your main stylesheet:
 
 **Core**
 
-| Class | Description |
-| --- | --- |
-| `bs-track` | Required viewport wrapper |
-| `bs-container` | Required slide row inside `bs-track` |
-| `bs-slide` | Required slide item inside `bs-container` |
-| `bs-arrow` / `bs-prev` / `bs-next` | Arrow navigation buttons |
-| `bs-pages` | Optional current page output (e.g. `2/5`) |
-| `bs-dots` / `bs-dot` | Optional pagination container and item template |
-| `bs-progress` / `bs-progress-bar` | Optional progress rail |
-| `bs-hidden` | Utility class used before mount |
-| `bs-peek` / `bs-peek-sm` / `bs-peek-lg` | Optional peek spacing variants for `bs-track` |
-| `bs-auto-height-layout` | Optional helper for auto-height layouts |
+| Class                                   | Description                                     |
+| --------------------------------------- | ----------------------------------------------- |
+| `bs-track`                              | Required viewport wrapper                       |
+| `bs-container`                          | Required slide row inside `bs-track`            |
+| `bs-slide`                              | Required slide item inside `bs-container`       |
+| `bs-arrow` / `bs-prev` / `bs-next`      | Arrow navigation buttons                        |
+| `bs-pages`                              | Optional current page output (e.g. `2/5`)       |
+| `bs-dots` / `bs-dot`                    | Optional pagination container and item template |
+| `bs-progress` / `bs-progress-bar`       | Optional progress rail                          |
+| `bs-hidden`                             | Utility class used before mount                 |
+| `bs-peek` / `bs-peek-sm` / `bs-peek-lg` | Optional peek spacing variants for `bs-track`   |
+| `bs-auto-height-layout`                 | Optional helper for auto-height layouts         |
 
 **Stories**
 
-| Class | Description |
-| --- | --- |
-| `bs-stories-progress` | Stories progress rail container |
-| `bs-stories-progress-item` | Stories progress segment |
-| `bs-stories-progress-bar` | Animated bar inside each progress item |
-| `bs-stories-pause-indicator` | Play/pause overlay control |
-| `bs-stories-pause` / `bs-stories-play` | Pause/play icon or label containers |
-| `bs-stories-layer` | Optional stories overlay layer |
-| `bs-stories-backdrop` | Optional backdrop inside the stories layer |
-| `bs-stories-close` | Close button |
-| `bs-stories-mute` | Mute button for video stories |
+| Class                                  | Description                                |
+| -------------------------------------- | ------------------------------------------ |
+| `bs-stories-progress`                  | Stories progress rail container            |
+| `bs-stories-progress-item`             | Stories progress segment                   |
+| `bs-stories-progress-bar`              | Animated bar inside each progress item     |
+| `bs-stories-pause-indicator`           | Play/pause overlay control                 |
+| `bs-stories-pause` / `bs-stories-play` | Pause/play icon or label containers        |
+| `bs-stories-layer`                     | Optional stories overlay layer             |
+| `bs-stories-backdrop`                  | Optional backdrop inside the stories layer |
+| `bs-stories-close`                     | Close button                               |
+| `bs-stories-mute`                      | Mute button for video stories              |
 
 ## Framework Guides
 
