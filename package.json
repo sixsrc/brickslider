@@ -10,9 +10,9 @@
     "lint:fix": "pnpm -r --if-present run lint -- --fix",
     "test": "pnpm -r --if-present run test",
     "start": "pnpm --filter=./packages/slider start",
-    "commit": "git-cz",
+    "commit": "czg",
     "changelog": "standard-changelog",
-    "prepare": "husky install",
+    "prepare": "husky",
     "changeset": "changeset",
     "version:changeset": "changeset version",
     "publish:changeset": "changeset publish",
@@ -21,17 +21,16 @@
     "contributors:generate": "npx all-contributors generate"
   },
   "devDependencies": {
-    "all-contributors-cli": "^6.17.0",
-    "@typescript-eslint/eslint-plugin": "^7.17.0",
-    "@typescript-eslint/parser": "^7.17.0",
-    "@commitlint/cli": "^17.7.0",
-    "@commitlint/config-conventional": "^17.7.0",
+    "@changesets/cli": "^2.27.0",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
-    "@changesets/cli": "^2.27.0",
     "@types/node": "^24.10.1",
-    "commitizen": "^4.3.0",
-    "cz-conventional-changelog": "^3.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.17.0",
+    "@typescript-eslint/parser": "^7.17.0",
+    "all-contributors-cli": "^6.17.0",
+    "czg": "^1.13.1",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -43,11 +42,7 @@
     "vite-plugin-dts": "^5.0.2",
     "vitest": "^4.1.8"
   },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
+
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "tailwindcss": "^4.3.0",
