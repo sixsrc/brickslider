@@ -16,7 +16,7 @@
     "prepare": "husky",
     "changeset": "changeset",
     "version:changeset": "changeset version",
-    "publish:changeset": "pnpm -r publish --access public",
+    "publish:changeset": "pnpm -r publish --access public --no-git-checks",
     "release:manual": "pnpm version:changeset && pnpm build && pnpm publish:changeset",
     "contributors:add": "npx all-contributors add",
     "contributors:generate": "npx all-contributors generate"
