@@ -11,7 +11,7 @@
     "test": "pnpm -r --if-present run test",
     "start": "pnpm --filter=./packages/slider start",
     "commit": "czg",
-    "clean:dupes": "find packages/*/lib -type f | grep -E ' [0-9]+\\.[a-zA-Z0-9]+$' | xargs rm -f || true",
+    "clean:dupes": "find packages/ -type f | grep -E ' [0-9]+\\.[a-zA-Z0-9]+$' | xargs rm -f || true",
     "changelog": "standard-changelog",
     "prepare": "husky",
     "changeset": "changeset",

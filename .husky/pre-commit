@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Limpa arquivos duplicados pelo iCloud (ex: filename 2.js, logo 4.svg) dentro de packages/*/lib/
 echo "🧹 Husky: Limpando possíveis arquivos duplicados pelo iCloud..."
-find packages/*/lib -type f | grep -E ' [0-9]+\.[a-zA-Z0-9]+$' | xargs rm -f || true
+find packages/ -type f | grep -E ' [0-9]+\.[a-zA-Z0-9]+$' | xargs rm -f || true
 # Também remove do stage do git se eles já tiverem sido adicionados
 git diff --cached --name-only | grep -E ' [0-9]+\.[a-zA-Z0-9]+$' | xargs -I {} git rm --cached "{}" 2>/dev/null || true
 echo "✅ Limpeza concluída!"
