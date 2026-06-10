@@ -25,8 +25,13 @@
   "type": "module",
   "typings": "lib/index.d.ts",
   "files": [
-    "lib",
-    "README.md"
+    "lib/brick-slider-tailwind.js",
+    "lib/brick-slider-tailwind.cjs",
+    "lib/preset.css",
+    "lib/src/index.d.ts",
+    "lib/vite.config.d.ts",
+    "README.md",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public"

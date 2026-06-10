@@ -24,8 +24,11 @@
   },
   "type": "module",
   "files": [
-    "lib",
-    "README.md"
+    "lib/*.js",
+    "lib/*.cjs",
+    "lib/*.d.ts",
+    "README.md",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public"
@@ -43,7 +46,7 @@
     "./umd": "./lib/brick-slider-stories.umd.cjs"
   },
   "scripts": {
-    "build": "tsc --noEmit && vite build && vite build --config vite.cdn.config.ts"
+    "build": "tsc --noEmit && vite build && vite build --config vite.cdn.config.ts --emptyOutDir false"
   },
   "peerDependencies": {
     "@sixsrc/brick-slider": "^1.0.1"

@@ -30,22 +30,20 @@ The core stays small and framework-agnostic, while the default authoring experie
 ## Table of Contents
 
 - [💜 Support](#support)
-- [⭐ Highlights](#highlights)
 - [✅ Why BrickSlider?](#why-brickslider)
-- [📊 Feature Snapshot](#feature-snapshot)
 - [📦 Packages](#packages)
 - [📥 Installation](#installation)
 - [🌐 CDN](#cdn)
-- [🧠 TypeScript](#typescript)
 - [🚀 Quick Start](#quick-start)
 - [🏗️ Basic Markup](#basic-markup)
+- [🧠 TypeScript](#typescript)
 - [⚙️ Options](#options)
 - [🧩 Methods](#methods)
 - [📡 Events](#events)
 - [🔌 Plugins](#plugins)
-- [♿ Accessibility Plugin](#accessibility-plugin)
-- [📱 Stories Plugin](#stories-plugin)
-- [🎨 Tailwind Package](#tailwind-package)
+  - [♿ Accessibility Plugin](#accessibility-plugin)
+  - [📱 Stories Plugin](#stories-plugin)
+  - [🎨 Tailwind Package](#tailwind-package)
 - [🧱 Framework Guides](#framework-guides)
 - [🤝 Project Links](#project-links)
 
@@ -56,30 +54,7 @@ If this project helps you, please consider supporting its development.
 - 💜 [GitHub Sponsors](https://github.com/sponsors/malopestorres)
 - ✨ Additional support link coming soon.
 
-## Highlights
-
-- ✅ TypeScript-first API
-- ✅ No runtime dependencies in the core package
-- ✅ Web Animations API driven motion
-- ✅ Framework-agnostic architecture
-- ✅ Dedicated Stories plugin for story-style experiences
-- ✅ Dedicated Accessibility plugin for labels, live regions, and keyboard flow
-- ✅ Tailwind-friendly markup and structural utilities
-- ✅ Bundle size badge available above for quick package weight checks
-
 ## Why BrickSlider?
-
-- ✅ Written in TypeScript
-- ✅ No runtime dependencies
-- ✅ Native Tailwind integration
-- ✅ Lightweight, with room for further compression and optimization
-- ✅ No freakish inline CSS layout hacks
-- ✅ Smooth, modern motion powered by the Web Animations API
-- ✅ Supports variable slide sizes and custom breakpoints
-- ✅ Includes a story-style carousel inspired by Instagram Stories
-- ✅ Accessibility-friendly foundation with a dedicated accessibility plugin
-
-## Feature Snapshot
 
 | Area | BrickSlider |
 | --- | --- |
@@ -90,6 +65,13 @@ If this project helps you, please consider supporting its development.
 | Accessibility | Dedicated plugin |
 | Styling approach | Tailwind-friendly markup with user-controlled classes |
 | Extensibility | `slider.use(plugin)` |
+
+- ✅ Written in TypeScript with no runtime dependencies
+- ✅ Native Tailwind integration, no freakish inline CSS layout hacks
+- ✅ Smooth, modern motion powered by the Web Animations API
+- ✅ Supports variable slide sizes and custom breakpoints
+- ✅ Includes a story-style carousel inspired by Instagram Stories
+- ✅ Accessibility-friendly foundation with a dedicated plugin
 
 ## Packages
 
@@ -107,18 +89,12 @@ Install only the packages you need.
 ### Core
 
 ```bash
+npm install @sixsrc/brick-slider
+# or
 pnpm add @sixsrc/brick-slider
 ```
 
-```bash
-npm install @sixsrc/brick-slider
-```
-
 ### Accessibility Plugin
-
-```bash
-pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
-```
 
 ```bash
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
@@ -127,18 +103,10 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
 ### Stories Plugin
 
 ```bash
-pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-stories
-```
-
-```bash
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-stories
 ```
 
 ### Tailwind Package
-
-```bash
-pnpm add @sixsrc/brick-slider-tailwind
-```
 
 ```bash
 npm install @sixsrc/brick-slider-tailwind
@@ -146,9 +114,7 @@ npm install @sixsrc/brick-slider-tailwind
 
 ## CDN
 
-If you prefer a script-tag setup, BrickSlider and the official plugins also ship UMD bundles for CDN usage.
-
-Load the core first, then the plugins you want to use:
+Load the core first, then any plugins you want:
 
 ```html
 <script src="https://unpkg.com/@sixsrc/brick-slider/lib/brick-slider.umd.cjs"></script>
@@ -157,8 +123,6 @@ Load the core first, then the plugins you want to use:
 <script src="https://unpkg.com/@sixsrc/brick-slider-stories/lib/brick-slider-stories.umd.cjs"></script>
 ```
 
-Then create the slider and attach plugins from the exposed globals:
-
 ```html
 <script>
   const slider = new BrickSlider("#slider", {
@@ -166,85 +130,13 @@ Then create the slider and attach plugins from the exposed globals:
     slidesPerPage: 1,
   })
 
-  slider.use(
-    new BrickSliderAccessibility({
-      useKeyboardNavigation: true,
-    })
-  )
-
-  slider.use(
-    new BrickSliderStories({
-      trigger: "#open-stories",
-      duration: 5000,
-    })
-  )
-
+  slider.use(new BrickSliderAccessibility({ useKeyboardNavigation: true }))
+  slider.use(new BrickSliderStories({ trigger: "#open-stories", duration: 5000 }))
   slider.init()
 </script>
 ```
 
-The available globals are:
-
-- `BrickSlider`
-- `BrickSliderPluginApi`
-- `BrickSliderAccessibility`
-- `BrickSliderStories`
-
-## TypeScript
-
-Public types are exported from the package entries, so IntelliSense works out of the box across the core library and plugins.
-
-### Core
-
-```ts
-import { BrickSlider } from "@sixsrc/brick-slider"
-import type {
-  BrickSliderOptions,
-  BrickSliderSlideChangePayload,
-  ResponsiveBreakpoint,
-  ResponsiveInput
-} from "@sixsrc/brick-slider"
-
-const options: BrickSliderOptions = {
-  slidesPerView: 1,
-  slidesPerPage: 1
-}
-
-const slider = new BrickSlider("#slider", options)
-
-slider.on("slideChange", (payload: BrickSliderSlideChangePayload) => {
-  console.log(payload.slideIndex, payload.activePage)
-})
-```
-
-### Accessibility plugin
-
-```ts
-import AccessibilityPlugin from "@sixsrc/brick-slider-accessibility"
-import type { BrickSliderAccessibilityOptions } from "@sixsrc/brick-slider-accessibility"
-
-const accessibilityOptions: BrickSliderAccessibilityOptions = {
-  useKeyboardNavigation: true,
-  useFocusManagement: true
-}
-
-slider.use(new AccessibilityPlugin(accessibilityOptions))
-```
-
-### Stories plugin
-
-```ts
-import StoriesPlugin from "@sixsrc/brick-slider-stories"
-import type { BrickSliderStoriesOptions } from "@sixsrc/brick-slider-stories"
-
-const storiesOptions: BrickSliderStoriesOptions = {
-  duration: 5000,
-  maxStories: 10,
-  closeOnEnd: true
-}
-
-slider.use(new StoriesPlugin(storiesOptions))
-```
+Available globals: `BrickSlider`, `BrickSliderPluginApi`, `BrickSliderAccessibility`, `BrickSliderStories`.
 
 ## Quick Start
 
@@ -262,8 +154,6 @@ slider.init()
 ```
 
 ## Basic Markup
-
-This is the minimal core structure BrickSlider expects:
 
 ```html
 <div id="slider">
@@ -289,11 +179,47 @@ This is the minimal core structure BrickSlider expects:
 </div>
 ```
 
-For the structural class reference, see [Tailwind Package](#tailwind-package).
+## TypeScript
+
+Public types are exported from the package entries, so IntelliSense works out of the box.
+
+### Core
+
+```ts
+import { BrickSlider } from "@sixsrc/brick-slider"
+import type {
+  BrickSliderOptions,
+  BrickSliderSlideChangePayload,
+  ResponsiveBreakpoint,
+  ResponsiveInput
+} from "@sixsrc/brick-slider"
+
+const slider = new BrickSlider("#slider", { slidesPerView: 1, slidesPerPage: 1 })
+
+slider.on("slideChange", (payload: BrickSliderSlideChangePayload) => {
+  console.log(payload.slideIndex, payload.activePage)
+})
+```
+
+### Accessibility plugin
+
+```ts
+import AccessibilityPlugin from "@sixsrc/brick-slider-accessibility"
+import type { BrickSliderAccessibilityOptions } from "@sixsrc/brick-slider-accessibility"
+
+slider.use(new AccessibilityPlugin({ useKeyboardNavigation: true, useFocusManagement: true }))
+```
+
+### Stories plugin
+
+```ts
+import StoriesPlugin from "@sixsrc/brick-slider-stories"
+import type { BrickSliderStoriesOptions } from "@sixsrc/brick-slider-stories"
+
+slider.use(new StoriesPlugin({ duration: 5000, maxStories: 10, closeOnEnd: true }))
+```
 
 ## Options
-
-All current core options are shown below.
 
 ```ts
 const slider = new BrickSlider("#slider", {
@@ -313,17 +239,12 @@ const slider = new BrickSlider("#slider", {
     xs: {
       slidesPerView: 1,
       slidesPerPage: 1,
-      slideSizes: {
-        0: 100,
-      },
+      slideSizes: { 0: 100 },
     },
     md: {
       slidesPerView: 2,
       slidesPerPage: 2,
-      slideSizes: {
-        0: 60,
-        1: 40,
-      },
+      slideSizes: { 0: 60, 1: 40 },
     },
     lg: {
       slidesPerView: 3,
@@ -353,59 +274,16 @@ How many slides are visible at once.
 A map of custom width percentages per slide index.
 
 ```ts
-slideSizes: {
-  0: 65,
-  1: 35,
-  2: 25,
-  3: 75,
-}
+slideSizes: { 0: 65, 1: 35, 2: 25, 3: 75 }
 ```
 
 #### `screens`
-Breakpoint values used by the responsive config.
-
-Supported breakpoint keys:
-
-- `xs`
-- `sm`
-- `md`
-- `lg`
-- `xl`
-- `2xl`
+Breakpoint values used by the responsive config. Supported keys: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`.
 
 #### `responsive`
-Responsive overrides per breakpoint.
+Responsive overrides per breakpoint. Available keys: `slidesPerView`, `slidesPerPage`, `slideSizes`, `useSlideSizes`.
 
-Available responsive keys:
-
-- `slidesPerView`
-- `slidesPerPage`
-- `slideSizes`
-- `useSlideSizes`
-
-Example:
-
-```ts
-responsive: {
-  md: {
-    slidesPerView: 2,
-    slidesPerPage: 2,
-    slideSizes: {
-      0: 60,
-      1: 40,
-    },
-  },
-  lg: {
-    slidesPerView: 4,
-    slidesPerPage: 4,
-    useSlideSizes: false,
-  },
-}
-```
-
-Use `slideSizes` inside a breakpoint when you want widths specific to that screen.
-
-Use `useSlideSizes: false` inside a breakpoint when you want that breakpoint to ignore both local and global `slideSizes`.
+Use `useSlideSizes: false` inside a breakpoint to ignore both local and global `slideSizes` at that screen size.
 
 #### `useTouch`
 Enables touch and drag interactions.
@@ -424,120 +302,46 @@ Adjusts the slider height to the current visible content.
 ### `init()`
 Mounts the slider.
 
-```ts
-slider.init()
-```
-
-### `next()`
-Moves to the next page or next free-drag direction.
-
-```ts
-slider.next()
-```
-
-### `prev()`
-Moves to the previous page or previous free-drag direction.
-
-```ts
-slider.prev()
-```
+### `next()` / `prev()`
+Moves to the next or previous page.
 
 ### `goTo(index)`
-Moves to a page index in paged mode.
-
-```ts
-slider.goTo(2)
-```
+Moves to a specific page index.
 
 ### `destroy()`
 Restores the original markup snapshot.
 
-```ts
-slider.destroy()
-```
-
 ### `use(plugin)`
-Attaches a plugin instance to the current slider.
-
-```ts
-slider.use(plugin)
-```
+Attaches a plugin instance to the slider.
 
 ## Events
 
 ### `mounted`
-Fired when the slider DOM and layout are ready.
-
-```ts
-slider.on("mounted", payload => {
-  console.log("mounted", payload)
-})
-```
-
-Payload:
-
-- `rootSelector`
+Fired when the slider DOM and layout are ready. Payload: `rootSelector`.
 
 ### `slideChange`
-Fired whenever the active page changes.
+Fired whenever the active page changes. Payload: `rootSelector`, `slideIndex`, `activePage`.
+
+### `destroyed`
+Fired after the slider is torn down. Payload: `rootSelector`.
 
 ```ts
 slider.on("slideChange", payload => {
-  console.log("slideChange", payload)
+  console.log(payload.slideIndex, payload.activePage)
 })
 ```
-
-Payload:
-
-- `rootSelector`
-- `slideIndex`
-- `activePage`
-
-### `destroyed`
-Fired after the slider is torn down.
-
-```ts
-slider.on("destroyed", payload => {
-  console.log("destroyed", payload)
-})
-```
-
-Payload:
-
-- `rootSelector`
 
 ## Plugins
-
-Available plugins today:
 
 - ♿ [Accessibility Plugin](#accessibility-plugin)
 - 📱 [Stories Plugin](#stories-plugin)
 - 🎨 [Tailwind Package](#tailwind-package)
 
-For lightweight package-specific entry points, each plugin package README can stay short and point back to this main document.
-
 ## Accessibility Plugin
-
-### Install
-
-```bash
-pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
-```
 
 ```bash
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
 ```
-
-### How to configure
-
-The accessibility plugin is created separately and then attached to the main slider instance.
-
-1. Create the slider with `new BrickSlider(...)`
-2. Create the accessibility plugin with `new AccessibilityPlugin(...)`
-3. Attach it with `slider.use(accessibility)`
-4. Start everything with `slider.init()`
-
-The plugin reads the root from the slider host when you attach it with `slider.use(...)`.
 
 ### Usage
 
@@ -545,48 +349,38 @@ The plugin reads the root from the slider host when you attach it with `slider.u
 import { BrickSlider } from "@sixsrc/brick-slider"
 import AccessibilityPlugin from "@sixsrc/brick-slider-accessibility"
 
-const slider = new BrickSlider("#slider")
-const accessibility = new AccessibilityPlugin({
+const slider = new BrickSlider("#slider", { slidesPerView: 1, slidesPerPage: 1 })
+
+slider.use(new AccessibilityPlugin({
   useKeyboardNavigation: true,
   useFocusManagement: true,
-})
+  labels: {
+    root: "Featured products carousel",
+    pagination: "Featured products pagination",
+    previousSlide: "Show previous product",
+    nextSlide: "Show next product",
+    slide: (slideNumber, totalSlides) => `Product ${slideNumber} of ${totalSlides}`,
+    page: pageNumber => `Go to page ${pageNumber}`,
+    liveRegionSingle: (slideNumber, totalSlides) =>
+      `Showing product ${slideNumber} of ${totalSlides}`,
+    liveRegionRange: (firstSlideNumber, lastSlideNumber, totalSlides) =>
+      `Showing products ${firstSlideNumber} to ${lastSlideNumber} of ${totalSlides}`,
+    liveRegionFallback: totalSlides =>
+      `Carousel updated. ${totalSlides} slides available.`,
+  },
+}))
 
-slider.use(accessibility)
 slider.init()
 ```
 
 ### What it adds automatically
 
-When enabled, the plugin can:
-
-- add accessible labels to arrows, dots, and slides
-- create a live region for screen reader announcements
-- enable keyboard navigation on the slider root
-- keep pagination focus aligned with the active page when configured
+- Accessible labels for arrows, dots, and slides
+- A live region for screen reader announcements
+- Keyboard navigation on the slider root
+- Focus alignment with the active page when `useFocusManagement` is enabled
 
 ### Options
-
-```ts
-new AccessibilityPlugin({
-  useKeyboardNavigation: true,
-  useFocusManagement: true,
-  labels: {
-    root: "Product carousel",
-    pagination: "Carousel pagination",
-    previousSlide: "Go to previous slide",
-    nextSlide: "Go to next slide",
-    slide: (slideNumber, totalSlides) =>
-      `Slide ${slideNumber} of ${totalSlides}`,
-    page: pageNumber => `Go to page ${pageNumber}`,
-    liveRegionSingle: (slideNumber, totalSlides) =>
-      `Showing slide ${slideNumber} of ${totalSlides}`,
-    liveRegionRange: (firstSlideNumber, lastSlideNumber, totalSlides) =>
-      `Showing slides ${firstSlideNumber} to ${lastSlideNumber} of ${totalSlides}`,
-    liveRegionFallback: totalSlides =>
-      `Carousel updated. ${totalSlides} slides available.`,
-  },
-})
-```
 
 #### `useKeyboardNavigation`
 Enables arrow-key navigation on the slider root.
@@ -597,65 +391,22 @@ Moves focus to the active pagination control when appropriate.
 #### `labels`
 Overrides all accessible strings, including slide labels and live region messages.
 
-### Full configuration example
-
-```ts
-import { BrickSlider } from "@sixsrc/brick-slider"
-import AccessibilityPlugin from "@sixsrc/brick-slider-accessibility"
-
-const slider = new BrickSlider("#slider", {
-  slidesPerView: 1,
-  slidesPerPage: 1,
-})
-
-const accessibility = new AccessibilityPlugin({
-  useKeyboardNavigation: true,
-  useFocusManagement: true,
-  labels: {
-    root: "Featured products carousel",
-    pagination: "Featured products pagination",
-    previousSlide: "Show previous product",
-    nextSlide: "Show next product",
-    slide: (slideNumber, totalSlides) =>
-      `Product ${slideNumber} of ${totalSlides}`,
-    page: pageNumber => `Go to page ${pageNumber}`,
-    liveRegionSingle: (slideNumber, totalSlides) =>
-      `Showing product ${slideNumber} of ${totalSlides}`,
-    liveRegionRange: (firstSlideNumber, lastSlideNumber, totalSlides) =>
-      `Showing products ${firstSlideNumber} to ${lastSlideNumber} of ${totalSlides}`,
-    liveRegionFallback: totalSlides =>
-      `Carousel updated. ${totalSlides} slides available.`,
-  },
-})
-
-slider.use(accessibility)
-slider.init()
-```
-
 ### Notes
 
-- the plugin root is inherited automatically from the host slider
-- install it before calling `slider.init()`
-- it works with the regular slider and with stories-enhanced sliders
-- if your arrows or dots are missing from the markup, the plugin cannot label them
+- The plugin root is inherited automatically from the host slider.
+- Attach before calling `slider.init()`.
+- Works with both regular sliders and stories-enhanced sliders.
+- If arrows or dots are missing from the markup, the plugin cannot label them.
 
 ## Stories Plugin
 
-If you want the most opinionated feature in the ecosystem, this is probably it.
-
-BrickSlider Stories turns a regular slider into a story-style modal flow with timed progress, video awareness, pause/resume interactions, and a clean plugin attachment model.
-
-### Install
-
-```bash
-pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-stories
-```
+BrickSlider Stories turns a regular slider into a story-style modal flow with timed progress, video awareness, and pause/resume interactions.
 
 ```bash
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-stories
 ```
 
-### Basic Stories Markup
+### Markup
 
 ```html
 <button id="open-stories" type="button">Open Stories</button>
@@ -703,7 +454,7 @@ const slider = new BrickSlider("#stories-slider", {
   useLoop: false,
 })
 
-const stories = new StoriesPlugin({
+slider.use(new StoriesPlugin({
   trigger: "#open-stories",
   duration: 5000,
   maxVideoDuration: 60000,
@@ -711,172 +462,51 @@ const stories = new StoriesPlugin({
   closeOnEnd: true,
   pauseOnHover: true,
   useMuted: true,
-})
+}))
 
-slider.use(stories)
 slider.init()
 ```
-
-### How to configure
-
-The stories plugin also attaches to a normal `BrickSlider` instance.
-
-1. Create a regular slider with `useLoop: false`
-2. Create the stories plugin with `new StoriesPlugin(...)`
-3. Point `trigger` to the element that should open the stories modal
-4. Attach the plugin with `slider.use(stories)`
-5. Start the slider with `slider.init()`
-
-The stories plugin does not replace the main slider instance. It extends it with modal behavior, timed progress, and story-specific controls.
-
-### Full configuration example
-
-```ts
-import { BrickSlider } from "@sixsrc/brick-slider"
-import StoriesPlugin from "@sixsrc/brick-slider-stories"
-
-const slider = new BrickSlider("#stories-slider", {
-  slidesPerView: 1,
-  slidesPerPage: 1,
-  useLoop: false,
-})
-
-const stories = new StoriesPlugin({
-  trigger: "#open-stories",
-  duration: 5000,
-  maxVideoDuration: 60000,
-  maxStories: 10,
-  closeOnEnd: true,
-  pauseOnHover: true,
-  useMuted: true,
-})
-
-slider.use(stories)
-slider.init()
-```
-
-### What each stories option controls
-
-- `trigger`: the button, link, or element that opens the stories layer
-- `duration`: how long non-video stories stay active
-- `maxVideoDuration`: the maximum time a video story can drive the progress rail
-- `maxStories`: how many progress bars the stories UI is expected to represent cleanly
-- `closeOnEnd`: whether the modal closes after the last story
-- `pauseOnHover`: whether pointer hover temporarily pauses stories on hover-capable devices
-- `useMuted`: whether story videos start muted and expose the mute toggle when a video exists
-
-### Interaction Details
-
-- `Space` pauses or resumes the current story when the stories dialog is open.
-- `Escape` closes the stories dialog.
-- On desktop, when `pauseOnHover` is enabled, moving the pointer over the story pauses the timed flow and moving the pointer away resumes it.
-- On touch devices, pressing and holding the story pauses it temporarily; releasing resumes playback.
-- The pause/play overlay is intended for pointer-hover environments. On touch devices, the hold gesture is the primary pause interaction.
-- Video stories reuse the first video inside the current story as the source of truth for timed progress, mute, and autoplay behavior.
 
 ### Options
 
-#### `trigger`
-Defines which element or elements open the stories experience.
+| Option | Description |
+| --- | --- |
+| `trigger` | Element or selector that opens the stories modal |
+| `duration` | Duration in ms for non-video stories |
+| `maxVideoDuration` | Maximum video duration before clamping to this value |
+| `maxStories` | Maximum number of progress bars the UI should represent |
+| `pauseOnHover` | Pauses the story on pointer hover (desktop) |
+| `closeOnEnd` | Closes the modal after the last story finishes |
+| `useMuted` | Starts video stories muted and enables the mute toggle |
 
-#### `duration`
-Duration in milliseconds for non-video stories.
+### Interactions
 
-Use this for text, image, or mixed-content stories that do not depend on a video duration.
-
-#### `maxVideoDuration`
-Maximum accepted duration for a story video before the plugin treats it as too long for the timed story flow.
-
-If a video is longer than this value, the plugin clamps the timed story duration to `maxVideoDuration`.
-
-#### `maxStories`
-Maximum number of story progress bars the UI should support.
-
-If your markup contains more stories than this limit, the stories UI only exposes progress up to `maxStories`.
-
-#### `pauseOnHover`
-Pauses the current story when the pointer stays over the story area.
-
-This is mainly a desktop behavior. Touch devices rely on the press-and-hold gesture instead.
-
-#### `closeOnEnd`
-Closes the stories layer after the last story finishes.
-
-Set this to `false` if you want the last story to stay open instead of closing automatically.
-
-#### `useMuted`
-Starts video stories muted and enables the mute toggle when applicable.
-
-The mute control affects the story video element, not the browser tab mute state.
-
-### Troubleshooting
-
-#### Stories markup order
-
-Keep the stories markup in this order:
-
-1. optional arrows before `.bs-track`
-2. `.bs-track`
-3. `.bs-container` as the first child inside `.bs-track`
-4. stories-only elements such as `.bs-stories-progress`, `.bs-stories-pause-indicator`, `.bs-stories-close`, and `.bs-stories-mute` after `.bs-container` or inside `.bs-stories-layer` when applicable
-5. `.bs-stories-layer` outside the slider root when you want a dedicated overlay layer
-
-If the plugin reports invalid stories markup, check element order before checking logic.
-
-#### More than one video in the same story
-
-BrickSlider Stories supports multiple videos in the same story as a fallback, but only the **first** video controls:
-
-- timed progress
-- autoplay state
-- mute state
-- automatic story advancement
-
-Additional videos can still render and use their own native controls, but they do not drive the story timer.
-
-#### Story limits
-
-- `duration` controls non-video stories
-- `maxVideoDuration` caps how long a video story can hold the progress rail
-- `maxStories` caps how many stories the progress UI is expected to represent
-
-Use conservative values if you want the story flow to stay predictable across devices.
+- `Space` — pause/resume the current story
+- `Escape` — close the stories dialog
+- Desktop: pointer hover pauses when `pauseOnHover` is enabled
+- Touch: press and hold to pause, release to resume
 
 ### Events
 
-Stories also expose their own dialog lifecycle events:
-
 ```ts
-slider.on("storiesOpened", rootSelector => {
-  console.log("storiesOpened", rootSelector)
-})
-
-slider.on("storiesMounted", rootSelector => {
-  console.log("storiesMounted", rootSelector)
-})
-
-slider.on("storiesClosed", rootSelector => {
-  console.log("storiesClosed", rootSelector)
-})
+slider.on("storiesOpened", rootSelector => { ... })
+slider.on("storiesMounted", rootSelector => { ... })
+slider.on("storiesClosed", rootSelector => { ... })
 ```
+
+### Troubleshooting
+
+**Markup order** — keep this structure: optional arrows → `.bs-track` → `.bs-container` as first child → stories-specific elements after `.bs-container` → `.bs-stories-layer` outside the slider root.
+
+**Multiple videos per story** — only the first video drives timed progress, autoplay, and mute state.
 
 ## Tailwind Package
-
-Install the Tailwind structural package when you want utility-friendly base classes.
-
-### Install
-
-```bash
-pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
-```
 
 ```bash
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 ```
 
-### Configure your CSS
-
-Add the Tailwind plugin and preset to your main stylesheet, for example `app.css`:
+Add the plugin and preset to your main stylesheet:
 
 ```css
 @import "tailwindcss";
@@ -884,65 +514,48 @@ Add the Tailwind plugin and preset to your main stylesheet, for example `app.css
 @plugin "@sixsrc/brick-slider-tailwind";
 ```
 
-That is all you need to make the structural BrickSlider classes available in a Tailwind v4 setup.
+### Class Reference
 
-### Core Class Reference
+**Core**
 
-- `bs-track` — required viewport wrapper
-- `bs-container` — required slide row inside `bs-track`
-- `bs-slide` — required slide item inside `bs-container`
-- `bs-arrow` — base arrow class
-- `bs-prev` — previous button variant
-- `bs-next` — next button variant
-- `bs-pages` — optional current page output such as `2/5`
-- `bs-dots` — optional pagination container
-- `bs-dot` — optional pagination item template
-- `bs-progress` — optional progress rail container
-- `bs-progress-bar` — required bar element inside `bs-progress`
-- `bs-hidden` — utility class used before mount
-- `bs-peek` / `bs-peek-sm` / `bs-peek-lg` — optional peek spacing variants for `bs-track`
-- `bs-auto-height-layout` — optional helper class for auto-height layouts
+| Class | Description |
+| --- | --- |
+| `bs-track` | Required viewport wrapper |
+| `bs-container` | Required slide row inside `bs-track` |
+| `bs-slide` | Required slide item inside `bs-container` |
+| `bs-arrow` / `bs-prev` / `bs-next` | Arrow navigation buttons |
+| `bs-pages` | Optional current page output (e.g. `2/5`) |
+| `bs-dots` / `bs-dot` | Optional pagination container and item template |
+| `bs-progress` / `bs-progress-bar` | Optional progress rail |
+| `bs-hidden` | Utility class used before mount |
+| `bs-peek` / `bs-peek-sm` / `bs-peek-lg` | Optional peek spacing variants for `bs-track` |
+| `bs-auto-height-layout` | Optional helper for auto-height layouts |
 
-### Stories Class Reference
+**Stories**
 
-- `bs-stories-progress` — stories progress rail container
-- `bs-stories-progress-item` — stories progress segment
-- `bs-stories-progress-bar` — animated bar inside each progress item
-- `bs-stories-pause-indicator` — play/pause overlay control
-- `bs-stories-pause` — pause icon or label container
-- `bs-stories-play` — play icon or label container
-- `bs-stories-layer` — optional stories overlay layer
-- `bs-stories-backdrop` — optional backdrop inside the stories layer
-- `bs-stories-close` — close button
-- `bs-stories-mute` — mute button for video stories
-
-### Markup Rules
-
-- `bs-track` is required
-- `bs-container` must live inside `bs-track`
-- `bs-slide` items must live inside `bs-container`
-- `bs-prev` and `bs-next` are optional, but must be `button` elements
-- `bs-dots` is optional, but if used, include one `bs-dot` as the template
-- `bs-progress` is optional, and `bs-progress-bar` is required inside it
+| Class | Description |
+| --- | --- |
+| `bs-stories-progress` | Stories progress rail container |
+| `bs-stories-progress-item` | Stories progress segment |
+| `bs-stories-progress-bar` | Animated bar inside each progress item |
+| `bs-stories-pause-indicator` | Play/pause overlay control |
+| `bs-stories-pause` / `bs-stories-play` | Pause/play icon or label containers |
+| `bs-stories-layer` | Optional stories overlay layer |
+| `bs-stories-backdrop` | Optional backdrop inside the stories layer |
+| `bs-stories-close` | Close button |
+| `bs-stories-mute` | Mute button for video stories |
 
 ## Framework Guides
 
-BrickSlider is framework-agnostic by design.
-
-Instead of maintaining official wrappers for each UI framework, we keep the core library focused and welcome community-written integration guides that show how to use BrickSlider inside real projects.
-
-### Guide Template
+BrickSlider is framework-agnostic by design. Instead of maintaining official wrappers, we welcome community-written integration guides.
 
 - [Framework Tutorial Template](./website/content/frameworks/TEMPLATE.md)
-
-### Available Guides
-
 - [React Quick Start](./website/content/frameworks/react.md)
 
 ## Project Links
 
 - 🐞 Found a bug or want to suggest an improvement? Open an issue in the [GitHub issue tracker](https://github.com/sixsrc/brickslider/issues)
-- 🤝 Want to help shape the project? Read [CONTRIBUTING.md](./CONTRIBUTING.md) to join in with code, docs, or ideas
+- 🤝 Want to help shape the project? Read [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Contributors
 

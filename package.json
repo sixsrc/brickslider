@@ -16,6 +16,7 @@
     "changeset": "changeset",
     "version:changeset": "changeset version",
     "publish:changeset": "changeset publish",
+    "release:manual": "pnpm version:changeset && pnpm build && pnpm publish:changeset",
     "contributors:add": "npx all-contributors add",
     "contributors:generate": "npx all-contributors generate"
   },
