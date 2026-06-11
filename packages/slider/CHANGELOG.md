@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.7
+
+### Patch Changes
+
+- 956d3b6: chore(release): exclude development folder from type generation in slider package
+
 ## 1.0.6
 
 ### Patch Changes
