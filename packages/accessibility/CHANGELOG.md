@@ -1,5 +1,21 @@
 # @sixsrc/brick-slider-accessibility
 
+## 1.0.6
+
+### Patch Changes
+
+- 349525d: chore(release): rename UMD CDN global variables to AccessibilityPlugin and StoriesPlugin
+- Updated dependencies [349525d]
+  - @sixsrc/brick-slider@1.0.6
+
+## 1.0.5
+
+### Patch Changes
+
+- 149114e: fix: solve relative type definition leaks and expose validation helpers in plugin api
+- Updated dependencies [149114e]
+  - @sixsrc/brick-slider@1.0.5
+
 ## 1.0.4
 
 ### Patch Changes

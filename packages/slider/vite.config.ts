@@ -77,6 +77,6 @@ export default defineConfig({
   },
   // tailwindcss() só para dev server, não para build da lib
   plugins: isLibBuild
-    ? [dts(), ViteMinifyPlugin()]
-    : [dts(), tailwindcss(), ViteMinifyPlugin()]
+    ? [dts({ exclude: ["development/**"] }), ViteMinifyPlugin()]
+    : [dts({ exclude: ["development/**"] }), tailwindcss(), ViteMinifyPlugin()]
 })

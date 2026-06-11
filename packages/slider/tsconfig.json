@@ -26,5 +26,5 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true
   },
-  "exclude": ["lib", "dist", "node_modules"]
+  "exclude": ["lib", "dist", "node_modules", "development"]
 }
