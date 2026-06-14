@@ -6,12 +6,10 @@ import {
   DOM_ELEMENT_ALIASES,
   FROM,
   SLIDER_EVENTS,
-  addClass,
   getSliderNodeList,
   getSlideMovement,
   isValidSelector,
   removeAttribute,
-  removeClass,
   setAttribute
 } from "./helpers"
 import { Mount } from "./Mount"
@@ -61,7 +59,7 @@ export class BrickSlider extends BaseSlider {
   }
 
   public init(): void {
-    this.clearDestroyedState()
+    Slider.registerDestroyHandler(this.$root, () => this.destroy())
     this.mount?.init()
     this.emitMountedWhenReady()
   }
@@ -71,22 +69,15 @@ export class BrickSlider extends BaseSlider {
 
     if (!rootSelector) return
 
-    let observer: MutationObserver | null = null
     let isMountedEventDispatched = false
     let pendingFrame = 0
     let attempts = 0
     const maxAttempts = 30
 
-    const disconnectObserver = (): void => {
-      observer?.disconnect()
-      observer = null
-    }
-
     const emitMounted = (): void => {
       if (isMountedEventDispatched) return
 
       isMountedEventDispatched = true
-      disconnectObserver()
       this.emit(SLIDER_EVENTS.MOUNTED, this.$root)
     }
 
@@ -131,17 +122,6 @@ export class BrickSlider extends BaseSlider {
       })
     }
 
-    observer = new MutationObserver(() => {
-      scheduleMountedCheck()
-    })
-
-    observer.observe(rootSelector, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: [ATTRIBUTES.CLASS, ATTRIBUTES.STYLE]
-    })
-
     scheduleMountedCheck()
   }
 
@@ -176,6 +156,7 @@ export class BrickSlider extends BaseSlider {
 
     if (!rootSelector) return
 
+    Slider.unregisterDestroyHandler(this.$root)
     this.destroyPlugins()
     this.restoreRootElement(rootSelector)
     this.resetMountState()
@@ -279,8 +260,6 @@ export class BrickSlider extends BaseSlider {
     rootSelector.innerHTML = rootSnapshot.innerHTML
     rootSelector.className = rootSnapshot.className
     this.restoreRootStyle(rootSelector, rootSnapshot.style)
-    this.restoreRootVisibility(rootSelector)
-    this.applyDestroyedMarkupFallback(rootSelector)
   }
 
   private restoreRootStyle(
@@ -293,22 +272,6 @@ export class BrickSlider extends BaseSlider {
     }
 
     setAttribute(rootSelector, ATTRIBUTES.STYLE, style)
-  }
-
-  private restoreRootVisibility(rootSelector: HTMLElement): void {
-    removeClass(rootSelector, DOM_ELEMENT_ALIASES.HIDDEN[0])
-  }
-
-  private applyDestroyedMarkupFallback(rootSelector: HTMLElement): void {
-    addClass([rootSelector], DOM_ELEMENT_ALIASES.DESTROYED[0])
-  }
-
-  private clearDestroyedState(): void {
-    const rootSelector = this.getRootSelector
-
-    if (!rootSelector) return
-
-    removeClass(rootSelector, DOM_ELEMENT_ALIASES.DESTROYED[0])
   }
 
   private resetMountState(): void {

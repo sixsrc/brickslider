@@ -27,6 +27,7 @@
   "files": [
     "lib/brick-slider-tailwind.js",
     "lib/brick-slider-tailwind.cjs",
+    "lib/brick-slider.css",
     "lib/preset.css",
     "lib/src/index.d.ts",
     "lib/vite.config.d.ts",
@@ -46,6 +47,9 @@
     },
     "./preset.css": {
       "default": "./lib/preset.css"
+    },
+    "./brick-slider.css": {
+      "default": "./lib/brick-slider.css"
     }
   },
   "scripts": {

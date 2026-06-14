@@ -1,7 +1,6 @@
 import { defineConfig } from "vite"
 import { fileURLToPath, URL } from "node:url"
 import dts from "vite-plugin-dts"
-import { ViteMinifyPlugin } from "vite-plugin-minify"
 // @ts-ignore
 import tailwindcss from "@tailwindcss/vite"
 
@@ -36,30 +35,28 @@ export default defineConfig({
       }
     ]
   },
-  // Elimina o bloco `if (import.meta.env.DEV)` do bundle da lib
   define: isLibBuild
     ? { "import.meta.env.DEV": "false", "import.meta.env.PROD": "true" }
     : {},
-  // impede que public/ (vídeos/imagens de demo) vá pra lib/ durante o build da lib
   publicDir: isLibBuild ? false : "public",
   build: {
     outDir: "lib",
     minify: "terser",
     terserOptions: {
       compress: {
-        passes: 3,          // múltiplas passagens de compressão
-        drop_console: true, // remove console.* do bundle
+        passes: 2,
+        drop_console: true,
         drop_debugger: true,
         dead_code: true,
         pure_getters: true,
-        unsafe_methods: true,
-        pure_funcs: ["console.log", "console.warn", "console.error"]
+        unsafe: true,
+        unsafe_methods: true
       },
       mangle: {
-        properties: false   // não mangle props públicas (quebraria a API)
+        properties: false
       },
       format: {
-        comments: false     // remove todos os comentários incluindo #region
+        comments: false
       }
     },
     lib: {
@@ -75,8 +72,7 @@ export default defineConfig({
       }
     }
   },
-  // tailwindcss() só para dev server, não para build da lib
   plugins: isLibBuild
-    ? [dts({ exclude: ["development/**"] }), ViteMinifyPlugin()]
-    : [dts({ exclude: ["development/**"] }), tailwindcss(), ViteMinifyPlugin()]
+    ? [dts({ exclude: ["development/**"] })]
+    : [dts({ exclude: ["development/**"] }), tailwindcss()]
 })

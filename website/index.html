@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BrickSlider - The modular carousel engine for the modern web</title>
+    <meta
+      name="description"
+      content="TypeScript-first, framework-agnostic carousel engine with Web Animations API, plugin-driven features, and Tailwind-friendly markup."
+    />
+    <link rel="icon" href="./logo.svg" type="image/svg+xml" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#6D28D9",
+              "primary-dark": "#5B21B6"
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              mono: ["Menlo", "Monaco", "Consolas", "monospace"]
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      @import url("https://rsms.me/inter/font-files/inter-regular.woff2?v=3.19");
+      html {
+        font-family: "Inter", system-ui, sans-serif;
+      }
+      .bs-root,
+.brick-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bs-track {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  /*overflow: hidden;*/
+  touch-action: pan-y;
+  box-sizing: border-box;
+}
+
+.bs-track.bs-peek {
+  padding-left: 80px;
+  padding-right: 80px;
+}
+
+.bs-track.bs-peek-sm {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+.bs-track.bs-peek-lg {
+  padding-left: 120px;
+  padding-right: 120px;
+}
+
+.bs-auto-height-layout {
+  --bs-auto-height-controls-space: 40px;
+  padding-bottom: var(--bs-auto-height-controls-space);
+}
+
+.bs-auto-height-layout .bs-track {
+  height: auto;
+}
+
+.bs-auto-height-layout .bs-container {
+  height: auto;
+  align-items: flex-start;
+}
+
+.bs-auto-height-layout .bs-slide {
+  height: auto;
+}
+
+.bs-auto-height-layout .bs-dots {
+  bottom: 0;
+}
+
+.bs-auto-height-layout .bs-arrow {
+  top: calc((100% - var(--bs-auto-height-controls-space)) / 2);
+}
+
+.bs-container {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  will-change: transform;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+  height: 100%;
+}
+
+.bs-container > * {
+  flex-shrink: 0;
+}
+
+.bs-slide {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.bs-dots {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  margin: 0;
+}
+
+.bs-dot {
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.bs-progress {
+  width: min(220px, calc(100% - 96px));
+  height: 4px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.bs-progress-bar {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform-origin: left center;
+  scale: 0 1;
+}
+
+.bs-dot--active {
+}
+
+.bs-arrow {
+}
+
+.bs-prev {
+}
+
+.bs-next {
+}
+
+.bs-active-default {
+  background-color: #6d28d9;
+  border: 1px solid #6d28d9;
+  border-radius: 0.75rem;
+}
+
+.bs-dot-active-default {
+  background-color: #6d28d9;
+  border: 1px solid #6d28d9;
+}
+
+.bs-hidden {
+  visibility: hidden !important;
+}
+
+.bs-destroyed {
+  display: block !important;
+}
+
+.bs-destroyed .bs-track {
+  overflow: visible !important;
+  height: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.bs-destroyed .bs-container {
+  display: grid !important;
+  white-space: normal !important;
+  transform: none !important;
+  height: auto !important;
+  width: 100% !important;
+  gap: 16px !important;
+}
+
+.bs-destroyed .bs-slide {
+  width: 100% !important;
+}
+
+.bs-destroyed > .bs-arrow,
+.bs-destroyed > .bs-dots,
+.bs-destroyed > .bs-progress,
+.bs-destroyed > .bs-pages {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+}
+
+.bs-destroyed > .bs-arrow {
+  display: inline-flex !important;
+  margin-right: 12px;
+}
+
+.bs-destroyed > .bs-pages {
+  display: inline-flex !important;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.bs-destroyed > .bs-dots {
+  display: flex !important;
+  /*width: auto !important;*/
+  margin-top: 16px;
+}
+
+.bs-destroyed > .bs-progress {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 16px;
+}
+
+.bs-no-select > * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bs-img {
+  width: auto;
+  max-width: 100%;
+  pointer-events: none;
+  border-radius: 20px;
+}
+      .code-block {
+        background: #0d0d0d;
+        border-radius: 0.5rem;
+      }
+      #terminal-slider {
+        font-family: Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875rem;
+      }
+      .terminal-body {
+        padding: 18px 22px;
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+      }
+      .terminal-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        overflow-x: auto;
+      }
+      .terminal-prompt {
+        color: #22c55e;
+        flex-shrink: 0;
+      }
+      .terminal-text {
+        color: #e5e7eb;
+        white-space: nowrap;
+      }
+      .terminal-cursor {
+        display: inline-block;
+        width: 7px;
+        height: 15px;
+        background: #e5e7eb;
+        margin-left: 1px;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      #terminal-slider .bs-track {
+        overflow: hidden;
+        cursor: grab;
+      }
+      #terminal-slider .bs-track:active {
+        cursor: grabbing;
+      }
+      #terminal-slider .bs-container {
+        display: flex;
+      }
+      #terminal-slider .bs-slide {
+        flex: 0 0 100%;
+        min-width: 0;
+      }
+      #terminal-slider .bs-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: #4B5563; cursor: pointer; transition: background 0.3s;
+      }
+      #terminal-slider .bs-dot--active {
+        background: #6D28D9 !important;
+      }
+    </style>
+  </head>
+  <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <header class="w-full min-h-screen flex flex-col">
+      <nav
+        class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16 mt-4"
+      >
+        <a href="./" class="flex items-center">
+          <img
+            src="./logo.svg"
+            alt="BrickSlider"
+            width="200"
+            height="62"
+            class="h-auto w-auto"
+          />
+        </a>
+        <div class="flex items-center space-x-6">
+          <a
+            href="./docs/"
+            class="text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors flex items-center space-x-2"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <span>Docs</span>
+          </a>
+          <a
+            href="https://github.com/sixsrc/brickslider"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors flex items-center space-x-2"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+              />
+            </svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+      </nav>
+
+      <div
+        class="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8"
+      >
+        <div class="text-center max-w-3xl mx-auto">
+          <h1
+            class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
+          >
+            <span class="block">The modular carousel engine</span>
+            <span class="block text-primary">for the modern web</span>
+          </h1>
+          <p
+            class="text-lg sm:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-12"
+          >
+            TypeScript-first, framework-agnostic carousel engine with Web
+            Animations API, plugin-driven features, and Tailwind-friendly
+            markup.
+          </p>
+
+          <div class="flex flex-col items-center mb-12" style="max-width:600px;margin:0 auto;">
+            <div id="terminal-slider" class="flex flex-col w-full rounded-xl overflow-hidden" style="box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+              <div class="bs-track">
+                <div class="bs-container">
+                  <div class="bs-slide">
+                    <div class="terminal-body  bg-black">
+                      <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-text" data-command="npm i @sixsrc/brick-slider">npm i @sixsrc/brick-slider</span><span class="terminal-cursor"></span></div>
+                    </div>
+                  </div>
+                  <div class="bs-slide">
+                    <div class="terminal-body  bg-black">
+                      <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-text" data-command="npm i @sixsrc/brick-slider @sixsrc/brick-slider-accessibility">npm i @sixsrc/brick-slider @sixsrc/brick-slider-accessibility</span><span class="terminal-cursor"></span></div>
+                    </div>
+                  </div>
+                  <div class="bs-slide">
+                    <div class="terminal-body  bg-black">
+                      <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-text" data-command="npm i @sixsrc/brick-slider @sixsrc/brick-slider-stories">npm i @sixsrc/brick-slider @sixsrc/brick-slider-stories</span><span class="terminal-cursor"></span></div>
+                    </div>
+                  </div>
+                </div>
+                 <ul class="bs-dots">
+    <li class="bs-dot"></li>
+  </ul>
+
+              </div>
+            
+              <div class="flex items-center relative px-4 py-2.5 border-b" style="order:-1;background:#1A1A1A;border-color:#2A2A2A;">
+                <div class="flex gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#FF5F56;"></span><span class="w-2.5 h-2.5 rounded-full" style="background:#FFBD2E;"></span><span class="w-2.5 h-2.5 rounded-full" style="background:#27C93F;"></span></div>
+                <span class="absolute left-1/2 -translate-x-1/2 text-xs" style="color:#666;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">bash</span>
+              </div>
+             
+            </div>
+
+            
+          
+          
+
+          <div
+            class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6"
+          >
+            <a
+              href="./docs/"
+              class="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-colors flex items-center space-x-2"
+            >
+              <span>Get Started</span>
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://github.com/sixsrc/brickslider"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-8 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+            >
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Why BrickSlider?</h2>
+            <p class="text-gray-600 dark:text-gray-300">
+              Built for developers who want control without the bloat
+            </p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="text-center">
+              <div
+                class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <svg
+                  class="w-8 h-8 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <h3 class="font-semibold mb-2">TypeScript First</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Written in TypeScript with no runtime dependencies. Full
+                IntelliSense support out of the box.
+              </p>
+            </div>
+            <div class="text-center">
+              <div
+                class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <svg
+                  class="w-8 h-8 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14 0l-3 3m3-3l-3-3m4 6H5m14 0l-3 3m3-3l-3-3M5 7a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7z"
+                  />
+                </svg>
+              </div>
+              <h3 class="font-semibold mb-2">WAAPI Powered</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Smooth, modern motion powered by the Web Animations API with
+                hardware acceleration.
+              </p>
+            </div>
+            <div class="text-center">
+              <div
+                class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <svg
+                  class="w-8 h-8 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6V4m0 20v-2m4.22-13.22l1.42-1.42M6.34 17.66l1.42-1.42M18 9l-6 6-6-6"
+                  />
+                </svg>
+              </div>
+              <h3 class="font-semibold mb-2">Plugin Driven</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Extend functionality with `slider.use(plugin)`. Dedicated
+                plugins for accessibility and stories.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">Quick Setup</h2>
+            <p class="text-gray-600 dark:text-gray-300">
+              Get started in seconds with our CDN or npm packages.
+            </p>
+          </div>
+          <div class="code-block p-6 text-sm text-gray-300 overflow-x-auto">
+            <pre
+              class="m-0"
+            ><code><span class="text-purple-400">import</span> <span class="text-blue-400">{ BrickSlider }</span> <span class="text-purple-400">from</span> <span class="text-green-400">"@sixsrc/brick-slider"</span>
+
+<span class="text-purple-400">const</span> slider = <span class="text-purple-400">new</span> <span class="text-blue-400">BrickSlider</span>(<span class="text-green-400">"#slider"</span>, {
+  <span class="text-blue-400">slidesPerView</span>: <span class="text-orange-400">1</span>,
+  <span class="text-blue-400">slidesPerPage</span>: <span class="text-orange-400">1</span>,
+  <span class="text-blue-400">gap</span>: <span class="text-orange-400">16</span>,
+  <span class="text-blue-400">useLoop</span>: <span class="text-purple-400">false</span>
+})
+
+slider.<span class="text-yellow-400">init</span>()</code></pre>
+          </div>
+          <div class="text-center mt-8">
+            <a
+              href="./docs/?p=basic-markup"
+              class="px-6 py-2 text-primary hover:text-primary-dark font-medium"
+              >View markup guide →</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Packages</h2>
+            <p class="text-gray-600 dark:text-gray-300">
+              Install only what you need. All packages work standalone.
+            </p>
+          </div>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+              class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-white dark:bg-gray-800"
+            >
+              <h3 class="text-lg font-semibold mb-2 text-primary">Core</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                The main slider library with navigation, touch, drag, and
+                responsive support.
+              </p>
+              <code
+                class="text-xs bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded-lg block mt-3"
+                >@sixsrc/brick-slider</code
+              >
+            </div>
+            <div
+              class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-white dark:bg-gray-800"
+            >
+              <h3 class="text-lg font-semibold mb-2 text-primary">
+                Accessibility
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Screen reader announcements, keyboard navigation, and focus
+                management.
+              </p>
+              <code
+                class="text-xs bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded-lg block mt-3"
+                >@sixsrc/brick-slider-accessibility</code
+              >
+            </div>
+            <div
+              class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-white dark:bg-gray-800"
+            >
+              <h3 class="text-lg font-semibold mb-2 text-primary">Stories</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Instagram-style story carousel with timed progress and video
+                awareness.
+              </p>
+              <code
+                class="text-xs bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded-lg block mt-3"
+                >@sixsrc/brick-slider-stories</code
+              >
+            </div>
+            <div
+              class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-white dark:bg-gray-800"
+            >
+              <h3 class="text-lg font-semibold mb-2 text-primary">Tailwind</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Structural Tailwind utilities and preset CSS for BrickSlider
+                markup.
+              </p>
+              <code
+                class="text-xs bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded-lg block mt-3"
+                >@sixsrc/brick-slider-tailwind</code
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 bg-primary">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 class="text-2xl font-bold text-white mb-4">
+            Support the Project
+          </h2>
+          <p class="text-white/80 mb-6">
+            If BrickSlider helps you, consider supporting its development.
+          </p>
+          <a
+            href="https://github.com/sponsors/malopestorres"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block px-6 py-2 bg-white text-primary font-medium rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            💜 GitHub Sponsors
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer
+      class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-12"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-gray-600 dark:text-gray-400 text-sm">
+          BrickSlider is released under the MIT license. © 2026
+          <a
+            href="https://github.com/sixsrc"
+            class="text-primary hover:underline"
+            >@sixsrc</a
+          >
+          |
+          <a
+            href="https://github.com/malopestorres"
+            class="text-primary hover:underline"
+            >@malopestorres</a
+          >
+        </p>
+      </div>
+    </footer>
+    <script src="https://unpkg.com/@sixsrc/brick-slider/lib/brick-slider.umd.cjs"></script>
+    <script>
+     
+      document.addEventListener("DOMContentLoaded", function () {
+        var slider = new BrickSlider("#terminal-slider", {
+          slidesPerView: 1,
+          slidesPerPage: 1,
+          useTouch: true,
+          useLoop: true,
+          gap: 0
+        })
+
+        slider.init()
+
+      })
+       
+    </script>
+  </body>
+</html>

@@ -1,10 +1,11 @@
 import { State } from "./State"
 import type { StateType } from "./types"
 import { EventEmitter } from "./EventEmitter"
-import { ANIMATION_OPTIONS, CLASS_VALUES, TIMES } from "./helpers"
+import { ANIMATION_OPTIONS, ATTRIBUTES, CLASS_VALUES, TIMES } from "./helpers"
 import {
   animateElement,
   getEventType,
+  getAttribute,
   getChildren,
   getChildrenCount,
   getRootSelector,
@@ -246,44 +247,23 @@ export class BaseSlider {
     this.state.set(state)
   }
 
+  protected getSlideDataIndexValue(slide: HTMLElement | undefined): number {
+    const value = Number(getAttribute(slide, ATTRIBUTES.DATA_INDEX))
+
+    if (!Number.isInteger(value)) return -1
+
+    return value
+  }
+
   protected getFirstIndex(): number {
-    return this.slides.findIndex(slide => slide.dataset.index === "1")
-  }
-
-  protected getDataSlideNumber(dataNumber: string): number {
-    return this.slides.findIndex(
-      slide =>
-        slide.dataset.slideNumber === dataNumber &&
-        !hasClass(slide, CLASS_VALUES.CLONED)
-    )
-  }
-
-  protected getDataIndex(dataNumber: string): number {
-    return Number(
-      this.slides.find(
-        slide =>
-          slide.dataset.slideNumber === dataNumber &&
-          !hasClass(slide, CLASS_VALUES.CLONED)
-      )?.dataset.index ?? -1
-    )
-  }
-
-  protected getClonePreviousPosition(dataNumber: string): number {
-    const dataIndex = this.getDataIndex(dataNumber)
-
-    const clonedSlide = this.slides.find(
-      slide =>
-        slide.dataset.index === String(dataIndex) &&
-        hasClass(slide, CLASS_VALUES.CLONED)
-    )
-
-    return Number(clonedSlide?.dataset.slideNumber) - 1
+    return this.slides.findIndex(slide => this.getSlideDataIndexValue(slide) === 0)
   }
 
   protected getFirstClonedIndex(): number {
     return this.slides.findIndex(
       slide =>
-        slide.dataset.index === "1" && hasClass(slide, CLASS_VALUES.CLONED)
+        this.getSlideDataIndexValue(slide) === 0 &&
+        hasClass(slide, CLASS_VALUES.CLONED)
     )
   }
 

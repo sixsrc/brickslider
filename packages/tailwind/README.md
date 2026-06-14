@@ -27,6 +27,36 @@ Add the plugin and preset to your main stylesheet, for example `app.css`:
 
 This is the required CSS configuration for a Tailwind v4 project.
 
+## Structural CSS Export
+
+If you want to keep the BrickSlider markup classes but do not want to run Tailwind in the project, import the plain structural CSS shipped with this package:
+
+```ts
+import "@sixsrc/brick-slider-tailwind/brick-slider.css"
+```
+
+```css
+@import "@sixsrc/brick-slider-tailwind/brick-slider.css";
+```
+
+This file includes the default structural layout for BrickSlider markup without adding a visual theme.
+
+## CDN CSS
+
+```html
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind/brick-slider.css"
+/>
+```
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind/brick-slider.css"
+/>
+```
+
 ## Exported Classes
 
 - `bs-root`
@@ -105,7 +135,7 @@ Exemplo:
 
 ## Without Tailwind
 
-If you do not want Tailwind, keep the same `bs-*` markup classes and generate your own plain CSS output from the Tailwind-based markup when needed.
+If you do not want Tailwind, keep the same `bs-*` markup classes and use the exported `brick-slider.css` file as the structural base.
 
 ## Monorepo Development
 

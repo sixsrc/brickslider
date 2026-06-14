@@ -1,0 +1,190 @@
+.bs-root,
+.brick-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bs-track {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+  box-sizing: border-box;
+}
+
+.bs-track.bs-peek {
+  padding-left: 80px;
+  padding-right: 80px;
+}
+
+.bs-track.bs-peek-sm {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+.bs-track.bs-peek-lg {
+  padding-left: 120px;
+  padding-right: 120px;
+}
+
+.bs-auto-height-layout {
+  --bs-auto-height-controls-space: 40px;
+  padding-bottom: var(--bs-auto-height-controls-space);
+}
+
+.bs-auto-height-layout .bs-track {
+  height: auto;
+}
+
+.bs-auto-height-layout .bs-container {
+  height: auto;
+  align-items: flex-start;
+}
+
+.bs-auto-height-layout .bs-slide {
+  height: auto;
+}
+
+.bs-auto-height-layout .bs-arrow {
+  top: calc((100% - var(--bs-auto-height-controls-space)) / 2);
+}
+
+.bs-container {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  will-change: transform;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+  height: 100%;
+}
+
+.bs-container > * {
+  flex-shrink: 0;
+}
+
+.bs-slide {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.bs-dots {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  margin: 0;
+}
+
+.bs-dot {
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.bs-progress {
+  width: min(220px, calc(100% - 96px));
+  height: 4px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.bs-progress-bar {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform-origin: left center;
+  scale: 0 1;
+}
+
+.bs-active-default {
+  background-color: #6d28d9;
+  border: 1px solid #6d28d9;
+  border-radius: 0.75rem;
+}
+
+.bs-dot-active-default {
+  background-color: #6d28d9;
+  border: 1px solid #6d28d9;
+}
+
+.bs-hidden {
+  visibility: hidden !important;
+}
+
+.bs-destroyed {
+  display: block !important;
+}
+
+.bs-destroyed .bs-track {
+  overflow: visible !important;
+  height: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.bs-destroyed .bs-container {
+  display: grid !important;
+  white-space: normal !important;
+  transform: none !important;
+  height: auto !important;
+  width: 100% !important;
+  gap: 16px !important;
+}
+
+.bs-destroyed .bs-slide {
+  width: 100% !important;
+}
+
+.bs-destroyed > .bs-arrow,
+.bs-destroyed > .bs-dots,
+.bs-destroyed > .bs-progress,
+.bs-destroyed > .bs-pages {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+}
+
+.bs-destroyed > .bs-arrow {
+  display: inline-flex !important;
+  margin-right: 12px;
+}
+
+.bs-destroyed > .bs-pages {
+  display: inline-flex !important;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.bs-destroyed > .bs-dots {
+  display: flex !important;
+  width: auto !important;
+  margin-top: 16px;
+}
+
+.bs-destroyed > .bs-progress {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 16px;
+}
+
+.bs-no-select > * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bs-img {
+  width: auto;
+  max-width: 100%;
+  pointer-events: none;
+  border-radius: 20px;
+}

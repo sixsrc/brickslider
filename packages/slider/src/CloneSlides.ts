@@ -1,33 +1,30 @@
 import { BaseSlider } from "./BaseSlider"
-import { ATTRIBUTES, CLASS_VALUES } from "./helpers"
+import { StateKey } from "./State"
+import { CLASS_VALUES } from "./helpers"
 import {
   addClass,
   appendToParent,
   getSliderNodeList,
-  insertBefore,
-  setAttribute
+  insertBefore
 } from "./helpers"
 import { Mount } from "./Mount"
 import { Slider } from "./Slider"
 import type { ResponsiveInput, ResponsiveOption, StateType } from "./types"
+import { SlideMeta } from "./SlideMeta"
 
 export class CloneSlides extends BaseSlider {
   protected slides: HTMLElement[]
   private clonedSlides: HTMLElement[]
   private mount: Mount | undefined
-  private dataIndex: string
-  private totalWidthBefore: number
-  private slidesBefore: HTMLElement[] = []
   private slider: Slider
+  private slideMeta: SlideMeta
 
   constructor($root: string) {
     super($root)
     this.slides = []
     this.slider = new Slider($root)
     this.clonedSlides = []
-    this.dataIndex = "0"
-    this.totalWidthBefore = 0
-    this.slidesBefore = []
+    this.slideMeta = new SlideMeta($root)
   }
 
   public init(): void {
@@ -91,9 +88,8 @@ export class CloneSlides extends BaseSlider {
   }
 
   private slidePositionState(): Partial<StateType> {
-    const { useLoop } = this.store
-    const translate = this.calcTranslate()
-    const index = useLoop ? this.slider.getInitialIndexFromClones() : 0
+    const index = this.getInitialIndex()
+    const translate = this.getInitialTranslate(index)
 
     return {
       currentTranslate: translate,
@@ -142,16 +138,17 @@ export class CloneSlides extends BaseSlider {
   }
 
   private syncCloneDataIndex(clone: HTMLElement, original: HTMLElement): void {
-    const dataIndex = original.getAttribute(ATTRIBUTES.DATA_INDEX)!
+    const dataIndex = this.slideMeta.getSlideDataIndex(original)
+    const slideNumber = this.getMountedSlides().length
 
-    setAttribute(clone, ATTRIBUTES.DATA_INDEX, dataIndex)
+    this.slideMeta.setSlideMeta(clone, dataIndex, slideNumber, true)
   }
 
   private syncSlideNumbers(): void {
     const slides = this.getMountedSlides()
 
     slides.forEach((slide, index) => {
-      setAttribute(slide, ATTRIBUTES.DATA_NUMBER, String(index + 1))
+      this.slideMeta.syncSlideNumber(slide, index)
     })
   }
 
@@ -159,31 +156,35 @@ export class CloneSlides extends BaseSlider {
     return getSliderNodeList(this.$root)
   }
 
-  protected calcTranslate(): number {
+  private getInitialSlideIndex(): number {
+    const initialSlide = this.store[StateKey.InitialSlide] ?? 0
+    const totalSlides = getSliderNodeList(this.$root, false).length
+    const maxIndex = Math.max(0, totalSlides - 1)
+
+    return Math.max(0, Math.min(initialSlide, maxIndex))
+  }
+
+  private getInitialIndex(): number {
+    const initialSlide = this.getInitialSlideIndex()
+    const { useLoop } = this.store
+
+    if (!useLoop) return initialSlide
+
+    return this.slider.getInitialIndexFromClones() + initialSlide
+  }
+
+  private getInitialTranslate(index: number): number {
     const slides = getSliderNodeList(this.$root)
     const { gap } = this.store
+    let translate = 0
 
-    this.checkDataIndex(slides)
-    this.setTotalWidth(gap)
+    for (let position = 0; position < index; position++) {
+      const slide = slides[position]
 
-    return -this.totalWidthBefore
-  }
-
-  private checkDataIndex(slides: HTMLElement[]): void {
-    this.slidesBefore = []
-
-    for (const slide of slides) {
-      this.dataIndex = slide.getAttribute("data-index") as string
-
-      if (this.dataIndex !== "1") this.slidesBefore.push(slide)
-      else break
+      if (slide) translate += slide.offsetWidth + gap
     }
-  }
 
-  private setTotalWidth(gap: number): void {
-    this.totalWidthBefore = this.slidesBefore.reduce((acc, slide) => {
-      return acc + slide.offsetWidth + gap
-    }, 0)
+    return -translate
   }
 
   private setTranslate(): void {

@@ -19,18 +19,6 @@ export default plugin(function ({ addComponents }): void {
       touchAction: "pan-y",
       boxSizing: "border-box"
     },
-    ".bs-track.bs-peek": {
-      paddingLeft: "80px",
-      paddingRight: "80px"
-    },
-    ".bs-track.bs-peek-sm": {
-      paddingLeft: "48px",
-      paddingRight: "48px"
-    },
-    ".bs-track.bs-peek-lg": {
-      paddingLeft: "120px",
-      paddingRight: "120px"
-    },
     ".bs-auto-height-layout": {
       "--bs-auto-height-controls-space": "40px",
       paddingBottom: "var(--bs-auto-height-controls-space)"
@@ -44,12 +32,6 @@ export default plugin(function ({ addComponents }): void {
     },
     ".bs-auto-height-layout .bs-slide": {
       height: "auto"
-    },
-    ".bs-auto-height-layout .bs-dots": {
-      bottom: "0"
-    },
-    ".bs-auto-height-layout .bs-arrow": {
-      top: "calc((100% - var(--bs-auto-height-controls-space)) / 2)"
     },
     ".bs-container": {
       boxSizing: "border-box",
@@ -71,8 +53,6 @@ export default plugin(function ({ addComponents }): void {
     },
     ".bs-dots": {
       width: "100%",
-      position: "absolute",
-      bottom: "0",
       textAlign: "center",
       display: "flex",
       justifyContent: "center",
@@ -85,14 +65,9 @@ export default plugin(function ({ addComponents }): void {
       boxSizing: "border-box"
     },
     ".bs-progress": {
-      width: "min(220px, calc(100% - 96px))",
       height: "4px",
-      position: "absolute",
-      left: "50%",
-      bottom: "0",
-      transform: "translateX(-50%)",
-      overflow: "hidden",
-      zIndex: "10"
+      display: "block",
+      overflow: "hidden"
     },
     ".bs-progress-bar": {
       width: "100%",
@@ -116,50 +91,6 @@ export default plugin(function ({ addComponents }): void {
     },
     ".bs-hidden": {
       visibility: "hidden !important"
-    },
-    ".bs-destroyed": {
-      display: "block !important"
-    },
-    ".bs-destroyed .bs-track": {
-      overflow: "visible !important",
-      height: "auto !important",
-      paddingLeft: "0 !important",
-      paddingRight: "0 !important"
-    },
-    ".bs-destroyed .bs-container": {
-      display: "grid !important",
-      whiteSpace: "normal !important",
-      transform: "none !important",
-      height: "auto !important",
-      width: "100% !important",
-      gap: "16px !important"
-    },
-    ".bs-destroyed .bs-slide": {
-      width: "100% !important"
-    },
-    ".bs-destroyed > .bs-arrow, .bs-destroyed > .bs-dots, .bs-destroyed > .bs-progress, .bs-destroyed > .bs-pages": {
-      position: "static !important",
-      inset: "auto !important",
-      transform: "none !important"
-    },
-    ".bs-destroyed > .bs-arrow": {
-      display: "inline-flex !important",
-      marginRight: "12px"
-    },
-    ".bs-destroyed > .bs-pages": {
-      display: "inline-flex !important",
-      alignItems: "center",
-      marginTop: "16px"
-    },
-    ".bs-destroyed > .bs-dots": {
-      display: "flex !important",
-      width: "auto !important",
-      marginTop: "16px"
-    },
-    ".bs-destroyed > .bs-progress": {
-      display: "block !important",
-      width: "100% !important",
-      marginTop: "16px"
     },
     ".bs-no-select > *": {
       userSelect: "none",
@@ -185,10 +116,6 @@ export const brickSliderTailwindClasses = {
   prev: "bs-prev",
   next: "bs-next",
   hidden: "bs-hidden",
-  destroyed: "bs-destroyed",
-  peek: "bs-peek",
-  peekSm: "bs-peek-sm",
-  peekLg: "bs-peek-lg",
   autoHeightLayout: "bs-auto-height-layout",
   activeDefault: "bs-active-default",
   dotActiveDefault: "bs-dot-active-default"

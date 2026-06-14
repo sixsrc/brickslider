@@ -6,7 +6,10 @@ import {
   BrickSliderAccessibility,
   type BrickSliderAccessibilityOptions
 } from "@sixsrc/brick-slider-accessibility"
-import { BrickSliderStories, STORIES_EVENTS } from "@sixsrc/brick-slider-stories"
+import {
+  BrickSliderStories,
+  STORIES_EVENTS
+} from "@sixsrc/brick-slider-stories"
 
 type DemoSlideChangePayload = {
   rootSelector: string
@@ -45,8 +48,6 @@ function bindMethodsDemo(sliders: BrickSlider[]): void {
     element.onclick = action
   })
 }
-
-
 
 function bindStoriesEventsPanel(
   slider: BrickSlider,
@@ -107,7 +108,8 @@ function bindStoriesEventsDemo(slider: BrickSlider): void {
   })
 }
 
-function bindSlider3EventsDemo(slider: BrickSlider): void {  slider.on(SLIDER_EVENTS.MOUNTED, () => {
+function bindSlider3EventsDemo(slider: BrickSlider): void {
+  slider.on(SLIDER_EVENTS.MOUNTED, () => {
     // alert("slider3 mounted")
   })
 
@@ -186,6 +188,7 @@ const options = [
   {
     slidesPerView: 1,
     slidesPerPage: 1,
+    initialSlide: 3,
     gap: 20,
     screens: {
       xs: 320,

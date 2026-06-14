@@ -5,6 +5,8 @@ import { Pages } from "./Pages"
 import { Progress } from "./Progress"
 import { Mutate } from "./Mutate"
 import { Observer } from "./Observer"
+import { Messages } from "./Messages"
+import { Validation } from "./Validation"
 import type { StateType } from "./types"
 import {
   CLASS_VALUES,
@@ -25,6 +27,7 @@ import {
   removeClass,
   waitFor
 } from "./helpers"
+import { SlideMeta } from "./SlideMeta"
 import {
   CurrentEventType,
   CurrentSlideMovement,
@@ -38,6 +41,8 @@ export class Slider extends BaseSlider {
   private validPositions: number[]
   private mutate: Mutate
   private observer: Observer
+  private slideMeta: SlideMeta
+  private static destroyHandlers = new Map<string, () => void>()
 
   constructor($root: string) {
     super($root)
@@ -46,7 +51,146 @@ export class Slider extends BaseSlider {
     this.slides = getSliderNodeList($root)
     this.mutate = new Mutate($root)
     this.observer = new Observer($root)
+    this.slideMeta = new SlideMeta($root)
     this.validPositions = []
+  }
+
+  public static registerDestroyHandler(
+    $root: string,
+    callback: () => void
+  ): void {
+    this.destroyHandlers.set($root, callback)
+  }
+
+  public static unregisterDestroyHandler($root: string): void {
+    this.destroyHandlers.delete($root)
+  }
+
+  public prepareForNavigation(): boolean {
+    this.syncRootContext(this.$root)
+
+    if (!this.hasMinimumMarkupStructure()) {
+      this.handleFatalMarkup()
+      return false
+    }
+
+    this.healSlideClassNames()
+    this.healSlideMetaState()
+    this.syncRootContext(this.$root)
+
+    if (!this.hasValidNavigationMarkup()) {
+      this.handleFatalMarkup()
+      return false
+    }
+
+    this.restoreActiveSlides()
+    this.syncRootContext(this.$root)
+
+    return true
+  }
+
+  private hasMinimumMarkupStructure(): boolean {
+    return !!this.getRootSelector && !!this.$track && !!this.$children
+  }
+
+  private hasValidNavigationMarkup(): boolean {
+    const validation = new Validation(this.$root)
+
+    validation.runValidations()
+
+    return !validation
+      .getIds()
+      .some(id => ["NO_ROOT", "NO_TRACK", "NO_CHILDREN", "NO_SLIDES"].includes(id))
+  }
+
+  private handleFatalMarkup(): void {
+    new Messages(this.$root).displayMessage()
+    Slider.destroyHandlers.get(this.$root)?.()
+  }
+
+  private healSlideClassNames(): void {
+    const directChildren = Array.from(this.$children?.children ?? []) as HTMLElement[]
+
+    directChildren.forEach(slide => {
+      addClass([slide], DOM_ELEMENT_ALIASES.SLIDE[0])
+    })
+  }
+
+  private healSlideMetaState(): void {
+    const directChildren = Array.from(this.$children?.children ?? []) as HTMLElement[]
+
+    if (directChildren.length === 0) return
+
+    const originalSlides = directChildren.filter(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    )
+    const prefixClones = directChildren.filter((slide, index) => {
+      if (!hasClass(slide, CLASS_VALUES.CLONED)) return false
+
+      const firstOriginalIndex = directChildren.findIndex(
+        item => !hasClass(item, CLASS_VALUES.CLONED)
+      )
+
+      return firstOriginalIndex !== -1 && index < firstOriginalIndex
+    })
+    const suffixClones = directChildren.filter((slide, index) => {
+      if (!hasClass(slide, CLASS_VALUES.CLONED)) return false
+
+      const lastOriginalIndex = directChildren.findLastIndex(
+        item => !hasClass(item, CLASS_VALUES.CLONED)
+      )
+
+      return lastOriginalIndex !== -1 && index > lastOriginalIndex
+    })
+
+    originalSlides.forEach((slide, index) => {
+      this.slideMeta.setSlideMeta(slide, index, index, false)
+    })
+
+    prefixClones.forEach((slide, index) => {
+      const originalIndex = originalSlides.length - prefixClones.length + index
+      const originalSlide = originalSlides[originalIndex]
+
+      this.slideMeta.setSlideMeta(
+        slide,
+        this.slideMeta.getSlideDataIndex(originalSlide),
+        index,
+        true
+      )
+    })
+
+    suffixClones.forEach((slide, index) => {
+      const originalSlide = originalSlides[index]
+
+      this.slideMeta.setSlideMeta(
+        slide,
+        this.slideMeta.getSlideDataIndex(originalSlide),
+        prefixClones.length + originalSlides.length + index,
+        true
+      )
+    })
+
+    directChildren.forEach((slide, index) => {
+      const isCloned = hasClass(slide, CLASS_VALUES.CLONED)
+      const dataIndex = this.slideMeta.getSlideDataIndex(slide)
+      const safeDataIndex = dataIndex >= 0 ? dataIndex : Math.max(0, index)
+
+      this.slideMeta.setSlideMeta(slide, safeDataIndex, index, isCloned)
+    })
+  }
+
+  private restoreActiveSlides(): void {
+    const { slideIndex, slidesPerView } = this.store
+    const safeStartIndex = Math.max(
+      0,
+      Math.min(slideIndex ?? 0, Math.max(0, this.slides.length - 1))
+    )
+    const activeIndexes = Array.from(
+      { length: Math.max(1, slidesPerView || 1) },
+      (_, index) => safeStartIndex + index
+    ).filter(index => index < this.slides.length)
+
+    this.mutate.updateActiveSlides(activeIndexes, activeIndexes.length)
   }
 
   private computeValidPositions(): number[] {
@@ -112,7 +256,9 @@ export class Slider extends BaseSlider {
 
     if (!slideEl) return rawStart
 
-    return parseInt(slideEl.dataset.index || "1", 10) - 1
+    const dataIndex = this.slideMeta.getSlideDataIndex(slideEl)
+
+    return dataIndex >= 0 ? dataIndex : rawStart
   }
 
   public updateCurrentIndexFromTranslate(): void {
@@ -136,6 +282,7 @@ export class Slider extends BaseSlider {
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
+    if (!this.prepareForNavigation()) return
     if (this.shouldBlockPagedNavigation(params.from)) return
 
     this.updateCurrentIndexFromTranslate()
@@ -146,6 +293,7 @@ export class Slider extends BaseSlider {
   }
 
   public goToDotIndex(targetIndex: number): void {
+    if (!this.prepareForNavigation()) return
     if (this.shouldBlockPagedNavigation(FROM.DOTS)) return
 
     const normalizedIndex = this.normalizeIndex(targetIndex)
@@ -162,6 +310,7 @@ export class Slider extends BaseSlider {
   }
 
   public goToPageIndex(targetIndex: number): void {
+    if (!this.prepareForNavigation()) return
     if (this.shouldBlockPagedNavigation(FROM.DOTS)) return
 
     const positions = [...new Set(this.getPositions())]
@@ -183,6 +332,7 @@ export class Slider extends BaseSlider {
   }
 
   public goToFreeDirection(direction: NavigationDirection): void {
+    if (!this.prepareForNavigation()) return
     if (this.shouldBlockPagedNavigation(direction)) return
 
     const { currentTranslate: storedTranslate } = this.store
@@ -332,7 +482,7 @@ export class Slider extends BaseSlider {
   }
 
   private getRealSlideDataIndex(slide: HTMLElement | undefined): number {
-    return parseInt(slide?.dataset.index || "1", 10) - 1
+    return this.slideMeta.getSlideDataIndex(slide)
   }
 
   public defineDotIndex(): void {
@@ -482,17 +632,17 @@ export class Slider extends BaseSlider {
   }
 
   private getForwardLoopCloneIndex(): number {
-    const dataIndex =
-      this.slides.find(slide => hasClass(slide, CLASS_VALUES.ACTIVE))?.dataset
-        .index || "1"
+    const dataIndex = this.slideMeta.getSlideDataIndex(
+      this.slides.find(slide => hasClass(slide, CLASS_VALUES.ACTIVE))
+    )
     const clonedSlide = this.slides.find(
       slide =>
-        slide.dataset.index === dataIndex &&
+        this.slideMeta.getSlideDataIndex(slide) === dataIndex &&
         hasClass(slide, CLASS_VALUES.CLONED)
     )
-    const slideNumber = Number(clonedSlide?.dataset.slideNumber)
+    const slideNumber = this.slideMeta.getSlideNumber(clonedSlide)
 
-    return slideNumber - 1
+    return slideNumber
   }
 
   private runBackwardLoopJump(): void {

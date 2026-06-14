@@ -1,6 +1,8 @@
 import { Plugin } from "@sixsrc/brick-slider/plugin-api"
+import { SlideMeta } from "@sixsrc/brick-slider/plugin-api"
 import {
   ATTRIBUTES,
+  CLASS_VALUES,
   DOM_ELEMENT_ALIASES,
   EVENTS,
   FROM,
@@ -40,6 +42,9 @@ export class BrickSliderAccessibility extends Plugin {
   private dotCleanupCallbacks: Array<() => void> = []
   private readonly pluginOptions: ResolvedBrickSliderAccessibilityOptions
   private rootCleanupCallback: (() => void) | null = null
+  private slideClassObserver: MutationObserver | null = null
+  private slideClassFrame = 0
+  private slideMeta: SlideMeta
 
   private readonly handleMounted = (): void => {
     this.syncAccessibilityWithDelay({ announce: true })
@@ -71,6 +76,7 @@ export class BrickSliderAccessibility extends Plugin {
 
     super($root)
     this.pluginOptions = this.resolveOptions(options)
+    this.slideMeta = new SlideMeta(this.getPluginRoot())
   }
 
   public init(): void {
@@ -84,6 +90,7 @@ export class BrickSliderAccessibility extends Plugin {
     this.setupArrowAccessibility()
     this.setupDotsAccessibility()
     this.setupKeyboardNavigation()
+    this.observeSlideClassChanges()
 
     host.on(SLIDER_EVENTS.MOUNTED, this.handleMounted)
     host.on(SLIDER_EVENTS.SLIDE_CHANGE, this.handleSlideChange)
@@ -103,6 +110,7 @@ export class BrickSliderAccessibility extends Plugin {
     this.clearDotsAccessibility()
     this.clearRootAccessibility()
     this.removeLiveRegion()
+    this.disconnectSlideClassObserver()
     removeListener([EVENTS.RESIZE], window, this.handleResize)
   }
 
@@ -117,6 +125,40 @@ export class BrickSliderAccessibility extends Plugin {
     this.syncSlidesAccessibility()
 
     if (announce) this.updateLiveRegion()
+  }
+
+  private observeSlideClassChanges(): void {
+    return
+  }
+
+  private hasSlideClassMutation(mutations: MutationRecord[]): boolean {
+    return mutations.some(mutation => {
+      const target = mutation.target
+
+      return (
+        target instanceof HTMLElement &&
+        hasClass(target, DOM_ELEMENT_ALIASES.SLIDE[0])
+      )
+    })
+  }
+
+  private scheduleSlideClassSync(): void {
+    if (this.slideClassFrame) return
+
+    this.slideClassFrame = requestAnimationFrame(() => {
+      this.slideClassFrame = 0
+      this.syncSlidesAccessibility()
+    })
+  }
+
+  private disconnectSlideClassObserver(): void {
+    this.slideClassObserver?.disconnect()
+    this.slideClassObserver = null
+
+    if (!this.slideClassFrame) return
+
+    cancelAnimationFrame(this.slideClassFrame)
+    this.slideClassFrame = 0
   }
 
   private syncAccessibilityWithDelay(
@@ -270,7 +312,7 @@ export class BrickSliderAccessibility extends Plugin {
     index: number,
     rootId?: string | null
   ): void {
-    const isCurrent = hasClass(dot, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
+    const isCurrent = this.isCurrentDot(dot)
     const keydownHandler = this.createDotKeydownHandler(dot)
 
     setAttribute(dot, ATTRIBUTES.ROLE, "button")
@@ -354,7 +396,7 @@ export class BrickSliderAccessibility extends Plugin {
   }
 
   private getActiveDot(dots: HTMLElement[]): HTMLElement | undefined {
-    return dots.find(dot => hasClass(dot, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0]))
+    return dots.find(dot => this.isCurrentDot(dot))
   }
 
   private syncSlidesAccessibility(): void {
@@ -362,10 +404,23 @@ export class BrickSliderAccessibility extends Plugin {
     const totalSlides = getSliderNodeList(this.$root, false).length
 
     slides.forEach((slide, index) => {
-      const isVisibleInViewport = this.isSlideVisibleInViewport(slide)
+      const isVisibleForAccessibility = this.isSlideVisibleForAccessibility(slide)
 
-      this.setSlideAccessibility(slide, index, totalSlides, isVisibleInViewport)
+      this.setSlideAccessibility(
+        slide,
+        index,
+        totalSlides,
+        isVisibleForAccessibility
+      )
     })
+  }
+
+  private isSlideVisibleForAccessibility(slide: HTMLElement): boolean {
+    const { useDragFree } = this.store
+
+    if (useDragFree) return this.isSlideVisibleInViewport(slide)
+
+    return hasClass(slide, CLASS_VALUES.ACTIVE)
   }
 
   private setSlideAccessibility(
@@ -547,9 +602,9 @@ export class BrickSliderAccessibility extends Plugin {
     slide: HTMLElement | undefined,
     fallbackIndex: number
   ): number {
-    const dataIndex = Number(slide?.dataset.index)
+    const dataIndex = this.slideMeta.getSlideDataIndex(slide)
 
-    if (Number.isInteger(dataIndex) && dataIndex > 0) return dataIndex
+    if (Number.isInteger(dataIndex) && dataIndex >= 0) return dataIndex + 1
 
     return fallbackIndex + 1
   }
@@ -656,6 +711,10 @@ export class BrickSliderAccessibility extends Plugin {
 
   private isValidDotIndex(dotIndex: number): boolean {
     return dotIndex >= 0
+  }
+
+  private isCurrentDot(dot: HTMLElement): boolean {
+    return getAttribute(dot, ATTRIBUTES.ARIA_CURRENT) === "page"
   }
 
   private resolveOptions(

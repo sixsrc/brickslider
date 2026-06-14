@@ -1,6 +1,4 @@
 import {
-  CurrentEventType,
-  CurrentSlideMovement,
   type ResponsiveBreakpoint,
   type ResponsiveInput,
   type ResponsiveScreensInput,
@@ -21,6 +19,7 @@ export enum StateKey {
   SlideIndex = "slideIndex",
   ActivePage = "activePage",
   ActiveDataIndex = "activeDataIndex",
+  InitialSlide = "initialSlide",
   SlideGap = "gap",
   SlidesPerPage = "slidesPerPage",
   SlidesPerView = "slidesPerView",
@@ -77,10 +76,14 @@ class State {
   }
 
   private initializeState(options: SliderOptions): void {
+    const initialSlide = this.getInitialSlideIndex(options)
+    const initialPage = this.getInitialPageIndex(options, initialSlide)
+
     State.state[this.key][StateKey.PrevSlideIndex] = 0
-    State.state[this.key][StateKey.ActivePage] = 0
+    State.state[this.key][StateKey.ActivePage] = initialPage
     State.state[this.key][StateKey.ActiveDataIndex] = 0
-    State.state[this.key][StateKey.SlideIndex] = 0
+    State.state[this.key][StateKey.InitialSlide] = initialSlide
+    State.state[this.key][StateKey.SlideIndex] = initialSlide
     State.state[this.key][StateKey.SlideGap] = options.gap ?? 0
     State.state[this.key][StateKey.SlidesPerPage] = options.slidesPerPage ?? 1
     State.state[this.key][StateKey.SlidesPerView] = options.slidesPerView ?? 1
@@ -126,7 +129,7 @@ class State {
     State.state[this.key][StateKey.UseDragFree] = options.useDragFree ?? false
     State.state[this.key][StateKey.Dots] =
       !State.state[this.key][StateKey.UseDragFree] && this.hasDotsMarkup()
-    State.state[this.key][StateKey.DotIndex] = 0
+    State.state[this.key][StateKey.DotIndex] = initialPage
     State.state[this.key][StateKey.Arrows] = this.hasArrowsMarkup()
     State.state[this.key][StateKey.Touch] = options.useTouch ?? true
     State.state[this.key][StateKey.UseLoop] =
@@ -136,6 +139,24 @@ class State {
     State.state[this.key][StateKey.NavigationLockUntil] = 0
     State.state[this.key][StateKey.IsPagedActive] =
       !State.state[this.key][StateKey.UseDragFree]
+  }
+
+  private getInitialSlideIndex(options: SliderOptions): number {
+    const initialSlide = options.initialSlide ?? 0
+
+    if (!Number.isFinite(initialSlide) || initialSlide < 0) return 0
+
+    return Math.floor(initialSlide)
+  }
+
+  private getInitialPageIndex(
+    options: SliderOptions,
+    initialSlide: number
+  ): number {
+    const slidesPerPage = options.slidesPerPage ?? 1
+    const safeSlidesPerPage = slidesPerPage > 0 ? slidesPerPage : 1
+
+    return Math.max(0, Math.floor(initialSlide / safeSlidesPerPage))
   }
 
   private hasDotsMarkup(): boolean {

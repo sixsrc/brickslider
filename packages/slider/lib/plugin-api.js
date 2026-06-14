@@ -12,8 +12,7 @@ var e = {
 	ARROW: ["bs-arrow"],
 	ARROW_PREV: ["bs-prev"],
 	ARROW_NEXT: ["bs-next"],
-	HIDDEN: ["bs-hidden"],
-	DESTROYED: ["bs-destroyed"]
+	HIDDEN: ["bs-hidden"]
 }, t = {
 	ACTIVE: "active",
 	SLIDER_DOT: "bs-dot",
@@ -221,7 +220,16 @@ var V = class t {
 		this.key = e, t.state[e] || (t.state[e] = {}, n && this.initializeState(n));
 	}
 	initializeState(e) {
-		t.state[this.key].prevSlideIndex = 0, t.state[this.key].activePage = 0, t.state[this.key].activeDataIndex = 0, t.state[this.key].slideIndex = 0, t.state[this.key].gap = e.gap ?? 0, t.state[this.key].slidesPerPage = e.slidesPerPage ?? 1, t.state[this.key].slidesPerView = e.slidesPerView ?? 1, t.state[this.key].baseSlidesPerPage = e.slidesPerPage ?? 1, t.state[this.key].baseSlidesPerView = e.slidesPerView ?? 1, t.state[this.key].numberOfPages = 0, t.state[this.key].numberOfSlides = 0, t.state[this.key].sliderWidth = 0, t.state[this.key].slideSizes = this.normalizeSlideSizes(e.slideSizes), t.state[this.key].baseSlideSizes = this.normalizeSlideSizes(e.slideSizes), t.state[this.key].screens = this.normalizeScreens(e.screens), t.state[this.key].responsive = this.normalizeResponsive(e.responsive), t.state[this.key].activeBreakpoint = "base", t.state[this.key].isInitialRender = !0, t.state[this.key].isTouch = !1, t.state[this.key].isPagedActive = !0, t.state[this.key].isCompleteGroup = !0, t.state[this.key].isDragging = !1, t.state[this.key].isJumpSlide = !1, t.state[this.key].isFastNavigation = !1, t.state[this.key].startPos = 0, t.state[this.key].startX = 0, t.state[this.key].startY = 0, t.state[this.key].endX = 0, t.state[this.key].prevTranslate = 0, t.state[this.key].currentTranslate = 0, t.state[this.key].currentEventType = null, t.state[this.key].currentSlideMovement = null, t.state[this.key].startTime = 0, t.state[this.key].endTime = 0, t.state[this.key].isMouseLeave = !0, t.state[this.key].animationID = 0, t.state[this.key].useDragFree = e.useDragFree ?? !1, t.state[this.key].dots = !t.state[this.key].useDragFree && this.hasDotsMarkup(), t.state[this.key].dotIndex = 0, t.state[this.key].arrows = this.hasArrowsMarkup(), t.state[this.key].touch = e.useTouch ?? !0, t.state[this.key].useLoop = !t.state[this.key].useDragFree && (e.useLoop ?? !1), t.state[this.key].useAutoHeight = e.useAutoHeight ?? !1, t.state[this.key].navigationLockUntil = 0, t.state[this.key].isPagedActive = !t.state[this.key].useDragFree;
+		let n = this.getInitialSlideIndex(e), r = this.getInitialPageIndex(e, n);
+		t.state[this.key].prevSlideIndex = 0, t.state[this.key].activePage = r, t.state[this.key].activeDataIndex = 0, t.state[this.key].initialSlide = n, t.state[this.key].slideIndex = n, t.state[this.key].gap = e.gap ?? 0, t.state[this.key].slidesPerPage = e.slidesPerPage ?? 1, t.state[this.key].slidesPerView = e.slidesPerView ?? 1, t.state[this.key].baseSlidesPerPage = e.slidesPerPage ?? 1, t.state[this.key].baseSlidesPerView = e.slidesPerView ?? 1, t.state[this.key].numberOfPages = 0, t.state[this.key].numberOfSlides = 0, t.state[this.key].sliderWidth = 0, t.state[this.key].slideSizes = this.normalizeSlideSizes(e.slideSizes), t.state[this.key].baseSlideSizes = this.normalizeSlideSizes(e.slideSizes), t.state[this.key].screens = this.normalizeScreens(e.screens), t.state[this.key].responsive = this.normalizeResponsive(e.responsive), t.state[this.key].activeBreakpoint = "base", t.state[this.key].isInitialRender = !0, t.state[this.key].isTouch = !1, t.state[this.key].isPagedActive = !0, t.state[this.key].isCompleteGroup = !0, t.state[this.key].isDragging = !1, t.state[this.key].isJumpSlide = !1, t.state[this.key].isFastNavigation = !1, t.state[this.key].startPos = 0, t.state[this.key].startX = 0, t.state[this.key].startY = 0, t.state[this.key].endX = 0, t.state[this.key].prevTranslate = 0, t.state[this.key].currentTranslate = 0, t.state[this.key].currentEventType = null, t.state[this.key].currentSlideMovement = null, t.state[this.key].startTime = 0, t.state[this.key].endTime = 0, t.state[this.key].isMouseLeave = !0, t.state[this.key].animationID = 0, t.state[this.key].useDragFree = e.useDragFree ?? !1, t.state[this.key].dots = !t.state[this.key].useDragFree && this.hasDotsMarkup(), t.state[this.key].dotIndex = r, t.state[this.key].arrows = this.hasArrowsMarkup(), t.state[this.key].touch = e.useTouch ?? !0, t.state[this.key].useLoop = !t.state[this.key].useDragFree && (e.useLoop ?? !1), t.state[this.key].useAutoHeight = e.useAutoHeight ?? !1, t.state[this.key].navigationLockUntil = 0, t.state[this.key].isPagedActive = !t.state[this.key].useDragFree;
+	}
+	getInitialSlideIndex(e) {
+		let t = e.initialSlide ?? 0;
+		return !Number.isFinite(t) || t < 0 ? 0 : Math.floor(t);
+	}
+	getInitialPageIndex(e, t) {
+		let n = e.slidesPerPage ?? 1;
+		return Math.max(0, Math.floor(t / (n > 0 ? n : 1)));
 	}
 	hasDotsMarkup() {
 		return !!b(this.key);
@@ -430,21 +438,15 @@ var V = class t {
 	setState(e) {
 		this.state.set(e);
 	}
+	getSlideDataIndexValue(e) {
+		let t = Number(j(e, i.DATA_INDEX));
+		return Number.isInteger(t) ? t : -1;
+	}
 	getFirstIndex() {
-		return this.slides.findIndex((e) => e.dataset.index === "1");
-	}
-	getDataSlideNumber(e) {
-		return this.slides.findIndex((n) => n.dataset.slideNumber === e && !D(n, t.CLONED));
-	}
-	getDataIndex(e) {
-		return Number(this.slides.find((n) => n.dataset.slideNumber === e && !D(n, t.CLONED))?.dataset.index ?? -1);
-	}
-	getClonePreviousPosition(e) {
-		let n = this.getDataIndex(e), r = this.slides.find((e) => e.dataset.index === String(n) && D(e, t.CLONED));
-		return Number(r?.dataset.slideNumber) - 1;
+		return this.slides.findIndex((e) => this.getSlideDataIndexValue(e) === 0);
 	}
 	getFirstClonedIndex() {
-		return this.slides.findIndex((e) => e.dataset.index === "1" && D(e, t.CLONED));
+		return this.slides.findIndex((e) => this.getSlideDataIndexValue(e) === 0 && D(e, t.CLONED));
 	}
 	getLastGroupStep(e, t, n) {
 		let r = n, i = Math.max(e - t, 0), a = i - Math.floor(i / r) * r;
@@ -481,7 +483,69 @@ var V = class t {
 	usesExplicitRoot() {
 		return this.hasConfiguredRoot;
 	}
-}, G = class {
+}, G = class e extends U {
+	static metaMap = /* @__PURE__ */ new WeakMap();
+	static defaultValue = -1;
+	constructor(e) {
+		super(e);
+	}
+	toSafeInteger(t) {
+		let n = Number(t);
+		return Number.isInteger(n) ? n : e.defaultValue;
+	}
+	getStoredMeta(t) {
+		if (t) return e.metaMap.get(t);
+	}
+	getAttributeInteger(e, t) {
+		let n = j(e, t);
+		return this.toSafeInteger(n);
+	}
+	hasSlideMeta(e) {
+		return this.getStoredMeta(e) !== void 0;
+	}
+	setSlideMeta(t, n, r, a = !1) {
+		e.metaMap.set(t, {
+			dataIndex: n,
+			slideNumber: r,
+			isCloned: a
+		}), P(t, i.DATA_INDEX, String(n)), R(t, i.DATA_NUMBER);
+	}
+	syncSlideDataIndex(t, n) {
+		let r = this.getSlideNumber(t);
+		e.metaMap.set(t, {
+			dataIndex: n,
+			slideNumber: r,
+			isCloned: this.getIsClonedSlide(t)
+		}), P(t, i.DATA_INDEX, String(n)), R(t, i.DATA_NUMBER);
+	}
+	syncSlideNumber(t, n) {
+		let r = this.getSlideDataIndex(t);
+		e.metaMap.set(t, {
+			dataIndex: r,
+			slideNumber: n,
+			isCloned: this.getIsClonedSlide(t)
+		}), R(t, i.DATA_NUMBER);
+	}
+	getSlideDataIndex(e) {
+		let t = this.getStoredMeta(e);
+		return t ? t.dataIndex : this.getAttributeInteger(e, i.DATA_INDEX);
+	}
+	getSlideNumber(e) {
+		let t = this.getStoredMeta(e);
+		return t ? t.slideNumber : this.getAttributeInteger(e, i.DATA_NUMBER);
+	}
+	getSlideRealIndex(e) {
+		return this.getSlideDataIndex(e);
+	}
+	restoreSlideDataIndexAttribute(e) {
+		let t = this.getStoredMeta(e);
+		!e || !t || P(e, i.DATA_INDEX, String(t.dataIndex));
+	}
+	getIsClonedSlide(e) {
+		let n = this.getStoredMeta(e);
+		return e ? n ? n.isCloned : D(e, t.CLONED) : !1;
+	}
+}, K = class {
 	$root;
 	ids = /* @__PURE__ */ new Set();
 	details = {};
@@ -731,4 +795,4 @@ var V = class t {
 	}
 };
 //#endregion
-export { y as $, c as ANIMATION_OPTIONS, i as ATTRIBUTES, t as CLASS_VALUES, e as DOM_ELEMENT_ALIASES, o as EVENTS, r as FROM, d as INTERNAL_SELECTORS, W as Plugin, s as SLIDER_EVENTS, n as TAGS, a as TIMES, G as Validation, f as addClass, m as appendToParent, k as closestElement, O as containsElement, g as createNewElement, _ as getAllElements, j as getAttribute, x as getChildren, v as getElement, C as getRootSelector, w as getSliderNodeList, E as getTrackChildren, A as hasAttribute, D as hasClass, I as listener, R as removeAttribute, M as removeClass, h as removeElement, L as removeListener, P as setAttribute, B as waitFor };
+export { y as $, c as ANIMATION_OPTIONS, i as ATTRIBUTES, t as CLASS_VALUES, e as DOM_ELEMENT_ALIASES, o as EVENTS, r as FROM, d as INTERNAL_SELECTORS, W as Plugin, s as SLIDER_EVENTS, G as SlideMeta, n as TAGS, a as TIMES, K as Validation, f as addClass, m as appendToParent, k as closestElement, O as containsElement, g as createNewElement, _ as getAllElements, j as getAttribute, x as getChildren, v as getElement, C as getRootSelector, w as getSliderNodeList, E as getTrackChildren, A as hasAttribute, D as hasClass, I as listener, R as removeAttribute, M as removeClass, h as removeElement, L as removeListener, P as setAttribute, B as waitFor };

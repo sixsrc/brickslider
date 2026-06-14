@@ -34,8 +34,5 @@ export declare class BrickSlider extends BaseSlider {
     private getNavigationState;
     private restoreRootElement;
     private restoreRootStyle;
-    private restoreRootVisibility;
-    private applyDestroyedMarkupFallback;
-    private clearDestroyedState;
     private resetMountState;
 }

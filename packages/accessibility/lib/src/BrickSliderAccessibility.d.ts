@@ -4,6 +4,8 @@ export declare class BrickSliderAccessibility extends Plugin {
     private dotCleanupCallbacks;
     private readonly pluginOptions;
     private rootCleanupCallback;
+    private slideClassObserver;
+    private slideClassFrame;
     private readonly handleMounted;
     private readonly handleSlideChange;
     private readonly handleDestroyed;
@@ -13,6 +15,10 @@ export declare class BrickSliderAccessibility extends Plugin {
     init(): void;
     destroy(): void;
     private syncAccessibility;
+    private observeSlideClassChanges;
+    private hasSlideClassMutation;
+    private scheduleSlideClassSync;
+    private disconnectSlideClassObserver;
     private syncAccessibilityWithDelay;
     private ensureAccessibilityStyle;
     private createAccessibilityStyleElement;
@@ -36,6 +42,7 @@ export declare class BrickSliderAccessibility extends Plugin {
     private shouldFocusActiveDot;
     private getActiveDot;
     private syncSlidesAccessibility;
+    private isSlideVisibleForAccessibility;
     private setSlideAccessibility;
     private ensureLiveRegion;
     private createLiveRegionElement;
@@ -66,5 +73,6 @@ export declare class BrickSliderAccessibility extends Plugin {
     private getCurrentFocusedDot;
     private getFocusedDotIndex;
     private isValidDotIndex;
+    private isCurrentDot;
     private resolveOptions;
 }

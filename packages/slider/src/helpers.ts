@@ -13,8 +13,7 @@ export const DOM_ELEMENT_ALIASES = {
   ARROW: ["bs-arrow"],
   ARROW_PREV: ["bs-prev"],
   ARROW_NEXT: ["bs-next"],
-  HIDDEN: ["bs-hidden"],
-  DESTROYED: ["bs-destroyed"]
+  HIDDEN: ["bs-hidden"]
 } as const
 
 export const CLASS_VALUES = {

@@ -16,7 +16,7 @@
     <main class="mx-auto flex w-full max-w-[1180px] flex-col gap-16 px-4 py-10">
       <section class="flex flex-col gap-5">
         <div class="text-center">
-          <h2 class="text-2xl font-semibold text-violet-950">Basic</h2>
+          <h2 class="text-2xl font-semibold text-violet-950">Initial Slide</h2>
           <p class="mt-2 text-sm text-violet-800/80">
             A simple starting point with one slide per view and standard
             navigation.
@@ -24,11 +24,14 @@
         </div>
 
         <div
-          class="bs-demo-frame max-w-[588px] h-[270px] w-full mx-auto box-border"
+          class="max-w-[588px] h-[22rem] w-full mx-auto box-border md:h-[20rem]"
         >
-          <div id="slider1" class="bs-hidden h-full relative bs-demo-slider">
+          <div
+            id="slider1"
+            class="bs-hidden relative grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_56px_auto] items-center gap-x-3 gap-y-2.5 md:gap-x-2 md:gap-y-3.5"
+          >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-prev col-start-1 row-start-2 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -38,14 +41,14 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M15 6l-6 6 6 6"></path>
               </svg>
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-next col-start-1 row-start-2 ml-11 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:ml-14 md:h-10 md:w-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -55,15 +58,17 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
 
-            <div class="bs-pages"></div>
+            <div
+              class="bs-pages col-start-3 row-start-2 justify-self-center md:justify-self-end self-center flex min-w-10 items-center justify-center text-center text-sm font-semibold tabular-nums text-violet-950/70"
+            ></div>
 
-            <div class="bs-track">
+            <div class="bs-track col-[1/-1] row-start-1 min-w-0 h-full">
               <div class="bs-container box-border font-medium text-purple-100">
                 <div class="bs-slide">
                   <span
@@ -140,9 +145,11 @@
               </div>
             </div>
 
-            <ul class="bs-dots">
+            <ul
+              class="bs-dots col-start-2 row-start-2 justify-self-center self-center m-0 flex w-auto items-center justify-center gap-3 p-0 leading-none"
+            >
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+                class="bs-dot m-0 block h-3 w-3 md:h-4 md:w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -159,11 +166,14 @@
         </div>
 
         <div
-          class="bs-demo-frame max-w-[588px] h-[270px] w-full mx-auto box-border"
+          class="max-w-[588px] h-[22rem] w-full mx-auto box-border md:h-[20rem]"
         >
-          <div id="slider2" class="bs-hidden h-full relative bs-demo-slider">
+          <div
+            id="slider2"
+            class="bs-hidden relative grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_56px_auto] items-center gap-x-3 gap-y-2.5 md:gap-x-2 md:gap-y-3.5"
+          >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-prev col-start-1 row-start-2 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -173,14 +183,14 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M15 6l-6 6 6 6"></path>
               </svg>
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-next col-start-1 row-start-2 ml-11 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:ml-14 md:h-10 md:w-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -190,15 +200,19 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
 
-            <div class="bs-pages"></div>
+            <div
+              class="bs-pages col-start-3 row-start-2 justify-self-center md:justify-self-end self-center flex min-w-10 items-center justify-center text-center text-sm font-semibold tabular-nums text-violet-950/70"
+            ></div>
 
-            <div class="bs-track bs-peek-sm">
+            <div
+              class="bs-track col-[1/-1] row-start-1 min-w-0 h-full px-12"
+            >
               <div class="bs-container box-border font-medium text-purple-100">
                 <div class="bs-slide">
                   <span
@@ -275,9 +289,11 @@
               </div>
             </div>
 
-            <ul class="bs-dots">
+            <ul
+              class="bs-dots col-start-2 row-start-2 justify-self-center self-center m-0 flex w-auto items-center justify-center gap-3 p-0 leading-none"
+            >
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+                class="bs-dot m-0 block h-3 w-3 md:h-4 md:w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -294,11 +310,14 @@
         </div>
 
         <div
-          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+          class="max-w-[988px] h-[22rem] w-full mx-auto box-border md:h-[20rem]"
         >
-          <div id="slider3" class="bs-hidden h-full relative bs-demo-slider">
+          <div
+            id="slider3"
+            class="bs-hidden relative grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_56px_auto] items-center gap-x-3 gap-y-2.5 md:gap-x-2 md:gap-y-3.5"
+          >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-prev col-start-1 row-start-2 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -308,14 +327,14 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M15 6l-6 6 6 6"></path>
               </svg>
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-next col-start-1 row-start-2 ml-11 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:ml-14 md:h-10 md:w-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -325,15 +344,19 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
 
-            <div class="bs-pages"></div>
+            <div
+              class="bs-pages col-start-3 row-start-2 justify-self-center md:justify-self-end self-center flex min-w-10 items-center justify-center text-center text-sm font-semibold tabular-nums text-violet-950/70"
+            ></div>
 
-            <div class="bs-track bs-peek-sm">
+            <div
+              class="bs-track col-[1/-1] row-start-1 min-w-0 h-full px-12"
+            >
               <div class="bs-container box-border font-medium text-purple-100">
                 <div class="bs-slide">
                   <span
@@ -464,9 +487,11 @@
               </div>
             </div>
 
-            <ul class="bs-dots">
+            <ul
+              class="bs-dots col-start-2 row-start-2 justify-self-center self-center m-0 flex w-auto items-center justify-center gap-3 p-0 leading-none"
+            >
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+                class="bs-dot m-0 block h-3 w-3 md:h-4 md:w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -483,11 +508,14 @@
         </div>
 
         <div
-          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+          class="max-w-[988px] h-[22rem] w-full mx-auto box-border md:h-[20rem]"
         >
-          <div id="slider8" class="bs-hidden h-full relative bs-demo-slider">
+          <div
+            id="slider8"
+            class="bs-hidden relative grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_56px_auto] items-center gap-x-3 gap-y-2.5 md:gap-x-2 md:gap-y-3.5"
+          >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-prev col-start-1 row-start-2 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -497,14 +525,14 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M15 6l-6 6 6 6"></path>
               </svg>
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-next col-start-1 row-start-2 ml-11 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:ml-14 md:h-10 md:w-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -514,15 +542,19 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
 
-            <div class="bs-pages"></div>
+            <div
+              class="bs-pages col-start-3 row-start-2 justify-self-center md:justify-self-end self-center flex min-w-10 items-center justify-center text-center text-sm font-semibold tabular-nums text-violet-950/70"
+            ></div>
 
-            <div class="bs-track bs-peek-sm">
+            <div
+              class="bs-track col-[1/-1] row-start-1 min-w-0 h-full px-12"
+            >
               <div class="bs-container box-border font-medium text-purple-100">
                 <div class="bs-slide">
                   <span
@@ -599,9 +631,11 @@
               </div>
             </div>
 
-            <ul class="bs-dots">
+            <ul
+              class="bs-dots col-start-2 row-start-2 justify-self-center self-center m-0 flex w-auto items-center justify-center gap-3 p-0 leading-none"
+            >
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+                class="bs-dot m-0 block h-3 w-3 md:h-4 md:w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -620,11 +654,14 @@
         </div>
 
         <div
-          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+          class="max-w-[988px] h-[22rem] w-full mx-auto box-border md:h-[20rem]"
         >
-          <div id="slider5" class="bs-hidden h-full relative bs-demo-slider">
+          <div
+            id="slider5"
+            class="bs-hidden relative grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_56px_auto] items-center gap-x-3 gap-y-2.5 md:gap-x-2 md:gap-y-3.5"
+          >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-prev col-start-1 row-start-2 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -634,14 +671,14 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M15 6l-6 6 6 6"></path>
               </svg>
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-next col-start-1 row-start-2 ml-11 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:ml-14 md:h-10 md:w-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -651,15 +688,19 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
 
-            <div class="bs-pages"></div>
+            <div
+              class="bs-pages col-start-3 row-start-2 justify-self-center md:justify-self-end self-center flex min-w-10 items-center justify-center text-center text-sm font-semibold tabular-nums text-violet-950/70"
+            ></div>
 
-            <div class="bs-track bs-peek-sm">
+            <div
+              class="bs-track col-[1/-1] row-start-1 min-w-0 h-full px-12"
+            >
               <div class="bs-container box-border font-medium text-purple-100">
                 <div class="bs-slide">
                   <span
@@ -736,9 +777,11 @@
               </div>
             </div>
 
-            <ul class="bs-dots">
+            <ul
+              class="bs-dots col-start-2 row-start-2 justify-self-center self-center m-0 flex w-auto items-center justify-center gap-3 p-0 leading-none"
+            >
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+                class="bs-dot m-0 block h-3 w-3 md:h-4 md:w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>
@@ -755,11 +798,14 @@
         </div>
 
         <div
-          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+          class="max-w-[988px] h-[22rem] w-full mx-auto box-border md:h-[20rem]"
         >
-          <div id="slider4" class="bs-hidden h-full relative bs-demo-slider">
+          <div
+            id="slider4"
+            class="bs-hidden relative grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_56px_auto] items-center gap-x-3 gap-y-2.5 md:gap-x-2 md:gap-y-3.5"
+          >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-prev col-start-2 row-start-2 justify-self-center self-center -translate-x-5 md:-translate-x-6 flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -769,14 +815,14 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M15 6l-6 6 6 6"></path>
               </svg>
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-next col-start-2 row-start-2 justify-self-center self-center translate-x-5 md:translate-x-6 flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -786,15 +832,19 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
 
-            <div class="bs-pages"></div>
+            <div
+              class="bs-pages col-start-3 row-start-2 justify-self-center md:justify-self-end self-center flex min-w-10 items-center justify-center text-center text-sm font-semibold tabular-nums text-violet-950/70"
+            ></div>
 
-            <div class="bs-track bs-peek-sm">
+            <div
+              class="bs-track col-[1/-1] row-start-1 min-w-0 h-full px-12"
+            >
               <div class="bs-container box-border font-medium text-purple-100">
                 <div class="bs-slide">
                   <span
@@ -884,14 +934,14 @@
         </div>
 
         <div
-          class="bs-demo-frame max-w-[988px] h-[270px] w-full mx-auto box-border"
+          class="max-w-[988px] h-[22rem] w-full mx-auto box-border md:h-[20rem]"
         >
           <div
             id="slider6"
-            class="bs-hidden h-full relative bs-demo-slider bs-progress-layout"
+            class="bs-hidden relative grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_56px_auto_auto] items-center gap-x-3 gap-y-2.5 md:gap-x-2 md:gap-y-3.5"
           >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-prev col-start-1 row-start-2 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -901,14 +951,14 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M15 6l-6 6 6 6"></path>
               </svg>
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-next col-start-1 row-start-2 ml-11 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:ml-14 md:h-10 md:w-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -918,15 +968,19 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
 
-            <div class="bs-pages"></div>
+            <div
+              class="bs-pages col-start-3 row-start-2 justify-self-center md:justify-self-end self-center flex min-w-10 items-center justify-center text-center text-sm font-semibold tabular-nums text-violet-950/70"
+            ></div>
 
-            <div class="bs-track bs-peek-sm">
+            <div
+              class="bs-track col-[1/-1] row-start-1 min-w-0 h-full px-12"
+            >
               <div class="bs-container box-border font-medium text-purple-100">
                 <div class="bs-slide">
                   <span
@@ -1004,14 +1058,14 @@
             </div>
 
             <div
-              class="bs-progress rounded-full bg-violet-200/70"
+              class="bs-progress absolute bottom-0 left-1/2 z-10 block h-1 w-[min(220px,calc(100%-96px))] -translate-x-1/2 overflow-hidden rounded-full bg-violet-200/70"
               role="progressbar"
               aria-label="Slider progress"
               aria-valuemin="0"
               aria-valuemax="100"
             >
               <span
-                class="bs-progress-bar block h-full w-full rounded-full bg-violet-800"
+                class="bs-progress-bar block h-full w-full origin-left rounded-full bg-violet-800"
               ></span>
             </div>
           </div>
@@ -1027,15 +1081,13 @@
           </p>
         </div>
 
-        <div
-          class="bs-auto-height-demo max-w-[588px] w-full mx-auto box-border pt-4"
-        >
+        <div class="max-w-[588px] w-full mx-auto box-border pt-4">
           <div
             id="slider7"
-            class="bs-hidden bs-auto-height-layout relative bs-demo-slider"
+            class="bs-hidden bs-auto-height-layout relative grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_56px_auto] items-center gap-x-3 gap-y-5 md:gap-x-2 md:gap-y-5"
           >
             <button
-              class="bs-arrow bs-prev flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-prev col-start-1 row-start-2 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1045,14 +1097,14 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M15 6l-6 6 6 6"></path>
               </svg>
             </button>
 
             <button
-              class="bs-arrow bs-next flex items-center justify-center rounded-full bg-violet-800 w-8 h-8 opacity-90 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+              class="bs-arrow bs-next col-start-1 row-start-2 ml-11 justify-self-start self-center flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-violet-800 bg-white text-violet-800 opacity-100 transition-colors hover:bg-violet-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:ml-14 md:h-10 md:w-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1062,15 +1114,17 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-6 w-6"
+                class="h-3.5 w-3.5 md:h-6 md:w-6"
               >
                 <path d="M9 6l6 6-6 6"></path>
               </svg>
             </button>
 
-            <div class="bs-pages"></div>
+            <div
+              class="bs-pages col-start-3 row-start-2 justify-self-center md:justify-self-end self-center flex min-w-10 items-center justify-center text-center text-sm font-semibold tabular-nums text-violet-950/70"
+            ></div>
 
-            <div class="bs-track">
+            <div class="bs-track col-[1/-1] row-start-1 min-w-0 h-full">
               <div class="bs-container box-border font-medium text-purple-100">
                 <div class="bs-slide">
                   <span
@@ -1104,9 +1158,11 @@
               </div>
             </div>
 
-            <ul class="bs-dots">
+            <ul
+              class="bs-dots col-start-2 row-start-2 justify-self-center self-center m-0 flex w-auto items-center justify-center gap-3 p-0 leading-none"
+            >
               <li
-                class="bs-dot mr-[10px] list-none w-[8px] inline-block h-[8px] border-violet-500 border rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
+                class="bs-dot m-0 block h-3 w-3 md:h-4 md:w-4 list-none rounded-full border-2 border-violet-950/15 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white"
               ></li>
             </ul>
           </div>

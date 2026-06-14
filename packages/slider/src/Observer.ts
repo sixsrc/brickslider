@@ -1,4 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
+import { SlideMeta } from "./SlideMeta"
 
 export class Observer extends BaseSlider {
   private visibleIndexes = new Set<number>()
@@ -6,9 +7,11 @@ export class Observer extends BaseSlider {
   private elementToIndexMap = new Map<HTMLElement, number>()
   private animationFrameId: number | null = null
   private lastIndex = 0
+  private slideMeta: SlideMeta
 
   constructor($root: string) {
     super($root)
+    this.slideMeta = new SlideMeta($root)
     this.observeSlides()
     this.startObserving()
   }
@@ -83,7 +86,7 @@ export class Observer extends BaseSlider {
   }
 
   private getSlideNumber(slide: HTMLElement): number {
-    return parseInt(slide.dataset.slideNumber || "-1")
+    return this.slideMeta.getSlideNumber(slide)
   }
 
   private getSlideIndex(slide: HTMLElement, slideNumber: number): number {
@@ -91,7 +94,7 @@ export class Observer extends BaseSlider {
 
     if (useLoop) return this.elementToIndexMap.get(slide) ?? -1
 
-    return slideNumber - 1
+    return slideNumber
   }
 
   private hasVisibleSlidesChanged(

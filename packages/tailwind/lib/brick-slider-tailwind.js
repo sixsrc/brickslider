@@ -37,7 +37,6 @@ var t = e(function({ addComponents: e }) {
 			alignItems: "flex-start"
 		},
 		".bs-auto-height-layout .bs-slide": { height: "auto" },
-		".bs-auto-height-layout .bs-dots": { bottom: "0" },
 		".bs-auto-height-layout .bs-arrow": { top: "calc((100% - var(--bs-auto-height-controls-space)) / 2)" },
 		".bs-container": {
 			boxSizing: "border-box",
@@ -57,8 +56,6 @@ var t = e(function({ addComponents: e }) {
 		},
 		".bs-dots": {
 			width: "100%",
-			position: "absolute",
-			bottom: "0",
 			textAlign: "center",
 			display: "flex",
 			justifyContent: "center",

@@ -14,10 +14,6 @@ export type AnimationOptions = {
     endDelay?: number;
     iterationStart?: number;
 };
-export type SlideDatasetAttributes = {
-    "data-index": number;
-    "data-slide-number": number;
-};
 export type BrickSliderSlideChangePayload = {
     rootSelector: string;
     slideIndex: number;
@@ -57,6 +53,11 @@ export type TypeTargetSlideParams = {
 export type UpdateSlideIndexType = "increment" | "decrement";
 export type KeyframeAnimation = Keyframe;
 export type TouchMoveAction = "dragFree" | "swipe" | "fallback";
+export type SlideMeta = {
+    dataIndex: number;
+    slideNumber: number;
+    isCloned: boolean;
+};
 export type SlideSizesInput = Record<number, number>;
 export type ResponsiveBreakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type ResponsiveScreensInput = Partial<Record<ResponsiveBreakpoint, number>>;
@@ -76,6 +77,7 @@ export type BrickSliderOptions = Partial<{
     slideSizes: SlideSizesInput;
     screens: ResponsiveScreensInput;
     responsive: ResponsiveInput;
+    initialSlide: number;
     useTouch: boolean;
     useLoop: boolean;
     useDragFree: boolean;
@@ -93,6 +95,7 @@ export type StateType = {
     [StateKey.SlidesPerView]: number;
     [StateKey.BaseSlidesPerPage]: number;
     [StateKey.BaseSlidesPerView]: number;
+    [StateKey.InitialSlide]: number;
     [StateKey.NumberOfPages]: number;
     [StateKey.NumberOfSlides]: number;
     [StateKey.SliderWidth]: number;

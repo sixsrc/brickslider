@@ -51,6 +51,7 @@ The core stays small and framework-agnostic, while the default authoring experie
   - [♿ Accessibility Plugin](#accessibility-plugin)
   - [📱 Stories Plugin](#stories-plugin)
   - [🎨 Tailwind Package](#tailwind-package)
+    - [🧾 Usage Without Tailwind](#usage-without-tailwind)
 - [🧱 Framework Guides](#framework-guides)
 - [🤝 Project Links](#project-links)
 
@@ -243,6 +244,7 @@ slider.use(
 ```ts
 const slider = new BrickSlider("#slider", {
   gap: 20,
+  initialSlide: 2,
   slidesPerPage: 1,
   slidesPerView: 1,
   slideSizes: {
@@ -283,6 +285,21 @@ const slider = new BrickSlider("#slider", {
 #### `gap`
 
 Spacing between slides in pixels.
+
+#### `initialSlide`
+
+Sets which slide should be active on mount.
+
+```ts
+initialSlide: 2
+```
+
+Behavior:
+
+- `0` starts from the first slide
+- negative values are clamped to `0`
+- values greater than the last slide are clamped to the last valid slide
+- decimal values are normalized to an integer
 
 #### `slidesPerPage`
 
@@ -354,17 +371,29 @@ Attaches a plugin instance to the slider.
 
 Fired when the slider DOM and layout are ready. Payload: `rootSelector`.
 
+```ts
+slider.on("mounted", rootSelector => {
+  console.log(rootSelector)
+})
+```
+
 ### `slideChange`
 
 Fired whenever the active page changes. Payload: `rootSelector`, `slideIndex`, `activePage`.
+
+```ts
+slider.on("slideChange", payload => {
+  console.log(payload.slideIndex, payload.activePage)
+})
+```
 
 ### `destroyed`
 
 Fired after the slider is torn down. Payload: `rootSelector`.
 
 ```ts
-slider.on("slideChange", payload => {
-  console.log(payload.slideIndex, payload.activePage)
+slider.on("destroyed", rootSelector => {
+  console.log(rootSelector)
 })
 ```
 
@@ -536,10 +565,34 @@ slider.init()
 
 ### Events
 
+#### `storiesOpened`
+
+Fired when the stories flow is opened. Payload: `rootSelector`.
+
 ```ts
-slider.on("storiesOpened", rootSelector => { ... })
-slider.on("storiesMounted", rootSelector => { ... })
-slider.on("storiesClosed", rootSelector => { ... })
+slider.on("storiesOpened", rootSelector => {
+  console.log(rootSelector)
+})
+```
+
+#### `storiesMounted`
+
+Fired when the stories modal is fully mounted and ready. Payload: `rootSelector`.
+
+```ts
+slider.on("storiesMounted", rootSelector => {
+  console.log(rootSelector)
+})
+```
+
+#### `storiesClosed`
+
+Fired when the stories flow is closed. Payload: `rootSelector`.
+
+```ts
+slider.on("storiesClosed", rootSelector => {
+  console.log(rootSelector)
+})
 ```
 
 ### Troubleshooting
@@ -561,6 +614,40 @@ Add the plugin and preset to your main stylesheet:
 @import "@sixsrc/brick-slider-tailwind/preset.css";
 @plugin "@sixsrc/brick-slider-tailwind";
 ```
+
+### Usage Without Tailwind
+
+If you want to keep the BrickSlider markup classes but do not want to run Tailwind in the project, import the structural CSS shipped by the Tailwind package:
+
+```ts
+import "@sixsrc/brick-slider-tailwind/brick-slider.css"
+```
+
+Or with a plain stylesheet:
+
+```css
+@import "@sixsrc/brick-slider-tailwind/brick-slider.css";
+```
+
+### CDN CSS
+
+If you are using BrickSlider directly in HTML or alongside Tailwind loaded from a CDN, load the structural CSS too:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind/brick-slider.css"
+/>
+```
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind/brick-slider.css"
+/>
+```
+
+This file provides the structural layout for the standard BrickSlider markup (`bs-track`, `bs-container`, `bs-slide`, `bs-dots`, `bs-progress`, and related helpers) without forcing a visual theme.
 
 ### Class Reference
 

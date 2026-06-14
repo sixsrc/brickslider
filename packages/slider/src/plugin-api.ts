@@ -1,4 +1,5 @@
 export { Plugin } from "./Plugin"
+export { SlideMeta } from "./SlideMeta"
 export { Validation } from "./Validation"
 export {
   ANIMATION_OPTIONS,
@@ -34,4 +35,3 @@ export {
   setAttribute,
   waitFor
 } from "./helpers"
-

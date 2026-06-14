@@ -6,6 +6,7 @@ export declare class Mount extends BaseSlider {
     private clone;
     private mutate;
     private slider;
+    private slideMeta;
     private resolvedSlideWidths;
     constructor($root: string);
     init(): void;
@@ -17,7 +18,6 @@ export declare class Mount extends BaseSlider {
     private getMaxSlidesPerPage;
     private slidesPerViewState;
     private cloneSlides;
-    private setAttr;
     private appendSlider;
     private setControls;
     protected keyFrames(index: number): KeyframeAnimation[];

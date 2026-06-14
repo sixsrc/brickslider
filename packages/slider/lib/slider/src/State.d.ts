@@ -4,6 +4,7 @@ export declare enum StateKey {
     SlideIndex = "slideIndex",
     ActivePage = "activePage",
     ActiveDataIndex = "activeDataIndex",
+    InitialSlide = "initialSlide",
     SlideGap = "gap",
     SlidesPerPage = "slidesPerPage",
     SlidesPerView = "slidesPerView",
@@ -50,6 +51,8 @@ declare class State {
     key: string;
     constructor(key: string, options?: Partial<SliderOptions>);
     private initializeState;
+    private getInitialSlideIndex;
+    private getInitialPageIndex;
     private hasDotsMarkup;
     private hasArrowsMarkup;
     private normalizeSlideSizes;

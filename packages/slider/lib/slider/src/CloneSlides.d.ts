@@ -3,10 +3,8 @@ export declare class CloneSlides extends BaseSlider {
     protected slides: HTMLElement[];
     private clonedSlides;
     private mount;
-    private dataIndex;
-    private totalWidthBefore;
-    private slidesBefore;
     private slider;
+    private slideMeta;
     constructor($root: string);
     init(): void;
     private duplicateSlides;
@@ -22,8 +20,8 @@ export declare class CloneSlides extends BaseSlider {
     private syncCloneDataIndex;
     private syncSlideNumbers;
     private getMountedSlides;
-    protected calcTranslate(): number;
-    private checkDataIndex;
-    private setTotalWidth;
+    private getInitialSlideIndex;
+    private getInitialIndex;
+    private getInitialTranslate;
     private setTranslate;
 }

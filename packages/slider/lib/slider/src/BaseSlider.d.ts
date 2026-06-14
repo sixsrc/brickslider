@@ -41,10 +41,8 @@ export declare class BaseSlider {
     protected options(duration?: number): AnimationOptions;
     protected keyFrames(translate?: number): KeyframeAnimation[];
     protected setState(state: Partial<StateType>): void;
+    protected getSlideDataIndexValue(slide: HTMLElement | undefined): number;
     protected getFirstIndex(): number;
-    protected getDataSlideNumber(dataNumber: string): number;
-    protected getDataIndex(dataNumber: string): number;
-    protected getClonePreviousPosition(dataNumber: string): number;
     protected getFirstClonedIndex(): number;
     protected getLastGroupStep(totalSlides: number, slidesPerView: number, slidesPerPage: number): number;
     protected hasRemaining(totalSlides: number): boolean;

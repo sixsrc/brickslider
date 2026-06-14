@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrickSlider Documentation</title>
+  <meta name="description" content="Documentation for BrickSlider - TypeScript-first carousel engine for the modern web." />
+  <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#6D28D9',
+            'primary-dark': '#5B21B6',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['Menlo', 'Monaco', 'Consolas', 'monospace'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    @import url('https://rsms.me/inter/font-files/inter-regular.woff2?v=3.19');
+    html { font-family: 'Inter', system-ui, sans-serif; }
+    .prose h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .prose h2 { font-size: 1.75rem; margin-top: 2rem; margin-bottom: 1rem; }
+    .prose h3 { font-size: 1.375rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+    .prose pre { background: #0D0D0D; border-radius: 0.5rem; padding: 1rem; overflow-x: auto; }
+    .prose code { background: #0D0D0D; color: #E5E7EB; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+    .prose pre code { background: transparent; padding: 0; }
+    .prose table { border-collapse: collapse; width: 100%; }
+    .prose th, .prose td { border: 1px solid #374151; padding: 0.75rem; text-align: left; }
+    .prose ul { margin-top: 0.75rem; margin-bottom: 0.75rem; }
+    .doc-link { transition: all 0.2s ease; }
+    .doc-link:hover { background: #F3F4F6; }
+    .dark .doc-link:hover { background: #1F2937; }
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+  <header class="sticky top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-40 border-b border-gray-200 dark:border-gray-800">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <a href="../" class="flex items-center">
+        <img src="../logo.svg" alt="BrickSlider" width="120" height="36" class="h-8 w-auto" />
+      </a>
+      <a href="https://github.com/sixsrc/brickslider" target="_blank" rel="noopener noreferrer" class="text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors flex items-center space-x-2">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.799 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.426-4.042-1.426-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.793 1.215 1.793 1.215 1.07 1.785 2.789 1.323 3.495.996.336.182.606.559.842 1.323 1.292.807.992 2.318-.807.236-.489 0-.689-.019-1.301 0 0 .566.841.558.843.336.005.692.566 1.323 2.316l.156.678 2.19.108c.111-.31.207-.693.207-1.12 0-.277-.021-.556-.061-.832 0 0 .555-.172 1.318-.558.852-.38 1.719-.5 2.66-.5.935 0 1.802.12 2.653.5.762.386.661 1.16.661 1.16l.282 1.896c0 .426.298.829.579.939.313.076.642-.029 1.037-.207 1.04-.39 1.917-.512 2.895-.512.978 0 1.856.12 2.895.512 1.917.512 1.917.512 1.917h.016c1.065 0 2.044-.2 3-.577v2.342c0 .319.196.694.801.576 4.765-1.589 8.199-5.996 8.213-11.387.014-6.627-5.373-12-12-12z"/></svg>
+        <span>GitHub</span>
+      </a>
+    </nav>
+  </header>
+
+  <div class="min-h-screen">
+    <div class="flex max-w-7xl mx-auto">
+      <aside class="w-64 h-screen sticky top-16 overflow-y-auto border-r border-gray-200 dark:border-gray-800 p-4 hidden md:block">
+        <nav id="sidebar-nav" class="space-y-4 text-sm">
+          <div>
+            <h3 class="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs mb-2">Getting Started</h3>
+            <ul class="space-y-1">
+              <li><a href="?p=installation" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Installation</a></li>
+              <li><a href="?p=quick-start" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Quick Start</a></li>
+              <li><a href="?p=basic-markup" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Basic Markup</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs mb-2">Guides</h3>
+            <ul class="space-y-1">
+              <li><a href="?p=auto-height" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Auto Height</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs mb-2">API Reference</h3>
+            <ul class="space-y-1">
+              <li><a href="?p=options" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Options</a></li>
+              <li><a href="?p=methods" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Methods</a></li>
+              <li><a href="?p=events" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Events</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs mb-2">Plugins</h3>
+            <ul class="space-y-1">
+              <li><a href="?p=accessibility-plugin" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Accessibility</a></li>
+              <li><a href="?p=stories-plugin" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Stories</a></li>
+              <li><a href="?p=tailwind-package" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">Tailwind</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs mb-2">Frameworks</h3>
+            <ul class="space-y-1">
+              <li><a href="?p=react" class="doc-link block px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:text-primary">React</a></li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="flex-1 min-w-0 px-4 sm:px-8 py-12">
+        <article id="doc-content" class="prose dark:prose-invert max-w-none">
+          <h1>Documentation</h1>
+          <p>Select a topic from the sidebar to begin.</p>
+          <h2>Quick Links</h2>
+          <ul>
+            <li><a href="?p=installation">Installation</a> - Install packages</li>
+            <li><a href="?p=quick-start">Quick Start</a> - Get up and running</li>
+            <li><a href="?p=basic-markup">Basic Markup</a> - Required HTML structure</li>
+          </ul>
+        </article>
+      </main>
+    </div>
+  </div>
+
+  <footer class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-gray-600 dark:text-gray-400 text-sm">
+        BrickSlider is released under the MIT license. © 2026 <a href="https://github.com/sixsrc" class="text-primary hover:underline">@sixsrc</a> | <a href="https://github.com/malopestorres" class="text-primary hover:underline">@malopestorres</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

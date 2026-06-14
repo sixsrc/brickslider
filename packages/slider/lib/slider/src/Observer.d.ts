@@ -5,6 +5,7 @@ export declare class Observer extends BaseSlider {
     private elementToIndexMap;
     private animationFrameId;
     private lastIndex;
+    private slideMeta;
     constructor($root: string);
     private observeSlides;
     private startObserving;

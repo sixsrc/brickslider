@@ -1,0 +1,110 @@
+.bs-root,
+.brick-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bs-track {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+  box-sizing: border-box;
+}
+
+.bs-auto-height-layout {
+  --bs-auto-height-controls-space: 40px;
+  padding-bottom: var(--bs-auto-height-controls-space);
+}
+
+.bs-auto-height-layout .bs-track {
+  height: auto;
+}
+
+.bs-auto-height-layout .bs-container {
+  height: auto;
+  align-items: flex-start;
+}
+
+.bs-auto-height-layout .bs-slide {
+  height: auto;
+}
+
+.bs-container {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  will-change: transform;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+  height: 100%;
+}
+
+.bs-container > * {
+  flex-shrink: 0;
+}
+
+.bs-slide {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.bs-dots {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  margin: 0;
+}
+
+.bs-dot {
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.bs-progress {
+  height: 4px;
+  display: block;
+  overflow: hidden;
+}
+
+.bs-progress-bar {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform-origin: left center;
+  scale: 0 1;
+}
+
+.bs-active-default {
+  background-color: #6d28d9;
+  border: 1px solid #6d28d9;
+  border-radius: 0.75rem;
+}
+
+.bs-dot-active-default {
+  background-color: #6d28d9;
+  border: 1px solid #6d28d9;
+}
+
+.bs-hidden {
+  visibility: hidden !important;
+}
+
+.bs-no-select > * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bs-img {
+  width: auto;
+  max-width: 100%;
+  pointer-events: none;
+  border-radius: 20px;
+}

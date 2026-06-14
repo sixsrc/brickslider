@@ -13,7 +13,6 @@ export declare const DOM_ELEMENT_ALIASES: {
     readonly ARROW_PREV: readonly ["bs-prev"];
     readonly ARROW_NEXT: readonly ["bs-next"];
     readonly HIDDEN: readonly ["bs-hidden"];
-    readonly DESTROYED: readonly ["bs-destroyed"];
 };
 export declare const CLASS_VALUES: {
     ACTIVE: string;

@@ -14,18 +14,14 @@ import {
   getSliderWidth,
   hasClass,
   removeClass,
-  setAttributes,
   waitFor
 } from "./helpers"
-import type {
-  KeyframeAnimation,
-  SlideDatasetAttributes,
-  StateType
-} from "./types"
+import type { KeyframeAnimation, StateType } from "./types"
 import { ContextMenu } from "./ContextMenu"
 import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 import { Slider } from "./Slider"
+import { SlideMeta } from "./SlideMeta"
 
 export class Mount extends BaseSlider {
   private clonedSlides: HTMLElement[] = []
@@ -33,6 +29,7 @@ export class Mount extends BaseSlider {
   private clone: CloneSlides
   private mutate: Mutate
   private slider: Slider
+  private slideMeta: SlideMeta
   private resolvedSlideWidths = new Map<number, string>()
 
   constructor($root: string) {
@@ -42,6 +39,7 @@ export class Mount extends BaseSlider {
     this.resize = new Resize(this.$root)
     this.mutate = new Mutate($root)
     this.slider = new Slider($root)
+    this.slideMeta = new SlideMeta($root)
   }
 
   public init(): void {
@@ -56,7 +54,7 @@ export class Mount extends BaseSlider {
 
   private setProperties(): void {
     this.slides.forEach((slide, index) => {
-      setAttributes(slide, this.setAttr(index))
+      this.slideMeta.setSlideMeta(slide, index, index, false)
     })
   }
   public normalizeSlidesConfig(): void {
@@ -140,13 +138,6 @@ export class Mount extends BaseSlider {
     }
   }
 
-  private setAttr(index: number): SlideDatasetAttributes {
-    return {
-      "data-index": index + 1,
-      "data-slide-number": index + 1
-    }
-  }
-
   private appendSlider(): void {
     const { $children } = this
 
@@ -216,10 +207,10 @@ export class Mount extends BaseSlider {
     slide: HTMLElement | undefined,
     fallback: number
   ): number {
-    const dataIndex = Number(slide?.dataset.index)
+    const dataIndex = this.slideMeta.getSlideDataIndex(slide)
 
-    if (Number.isInteger(dataIndex) && dataIndex > 0) {
-      return dataIndex - 1
+    if (Number.isInteger(dataIndex) && dataIndex >= 0) {
+      return dataIndex
     }
 
     return fallback

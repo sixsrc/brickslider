@@ -8,7 +8,18 @@ export declare class Slider extends BaseSlider {
     private validPositions;
     private mutate;
     private observer;
+    private slideMeta;
+    private static destroyHandlers;
     constructor($root: string);
+    static registerDestroyHandler($root: string, callback: () => void): void;
+    static unregisterDestroyHandler($root: string): void;
+    prepareForNavigation(): boolean;
+    private hasMinimumMarkupStructure;
+    private hasValidNavigationMarkup;
+    private handleFatalMarkup;
+    private healSlideClassNames;
+    private healSlideMetaState;
+    private restoreActiveSlides;
     private computeValidPositions;
     private computeLoopValidPositions;
     private getPositions;
