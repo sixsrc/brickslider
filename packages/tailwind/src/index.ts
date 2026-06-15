@@ -101,6 +101,117 @@ export default plugin(function ({ addComponents }): void {
       maxWidth: "100%",
       pointerEvents: "none",
       borderRadius: "20px"
+    },
+    ".bs-stories": {
+      position: "fixed",
+      inset: "0",
+      zIndex: "10000",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "24px",
+      pointerEvents: "none",
+      userSelect: "none",
+      WebkitUserSelect: "none"
+    },
+    ".bs-stories .bs-track": {
+      position: "relative",
+      zIndex: "10001",
+      width: "min(92vw, calc(86vh * 9 / 16), 430px)",
+      maxWidth: "min(92vw, 430px)",
+      height: "min(86vh, 760px)",
+      aspectRatio: "9 / 16",
+      overflow: "hidden",
+      pointerEvents: "auto"
+    },
+    ".bs-stories .bs-container, .bs-stories .bs-slide": {
+      height: "100%"
+    },
+    ".bs-stories-layer": {
+      position: "fixed",
+      inset: "0",
+      zIndex: "9999",
+      pointerEvents: "auto",
+      userSelect: "none",
+      WebkitUserSelect: "none"
+    },
+    ".bs-stories-backdrop": {
+      position: "fixed",
+      inset: "0"
+    },
+    ".bs-stories-progress": {
+      position: "absolute",
+      top: "calc(env(safe-area-inset-top) + 12px)",
+      right: "16px",
+      left: "16px",
+      zIndex: "10003",
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      margin: "0",
+      padding: "0",
+      listStyle: "none",
+      pointerEvents: "auto"
+    },
+    ".bs-stories-progress-item": {
+      flex: "1 1 0",
+      overflow: "hidden"
+    },
+    ".bs-stories-progress-bar": {
+      display: "block",
+      width: "100%",
+      height: "100%",
+      transformOrigin: "left center",
+      scale: "0 1"
+    },
+    ".bs-stories-close, .bs-stories-mute, .bs-stories-pause-indicator": {
+      position: "absolute",
+      zIndex: "10004",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    },
+    ".bs-stories-close, .bs-stories-mute": {
+      pointerEvents: "auto"
+    },
+    ".bs-stories-close": {
+      top: "6dvh",
+      right: "16px"
+    },
+    ".bs-stories-mute": {
+      right: "20px",
+      bottom: "48px"
+    },
+    ".bs-stories-pause-indicator": {
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      pointerEvents: "none"
+    },
+    ".bs-stories-pause-indicator--visible": {
+      pointerEvents: "auto"
+    },
+    ".bs-stories-body-open": {
+      overflow: "hidden"
+    },
+    ".bs-stories.hidden, .bs-stories-layer.hidden, .bs-stories-play.hidden, .bs-stories-pause.hidden, .bs-stories-mute-on.hidden, .bs-stories-mute-off.hidden": {
+      display: "none !important"
+    },
+    "@media (max-width: 768px)": {
+      ".bs-stories": {
+        padding: "0"
+      },
+      ".bs-stories .bs-track": {
+        width: "100vw",
+        maxWidth: "none",
+        height: "100dvh"
+      },
+      ".bs-stories-close": {
+        top: "max(16px, env(safe-area-inset-top))"
+      },
+      ".bs-stories-progress": {
+        top: "max(12px, env(safe-area-inset-top))"
+      }
     }
   })
 })

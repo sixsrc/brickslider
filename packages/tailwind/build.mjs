@@ -6,7 +6,7 @@ const currentDir = dirname(fileURLToPath(import.meta.url))
 const libDir = resolve(currentDir, 'lib')
 const sourceCss = resolve(currentDir, 'src/preset.css')
 const targetCss = resolve(libDir, 'preset.css')
-const sourceStructuralCss = resolve(currentDir, 'src/brick-slider.css')
+const sourceStructuralCss = resolve(currentDir, '../slider/src/brick-slider.css')
 const targetStructuralCss = resolve(libDir, 'brick-slider.css')
 
 await mkdir(libDir, { recursive: true })

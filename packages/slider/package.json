@@ -25,6 +25,7 @@
   "type": "module",
   "files": [
     "lib/**/*.js",
+    "lib/**/*.css",
     "lib/**/*.d.ts",
     "README.md",
     "LICENSE"
@@ -34,22 +35,29 @@
   },
   "main": "./lib/brick-slider.js",
   "module": "./lib/brick-slider.js",
-  "jsdelivr": "./lib/brick-slider.js",
+  "jsdelivr": "./lib/brick-slider.browser.js",
   "exports": {
     ".": {
       "types": "./lib/slider/src/index.d.ts",
       "import": "./lib/brick-slider.js",
       "default": "./lib/brick-slider.js"
     },
+    "./browser": {
+      "import": "./lib/brick-slider.browser.js",
+      "default": "./lib/brick-slider.browser.js"
+    },
     "./api": {
       "types": "./lib/slider/src/api.d.ts",
       "import": "./lib/api.js",
       "default": "./lib/api.js"
+    },
+    "./brick-slider.css": {
+      "default": "./lib/brick-slider.css"
     }
   },
   "scripts": {
     "start": "vite --host",
-    "build": "tsc --noEmit && BUILD_TARGET=lib vite build && BUILD_TARGET=lib vite build --config vite.api.config.ts --emptyOutDir false"
+    "build": "tsc --noEmit && BUILD_TARGET=lib vite build && BUILD_TARGET=lib vite build --config vite.api.config.ts --emptyOutDir false && BUILD_TARGET=lib vite build --config vite.browser.config.ts --emptyOutDir false && node build.mjs"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",
