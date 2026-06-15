@@ -19,7 +19,9 @@
     "publish:changeset": "pnpm -r publish --access public --no-git-checks",
     "release:manual": "pnpm version:changeset && pnpm build && pnpm publish:changeset",
     "contributors:add": "npx all-contributors add",
-    "contributors:generate": "npx all-contributors generate"
+    "contributors:generate": "npx all-contributors generate",
+    "docs:build": "node website/scripts/build-docs.mjs",
+    "docs:watch": "sh -c 'node website/scripts/build-docs.mjs --watch & WATCH_PID=$!; pnpm exec vite website --host localhost --port 3000 & VITE_PID=$!; trap \"kill $WATCH_PID $VITE_PID\" INT TERM EXIT; wait'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
@@ -43,7 +45,6 @@
     "vite-plugin-dts": "^5.0.2",
     "vitest": "^4.1.8"
   },
-
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "tailwindcss": "^4.3.0",

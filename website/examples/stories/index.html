@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../vendor/brick-slider/brick-slider.css" />
+    <link rel="stylesheet" href="../shared.css" />
+    <title>Stories Example</title>
+    <style>
+      html,
+      body {
+        min-height: 100dvh;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .stories-shell {
+        position: relative;
+        min-height: 88px;
+      }
+
+      .stories-launch {
+        margin: 0;
+      }
+
+      .stories-root .bs-track {
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      }
+
+      .bs-stories-backdrop {
+        background: rgba(15, 23, 42, 0.58);
+        backdrop-filter: blur(8px);
+      }
+
+      .stories-card {
+        position: relative;
+        display: flex;
+        height: min(78vh, 620px);
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: #2e1065;
+        padding: 2rem;
+        text-align: center;
+        color: white;
+      }
+      .stories-badge {
+        font-size: 0.75rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        opacity: 0.75;
+      }
+      .stories-title {
+        margin-top: 1rem;
+        font-size: clamp(2rem, 8vw, 3rem);
+        font-weight: 700;
+        line-height: 0.98;
+      }
+      .stories-copy {
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        opacity: 0.75;
+      }
+
+      .bs-stories-progress-item {
+        height: 3px;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .bs-stories-progress-bar {
+        background: rgba(255, 255, 255, 0.96);
+      }
+
+      .bs-stories-close,
+      .bs-stories-pause-indicator {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        background: rgba(15, 23, 42, 0.36);
+        color: #fff;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+      }
+
+      .bs-stories-close {
+        width: 40px;
+        height: 40px;
+        border-radius: 9999px;
+        font-size: 1.4rem;
+        line-height: 1;
+      }
+
+      .bs-stories-pause-indicator {
+        min-width: 40px;
+        min-height: 40px;
+        border-radius: 9999px;
+        padding: 0;
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="example-page example-page--stories">
+      <div class="stories-shell">
+        <button id="open-stories" class="example-launch stories-launch" type="button">
+          Open Stories
+        </button>
+
+        <div id="stories-slider" class="stories-root hidden">
+          <div class="bs-track">
+            <div class="bs-container">
+              <div class="bs-slide">
+                <article class="stories-card">
+                  <span class="stories-badge">Stories Plugin</span>
+                  <strong class="stories-title">Visual stories for sliders.</strong>
+                  <span class="stories-copy">Open from any trigger.</span>
+                </article>
+              </div>
+              <div class="bs-slide">
+                <article class="stories-card" style="background:#4c1d95">
+                  <span class="stories-badge">Flow Control</span>
+                  <strong class="stories-title">Timed progress and navigation.</strong>
+                  <span class="stories-copy">Pause, resume, and close naturally.</span>
+                </article>
+              </div>
+              <div class="bs-slide">
+                <article class="stories-card" style="background:#5b21b6">
+                  <span class="stories-badge">Separate Package</span>
+                  <strong class="stories-title">Plugin-powered story experience.</strong>
+                  <span class="stories-copy">Runs on top of the core slider.</span>
+                </article>
+              </div>
+            </div>
+
+            <ul class="bs-stories-progress">
+              <li class="bs-stories-progress-item">
+                <span class="bs-stories-progress-bar"></span>
+              </li>
+            </ul>
+
+            <button class="bs-stories-close" type="button" aria-label="Close stories">×</button>
+            <button class="bs-stories-pause-indicator" type="button" aria-label="Toggle pause">
+              <span class="bs-stories-pause">❚❚</span>
+              <span class="bs-stories-play hidden">▶</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bs-stories-layer hidden">
+          <div class="bs-stories-backdrop"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { BrickSlider } from "../../vendor/brick-slider/brick-slider.js"
+      import StoriesPlugin from "../../vendor/brick-slider-stories/brick-slider-stories.js"
+
+      const slider = new BrickSlider("#stories-slider", {
+        slidesPerView: 1,
+        slidesPerPage: 1,
+        useLoop: false
+      })
+
+      slider.use(
+        new StoriesPlugin({
+          trigger: "#open-stories",
+          duration: 5000,
+          maxStories: 10,
+          closeOnEnd: false,
+          pauseOnHover: true,
+          useMuted: true
+        })
+      )
+
+      slider.init()
+    </script>
+  </body>
+</html>

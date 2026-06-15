@@ -3,18 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documentation · BrickSlider Docs</title>
-    <meta name="description" content="Start here for installation, markup, API, plugins, and framework guides for BrickSlider." />
+    <title>Events · BrickSlider Docs</title>
+    <meta name="description" content="Fired when the slider DOM and layout are ready." />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://brickslider.github.io/docs/" />
+    <link rel="canonical" href="https://brickslider.github.io/docs/events/" />
 
-    <script>
-      const params = new URLSearchParams(window.location.search)
-      const page = params.get("p")
-      if (page) {
-        window.location.replace("/docs/" + page + "/")
-      }
-    </script>
 
     <script>
       if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
@@ -242,7 +235,7 @@
               Methods
             </a>
           </li><li>
-            <a href="/docs/events/" class="nav-link">
+            <a href="/docs/events/" class="nav-link active">
               Events
             </a>
           </li></ul>
@@ -274,39 +267,67 @@
 
         <main class="min-w-0 px-0 py-10 md:px-8 lg:px-12">
           <article class="doc-article">
-            
-    <h1 class="docs-home-title">BrickSlider Docs</h1>
-    <p class="doc-lead">
-      Start with the core setup, then move into plugins, framework guides, and
-      practical API references. Everything here is generated from the project
-      markdown sources, so the docs stay aligned with the current library.
-    </p>
-    <div class="docs-home-grid">
-      <a href="/docs/installation/" class="docs-home-card">
-            <h3>Installation</h3>
-            <p>Install packages and choose the runtime format.</p>
-          </a><a href="/docs/quick-start/" class="docs-home-card">
-            <h3>Quick Start</h3>
-            <p>Mount your first BrickSlider in a few lines.</p>
-          </a><a href="/docs/basic-markup/" class="docs-home-card">
-            <h3>Basic Markup</h3>
-            <p>Understand the required HTML structure.</p>
-          </a><a href="/docs/examples-basic-slider/" class="docs-home-card">
-            <h3>Examples</h3>
-            <p>Browse practical slider configurations before diving deeper.</p>
-          </a><a href="/docs/stories-plugin/" class="docs-home-card">
-            <h3>Stories</h3>
-            <p>Story-style modal flows with timed progress.</p>
-          </a><a href="/docs/accessibility-plugin/" class="docs-home-card">
-            <h3>Accessibility</h3>
-            <p>Labels, focus helpers, and announcements.</p>
-          </a>
-    </div>
-  
+            <h1 id="events">Events</h1>
+<h2 id="core-events">Core Events</h2>
+<h3 id="mounted"><code>mounted</code></h3>
+<p>Fired when the slider DOM and layout are ready.</p>
+<p><strong>Payload:</strong> <code>{ rootSelector }</code></p>
+<pre><code class="language-ts"><span class="token symbol">slider</span>.on(<span class="token string">&quot;mounted&quot;</span>, rootSelector =&gt; {
+  console.log(<span class="token string">&quot;Slider mounted:&quot;</span>, rootSelector)
+})</code></pre>
+<h3 id="slidechange"><code>slideChange</code></h3>
+<p>Fired whenever the active page changes.</p>
+<p><strong>Payload:</strong> <code>{ rootSelector, slideIndex, activePage }</code></p>
+<pre><code class="language-ts"><span class="token symbol">slider</span>.on(<span class="token string">&quot;slideChange&quot;</span>, payload =&gt; {
+  console.log(payload.slideIndex, payload.activePage)
+})</code></pre>
+<h3 id="destroyed"><code>destroyed</code></h3>
+<p>Fired after the slider is torn down.</p>
+<p><strong>Payload:</strong> <code>{ rootSelector }</code></p>
+<pre><code class="language-ts"><span class="token symbol">slider</span>.on(<span class="token string">&quot;destroyed&quot;</span>, rootSelector =&gt; {
+  console.log(<span class="token string">&quot;Slider destroyed:&quot;</span>, rootSelector)
+})</code></pre>
+<h2 id="stories-events">Stories Events</h2>
+<p>When using the Stories plugin:</p>
+<h3 id="storiesopened"><code>storiesOpened</code></h3>
+<pre><code class="language-ts"><span class="token symbol">slider</span>.on(<span class="token string">&quot;storiesOpened&quot;</span>, rootSelector =&gt; {
+  console.log(<span class="token string">&quot;Stories opened:&quot;</span>, rootSelector)
+})</code></pre>
+<h3 id="storiesmounted"><code>storiesMounted</code></h3>
+<pre><code class="language-ts"><span class="token symbol">slider</span>.on(<span class="token string">&quot;storiesMounted&quot;</span>, rootSelector =&gt; {
+  console.log(<span class="token string">&quot;Stories mounted:&quot;</span>, rootSelector)
+})</code></pre>
+<h3 id="storiesclosed"><code>storiesClosed</code></h3>
+<pre><code class="language-ts"><span class="token symbol">slider</span>.on(<span class="token string">&quot;storiesClosed&quot;</span>, rootSelector =&gt; {
+  console.log(<span class="token string">&quot;Stories closed:&quot;</span>, rootSelector)
+})</code></pre>
           </article>
         </main>
 
-        <div class="toc-column"></div>
+        <aside class="toc-column pl-6">
+          <div class="toc pt-12">
+            <h2 class="toc-title">On this page</h2>
+            <ul class="toc-list">
+    <li class="level-2">
+          <a href="#core-events">Core Events</a>
+        </li><li class="level-3">
+          <a href="#mounted">`mounted`</a>
+        </li><li class="level-3">
+          <a href="#slidechange">`slideChange`</a>
+        </li><li class="level-3">
+          <a href="#destroyed">`destroyed`</a>
+        </li><li class="level-2">
+          <a href="#stories-events">Stories Events</a>
+        </li><li class="level-3">
+          <a href="#storiesopened">`storiesOpened`</a>
+        </li><li class="level-3">
+          <a href="#storiesmounted">`storiesMounted`</a>
+        </li><li class="level-3">
+          <a href="#storiesclosed">`storiesClosed`</a>
+        </li>
+  </ul>
+          </div>
+        </aside>
       </div>
     </div>
   </body>

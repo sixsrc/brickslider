@@ -3,18 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documentation · BrickSlider Docs</title>
-    <meta name="description" content="Start here for installation, markup, API, plugins, and framework guides for BrickSlider." />
+    <title>Accessibility Plugin · BrickSlider Docs</title>
+    <meta name="description" content="Dedicated plugin for accessibility helpers and screen reader announcements." />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://brickslider.github.io/docs/" />
+    <link rel="canonical" href="https://brickslider.github.io/docs/accessibility-plugin/" />
 
-    <script>
-      const params = new URLSearchParams(window.location.search)
-      const page = params.get("p")
-      if (page) {
-        window.location.replace("/docs/" + page + "/")
-      }
-    </script>
 
     <script>
       if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
@@ -249,7 +242,7 @@
       </section><section class="nav-group">
         <h2>Plugins</h2>
         <ul><li>
-            <a href="/docs/accessibility-plugin/" class="nav-link">
+            <a href="/docs/accessibility-plugin/" class="nav-link active">
               Accessibility
             </a>
           </li><li>
@@ -274,39 +267,76 @@
 
         <main class="min-w-0 px-0 py-10 md:px-8 lg:px-12">
           <article class="doc-article">
-            
-    <h1 class="docs-home-title">BrickSlider Docs</h1>
-    <p class="doc-lead">
-      Start with the core setup, then move into plugins, framework guides, and
-      practical API references. Everything here is generated from the project
-      markdown sources, so the docs stay aligned with the current library.
-    </p>
-    <div class="docs-home-grid">
-      <a href="/docs/installation/" class="docs-home-card">
-            <h3>Installation</h3>
-            <p>Install packages and choose the runtime format.</p>
-          </a><a href="/docs/quick-start/" class="docs-home-card">
-            <h3>Quick Start</h3>
-            <p>Mount your first BrickSlider in a few lines.</p>
-          </a><a href="/docs/basic-markup/" class="docs-home-card">
-            <h3>Basic Markup</h3>
-            <p>Understand the required HTML structure.</p>
-          </a><a href="/docs/examples-basic-slider/" class="docs-home-card">
-            <h3>Examples</h3>
-            <p>Browse practical slider configurations before diving deeper.</p>
-          </a><a href="/docs/stories-plugin/" class="docs-home-card">
-            <h3>Stories</h3>
-            <p>Story-style modal flows with timed progress.</p>
-          </a><a href="/docs/accessibility-plugin/" class="docs-home-card">
-            <h3>Accessibility</h3>
-            <p>Labels, focus helpers, and announcements.</p>
-          </a>
-    </div>
-  
+            <h1 id="accessibility-plugin">Accessibility Plugin</h1>
+<p>Dedicated plugin for accessibility helpers and screen reader announcements.</p>
+<h2 id="install">Install</h2>
+<pre><code class="language-bash"><span class="token keyword">npm</span> install <span class="token symbol">@sixsrc/brick-slider</span> <span class="token symbol">@sixsrc/brick-slider-accessibility</span></code></pre>
+<h2 id="usage">Usage</h2>
+<pre><code class="language-ts"><span class="token keyword">import</span> { <span class="token symbol">BrickSlider</span> } <span class="token keyword">from</span> <span class="token string">&quot;@sixsrc/brick-slider&quot;</span>
+<span class="token keyword">import</span> <span class="token symbol">AccessibilityPlugin</span> <span class="token keyword">from</span> <span class="token string">&quot;@sixsrc/brick-slider-accessibility&quot;</span>
+
+<span class="token keyword">const</span> <span class="token symbol">slider</span> = <span class="token keyword">new</span> <span class="token symbol">BrickSlider</span>(<span class="token string">&quot;#slider&quot;</span>, {
+  slidesPerView: <span class="token number">1</span>,
+  slidesPerPage: <span class="token number">1</span>
+})
+
+<span class="token symbol">slider</span>.use(
+  <span class="token keyword">new</span> <span class="token symbol">AccessibilityPlugin</span>({
+    useKeyboardNavigation: <span class="token keyword">true</span>,
+    useFocusManagement: <span class="token keyword">true</span>,
+    labels: {
+      root: <span class="token string">&quot;Featured products carousel&quot;</span>,
+      pagination: <span class="token string">&quot;Featured products pagination&quot;</span>,
+      previousSlide: <span class="token string">&quot;Show previous product&quot;</span>,
+      nextSlide: <span class="token string">&quot;Show next product&quot;</span>,
+      slide: (slideNumber, totalSlides) =&gt; <span class="token string">`Product ${slideNumber} of ${totalSlides}`</span>,
+      page: pageNumber =&gt; <span class="token string">`Go to page ${pageNumber}`</span>,
+      liveRegionSingle: (slideNumber, totalSlides) =&gt; <span class="token string">`Showing product ${slideNumber} of ${totalSlides}`</span>,
+      liveRegionRange: (first, last, total) =&gt; <span class="token string">`Showing products ${first} to ${last} of ${total}`</span>,
+      liveRegionFallback: total =&gt; <span class="token string">`Carousel updated. ${total} slides available.`</span>
+    }
+  })
+)
+
+<span class="token symbol">slider</span>.init()</code></pre>
+<h2 id="what-it-adds">What it adds</h2>
+<ul><li>Accessible labels for arrows, dots, and slides</li><li>A live region for screen reader announcements</li><li>Keyboard navigation on the slider root</li><li>Focus alignment with the active page</li></ul>
+<h2 id="options">Options</h2>
+<h3 id="usekeyboardnavigation"><code>useKeyboardNavigation</code></h3>
+<p>Enables arrow-key navigation on the slider root.</p>
+<h3 id="usefocusmanagement"><code>useFocusManagement</code></h3>
+<p>Moves focus to the active pagination control when appropriate.</p>
+<h3 id="labels"><code>labels</code></h3>
+<p>Overrides all accessible strings including slide labels and live region messages.</p>
+<h2 id="notes">Notes</h2>
+<ul><li>Attach before calling <code>slider.init()</code></li><li>Works with both regular sliders and stories-enhanced sliders</li><li>If arrows or dots are missing from markup, the plugin cannot label them</li></ul>
           </article>
         </main>
 
-        <div class="toc-column"></div>
+        <aside class="toc-column pl-6">
+          <div class="toc pt-12">
+            <h2 class="toc-title">On this page</h2>
+            <ul class="toc-list">
+    <li class="level-2">
+          <a href="#install">Install</a>
+        </li><li class="level-2">
+          <a href="#usage">Usage</a>
+        </li><li class="level-2">
+          <a href="#what-it-adds">What it adds</a>
+        </li><li class="level-2">
+          <a href="#options">Options</a>
+        </li><li class="level-3">
+          <a href="#usekeyboardnavigation">`useKeyboardNavigation`</a>
+        </li><li class="level-3">
+          <a href="#usefocusmanagement">`useFocusManagement`</a>
+        </li><li class="level-3">
+          <a href="#labels">`labels`</a>
+        </li><li class="level-2">
+          <a href="#notes">Notes</a>
+        </li>
+  </ul>
+          </div>
+        </aside>
       </div>
     </div>
   </body>

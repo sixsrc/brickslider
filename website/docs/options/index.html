@@ -3,18 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documentation · BrickSlider Docs</title>
-    <meta name="description" content="Start here for installation, markup, API, plugins, and framework guides for BrickSlider." />
+    <title>Options · BrickSlider Docs</title>
+    <meta name="description" content="Spacing between slides in pixels." />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://brickslider.github.io/docs/" />
+    <link rel="canonical" href="https://brickslider.github.io/docs/options/" />
 
-    <script>
-      const params = new URLSearchParams(window.location.search)
-      const page = params.get("p")
-      if (page) {
-        window.location.replace("/docs/" + page + "/")
-      }
-    </script>
 
     <script>
       if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
@@ -234,7 +227,7 @@
       </section><section class="nav-group">
         <h2>API</h2>
         <ul><li>
-            <a href="/docs/options/" class="nav-link">
+            <a href="/docs/options/" class="nav-link active">
               Options
             </a>
           </li><li>
@@ -274,39 +267,101 @@
 
         <main class="min-w-0 px-0 py-10 md:px-8 lg:px-12">
           <article class="doc-article">
-            
-    <h1 class="docs-home-title">BrickSlider Docs</h1>
-    <p class="doc-lead">
-      Start with the core setup, then move into plugins, framework guides, and
-      practical API references. Everything here is generated from the project
-      markdown sources, so the docs stay aligned with the current library.
-    </p>
-    <div class="docs-home-grid">
-      <a href="/docs/installation/" class="docs-home-card">
-            <h3>Installation</h3>
-            <p>Install packages and choose the runtime format.</p>
-          </a><a href="/docs/quick-start/" class="docs-home-card">
-            <h3>Quick Start</h3>
-            <p>Mount your first BrickSlider in a few lines.</p>
-          </a><a href="/docs/basic-markup/" class="docs-home-card">
-            <h3>Basic Markup</h3>
-            <p>Understand the required HTML structure.</p>
-          </a><a href="/docs/examples-basic-slider/" class="docs-home-card">
-            <h3>Examples</h3>
-            <p>Browse practical slider configurations before diving deeper.</p>
-          </a><a href="/docs/stories-plugin/" class="docs-home-card">
-            <h3>Stories</h3>
-            <p>Story-style modal flows with timed progress.</p>
-          </a><a href="/docs/accessibility-plugin/" class="docs-home-card">
-            <h3>Accessibility</h3>
-            <p>Labels, focus helpers, and announcements.</p>
-          </a>
-    </div>
-  
+            <h1 id="options">Options</h1>
+<h2 id="configuration">Configuration</h2>
+<pre><code class="language-ts"><span class="token keyword">const</span> <span class="token symbol">slider</span> = <span class="token keyword">new</span> <span class="token symbol">BrickSlider</span>(<span class="token string">&quot;#slider&quot;</span>, {
+  gap: <span class="token number">20</span>,
+  slidesPerPage: <span class="token number">1</span>,
+  slidesPerView: <span class="token number">1</span>,
+  slideSizes: {
+    <span class="token number">0</span>: <span class="token number">60</span>,
+    <span class="token number">1</span>: <span class="token number">40</span>
+  },
+  screens: {
+    xs: <span class="token number">320</span>,
+    md: <span class="token number">768</span>,
+    lg: <span class="token number">1024</span>
+  },
+  responsive: {
+    xs: {
+      slidesPerView: <span class="token number">1</span>,
+      slidesPerPage: <span class="token number">1</span>,
+      slideSizes: { <span class="token number">0</span>: <span class="token number">100</span> }
+    },
+    md: {
+      slidesPerView: <span class="token number">2</span>,
+      slidesPerPage: <span class="token number">2</span>,
+      slideSizes: { <span class="token number">0</span>: <span class="token number">60</span>, <span class="token number">1</span>: <span class="token number">40</span> }
+    },
+    lg: {
+      slidesPerView: <span class="token number">3</span>,
+      slidesPerPage: <span class="token number">3</span>,
+      useSlideSizes: <span class="token keyword">false</span>
+    }
+  },
+  useTouch: <span class="token keyword">true</span>,
+  useLoop: <span class="token keyword">true</span>,
+  useDragFree: <span class="token keyword">false</span>,
+  useAutoHeight: <span class="token keyword">false</span>
+})</code></pre>
+<h2 id="option-reference">Option Reference</h2>
+<h3 id="gap"><code>gap</code></h3>
+<p>Spacing between slides in pixels.</p>
+<h3 id="slidesperpage"><code>slidesPerPage</code></h3>
+<p>How many slides are advanced per paginated navigation step.</p>
+<h3 id="slidesperview"><code>slidesPerView</code></h3>
+<p>How many slides are visible at once.</p>
+<h3 id="slidesizes"><code>slideSizes</code></h3>
+<p>A map of custom width percentages per slide index.</p>
+<pre><code class="language-ts">slideSizes: { <span class="token number">0</span>: <span class="token number">65</span>, <span class="token number">1</span>: <span class="token number">35</span>, <span class="token number">2</span>: <span class="token number">25</span>, <span class="token number">3</span>: <span class="token number">75</span> }</code></pre>
+<h3 id="screens"><code>screens</code></h3>
+<p>Breakpoint values used by the responsive config. Supported keys: <code>xs</code>, <code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>2xl</code>.</p>
+<h3 id="responsive"><code>responsive</code></h3>
+<p>Responsive overrides per breakpoint. Available keys: <code>slidesPerView</code>, <code>slidesPerPage</code>, <code>slideSizes</code>, <code>useSlideSizes</code>.</p>
+<p>Use <code>useSlideSizes: false</code> inside a breakpoint to ignore both local and global <code>slideSizes</code>.</p>
+<h3 id="usetouch"><code>useTouch</code></h3>
+<p>Enables touch and drag interactions.</p>
+<h3 id="useloop"><code>useLoop</code></h3>
+<p>Creates an infinite carousel by cloning slides.</p>
+<h3 id="usedragfree"><code>useDragFree</code></h3>
+<p>Disables paged snapping and allows free dragging.</p>
+<h3 id="useautoheight"><code>useAutoHeight</code></h3>
+<p>Adjusts the slider height to the current visible content.</p>
           </article>
         </main>
 
-        <div class="toc-column"></div>
+        <aside class="toc-column pl-6">
+          <div class="toc pt-12">
+            <h2 class="toc-title">On this page</h2>
+            <ul class="toc-list">
+    <li class="level-2">
+          <a href="#configuration">Configuration</a>
+        </li><li class="level-2">
+          <a href="#option-reference">Option Reference</a>
+        </li><li class="level-3">
+          <a href="#gap">`gap`</a>
+        </li><li class="level-3">
+          <a href="#slidesperpage">`slidesPerPage`</a>
+        </li><li class="level-3">
+          <a href="#slidesperview">`slidesPerView`</a>
+        </li><li class="level-3">
+          <a href="#slidesizes">`slideSizes`</a>
+        </li><li class="level-3">
+          <a href="#screens">`screens`</a>
+        </li><li class="level-3">
+          <a href="#responsive">`responsive`</a>
+        </li><li class="level-3">
+          <a href="#usetouch">`useTouch`</a>
+        </li><li class="level-3">
+          <a href="#useloop">`useLoop`</a>
+        </li><li class="level-3">
+          <a href="#usedragfree">`useDragFree`</a>
+        </li><li class="level-3">
+          <a href="#useautoheight">`useAutoHeight`</a>
+        </li>
+  </ul>
+          </div>
+        </aside>
       </div>
     </div>
   </body>

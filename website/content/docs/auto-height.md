@@ -1,4 +1,4 @@
-# BrickSlider Auto Height
+# Auto Height
 
 This guide explains how to use the `useAutoHeight` option in BrickSlider.
 
