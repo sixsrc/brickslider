@@ -1,5 +1,11 @@
 # @sixsrc/brick-slider-tailwind
 
+## 1.0.4
+
+### Patch Changes
+
+- Fix responsive infinite loop reset behavior in the core slider and publish the latest structural Tailwind CSS updates.
+
 ## 1.0.2
 
 ### Patch Changes

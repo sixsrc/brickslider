@@ -46,7 +46,7 @@
     "build": "tsc --noEmit && vite build"
   },
   "peerDependencies": {
-    "@sixsrc/brick-slider": "^1.0.8"
+    "@sixsrc/brick-slider": "^1.0.9"
   },
   "devDependencies": {
     "@sixsrc/brick-slider": "workspace:*"

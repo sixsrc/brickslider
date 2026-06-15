@@ -443,7 +443,7 @@ var V = class t {
 		return Number.isInteger(t) ? t : -1;
 	}
 	getFirstIndex() {
-		return this.slides.findIndex((e) => this.getSlideDataIndexValue(e) === 0);
+		return this.slides.findIndex((e) => this.getSlideDataIndexValue(e) === 0 && !D(e, t.CLONED));
 	}
 	getFirstClonedIndex() {
 		return this.slides.findIndex((e) => this.getSlideDataIndexValue(e) === 0 && D(e, t.CLONED));
