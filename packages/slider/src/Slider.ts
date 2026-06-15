@@ -667,9 +667,9 @@ export class Slider extends BaseSlider {
   }
 
   private completeLoopJump(targetIndex: number): void {
-    this.disableJumpSlide()
     this.currentIndex = targetIndex
     this.commitCurrentIndex()
+    this.disableJumpSlide()
   }
 
   private enableJumpSlide(): void {

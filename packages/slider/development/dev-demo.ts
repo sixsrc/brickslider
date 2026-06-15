@@ -166,12 +166,18 @@ const options = [
     gap: 20,
     screens: {
       xs: 320,
+      sm: 540,
       md: 768,
-      lg: 1024
+      lg: 1024,
+      xl: 1280
     },
     responsive: {
       xs: {
         slidesPerView: 1,
+        slidesPerPage: 1
+      },
+      sm: {
+        slidesPerView: 2,
         slidesPerPage: 1
       },
       md: {
@@ -180,7 +186,11 @@ const options = [
       },
       lg: {
         slidesPerView: 3,
-        slidesPerPage: 3
+        slidesPerPage: 2
+      },
+      xl: {
+        slidesPerView: 4,
+        slidesPerPage: 4
       }
     },
     useLoop: true
@@ -188,12 +198,13 @@ const options = [
   {
     slidesPerView: 1,
     slidesPerPage: 1,
-    initialSlide: 3,
     gap: 20,
     screens: {
       xs: 320,
+      sm: 540,
       md: 768,
-      lg: 1024
+      lg: 1024,
+      xl: 1280
     },
     responsive: {
       xs: {
@@ -201,21 +212,39 @@ const options = [
         slidesPerPage: 1,
         useSlideSizes: false
       },
+      sm: {
+        slidesPerView: 2,
+        slidesPerPage: 1,
+        slideSizes: {
+          0: 65,
+          1: 35
+        }
+      },
       md: {
         slidesPerView: 2,
         slidesPerPage: 2,
         slideSizes: {
-          0: 70,
-          1: 30
+          0: 30,
+          1: 70
         }
       },
       lg: {
         slidesPerView: 3,
-        slidesPerPage: 3,
+        slidesPerPage: 2,
         slideSizes: {
           0: 50,
           1: 30,
           2: 20
+        }
+      },
+      xl: {
+        slidesPerView: 4,
+        slidesPerPage: 4,
+        slideSizes: {
+          0: 38,
+          1: 22,
+          2: 20,
+          3: 20
         }
       }
     },

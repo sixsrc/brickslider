@@ -256,7 +256,11 @@ export class BaseSlider {
   }
 
   protected getFirstIndex(): number {
-    return this.slides.findIndex(slide => this.getSlideDataIndexValue(slide) === 0)
+    return this.slides.findIndex(
+      slide =>
+        this.getSlideDataIndexValue(slide) === 0 &&
+        !hasClass(slide, CLASS_VALUES.CLONED)
+    )
   }
 
   protected getFirstClonedIndex(): number {
