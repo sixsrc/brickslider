@@ -110,19 +110,19 @@ function bindStoriesEventsDemo(slider: BrickSlider): void {
 
 function bindSlider3EventsDemo(slider: BrickSlider): void {
   slider.on(SLIDER_EVENTS.MOUNTED, () => {
-    // alert("slider3 mounted")
+    /* alert("slider3 mounted")*/
   })
 
   slider.on(SLIDER_EVENTS.DESTROYED, () => {
-    // alert("slider3 destroyed")
+    /* alert("slider3 destroyed")*/
   })
 
   slider.on(SLIDER_EVENTS.SLIDE_CHANGE, payload => {
     const slideChangePayload = payload as DemoSlideChangePayload
 
-    // alert(
-    //   `slider3 slideChange: slide ${slideChangePayload.slideIndex}, page ${slideChangePayload.activePage}`
-    // )
+    /* alert(
+       `slider3 slideChange: slide ${slideChangePayload.slideIndex}, page ${slideChangePayload.activePage}`
+     )*/
   })
 }
 
