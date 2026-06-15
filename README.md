@@ -97,42 +97,45 @@ Install only the packages you need.
 ### Core
 
 ```bash
-npm install @sixsrc/brick-slider
-# or
 pnpm add @sixsrc/brick-slider
+# or
+npm install @sixsrc/brick-slider
 ```
 
 ### Accessibility
 
 ```bash
+pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
+# or
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
 ```
 
 ### Stories
 
 ```bash
+pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-stories
+# or
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-stories
 ```
 
 ### Tailwind
 
 ```bash
-npm install @sixsrc/brick-slider-tailwind
+pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
+# or
+npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 ```
 
 ## CDN
 
-Load the core first, then any plugins you want:
+Use ESM in the browser and import the plugins you need:
 
 ```html
-<script src="https://unpkg.com/@sixsrc/brick-slider/lib/brick-slider.umd.cjs"></script>
-<script src="https://unpkg.com/@sixsrc/brick-slider/lib/plugin-api.umd.cjs"></script>
-<script src="https://unpkg.com/@sixsrc/brick-slider-accessibility/lib/brick-slider-accessibility.umd.cjs"></script>
-<script src="https://unpkg.com/@sixsrc/brick-slider-stories/lib/brick-slider-stories.umd.cjs"></script>
-```
+<script type="module">
+  import { BrickSlider } from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider/+esm"
+  import AccessibilityPlugin from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility/+esm"
+  import StoriesPlugin from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories/+esm"
 
-```html
-<script>
   const slider = new BrickSlider("#slider", {
     slidesPerView: 1,
     slidesPerPage: 1
@@ -143,10 +146,15 @@ Load the core first, then any plugins you want:
     new StoriesPlugin({ trigger: "#open-stories", duration: 5000 })
   )
   slider.init()
-</script>
+<\/script>
 ```
 
-Available globals: `BrickSlider`, `BrickSliderPluginApi`, `AccessibilityPlugin`, `StoriesPlugin`.
+## Build Formats
+
+- `ESM` is the official runtime format for BrickSlider.
+- Browser usage should use `<script type="module">`.
+- npm usage works with modern bundlers through the ESM entry.
+- `UMD` and `CommonJS` builds are no longer maintained.
 
 ## Quick Start
 
@@ -265,11 +273,13 @@ const slider = new BrickSlider("#slider", {
     md: {
       slidesPerView: 2,
       slidesPerPage: 2,
-      slideSizes: { 0: 60, 1: 40 }
+      slideSizes: { 0: 60, 1: 40 },
+      useSlidesPerView: false
     },
     lg: {
       slidesPerView: 3,
       slidesPerPage: 3,
+      useSlidesPerPage: false,
       useSlideSizes: false
     }
   },
@@ -323,9 +333,13 @@ Breakpoint values used by the responsive config. Supported keys: `xs`, `sm`, `md
 
 #### `responsive`
 
-Responsive overrides per breakpoint. Available keys: `slidesPerView`, `slidesPerPage`, `slideSizes`, `useSlideSizes`.
+Responsive overrides per breakpoint. Available keys: `slidesPerView`, `slidesPerPage`, `slideSizes`, `useSlidesPerView`, `useSlidesPerPage`, `useSlideSizes`.
 
-Use `useSlideSizes: false` inside a breakpoint to ignore both local and global `slideSizes` at that screen size.
+Use the `use*` flags when you want to keep the breakpoint active but selectively ignore part of its config.
+
+- `useSlidesPerView: false` ignores the breakpoint `slidesPerView` value and keeps the base value
+- `useSlidesPerPage: false` ignores the breakpoint `slidesPerPage` value and keeps the base value
+- `useSlideSizes: false` ignores both local and global `slideSizes` at that breakpoint
 
 #### `useTouch`
 
@@ -543,6 +557,22 @@ slider.use(
 
 slider.init()
 ```
+
+### Core Options Ignored by Stories
+
+The Stories plugin forces its own story flow and ignores these core slider options if they are present on the host instance:
+
+- `slidesPerView`
+- `slidesPerPage`
+- `gap`
+- `slideSizes`
+- `screens`
+- `responsive`
+- `useLoop`
+- `useDragFree`
+- `useAutoHeight`
+
+In practice, stories always runs as a single-story flow with its own internal navigation rules.
 
 ### Options
 

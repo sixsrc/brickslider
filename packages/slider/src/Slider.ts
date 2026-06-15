@@ -1,12 +1,11 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { ArrowSync } from "./ArrowSync"
 import { BaseSlider } from "./BaseSlider"
-import { Pages } from "./Pages"
-import { Progress } from "./Progress"
 import { Mutate } from "./Mutate"
 import { Observer } from "./Observer"
 import { Messages } from "./Messages"
 import { Validation } from "./Validation"
+import { syncPagesFeature, syncProgressFeature } from "./FeatureLoader"
 import type { StateType } from "./types"
 import {
   CLASS_VALUES,
@@ -490,7 +489,7 @@ export class Slider extends BaseSlider {
     const positions = this.getPositions()
     const startIndex = this.getDotStartIndex()
     const dotIndex = this.getComputedDotIndex(positions, startIndex)
-    const dotState = this.dotIndexState(dotIndex)
+    const dotState = this.dotState(dotIndex, positions.length)
 
     if (!isPagedActive) return
 
@@ -546,12 +545,22 @@ export class Slider extends BaseSlider {
     return { dotIndex }
   }
 
+  private dotState(
+    dotIndex: number,
+    numberOfPages: number
+  ): Partial<StateType> {
+    return {
+      dotIndex,
+      numberOfPages: Math.max(1, numberOfPages)
+    }
+  }
+
   public updateSlider(): void {
     this.defineDotIndex()
     this.updateDots(this.$root)
-    new Pages(this.$root).sync()
     new ArrowSync(this.$root).sync()
-    new Progress(this.$root).sync()
+    void syncPagesFeature(this.$root)
+    void syncProgressFeature(this.$root)
   }
 
   protected updateDOM(): void {}

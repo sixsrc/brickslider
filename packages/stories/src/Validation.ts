@@ -8,7 +8,7 @@ import {
   getElement,
   getRootSelector,
   hasClass
-} from "@sixsrc/brick-slider/plugin-api"
+} from "@sixsrc/brick-slider/api"
 import { STORIES_CLASSES } from "./constants"
 import type { BrickSliderStoriesValidationId } from "./types"
 

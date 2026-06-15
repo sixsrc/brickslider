@@ -1,4 +1,4 @@
-import { $ as e, ATTRIBUTES as t, CLASS_VALUES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, TAGS as c, TIMES as l, appendToParent as u, createNewElement as d, getAllElements as f, getAttribute as p, getElement as m, getSlideDataIndex as h, getSliderNodeList as g, hasAttribute as _, hasClass as v, listener as y, removeAttribute as b, removeElement as x, removeListener as S, setAttribute as C, waitFor as w } from "@sixsrc/brick-slider/plugin-api";
+import { $ as e, ATTRIBUTES as t, CLASS_VALUES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, SlideMeta as c, TAGS as l, TIMES as u, appendToParent as d, createNewElement as f, getAllElements as p, getAttribute as m, getElement as h, getSliderNodeList as g, hasAttribute as _, hasClass as v, listener as y, removeAttribute as b, removeElement as x, removeListener as S, setAttribute as C, waitFor as w } from "@sixsrc/brick-slider/api";
 //#region src/constants.ts
 var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 	ARROW_LEFT: "ArrowLeft",
@@ -13,6 +13,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 	rootCleanupCallback = null;
 	slideClassObserver = null;
 	slideClassFrame = 0;
+	slideMeta;
 	handleMounted = () => {
 		this.syncAccessibilityWithDelay({ announce: !0 });
 	};
@@ -29,7 +30,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 	};
 	constructor(e = {}, t = {}) {
 		let n = typeof e == "string", r = n ? e : void 0, i = n ? t : e;
-		super(r), this.pluginOptions = this.resolveOptions(i);
+		super(r), this.pluginOptions = this.resolveOptions(i), this.slideMeta = new c(this.getPluginRoot());
 	}
 	init() {
 		let e = this.host;
@@ -42,16 +43,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 	syncAccessibility({ announce: e = !1 } = {}) {
 		this.setupRootAccessibility(), this.setupTrackAccessibility(), this.setupArrowAccessibility(), this.setupDotsAccessibility(), this.setupKeyboardNavigation(), this.syncSlidesAccessibility(), e && this.updateLiveRegion();
 	}
-	observeSlideClassChanges() {
-		let e = this.getRootSelector;
-		e && (this.disconnectSlideClassObserver(), this.slideClassObserver = new MutationObserver((e) => {
-			this.hasSlideClassMutation(e) && this.scheduleSlideClassSync();
-		}), this.slideClassObserver.observe(e, {
-			subtree: !0,
-			attributes: !0,
-			attributeFilter: [t.CLASS]
-		}));
-	}
+	observeSlideClassChanges() {}
 	hasSlideClassMutation(e) {
 		return e.some((e) => {
 			let t = e.target;
@@ -67,7 +59,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		this.slideClassObserver?.disconnect(), this.slideClassObserver = null, this.slideClassFrame &&= (cancelAnimationFrame(this.slideClassFrame), 0);
 	}
 	syncAccessibilityWithDelay(e = {}) {
-		let t = l.DEFAULT_TRANSITION_TIME + 50;
+		let t = u.DEFAULT_TRANSITION_TIME + 50;
 		this.syncAccessibility(e), w(0, () => {
 			this.syncAccessibility(e);
 		}), w(t, () => {
@@ -76,10 +68,10 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 	}
 	ensureAccessibilityStyle() {
 		let t = e(`#${T}`), n = this.createAccessibilityStyleElement();
-		t || u(document.head, n);
+		t || d(document.head, n);
 	}
 	createAccessibilityStyleElement() {
-		let e = d(c.STYLE);
+		let e = f(l.STYLE);
 		return e.id = T, e.textContent = `
       .${E} {
         position: absolute !important;
@@ -103,12 +95,12 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		e && (C(e, t.ARIA_LIVE, "polite"), C(e, t.ARIA_ATOMIC, "true"));
 	}
 	setupArrowAccessibility() {
-		let e = this.getRootSelector, n = e ? this.getArrowElements(e) : [], r = p(e, t.ID);
+		let e = this.getRootSelector, n = e ? this.getArrowElements(e) : [], r = m(e, t.ID);
 		e && n.forEach((e) => this.setupArrowElementAccessibility(e, r));
 	}
 	setupArrowElementAccessibility(e, n) {
 		let r = this.getArrowDirection(e), i = this.getArrowLabel(r), a = this.isArrowDisabled(r);
-		C(e, t.ARIA_LABEL, i), C(e, t.TYPE, c.BUTTON), C(e, t.ARIA_DISABLED, String(a)), this.setArrowControls(e, n);
+		C(e, t.ARIA_LABEL, i), C(e, t.TYPE, l.BUTTON), C(e, t.ARIA_DISABLED, String(a)), this.setArrowControls(e, n);
 	}
 	getArrowDirection(e) {
 		return v(e, r.ARROW_PREV[0]) ? a.PREV : a.NEXT;
@@ -120,7 +112,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		n && C(e, t.ARIA_CONTROLS, n);
 	}
 	setupDotsAccessibility() {
-		let e = this.getRootSelector, n = this.getDotsContainerElement(), r = n ? this.getDotElements(n) : [], i = this.getCurrentFocusedDot(r), a = p(e, t.ID);
+		let e = this.getRootSelector, n = this.getDotsContainerElement(), r = n ? this.getDotElements(n) : [], i = this.getCurrentFocusedDot(r), a = m(e, t.ID);
 		e && n && (this.clearDotsAccessibility(), this.setupDotsContainerAccessibility(n), this.setupDotsElementsAccessibility(r, a), this.syncFocusedDot(r, i));
 	}
 	setupDotsContainerAccessibility(e) {
@@ -184,10 +176,10 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 	}
 	ensureLiveRegion(e) {
 		let t = this.getLiveRegionElement(), n = this.createLiveRegionElement();
-		t || u(e, n);
+		t || d(e, n);
 	}
 	createLiveRegionElement() {
-		let e = d(c.DIV);
+		let e = f(l.DIV);
 		return e.className = E, C(e, t.ARIA_LIVE, "polite"), C(e, t.ARIA_ATOMIC, "true"), e;
 	}
 	removeLiveRegion() {
@@ -253,7 +245,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		this.rootCleanupCallback?.(), this.rootCleanupCallback = null;
 	}
 	getSlideNumber(e, t) {
-		let n = h(e);
+		let n = this.slideMeta.getSlideDataIndex(e);
 		return Number.isInteger(n) && n >= 0 ? n + 1 : t + 1;
 	}
 	isSlideVisibleInViewport(e) {
@@ -277,16 +269,16 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		return Math.max(0, t.length - 1);
 	}
 	getArrowElements(e) {
-		return f(`.${r.ARROW[0]}`, e);
+		return p(`.${r.ARROW[0]}`, e);
 	}
 	getDotsContainerElement() {
-		return m(`.${r.DOTS[0]}`, this.getRootSelector);
+		return h(`.${r.DOTS[0]}`, this.getRootSelector);
 	}
 	getDotElements(e) {
-		return Array.from(f(`.${r.DOT[0]}`, e));
+		return Array.from(p(`.${r.DOT[0]}`, e));
 	}
 	getLiveRegionElement() {
-		return m(`.${E}`, this.getRootSelector);
+		return h(`.${E}`, this.getRootSelector);
 	}
 	isArrowDisabled(e) {
 		let { useLoop: t, activePage: n, numberOfPages: r, useDragFree: i } = this.store;
@@ -303,7 +295,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		return e >= 0;
 	}
 	isCurrentDot(e) {
-		return p(e, t.ARIA_CURRENT) === "page";
+		return m(e, t.ARIA_CURRENT) === "page";
 	}
 	resolveOptions(e) {
 		return {

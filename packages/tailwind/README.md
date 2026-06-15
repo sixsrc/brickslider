@@ -104,6 +104,8 @@ Global `slideSizes` works as a fallback.
 
 Priority:
 
+- `responsive[breakpoint].useSlidesPerView === false` → ignores `slidesPerView` from that breakpoint
+- `responsive[breakpoint].useSlidesPerPage === false` → ignores `slidesPerPage` from that breakpoint
 - `responsive[breakpoint].useSlideSizes === false` → ignores all `slideSizes`
 - `responsive[breakpoint].slideSizes` → overrides the global config
 - `slideSizes` global → fallback
@@ -125,12 +127,14 @@ Exemplo:
     },
     lg: {
       slidesPerView: 4,
-      slidesPerPage: 4
+      slidesPerPage: 4,
+      useSlidesPerPage: false
     }
   }
 }
 ```
 
+`useSlidesPerView: true` and `useSlidesPerPage: true` are unnecessary because both are implicitly enabled.
 `useSlideSizes: true` is unnecessary because `slideSizes` is already implicitly enabled.
 
 ## Without Tailwind

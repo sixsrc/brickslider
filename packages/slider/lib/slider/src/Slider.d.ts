@@ -51,6 +51,7 @@ export declare class Slider extends BaseSlider {
     private getNearestPreviousDotIndex;
     private getSafeDotIndex;
     private dotIndexState;
+    private dotState;
     updateSlider(): void;
     protected updateDOM(): void;
     updateDots($root: string): void;

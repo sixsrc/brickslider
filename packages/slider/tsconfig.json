@@ -10,7 +10,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@sixsrc/brick-slider": ["./src/index.ts"],
-      "@sixsrc/brick-slider/plugin-api": ["./src/plugin-api.ts"],
+      "@sixsrc/brick-slider/api": ["./src/api.ts"],
       "@sixsrc/brick-slider-accessibility": ["../accessibility/src/index.ts"],
       "@sixsrc/brick-slider-stories": ["../stories/src/index.ts"],
       "*": ["./*", "./*.mts"]

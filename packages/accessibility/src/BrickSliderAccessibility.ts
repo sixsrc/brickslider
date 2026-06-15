@@ -1,5 +1,5 @@
-import { Plugin } from "@sixsrc/brick-slider/plugin-api"
-import { SlideMeta } from "@sixsrc/brick-slider/plugin-api"
+import { Plugin } from "@sixsrc/brick-slider/api"
+import { SlideMeta } from "@sixsrc/brick-slider/api"
 import {
   ATTRIBUTES,
   CLASS_VALUES,
@@ -24,7 +24,7 @@ import {
   removeListener,
   setAttribute,
   waitFor
-} from "@sixsrc/brick-slider/plugin-api"
+} from "@sixsrc/brick-slider/api"
 import {
   A11Y_LIVE_REGION_CLASS,
   A11Y_STYLE_ID,

@@ -1,10 +1,5 @@
-import { Arrows } from "./Arrows"
-import { Dots } from "./Dots"
-import { Pages } from "./Pages"
-import { Progress } from "./Progress"
 import { Resize } from "./Resize"
 import { CloneSlides } from "./CloneSlides"
-import { Swipe } from "./Swipe"
 import { CLASS_VALUES } from "./helpers"
 import {
   appendToParent,
@@ -22,6 +17,13 @@ import { BaseSlider } from "./BaseSlider"
 import { Mutate } from "./Mutate"
 import { Slider } from "./Slider"
 import { SlideMeta } from "./SlideMeta"
+import {
+  initArrowsFeature,
+  initDotsFeature,
+  initPagesFeature,
+  initProgressFeature,
+  initSwipeFeature
+} from "./FeatureLoader"
 
 export class Mount extends BaseSlider {
   private clonedSlides: HTMLElement[] = []
@@ -42,14 +44,14 @@ export class Mount extends BaseSlider {
     this.slideMeta = new SlideMeta($root)
   }
 
-  public init(): void {
+  public async init(): Promise<void> {
     this.setState(this.mountState())
     this.normalizeSlidesConfig()
     this.setProperties()
     this.cloneSlides()
     this.appendSlider()
     this.handleResize()
-    this.endMount()
+    await this.endMount()
   }
 
   private setProperties(): void {
@@ -146,16 +148,15 @@ export class Mount extends BaseSlider {
     })
   }
 
-  private setControls(): void {
-    const { arrows, touch, useDragFree } = this.store
+  private async setControls(): Promise<void> {
     const { $root } = this
 
     if ($root) new ContextMenu($root).init()
-    if (!useDragFree) new Dots($root).init()
-    new Pages($root).init()
-    new Progress($root).init()
-    if (arrows) new Arrows($root).init()
-    if (touch) new Swipe($root).init()
+    await initDotsFeature($root, this.store)
+    await initPagesFeature($root)
+    await initProgressFeature($root)
+    await initArrowsFeature($root, this.store)
+    await initSwipeFeature($root, this.store)
   }
 
   protected keyFrames(index: number): KeyframeAnimation[] {
@@ -406,9 +407,11 @@ export class Mount extends BaseSlider {
     }
 
     this.setState(resizeState)
-    this.applyResolvedWidthsOnResize()
+    void this.applyResolvedWidthsOnResize()
 
-    waitFor(0, () => this.applyResolvedWidthsOnResize())
+    waitFor(0, () => {
+      void this.applyResolvedWidthsOnResize()
+    })
   }
 
   private getPreservedSlideIndexOnResize(): number {
@@ -417,12 +420,12 @@ export class Mount extends BaseSlider {
     return typeof slideIndex === "number" ? slideIndex : 0
   }
 
-  private applyResolvedWidthsOnResize(): void {
+  private async applyResolvedWidthsOnResize(): Promise<void> {
     this.resolvedSlideWidths.clear()
     this.setSlidesWidth()
     this.syncTranslateOnResize()
     this.syncAutoHeight()
-    this.syncPaginationOnResize()
+    await this.syncPaginationOnResize()
   }
 
   private syncTranslateOnResize(): void {
@@ -437,9 +440,9 @@ export class Mount extends BaseSlider {
     this.setActiveSlides()
   }
 
-  private syncPaginationOnResize(): void {
-    new Dots(this.$root).init()
-    new Progress(this.$root).init()
+  private async syncPaginationOnResize(): Promise<void> {
+    await initDotsFeature(this.$root, this.store)
+    await initProgressFeature(this.$root)
     this.slider = new Slider(this.$root)
     this.slider.updateSlider()
   }
@@ -504,12 +507,13 @@ export class Mount extends BaseSlider {
     return Math.max(1, Math.min(slidesPerView, slidesPerPage))
   }
 
-  private endMount(): void {
+  private async endMount(): Promise<void> {
     this.setActiveSlides()
     this.setSlidesWidth()
     this.setSlidesWidth()
     this.syncAutoHeight(0, 0)
+    await this.setControls()
+    this.slider.updateSlider()
     this.setVisibility()
-    this.setControls()
   }
 }

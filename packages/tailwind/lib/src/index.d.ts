@@ -11,10 +11,6 @@ export declare const brickSliderTailwindClasses: {
     readonly prev: "bs-prev";
     readonly next: "bs-next";
     readonly hidden: "bs-hidden";
-    readonly destroyed: "bs-destroyed";
-    readonly peek: "bs-peek";
-    readonly peekSm: "bs-peek-sm";
-    readonly peekLg: "bs-peek-lg";
     readonly autoHeightLayout: "bs-auto-height-layout";
     readonly activeDefault: "bs-active-default";
     readonly dotActiveDefault: "bs-dot-active-default";

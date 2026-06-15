@@ -1,4 +1,4 @@
-import { Plugin } from '@sixsrc/brick-slider/plugin-api';
+import { Plugin } from '@sixsrc/brick-slider/api';
 import { BrickSliderAccessibilityOptions } from './types';
 export declare class BrickSliderAccessibility extends Plugin {
     private dotCleanupCallbacks;
@@ -6,6 +6,7 @@ export declare class BrickSliderAccessibility extends Plugin {
     private rootCleanupCallback;
     private slideClassObserver;
     private slideClassFrame;
+    private slideMeta;
     private readonly handleMounted;
     private readonly handleSlideChange;
     private readonly handleDestroyed;

@@ -5,6 +5,8 @@ Stories plugin for BrickSlider.
 See the main repository README for installation, markup, options, and examples:
 - https://github.com/sixsrc/brickslider#stories-plugin
 
+Core slider layout options such as `slidesPerView`, `slidesPerPage`, `gap`, `slideSizes`, `screens`, `responsive`, `useLoop`, `useDragFree`, and `useAutoHeight` are ignored by the stories flow.
+
 ## Quick usage
 
 ```ts

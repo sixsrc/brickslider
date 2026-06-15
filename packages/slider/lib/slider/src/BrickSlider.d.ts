@@ -1,6 +1,15 @@
 import { BaseSlider } from './BaseSlider';
-import { Plugin } from './Plugin';
 import { SliderOptions } from './types';
+type SliderPlugin = {
+    init(): void;
+    destroy(): void;
+    setHost(host: BrickSlider): void;
+    getPluginRoot(): string;
+    usesExplicitRoot(): boolean;
+    constructor?: {
+        name?: string;
+    };
+};
 export declare class BrickSlider extends BaseSlider {
     userOptions?: SliderOptions;
     private mount;
@@ -15,12 +24,13 @@ export declare class BrickSlider extends BaseSlider {
     private defineConfigs;
     private setOptions;
     init(): void;
+    private runMount;
     private emitMountedWhenReady;
     next(): void;
     prev(): void;
     goTo(index: number): void;
     destroy(): void;
-    use(plugin: Plugin): void;
+    use(plugin: SliderPlugin): void;
     private canInteract;
     private destroyPlugins;
     private getSlider;
@@ -36,3 +46,4 @@ export declare class BrickSlider extends BaseSlider {
     private restoreRootStyle;
     private resetMountState;
 }
+export {};

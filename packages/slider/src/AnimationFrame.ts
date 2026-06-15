@@ -1,5 +1,5 @@
 import { BaseSlider } from "./BaseSlider"
-import { Progress } from "./Progress"
+import { syncProgressFeature } from "./FeatureLoader"
 import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./helpers"
 import { animateElement, translate3d } from "./helpers"
 import type {
@@ -22,7 +22,7 @@ export class AnimationFrame extends BaseSlider {
           this.options()
         )
 
-        new Progress(this.$root).sync()
+        void syncProgressFeature(this.$root)
 
         if (callbacks?.onStart) {
           queueMicrotask(() => {

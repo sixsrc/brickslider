@@ -14,13 +14,23 @@ import {
 } from "./helpers"
 import { Mount } from "./Mount"
 import { Slider } from "./Slider"
-import { Plugin } from "./Plugin"
 import type { SliderOptions, StateType } from "./types"
+
+type SliderPlugin = {
+  init(): void
+  destroy(): void
+  setHost(host: BrickSlider): void
+  getPluginRoot(): string
+  usesExplicitRoot(): boolean
+  constructor?: {
+    name?: string
+  }
+}
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: SliderOptions
   private mount: Mount | null = null
-  private plugins: Plugin[] = []
+  private plugins: SliderPlugin[] = []
   private validate: Validation
   private message: Messages
   private readonly initialInnerHTML: string
@@ -60,7 +70,11 @@ export class BrickSlider extends BaseSlider {
 
   public init(): void {
     Slider.registerDestroyHandler(this.$root, () => this.destroy())
-    this.mount?.init()
+    void this.runMount()
+  }
+
+  private async runMount(): Promise<void> {
+    await this.mount?.init()
     this.emitMountedWhenReady()
   }
 
@@ -163,7 +177,7 @@ export class BrickSlider extends BaseSlider {
     this.emit(SLIDER_EVENTS.DESTROYED, this.$root)
   }
 
-  public use(plugin: Plugin): void {
+  public use(plugin: SliderPlugin): void {
     const pluginName = this.getPluginName(plugin)
     const isValidPlugin = this.isValidPluginType(plugin)
 
@@ -198,15 +212,25 @@ export class BrickSlider extends BaseSlider {
     return new Slider(this.$root)
   }
 
-  private getPluginName(plugin: Plugin): string {
+  private getPluginName(plugin: SliderPlugin): string {
     return plugin.constructor?.name ?? "UnknownPlugin"
   }
 
-  private isValidPluginType(plugin: unknown): plugin is Plugin {
-    return plugin instanceof Plugin
+  private isValidPluginType(plugin: unknown): plugin is SliderPlugin {
+    if (!plugin || typeof plugin !== "object") return false
+
+    const candidate = plugin as SliderPlugin
+
+    return (
+      typeof candidate.init === "function" &&
+      typeof candidate.destroy === "function" &&
+      typeof candidate.setHost === "function" &&
+      typeof candidate.getPluginRoot === "function" &&
+      typeof candidate.usesExplicitRoot === "function"
+    )
   }
 
-  private isMatchingPluginRoot(plugin: Plugin): boolean {
+  private isMatchingPluginRoot(plugin: SliderPlugin): boolean {
     return plugin.getPluginRoot() === this.$root
   }
 

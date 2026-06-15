@@ -1,4 +1,4 @@
-import { $ as e, ANIMATION_OPTIONS as t, ATTRIBUTES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, TAGS as c, Validation as l, addClass as u, appendToParent as d, closestElement as f, containsElement as p, createNewElement as m, getAllElements as h, getAttribute as g, getChildren as _, getElement as v, getRootSelector as y, getSliderNodeList as b, getTrackChildren as x, hasAttribute as S, hasClass as C, listener as w, removeAttribute as T, removeClass as E, removeElement as D, removeListener as O, setAttribute as k } from "@sixsrc/brick-slider/plugin-api";
+import { $ as e, ANIMATION_OPTIONS as t, ATTRIBUTES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, TAGS as c, Validation as l, addClass as u, appendToParent as d, closestElement as f, containsElement as p, createNewElement as m, getAllElements as h, getAttribute as g, getChildren as _, getElement as v, getRootSelector as y, getSliderNodeList as b, getTrackChildren as x, hasAttribute as S, hasClass as C, listener as w, removeAttribute as T, removeClass as E, removeElement as D, removeListener as O, setAttribute as k } from "@sixsrc/brick-slider/api";
 //#region src/constants.ts
 var A = {
 	BODY_OPEN: "bs-stories-body-open",
@@ -407,6 +407,9 @@ var A = {
 		let n = typeof e == "string", r = n ? e : void 0, i = n ? t : e;
 		super(r), this.pluginOptions = this.resolveOptions(i);
 	}
+	setHost(e) {
+		super.setHost(e), this.applyStoriesHostState();
+	}
 	init() {
 		let e = this.host, t = this.validateMarkup(), n = this.getRootSelector;
 		t && e && n && (this.setupStoriesRoot(n), this.setupStoriesLayer(n), this.setupProgress(n), this.setupControls(n), this.setupEdgeSwipeLock(n), this.setupTriggers(), this.wrapHostNavigation(e), this.syncMutedState(), w([
@@ -415,6 +418,23 @@ var A = {
 			i.TOUCHSTART,
 			i.CLICK
 		], window, this.handleWindowControl, !0), w([i.MOUSEMOVE], window, this.handleWindowMouseMove), w([i.KEYDOWN], document, this.handleKeydown), e.on(s.SLIDE_CHANGE, this.handleSlideChange));
+	}
+	applyStoriesHostState() {
+		this.setState({
+			gap: 0,
+			slidesPerView: 1,
+			slidesPerPage: 1,
+			baseSlidesPerView: 1,
+			baseSlidesPerPage: 1,
+			slideSizes: {},
+			baseSlideSizes: {},
+			screens: {},
+			responsive: {},
+			activeBreakpoint: "base",
+			useLoop: !1,
+			useDragFree: !1,
+			useAutoHeight: !1
+		});
 	}
 	validateMarkup() {
 		let e = new R(this.$root);

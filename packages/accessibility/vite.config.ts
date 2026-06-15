@@ -7,16 +7,12 @@ export default defineConfig({
     outDir: "lib",
     minify: true,
     lib: {
-      name: "BrickSliderAccessibility",
       entry: "./src/index.ts",
-      formats: ["es", "cjs"],
+      formats: ["es"],
       fileName: "brick-slider-accessibility"
     },
     rollupOptions: {
-      external: ["@sixsrc/brick-slider", "@sixsrc/brick-slider/plugin-api"],
-      output: {
-        exports: "named"
-      }
+      external: ["@sixsrc/brick-slider", "@sixsrc/brick-slider/api"]
     }
   },
   plugins: [dts()]

@@ -1,25 +1,36 @@
 import { BaseSlider } from "./BaseSlider"
-import { TouchEnd } from "./TouchEnd"
-import { TouchMove } from "./TouchMove"
-import { TouchStart } from "./TouchStart"
 import { EVENTS } from "./helpers"
 import { listener } from "./helpers"
-import type { TouchListenersParams } from "./types"
+import type { MouseEventOrTouchEvent, TouchListenersParams } from "./types"
+
+type TouchHandler = {
+  init: (event: MouseEventOrTouchEvent) => void
+}
 
 export class Swipe extends BaseSlider {
-  private touchStart: TouchStart
-  private touchEnd: TouchEnd
-  private touchMove: TouchMove
+  private touchStart?: TouchHandler
+  private touchEnd?: TouchHandler
+  private touchMove?: TouchHandler
 
   constructor($root: string) {
     super($root)
+  }
+
+  public async init(): Promise<void> {
+    await this.loadTouchHandlers()
+    this.setListeners(this.params())
+  }
+
+  private async loadTouchHandlers(): Promise<void> {
+    const [{ TouchStart }, { TouchEnd }, { TouchMove }] = await Promise.all([
+      import("./TouchStart"),
+      import("./TouchEnd"),
+      import("./TouchMove")
+    ])
+
     this.touchStart = new TouchStart(this.$root)
     this.touchEnd = new TouchEnd(this.$root)
     this.touchMove = new TouchMove(this.$root)
-  }
-
-  public init(): void {
-    this.setListeners(this.params())
   }
 
   private params(): TouchListenersParams {
@@ -28,9 +39,9 @@ export class Swipe extends BaseSlider {
     return {
       element: this.$track,
       index: 0,
-      touchStart: touchStart.init.bind(touchStart) as EventListener,
-      touchEnd: touchEnd.init.bind(touchEnd) as EventListener,
-      touchMove: touchMove.init.bind(touchMove) as EventListener
+      touchStart: touchStart?.init.bind(touchStart) as EventListener,
+      touchEnd: touchEnd?.init.bind(touchEnd) as EventListener,
+      touchMove: touchMove?.init.bind(touchMove) as EventListener
     }
   }
 

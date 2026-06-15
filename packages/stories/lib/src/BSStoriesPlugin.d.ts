@@ -1,4 +1,4 @@
-import { Plugin } from '@sixsrc/brick-slider/plugin-api';
+import { Plugin } from '@sixsrc/brick-slider/api';
 import { BSStoriesPluginOptions } from './types';
 export declare class BrickSliderStories extends Plugin {
     private activeAnimation;
@@ -48,7 +48,9 @@ export declare class BrickSliderStories extends Plugin {
     private syncPauseHoverFromPointer;
     constructor(options?: BSStoriesPluginOptions);
     constructor($root: string, options?: BSStoriesPluginOptions);
+    setHost(host: NonNullable<typeof this.host>): void;
     init(): void;
+    private applyStoriesHostState;
     private validateMarkup;
     destroy(): void;
     open(): void;

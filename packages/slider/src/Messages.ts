@@ -83,7 +83,7 @@ export class Messages extends Validation {
 
   public displayInvalidPluginType(): void {
     this.displayError(
-      `[BrickSlider] Plugin rejected. Official plugins must extend Plugin.`
+      `[BrickSlider] Plugin rejected. It must implement the BrickSlider plugin contract.\nSee: ${DOCS.GET_STARTED}`
     )
   }
 

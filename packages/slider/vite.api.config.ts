@@ -7,9 +7,9 @@ export default defineConfig({
     outDir: "lib",
     minify: true,
     lib: {
-      entry: "./src/plugin-api.ts",
-      formats: ["es", "cjs"],
-      fileName: "plugin-api"
+      entry: "./src/api.ts",
+      formats: ["es"],
+      fileName: "api"
     },
     rolldownOptions: {
       treeshake: {

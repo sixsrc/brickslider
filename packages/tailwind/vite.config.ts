@@ -6,16 +6,12 @@ export default defineConfig({
     outDir: "lib",
     minify: true,
     lib: {
-      name: "BrickSliderTailwind",
       entry: "./src/index.ts",
-      formats: ["es", "cjs"],
+      formats: ["es"],
       fileName: "brick-slider-tailwind"
     },
     rollupOptions: {
-      external: ["tailwindcss/plugin"],
-      output: {
-        exports: "named"
-      }
+      external: ["tailwindcss/plugin"]
     }
   },
   plugins: [dts()]

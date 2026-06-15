@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Stories plugin package for BrickSlider.",
   "license": "MIT",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "keywords": [
     "brickslider",
     "brick-slider",
@@ -25,7 +25,6 @@
   "type": "module",
   "files": [
     "lib/**/*.js",
-    "lib/**/*.cjs",
     "lib/**/*.d.ts",
     "README.md",
     "LICENSE"
@@ -33,23 +32,21 @@
   "publishConfig": {
     "access": "public"
   },
-  "unpkg": "./lib/brick-slider-stories.umd.cjs",
-  "main": "lib/brick-slider-stories.cjs",
+  "main": "./lib/brick-slider-stories.js",
   "module": "./lib/brick-slider-stories.js",
+  "jsdelivr": "./lib/brick-slider-stories.js",
   "exports": {
     ".": {
       "types": "./lib/stories/src/index.d.ts",
       "import": "./lib/brick-slider-stories.js",
-      "require": "./lib/brick-slider-stories.cjs",
       "default": "./lib/brick-slider-stories.js"
-    },
-    "./umd": "./lib/brick-slider-stories.umd.cjs"
+    }
   },
   "scripts": {
-    "build": "tsc --noEmit && vite build && vite build --config vite.cdn.config.ts --emptyOutDir false"
+    "build": "tsc --noEmit && vite build"
   },
   "peerDependencies": {
-    "@sixsrc/brick-slider": "^1.0.7"
+    "@sixsrc/brick-slider": "^1.0.8"
   },
   "devDependencies": {
     "@sixsrc/brick-slider": "workspace:*"

@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Tailwind plugin package with BrickSlider structural utilities.",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "keywords": [
     "brickslider",
     "brick-slider",
@@ -26,7 +26,6 @@
   "typings": "lib/index.d.ts",
   "files": [
     "lib/brick-slider-tailwind.js",
-    "lib/brick-slider-tailwind.cjs",
     "lib/brick-slider.css",
     "lib/preset.css",
     "lib/src/index.d.ts",
@@ -37,12 +36,12 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "lib/brick-slider-tailwind.cjs",
+  "main": "./lib/brick-slider-tailwind.js",
   "module": "./lib/brick-slider-tailwind.js",
+  "jsdelivr": "./lib/brick-slider-tailwind.js",
   "exports": {
     ".": {
       "import": "./lib/brick-slider-tailwind.js",
-      "require": "./lib/brick-slider-tailwind.cjs",
       "default": "./lib/brick-slider-tailwind.js"
     },
     "./preset.css": {

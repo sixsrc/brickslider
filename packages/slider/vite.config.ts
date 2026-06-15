@@ -14,8 +14,8 @@ export default defineConfig({
         replacement: fileURLToPath(new URL("./src", import.meta.url))
       },
       {
-        find: "@sixsrc/brick-slider/plugin-api",
-        replacement: fileURLToPath(new URL("./src/plugin-api.ts", import.meta.url))
+        find: "@sixsrc/brick-slider/api",
+        replacement: fileURLToPath(new URL("./src/api.ts", import.meta.url))
       },
       {
         find: "@sixsrc/brick-slider",
@@ -60,9 +60,8 @@ export default defineConfig({
       }
     },
     lib: {
-      name: "BrickSlider",
       entry: "./src/index.ts",
-      formats: ["es", "cjs"],
+      formats: ["es"],
       fileName: "brick-slider"
     },
     rolldownOptions: {

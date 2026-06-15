@@ -1,5 +1,4 @@
 export { BrickSlider } from "./BrickSlider"
-export { Plugin } from "./Plugin"
 export type {
   AnimationCallbacks,
   AnimationOptions,

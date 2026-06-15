@@ -5,37 +5,54 @@ Install only the packages you need. All packages are framework-agnostic.
 ## Core
 
 ```bash
-npm install @sixsrc/brick-slider
-# or
 pnpm add @sixsrc/brick-slider
+# or
+npm install @sixsrc/brick-slider
 ```
 
 ## Accessibility
 
 ```bash
+pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
+# or
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-accessibility
 ```
 
 ## Stories
 
 ```bash
+pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-stories
+# or
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-stories
 ```
 
 ## Tailwind
 
 ```bash
-npm install @sixsrc/brick-slider-tailwind tailwindcss
+pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
+# or
+npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 ```
 
 ## CDN
 
-Load the core first, then any plugins you want:
+Use ESM in the browser and import only the packages you need:
 
 ```html
-<script src="https://unpkg.com/@sixsrc/brick-slider/lib/brick-slider.umd.cjs"></script>
-<script src="https://unpkg.com/@sixsrc/brick-slider-accessibility/lib/brick-slider-accessibility.umd.cjs"></script>
-<script src="https://unpkg.com/@sixsrc/brick-slider-stories/lib/brick-slider-stories.umd.cjs"></script>
-```
+<script type="module">
+  import { BrickSlider } from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider/+esm"
+  import AccessibilityPlugin from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility/+esm"
+  import StoriesPlugin from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories/+esm"
 
-Available globals: `BrickSlider`, `BrickSliderPluginApi`, `AccessibilityPlugin`, `StoriesPlugin`.
+  const slider = new BrickSlider("#slider", {
+    slidesPerView: 1,
+    slidesPerPage: 1
+  })
+
+  slider.use(new AccessibilityPlugin({ useKeyboardNavigation: true }))
+  slider.use(
+    new StoriesPlugin({ trigger: "#open-stories", duration: 5000 })
+  )
+  slider.init()
+<\/script>
+```

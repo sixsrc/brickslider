@@ -1,4 +1,4 @@
-import { Plugin } from "@sixsrc/brick-slider/plugin-api"
+import { Plugin } from "@sixsrc/brick-slider/api"
 import {
   ANIMATION_OPTIONS,
   ATTRIBUTES,
@@ -25,7 +25,7 @@ import {
   setAttribute,
   listener,
   hasClass
-} from "@sixsrc/brick-slider/plugin-api"
+} from "@sixsrc/brick-slider/api"
 import {
   STORIES_CLASSES,
   STORIES_DEFAULTS,
@@ -257,6 +257,11 @@ export class BrickSliderStories extends Plugin {
     this.pluginOptions = this.resolveOptions(options)
   }
 
+  public override setHost(host: NonNullable<typeof this.host>): void {
+    super.setHost(host)
+    this.applyStoriesHostState()
+  }
+
   public init(): void {
     const host = this.host
     const isValidMarkup = this.validateMarkup()
@@ -283,6 +288,24 @@ export class BrickSliderStories extends Plugin {
     listener([EVENTS.MOUSEMOVE], window, this.handleWindowMouseMove)
     listener([EVENTS.KEYDOWN], document, this.handleKeydown)
     host.on(SLIDER_EVENTS.SLIDE_CHANGE, this.handleSlideChange)
+  }
+
+  private applyStoriesHostState(): void {
+    this.setState({
+      gap: 0,
+      slidesPerView: 1,
+      slidesPerPage: 1,
+      baseSlidesPerView: 1,
+      baseSlidesPerPage: 1,
+      slideSizes: {},
+      baseSlideSizes: {},
+      screens: {},
+      responsive: {},
+      activeBreakpoint: "base",
+      useLoop: false,
+      useDragFree: false,
+      useAutoHeight: false
+    })
   }
 
   private validateMarkup(): boolean {

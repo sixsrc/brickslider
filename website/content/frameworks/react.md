@@ -20,11 +20,12 @@ import { BrickSlider } from "@sixsrc/brick-slider"
 
 export function ProductCarousel(): JSX.Element {
   const rootRef = useRef<HTMLDivElement | null>(null)
+  const sliderId = "product-carousel"
 
   useEffect(() => {
     if (!rootRef.current) return
 
-    const slider = new BrickSlider(rootRef.current, {
+    const slider = new BrickSlider(`#${sliderId}`, {
       slidesPerView: 1,
       slidesPerPage: 1,
       gap: 16,
@@ -39,7 +40,7 @@ export function ProductCarousel(): JSX.Element {
   }, [])
 
   return (
-    <div ref={rootRef}>
+    <div id={sliderId} ref={rootRef}>
       <button className="bs-arrow bs-prev" type="button">
         Prev
       </button>
@@ -67,5 +68,6 @@ export function ProductCarousel(): JSX.Element {
 
 - BrickSlider works with the same markup structure used in vanilla JavaScript.
 - The slider is mounted inside `useEffect()` so the DOM is ready.
+- The current core API receives a selector string, so the example uses a stable `id`.
 - Always call `destroy()` in the cleanup function when the component unmounts.
 - You can expand this setup later with plugins, responsive options, progress bars, and page counters.
