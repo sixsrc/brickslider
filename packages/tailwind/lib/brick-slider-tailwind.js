@@ -174,17 +174,7 @@ var t = e(function({ addComponents: e }) {
 		},
 		".bs-stories-pause-indicator--visible": { pointerEvents: "auto" },
 		".bs-stories-body-open": { overflow: "hidden" },
-		".bs-stories.hidden, .bs-stories-layer.hidden, .bs-stories-play.hidden, .bs-stories-pause.hidden, .bs-stories-mute-on.hidden, .bs-stories-mute-off.hidden": { display: "none !important" },
-		"@media (max-width: 768px)": {
-			".bs-stories": { padding: "0" },
-			".bs-stories .bs-track": {
-				width: "100vw",
-				maxWidth: "none",
-				height: "100dvh"
-			},
-			".bs-stories-close": { top: "max(16px, env(safe-area-inset-top))" },
-			".bs-stories-progress": { top: "max(12px, env(safe-area-inset-top))" }
-		}
+		".bs-stories.hidden, .bs-stories-layer.hidden, .bs-stories-play.hidden, .bs-stories-pause.hidden, .bs-stories-mute-on.hidden, .bs-stories-mute-off.hidden": { display: "none !important" }
 	});
 }), n = {
 	root: "bs-root",

@@ -36,3 +36,25 @@
   .bs-stories-progress-item--completed {}
   .bs-stories-progress-bar {}
 }
+
+@media (max-width: 768px) {
+  @layer components {
+    .bs-stories {
+      padding: 0;
+    }
+
+    .bs-stories .bs-track {
+      width: 100vw;
+      max-width: none;
+      height: 100dvh;
+    }
+
+    .bs-stories-close {
+      top: max(16px, env(safe-area-inset-top));
+    }
+
+    .bs-stories-progress {
+      top: max(12px, env(safe-area-inset-top));
+    }
+  }
+}

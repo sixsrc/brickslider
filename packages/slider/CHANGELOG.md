@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.10
+
+### Patch Changes
+
+- Tune the slider build with more aggressive Terser compression settings to slightly improve the published bundle size.
+
 ## 1.0.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sixsrc/brick-slider-tailwind
 
+## 1.0.5
+
+### Patch Changes
+
+- Fix the Tailwind plugin by moving responsive stories rules out of the plugin object and into the preset stylesheet.
+
 ## 1.0.4
 
 ### Patch Changes
