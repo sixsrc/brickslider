@@ -114,17 +114,20 @@
   background: linear-gradient(to top, #2e1065, rgba(46, 16, 101, 0.35), rgba(236, 72, 153, 0.2));
 }
 
-.stories-inline-progress {
+.stories-inline-progress,
+.bs-stories-progress {
   gap: 6px !important;
 }
 
-.stories-inline-progress .bs-stories-progress-item {
+.stories-inline-progress .bs-stories-progress-item,
+.bs-stories-progress .bs-stories-progress-item {
   height: 4px;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.22);
 }
 
-.stories-inline-progress .bs-stories-progress-bar {
+.stories-inline-progress .bs-stories-progress-bar,
+.bs-stories-progress .bs-stories-progress-bar {
   display: block;
   height: 100%;
   width: 100%;
@@ -133,31 +136,28 @@
 }
 
 .stories-inline-close,
-.stories-inline-mute,
-.stories-inline-pause {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+.bs-stories-close {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 9999px !important;
+  background: rgba(255, 255, 255, 0.14) !important;
   border: 0 !important;
   color: #fff !important;
   cursor: pointer !important;
 }
 
-.stories-inline-close {
-  width: 42px !important;
-  height: 42px !important;
-  border-radius: 9999px !important;
-  background: rgba(255, 255, 255, 0.14) !important;
-}
-
-.stories-inline-mute {
+.stories-inline-mute,
+.bs-stories-mute {
   width: 24px !important;
   height: 24px !important;
   background: transparent !important;
   color: rgba(255, 255, 255, 0.72) !important;
+  border: 0 !important;
+  cursor: pointer !important;
 }
 
-.stories-inline-pause {
+.stories-inline-pause,
+.bs-stories-pause-indicator {
   width: 64px !important;
   height: 64px !important;
   border-radius: 9999px !important;
@@ -165,19 +165,27 @@
   opacity: 0 !important;
   pointer-events: none !important;
   transition: opacity 0.18s ease, background-color 0.18s ease !important;
+  border: 0 !important;
+  color: #fff !important;
+  cursor: pointer !important;
 }
 
 .stories-inline-root:hover .stories-inline-pause,
-.bs-stories-pause-indicator--visible.stories-inline-pause {
+.stories-inline-root:hover .bs-stories-pause-indicator,
+.bs-stories-pause-indicator--visible.stories-inline-pause,
+.bs-stories-pause-indicator--visible.bs-stories-pause-indicator {
   opacity: 1 !important;
   pointer-events: auto !important;
 }
 
 .stories-inline-pause:hover,
-.stories-inline-close:hover {
+.bs-stories-pause-indicator:hover,
+.stories-inline-close:hover,
+.bs-stories-close:hover {
   background: rgba(255, 255, 255, 0.24) !important;
 }
 
-.stories-inline-mute:hover {
+.stories-inline-mute:hover,
+.bs-stories-mute:hover {
   color: rgba(255, 255, 255, 0.94) !important;
 }

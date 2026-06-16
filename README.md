@@ -498,6 +498,8 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-stories
 
 ### Markup
 
+Keep the stories controls in your HTML markup. The plugin controls state and behavior, but the progress rail, pause indicator, close button, and mute button should stay explicitly available in the DOM.
+
 ```html
 <button id="open-stories" type="button">Open Stories</button>
 

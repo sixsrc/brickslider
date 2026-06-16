@@ -79,6 +79,7 @@
       }
 
       .bs-stories-close,
+      .bs-stories-mute,
       .bs-stories-pause-indicator {
         display: inline-flex;
         align-items: center;
@@ -95,6 +96,14 @@
         height: 40px;
         border-radius: 9999px;
         font-size: 1.4rem;
+        line-height: 1;
+      }
+
+      .bs-stories-mute {
+        width: 40px;
+        height: 40px;
+        border-radius: 9999px;
+        font-size: 1rem;
         line-height: 1;
       }
 
@@ -146,7 +155,6 @@
               </li>
             </ul>
 
-            <button class="bs-stories-close" type="button" aria-label="Close stories">×</button>
             <button class="bs-stories-pause-indicator" type="button" aria-label="Toggle pause">
               <span class="bs-stories-pause">❚❚</span>
               <span class="bs-stories-play hidden">▶</span>
@@ -156,6 +164,11 @@
 
         <div class="bs-stories-layer hidden">
           <div class="bs-stories-backdrop"></div>
+          <button class="bs-stories-close" type="button" aria-label="Close stories">×</button>
+          <button class="bs-stories-mute" type="button" aria-label="Mute story sound">
+            <span class="bs-stories-mute-on">🔊</span>
+            <span class="bs-stories-mute-off hidden">🔇</span>
+          </button>
         </div>
       </div>
     </div>

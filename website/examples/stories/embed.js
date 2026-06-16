@@ -21,7 +21,7 @@ function ensureStyles() {
     },
     {
       id: STYLE_IDS.EMBED,
-      href: "/examples/stories/embed.css?v=3"
+      href: "/examples/stories/embed.css?v=5"
     }
   ]
 
@@ -162,38 +162,11 @@ function createMarkup(id) {
             </div>
           </div>
 
-            <ul class="bs-stories-progress stories-inline-progress">
-              <li class="bs-stories-progress-item">
-                <span class="bs-stories-progress-bar"></span>
-              </li>
-            </ul>
-
-          <button
-            class="bs-stories-mute stories-inline-mute"
-            type="button"
-            aria-label="Mute story sound"
-          >
-            <span class="bs-stories-mute-on">
-              <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12zm-2.5-8.7v2.1A7.5 7.5 0 0 1 18.5 12a7.5 7.5 0 0 1-4.5 6.6v2.1A9.5 9.5 0 0 0 20.5 12 9.5 9.5 0 0 0 14 3.3z"></path>
-              </svg>
-            </span>
-            <span class="bs-stories-mute-off hidden">
-              <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 9v6h4l5 4V5L8 9H4zm10.59 3L12 9.41 13.41 8 16 10.59 18.59 8 20 9.41 17.41 12 20 14.59 18.59 16 16 13.41 13.41 16 12 14.59 14.59 12z"></path>
-              </svg>
-            </span>
-          </button>
-
-          <button
-            class="bs-stories-close stories-inline-close"
-            type="button"
-            aria-label="Close stories"
-          >
-            <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m6.4 5 12.6 12.6-1.4 1.4L5 6.4 6.4 5Zm12.6 1.4L6.4 19 5 17.6 17.6 5 19 6.4Z"></path>
-            </svg>
-          </button>
+          <ul class="bs-stories-progress stories-inline-progress">
+            <li class="bs-stories-progress-item">
+              <span class="bs-stories-progress-bar"></span>
+            </li>
+          </ul>
 
           <button
             class="bs-stories-pause-indicator stories-inline-pause"
@@ -211,13 +184,37 @@ function createMarkup(id) {
               </svg>
             </span>
           </button>
+
         </div>
       </div>
 
       <div class="bs-stories-layer stories-inline-layer hidden">
-        <div
-          class="bs-stories-backdrop stories-inline-backdrop"
-        ></div>
+        <div class="bs-stories-backdrop stories-inline-backdrop"></div>
+        <button
+          class="bs-stories-close stories-inline-close"
+          type="button"
+          aria-label="Close stories"
+        >
+          <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6.4 5 12.6 12.6-1.4 1.4L5 6.4 6.4 5Zm12.6 1.4L6.4 19 5 17.6 17.6 5 19 6.4Z"></path>
+          </svg>
+        </button>
+        <button
+          class="bs-stories-mute stories-inline-mute"
+          type="button"
+          aria-label="Mute story sound"
+        >
+          <span class="bs-stories-mute-on">
+            <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12zm-2.5-8.7v2.1A7.5 7.5 0 0 1 18.5 12a7.5 7.5 0 0 1-4.5 6.6v2.1A9.5 9.5 0 0 0 20.5 12 9.5 9.5 0 0 0 14 3.3z"></path>
+            </svg>
+          </span>
+          <span class="bs-stories-mute-off hidden">
+            <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4zm10.59 3L12 9.41 13.41 8 16 10.59 18.59 8 20 9.41 17.41 12 20 14.59 18.59 16 16 13.41 13.41 16 12 14.59 14.59 12z"></path>
+            </svg>
+          </span>
+        </button>
       </div>
   `
 }
