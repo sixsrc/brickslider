@@ -18,6 +18,48 @@ Add to your main stylesheet:
 @plugin "@sixsrc/brick-slider-tailwind";
 ```
 
+## Visual States
+
+The Tailwind package provides the structural layer for BrickSlider, but it does not force your visual theme for active slides or active dots.
+
+Example:
+
+```css
+.active > .bs-content {
+  @apply border border-violet-800 rounded-lg;
+}
+
+.bs-dot--active {
+  @apply bg-violet-800 border border-violet-800;
+}
+```
+
+If you are not using Tailwind, keep the same markup classes and style those states with plain CSS in your project.
+
+## Stories Progress Theme
+
+The Stories plugin also keeps the visual progress theme in your hands.
+
+Example:
+
+```css
+.bs-stories-progress-item {
+  @apply bg-white/20;
+}
+
+.bs-stories-progress-item--active {
+  @apply bg-white/35;
+}
+
+.bs-stories-progress-item--completed {
+  @apply bg-white/45;
+}
+
+.bs-stories-progress-bar {
+  @apply bg-white;
+}
+```
+
 ## Class Reference
 
 ### Core

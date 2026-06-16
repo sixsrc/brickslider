@@ -89,6 +89,7 @@ export declare class BrickSliderStories extends Plugin {
     private setupControls;
     private bindCloseControlEvents;
     private bindClickControlEvents;
+    private isPrimaryControlEvent;
     private bindTrackHoverEvents;
     private mountStoriesElement;
     private setupTriggers;

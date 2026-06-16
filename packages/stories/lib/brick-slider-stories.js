@@ -1,6 +1,6 @@
 /*
 * BrickSlider Stories
-* Version  : 1.0.9
+* Version  : 1.0.11
 * License  : MIT
 * Copyright: 2026
 * Repo: github.com/sixsrc/brickslider
@@ -335,15 +335,16 @@ var A = {
 		this.isOpen && (i && !a || this.syncStory(r));
 	};
 	handleCloseClick = (e) => {
-		e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.close();
+		this.isPrimaryControlEvent(e) && (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.close());
 	};
 	handleMuteClick = (e) => {
-		e?.preventDefault(), e?.stopImmediatePropagation(), e?.stopPropagation(), this.toggleMuted();
+		e && !this.isPrimaryControlEvent(e) || (e?.preventDefault(), e?.stopImmediatePropagation(), e?.stopPropagation(), this.toggleMuted());
 	};
 	handlePauseClick = (e) => {
-		e?.preventDefault(), e?.stopImmediatePropagation(), e?.stopPropagation(), this.togglePause();
+		e && !this.isPrimaryControlEvent(e) || (e?.preventDefault(), e?.stopImmediatePropagation(), e?.stopPropagation(), this.togglePause());
 	};
 	handleWindowControl = (e) => {
+		if (!this.isPrimaryControlEvent(e)) return;
 		let t = this.getControlFromEvent(e);
 		t && (e.preventDefault(), e.stopPropagation(), t === A.CLOSE && this.close());
 	};
@@ -678,6 +679,9 @@ var A = {
 			O([i.POINTERDOWN], e, n, !0), O([i.CLICK], e, r, !0);
 		});
 	}
+	isPrimaryControlEvent(e) {
+		return typeof PointerEvent < "u" && e instanceof PointerEvent || e instanceof MouseEvent ? e.button === 0 : !0;
+	}
 	bindTrackHoverEvents() {
 		let e = this.getStoriesTrack();
 		e && (w([i.MOUSEENTER], e, this.handleMouseEnter), w([i.MOUSEMOVE], e, this.handleMouseMove), w([i.MOUSELEAVE], e, this.handleMouseLeave), w([i.POINTERDOWN], e, this.handleStoryPointerDown), w([i.POINTERUP, i.POINTERCANCEL], e, this.handleStoryPointerUp));
@@ -703,11 +707,13 @@ var A = {
 			prev: n,
 			goTo: r
 		}, e.next = () => {
-			t();
+			let e = this.getAdjacentStoryIndex(1);
+			t(), this.syncHostNavigation(e);
 		}, e.prev = () => {
-			n();
+			let e = this.getAdjacentStoryIndex(-1);
+			n(), this.syncHostNavigation(e);
 		}, e.goTo = (e) => {
-			r(e);
+			r(e), this.syncHostNavigation(e);
 		};
 	}
 	restoreHostNavigation() {

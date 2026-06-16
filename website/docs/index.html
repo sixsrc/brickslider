@@ -86,10 +86,11 @@
       .doc-article pre { margin: 1.25rem 0; background: #FFFFFF; color: #374151; border-radius: 1rem; padding: 1.1rem 1.25rem; overflow-x: auto; border: 1px solid #E5E7EB; box-shadow: 0 10px 30px rgba(17,24,39,0.04); }
       .doc-article pre code { background: transparent; padding: 0; color: inherit; border: 0; border-radius: 0; box-shadow: none; }
       .doc-example { margin: 1.5rem 0 2rem; }
-      .doc-example-frame { border: 0; border-radius: 0; overflow: visible; background: transparent; box-shadow: none; }
+      .doc-example-frame { border: 0; border-radius: 0; overflow: hidden; background: transparent; box-shadow: none; }
       .doc-example--stories { margin-top: 1.25rem; }
       .doc-example-frame--stories { display: flex; justify-content: flex-start; }
-      .doc-example-frame iframe { display: block; width: 100%; border: 0; background: transparent; border-radius: 0; }
+      .doc-example-frame iframe { display: block; width: 100%; border: 0; background: transparent; border-radius: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: opacity 0.12s ease; }
+      .doc-example-frame iframe[data-ready="true"] { opacity: 1; visibility: visible; }
       .doc-example-actions { margin-bottom: 0.75rem; display: flex; justify-content: flex-end; }
       .doc-example-actions a { font-size: 0.95rem; font-weight: 600; }
       .doc-article .token.keyword { color: #6D28D9; font-weight: 600; }

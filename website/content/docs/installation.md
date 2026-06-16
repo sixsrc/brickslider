@@ -34,14 +34,17 @@ pnpm add @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 ```
 
+The Tailwind package gives you the structural classes and preset layer.
+Visual states such as `.active > .bs-content`, `.bs-dot--active`, and Stories progress colors should still be themed in your own project CSS.
+
 ## CDN
 
 Use the official browser bundles in plain HTML:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.12/lib/brick-slider.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.13/lib/brick-slider.browser.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.9/lib/brick-slider-accessibility.browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.9/lib/brick-slider-stories.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.11/lib/brick-slider-stories.browser.js"></script>
 <script>
   const { BrickSlider, AccessibilityPlugin, StoriesPlugin } = window
 

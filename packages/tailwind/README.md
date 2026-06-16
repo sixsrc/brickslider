@@ -91,6 +91,26 @@ The `bs-peek`, `bs-peek-sm`, and `bs-peek-lg` classes are optional and should be
 }
 ```
 
+## Stories Progress Example
+
+```css
+.bs-stories-progress-item {
+  @apply bg-white/20;
+}
+
+.bs-stories-progress-item--active {
+  @apply bg-white/35;
+}
+
+.bs-stories-progress-item--completed {
+  @apply bg-white/45;
+}
+
+.bs-stories-progress-bar {
+  @apply bg-white;
+}
+```
+
 ## Arrow Navigation
 
 Use `bs-arrow` as the base class and add:

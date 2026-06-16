@@ -93,6 +93,8 @@ export class BrickSliderStories extends Plugin {
   }
 
   private readonly handleCloseClick = (event: Event): void => {
+    if (!this.isPrimaryControlEvent(event)) return
+
     event.preventDefault()
     event.stopImmediatePropagation()
     event.stopPropagation()
@@ -100,6 +102,8 @@ export class BrickSliderStories extends Plugin {
   }
 
   private readonly handleMuteClick = (event?: Event): void => {
+    if (event && !this.isPrimaryControlEvent(event)) return
+
     event?.preventDefault()
     event?.stopImmediatePropagation()
     event?.stopPropagation()
@@ -107,6 +111,8 @@ export class BrickSliderStories extends Plugin {
   }
 
   private readonly handlePauseClick = (event?: Event): void => {
+    if (event && !this.isPrimaryControlEvent(event)) return
+
     event?.preventDefault()
     event?.stopImmediatePropagation()
     event?.stopPropagation()
@@ -114,6 +120,8 @@ export class BrickSliderStories extends Plugin {
   }
 
   private readonly handleWindowControl = (event: Event): void => {
+    if (!this.isPrimaryControlEvent(event)) return
+
     const control = this.getControlFromEvent(event)
 
     if (!control) return
@@ -900,6 +908,14 @@ export class BrickSliderStories extends Plugin {
     })
   }
 
+  private isPrimaryControlEvent(event: Event): boolean {
+    if (typeof PointerEvent !== "undefined" && event instanceof PointerEvent)
+      return event.button === 0
+    if (event instanceof MouseEvent) return event.button === 0
+
+    return true
+  }
+
   private bindTrackHoverEvents(): void {
     const track = this.getStoriesTrack()
 
@@ -958,15 +974,22 @@ export class BrickSliderStories extends Plugin {
     }
 
     host.next = (): void => {
+      const targetIndex = this.getAdjacentStoryIndex(1)
+
       originalNext()
+      this.syncHostNavigation(targetIndex)
     }
 
     host.prev = (): void => {
+      const targetIndex = this.getAdjacentStoryIndex(-1)
+
       originalPrev()
+      this.syncHostNavigation(targetIndex)
     }
 
     host.goTo = (index: number): void => {
       originalGoTo(index)
+      this.syncHostNavigation(index)
     }
   }
 

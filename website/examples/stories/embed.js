@@ -1,27 +1,24 @@
 const STYLE_IDS = {
   CORE: "stories-inline-core-style",
-  SHARED: "stories-inline-shared-style",
-  EMBED: "stories-inline-embed-style"
+  SHARED: "stories-inline-shared-style"
 }
 
 const SCRIPT_IDS = {
+  TAILWIND: "stories-inline-tailwind-script",
   CORE: "stories-inline-core-script",
-  STORIES: "stories-inline-stories-script"
+  STORIES: "stories-inline-stories-script",
+  ACCESSIBILITY: "stories-inline-accessibility-script"
 }
 
 function ensureStyles() {
   const styles = [
     {
       id: STYLE_IDS.CORE,
-      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.12/lib/brick-slider.css"
+      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.13/lib/brick-slider.css"
     },
     {
       id: STYLE_IDS.SHARED,
       href: "/examples/shared.css"
-    },
-    {
-      id: STYLE_IDS.EMBED,
-      href: "/examples/stories/embed.css?v=5"
     }
   ]
 
@@ -34,6 +31,7 @@ function ensureStyles() {
     link.href = href
     document.head.appendChild(link)
   })
+
 }
 
 function loadScript({ id, src }) {
@@ -70,72 +68,71 @@ function loadScript({ id, src }) {
 
 async function ensureScripts() {
   await loadScript({
+    id: SCRIPT_IDS.TAILWIND,
+    src: "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"
+  })
+  await loadScript({
     id: SCRIPT_IDS.CORE,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.12/lib/brick-slider.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.13/lib/brick-slider.browser.js"
+  })
+  await loadScript({
+    id: SCRIPT_IDS.ACCESSIBILITY,
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.9/lib/brick-slider-accessibility.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.STORIES,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.9/lib/brick-slider-stories.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.11/lib/brick-slider-stories.browser.js"
   })
 }
 
 function createMarkup(id) {
   return `
-    <div
-      id="${id}-slider"
-      class="stories-inline-root hidden"
-    >
+    <div class="relative">
+      <div
+        id="${id}-slider"
+        class="hidden pointer-events-none fixed inset-0 z-50 flex select-none items-center justify-center p-0 md:p-6"
+      >
         <div
-          class="bs-track stories-inline-track"
+          class="bs-track group/stories pointer-events-auto fixed inset-0 h-full w-full overflow-hidden bg-violet-950 md:relative md:inset-auto md:max-w-sm md:rounded-3xl"
         >
-          <div class="bs-container">
+          <div class="bs-container text-white">
             <div class="bs-slide h-full">
               <article
-                class="stories-inline-card stories-inline-card--top"
+                class="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-violet-950 p-8 text-center text-white md:justify-start md:pt-24"
               >
-                <div
-                  class="stories-inline-badge"
-                >
+                <div class="relative text-xs font-semibold uppercase tracking-widest text-white/80 md:mt-4">
                   <span>Stories Plugin</span>
                 </div>
 
-                <div class="relative mt-4 max-w-[18rem] md:max-w-[14rem]">
+                <div class="relative mt-4 max-w-xs md:max-w-56">
                   <strong
-                    class="stories-inline-title stories-inline-title--hero"
+                    class="block max-w-60 break-words text-5xl font-bold leading-none text-white md:max-w-56 md:text-3xl md:leading-tight"
                   >
                     <span class="block">Visual stories</span>
                     <span class="block">for sliders.</span>
                   </strong>
                 </div>
 
-                <span
-                  class="stories-inline-copy"
-                >Open from any trigger.</span>
+                <span class="relative mt-5 text-sm text-white/70 md:mt-4 md:text-xs">Open from any trigger.</span>
               </article>
             </div>
 
             <div class="bs-slide h-full">
               <article
-                class="stories-inline-card stories-inline-card--top"
+                class="relative flex h-full w-full flex-col items-center justify-start overflow-hidden bg-violet-950 p-8 pt-20 text-center text-white"
               >
                 <video
-                  class="stories-inline-video"
+                  class="absolute inset-0 h-full w-full object-cover opacity-85"
                   src="/video-storie-1.mp4"
                   playsinline
                   muted
                 ></video>
-                <div
-                  class="stories-inline-video-overlay"
-                ></div>
-                <div class="relative max-w-[16rem]">
-                  <span
-                    class="mb-4 block text-sm uppercase tracking-[0.25em] text-white/80"
-                  >
+                <div class="absolute inset-0 bg-gradient-to-t from-violet-950 via-violet-950/35 to-pink-500/20"></div>
+                <div class="relative max-w-64">
+                  <span class="mb-4 block text-sm uppercase tracking-widest text-white/80">
                     Video ready
                   </span>
-                  <strong
-                    class="block break-words text-[clamp(1.5rem,5.5vw,2.35rem)] font-bold leading-[0.98] text-white"
-                  >
+                  <strong class="block break-words text-4xl font-bold leading-none text-white md:text-4xl">
                     Rio de Janeiro
                   </strong>
                 </div>
@@ -144,32 +141,28 @@ function createMarkup(id) {
 
             <div class="bs-slide h-full">
               <article
-                class="stories-inline-card stories-inline-card--top"
+                class="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-violet-950 p-8 text-center text-white md:justify-start md:pt-24"
               >
-                <span
-                  class="stories-inline-badge"
-                >Plugin API</span>
+                <span class="relative text-xs font-semibold uppercase tracking-widest text-white/70 md:mt-4">Plugin API</span>
                 <strong
-                  class="stories-inline-title stories-inline-title--api"
+                  class="relative mt-4 block max-w-60 break-words text-5xl font-bold leading-none text-white md:max-w-56 md:text-3xl md:leading-tight"
                 >
                   <span class="block">One trigger</span>
                   <span class="block">opens the flow.</span>
                 </strong>
-                <span
-                  class="stories-inline-copy"
-                >Text, image, or video.</span>
+                <span class="relative mt-5 text-sm text-white/70 md:mt-4 md:text-xs">Text, image, or video.</span>
               </article>
             </div>
           </div>
 
-          <ul class="bs-stories-progress stories-inline-progress">
-            <li class="bs-stories-progress-item">
-              <span class="bs-stories-progress-bar"></span>
+          <ul class="bs-stories-progress pointer-events-auto absolute left-4 right-4 top-[calc(env(safe-area-inset-top)+12px)] z-[10003] m-0 flex list-none items-center gap-1 p-0 md:top-4">
+            <li class="bs-stories-progress-item h-1 flex-1 overflow-hidden rounded-full bg-white/20 [&.bs-stories-progress-item--active]:bg-white/35 [&.bs-stories-progress-item--completed]:bg-white/45">
+              <span class="bs-stories-progress-bar block h-full w-full origin-left bg-white"></span>
             </li>
           </ul>
 
           <button
-            class="bs-stories-pause-indicator stories-inline-pause"
+            class="bs-stories-pause-indicator pointer-events-none absolute z-[10004] hidden h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white opacity-0 transition-colors transition-opacity hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:flex"
             type="button"
             aria-label="Toggle pause"
           >
@@ -184,14 +177,13 @@ function createMarkup(id) {
               </svg>
             </span>
           </button>
-
         </div>
       </div>
 
-      <div class="bs-stories-layer stories-inline-layer hidden">
-        <div class="bs-stories-backdrop stories-inline-backdrop"></div>
+      <div class="bs-stories-layer hidden pointer-events-auto fixed inset-0 select-none">
+        <div class="bs-stories-backdrop pointer-events-auto fixed inset-0 z-40 bg-violet-950/95"></div>
         <button
-          class="bs-stories-close stories-inline-close"
+          class="bs-stories-close pointer-events-auto absolute right-4 top-6 z-[10004] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950"
           type="button"
           aria-label="Close stories"
         >
@@ -200,7 +192,7 @@ function createMarkup(id) {
           </svg>
         </button>
         <button
-          class="bs-stories-mute stories-inline-mute"
+          class="bs-stories-mute hidden pointer-events-auto absolute bottom-6 right-4 z-[10004] h-9 w-9 cursor-pointer rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 text-center leading-[2.25rem]"
           type="button"
           aria-label="Mute story sound"
         >
@@ -216,10 +208,11 @@ function createMarkup(id) {
           </span>
         </button>
       </div>
+    </div>
   `
 }
 
-function mountStoriesExample(host, index) {
+function renderStoriesExample(host, index) {
   const id = `stories-inline-${index}`
 
   host.innerHTML = `
@@ -231,33 +224,25 @@ function mountStoriesExample(host, index) {
       >
         Open Stories
       </button>
+      ${createMarkup(id)}
     </div>
   `
+}
 
-  const existingRoot = document.getElementById(`${id}-slider`)
-  if (existingRoot) existingRoot.remove()
-
-  const existingLayer = document.querySelector(`[data-stories-layer-id="${id}"]`)
-  if (existingLayer) existingLayer.remove()
-
-  const wrapper = document.createElement("div")
-  wrapper.innerHTML = createMarkup(id)
-
-  const sliderRoot = wrapper.querySelector(`#${id}-slider`)
-  const storiesLayer = wrapper.querySelector(".bs-stories-layer")
-
-  if (!sliderRoot || !storiesLayer) return
-
-  storiesLayer.setAttribute("data-stories-layer-id", id)
-
-  document.body.appendChild(sliderRoot)
-  document.body.appendChild(storiesLayer)
+function initStoriesExample(host, index) {
+  const id = `stories-inline-${index}`
 
   const slider = new window.BrickSlider(`#${id}-slider`, {
     slidesPerView: 1,
     slidesPerPage: 1,
     useLoop: false
   })
+
+  slider.use(
+    new window.AccessibilityPlugin({
+      useKeyboardNavigation: true
+    })
+  )
 
   slider.use(
     new window.BrickSliderStories({
@@ -274,11 +259,13 @@ function mountStoriesExample(host, index) {
 }
 
 async function boot() {
+  const hosts = Array.from(document.querySelectorAll("[data-inline-stories-example]"))
+  hosts.forEach((host, index) => renderStoriesExample(host, index))
+
   ensureStyles()
   await ensureScripts()
 
-  const hosts = Array.from(document.querySelectorAll("[data-inline-stories-example]"))
-  hosts.forEach((host, index) => mountStoriesExample(host, index))
+  hosts.forEach((host, index) => initStoriesExample(host, index))
 }
 
 boot()

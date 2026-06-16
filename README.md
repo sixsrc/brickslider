@@ -131,9 +131,9 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 Use the official browser bundles in plain HTML:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.12/lib/brick-slider.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.13/lib/brick-slider.browser.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.9/lib/brick-slider-accessibility.browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.9/lib/brick-slider-stories.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.11/lib/brick-slider-stories.browser.js"></script>
 <script>
   const { BrickSlider, AccessibilityPlugin, StoriesPlugin } = window
 
@@ -681,6 +681,81 @@ If you are using BrickSlider directly in HTML or alongside Tailwind loaded from 
 ```
 
 This file provides the structural layout for the standard BrickSlider markup (`bs-track`, `bs-container`, `bs-slide`, `bs-dots`, `bs-progress`, and related helpers) without forcing a visual theme.
+
+### Active State Styling
+
+BrickSlider does not force the visual treatment of active slides or active dots.
+Those states are intentionally left for you to theme.
+
+Example:
+
+```css
+.active > .bs-content {
+  @apply border border-violet-800 rounded-lg;
+}
+
+.bs-dot--active {
+  @apply bg-violet-800 border border-violet-800;
+}
+```
+
+If you are not using Tailwind, the same idea applies with plain CSS:
+
+```css
+.active > .bs-content {
+  border: 1px solid #5b21b6;
+  border-radius: 0.5rem;
+}
+
+.bs-dot--active {
+  background: #5b21b6;
+  border: 1px solid #5b21b6;
+}
+```
+
+### Stories Progress Styling
+
+For the Stories plugin, the structural classes are provided by the package, but the visual progress theme is still yours to control.
+
+Tailwind example:
+
+```css
+.bs-stories-progress-item {
+  @apply bg-white/20;
+}
+
+.bs-stories-progress-item--active {
+  @apply bg-white/35;
+}
+
+.bs-stories-progress-item--completed {
+  @apply bg-white/45;
+}
+
+.bs-stories-progress-bar {
+  @apply bg-white;
+}
+```
+
+Plain CSS example:
+
+```css
+.bs-stories-progress-item {
+  background: rgb(255 255 255 / 0.2);
+}
+
+.bs-stories-progress-item--active {
+  background: rgb(255 255 255 / 0.35);
+}
+
+.bs-stories-progress-item--completed {
+  background: rgb(255 255 255 / 0.45);
+}
+
+.bs-stories-progress-bar {
+  background: #fff;
+}
+```
 
 ### Class Reference
 

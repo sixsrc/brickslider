@@ -1,5 +1,19 @@
 # @sixsrc/brick-slider-stories
 
+## 1.0.11
+
+### Patch Changes
+
+- Publish the latest Stories control and keyboard navigation fixes.
+- Updated dependencies
+  - @sixsrc/brick-slider@1.0.13
+
+## 1.0.10
+
+### Patch Changes
+
+- fix stories keyboard navigation sync for progress state and docs CDN usage
+
 ## 1.0.9
 
 ### Patch Changes

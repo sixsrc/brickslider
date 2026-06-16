@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url"
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
 const libDir = resolve(currentDir, "lib")
-const sourceCss = resolve(currentDir, "src/brick-slider.css")
+const sourceCss = resolve(currentDir, "styles/brick-slider.css")
 const targetCss = resolve(libDir, "brick-slider.css")
 const packageJsonPath = resolve(currentDir, "package.json")
 

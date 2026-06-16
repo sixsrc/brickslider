@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.13
+
+### Patch Changes
+
+- Fix the official Stories CSS hidden state for the mute control.
+
 ## 1.0.12
 
 ### Patch Changes

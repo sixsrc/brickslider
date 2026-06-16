@@ -79,10 +79,11 @@
       .doc-article pre { margin: 1.25rem 0; background: #FFFFFF; color: #374151; border-radius: 1rem; padding: 1.1rem 1.25rem; overflow-x: auto; border: 1px solid #E5E7EB; box-shadow: 0 10px 30px rgba(17,24,39,0.04); }
       .doc-article pre code { background: transparent; padding: 0; color: inherit; border: 0; border-radius: 0; box-shadow: none; }
       .doc-example { margin: 1.5rem 0 2rem; }
-      .doc-example-frame { border: 0; border-radius: 0; overflow: visible; background: transparent; box-shadow: none; }
+      .doc-example-frame { border: 0; border-radius: 0; overflow: hidden; background: transparent; box-shadow: none; }
       .doc-example--stories { margin-top: 1.25rem; }
       .doc-example-frame--stories { display: flex; justify-content: flex-start; }
-      .doc-example-frame iframe { display: block; width: 100%; border: 0; background: transparent; border-radius: 0; }
+      .doc-example-frame iframe { display: block; width: 100%; border: 0; background: transparent; border-radius: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: opacity 0.12s ease; }
+      .doc-example-frame iframe[data-ready="true"] { opacity: 1; visibility: visible; }
       .doc-example-actions { margin-bottom: 0.75rem; display: flex; justify-content: flex-end; }
       .doc-example-actions a { font-size: 0.95rem; font-weight: 600; }
       .doc-article .token.keyword { color: #6D28D9; font-weight: 600; }
@@ -278,6 +279,35 @@
 <pre><code class="language-css">@import &quot;tailwindcss&quot;;
 @import &quot;@sixsrc/brick-slider-tailwind/preset.css&quot;;
 @plugin &quot;@sixsrc/brick-slider-tailwind&quot;;</code></pre>
+<h2 id="visual-states">Visual States</h2>
+<p>The Tailwind package provides the structural layer for BrickSlider, but it does not force your visual theme for active slides or active dots.</p>
+<p>Example:</p>
+<pre><code class="language-css">.active &gt; <span class="token symbol">.bs-content</span> {
+  @apply border border-violet-800 rounded-lg;
+}
+
+<span class="token symbol">.bs-dot--active</span> {
+  @apply bg-violet-800 border border-violet-800;
+}</code></pre>
+<p>If you are not using Tailwind, keep the same markup classes and style those states with plain CSS in your project.</p>
+<h2 id="stories-progress-theme">Stories Progress Theme</h2>
+<p>The Stories plugin also keeps the visual progress theme in your hands.</p>
+<p>Example:</p>
+<pre><code class="language-css"><span class="token symbol">.bs-stories-progress-item</span> {
+  @apply bg-white/20;
+}
+
+<span class="token symbol">.bs-stories-progress-item--active</span> {
+  @apply bg-white/35;
+}
+
+<span class="token symbol">.bs-stories-progress-item--completed</span> {
+  @apply bg-white/45;
+}
+
+<span class="token symbol">.bs-stories-progress-bar</span> {
+  @apply bg-white;
+}</code></pre>
 <h2 id="class-reference">Class Reference</h2>
 <h3 id="core">Core</h3>
 <div class="table-wrap"><table><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>bs-track</code></td><td>Required viewport wrapper</td></tr><tr><td><code>bs-container</code></td><td>Required slide row</td></tr><tr><td><code>bs-slide</code></td><td>Required slide item</td></tr><tr><td><code>bs-arrow</code> / <code>bs-prev</code> / <code>bs-next</code></td><td>Arrow navigation</td></tr><tr><td><code>bs-pages</code></td><td>Page counter output</td></tr><tr><td><code>bs-dots</code> / <code>bs-dot</code></td><td>Pagination controls</td></tr><tr><td><code>bs-progress</code> / <code>bs-progress-bar</code></td><td>Progress rail</td></tr><tr><td><code>bs-hidden</code></td><td>Utility class before mount</td></tr><tr><td><code>bs-peek</code> / <code>bs-peek-sm</code> / <code>bs-peek-lg</code></td><td>Peek spacing variants</td></tr><tr><td><code>bs-auto-height-layout</code></td><td>Auto-height helper</td></tr></tbody></table></div>
@@ -294,6 +324,10 @@
           <a href="#install">Install</a>
         </li><li class="level-2">
           <a href="#setup">Setup</a>
+        </li><li class="level-2">
+          <a href="#visual-states">Visual States</a>
+        </li><li class="level-2">
+          <a href="#stories-progress-theme">Stories Progress Theme</a>
         </li><li class="level-2">
           <a href="#class-reference">Class Reference</a>
         </li><li class="level-3">

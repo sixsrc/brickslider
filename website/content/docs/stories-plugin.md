@@ -12,6 +12,9 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-stories
 
 Keep the stories controls in your HTML markup. The plugin handles state and behavior, but the progress rail, pause indicator, close button, and mute button should remain explicitly present in the DOM.
 
+The structure comes from BrickSlider and the Stories plugin, but the visual theme is still yours to define.
+That includes the progress rail colors and any active slide treatment you want to apply around your story content.
+
 ```html
 <button id="open-stories" type="button">Open Stories</button>
 
@@ -72,6 +75,46 @@ slider.use(
 
 slider.init()
 ```
+
+## Styling
+
+### Active slide and dots
+
+If you want an active visual treatment around the current story card, theme it yourself:
+
+```css
+.active > .bs-content {
+  @apply border border-violet-800 rounded-lg;
+}
+
+.bs-dot--active {
+  @apply bg-violet-800 border border-violet-800;
+}
+```
+
+### Stories progress
+
+The Stories progress markup is structural by default. You control its look:
+
+```css
+.bs-stories-progress-item {
+  @apply bg-white/20;
+}
+
+.bs-stories-progress-item--active {
+  @apply bg-white/35;
+}
+
+.bs-stories-progress-item--completed {
+  @apply bg-white/45;
+}
+
+.bs-stories-progress-bar {
+  @apply bg-white;
+}
+```
+
+If you are using the Tailwind package, keep these classes in your own project theme so the Stories UI matches the rest of your design.
 
 ## Options
 
