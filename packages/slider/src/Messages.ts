@@ -1,52 +1,26 @@
-import { DOCS } from "./helpers"
+import { DOCS } from "./Docs"
 import { Validation } from "./Validation"
 
+type MessageLevel = "warn" | "error"
+
+const ERROR_IDS = new Set([
+  "NO_ROOT",
+  "NO_TRACK",
+  "NO_CHILDREN",
+  "NO_SLIDES",
+  "DUPLICATE_ELEMENTS",
+  "INVALID_ORDER"
+])
+
+const BASIC_DOCS = `See: ${DOCS.BASIC_HTML_DOC}`
+const START_DOCS = `See: ${DOCS.GET_STARTED}`
+
 export class Messages extends Validation {
-  private messageMap: Record<string, string>
-  private levelMap: Record<string, "warn" | "error">
-  private rootSelector: string
+  private readonly rootSelector: string
 
   constructor($root: string) {
     super($root)
     this.rootSelector = $root
-    this.messageMap = Messages.TextMessages($root)
-    this.levelMap = Messages.TextLevels()
-  }
-
-  static TextMessages($root: string): Record<string, string> {
-    return {
-      NO_ROOT: `Could not find root selector ${$root}.\nSee: ${DOCS.GET_STARTED}`,
-      NO_TRACK: `Could not find .bs-track inside ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      NO_CHILDREN: `Could not find .bs-container inside .bs-track for ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      NO_SLIDES: `Could not find any .bs-slide inside .bs-container for ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      DUPLICATE_ELEMENTS: `Found duplicated core slider elements in ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      INVALID_ORDER: `Found invalid core slider markup order in ${$root}.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      INVALID_SLIDE_SIZES_VALUES: `slideSizes for ${$root} is invalid and will be ignored. Use only non-negative numbers. String values such as "30px", "50%" or "2rem" are not supported.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      UNSUPPORTED_SLIDE_SIZES_SINGLE_VIEW: `slideSizes for ${$root} will be ignored because this option is not supported when slidesPerView is 1. To use slideSizes, set slidesPerView to 2 or greater.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      RESPONSIVE_WITHOUT_SCREENS: `responsive for ${$root} will be ignored because no screens object was provided. Define screens with the breakpoint widths before using responsive.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      INVALID_SCREENS_BREAKPOINT_KEYS: `screens for ${$root} contains unsupported breakpoint names. Use only xs, sm, md, lg, xl or 2xl. Invalid keys will be ignored.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      INVALID_RESPONSIVE_BREAKPOINT_KEYS: `responsive for ${$root} contains unsupported breakpoint names. Use only xs, sm, md, lg, xl or 2xl. Invalid keys will be ignored.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      RESPONSIVE_BREAKPOINTS_MISSING_IN_SCREENS: `responsive for ${$root} contains breakpoints that are missing or invalid in screens. Define the same breakpoint with a numeric value in screens before using it in responsive.\nSee: ${DOCS.BASIC_HTML_DOC}`,
-      DRAG_FREE_WITH_DOTS: `dots for ${$root} will be ignored because useDragFree is enabled. Drag free mode does not support pagination dots.\nSee: ${DOCS.BASIC_HTML_DOC}`
-    }
-  }
-
-  static TextLevels(): Record<string, "warn" | "error"> {
-    return {
-      NO_ROOT: "error",
-      NO_TRACK: "error",
-      NO_CHILDREN: "error",
-      NO_SLIDES: "error",
-      DUPLICATE_ELEMENTS: "error",
-      INVALID_ORDER: "error",
-      INVALID_SLIDE_SIZES_VALUES: "warn",
-      UNSUPPORTED_SLIDE_SIZES_SINGLE_VIEW: "warn",
-      RESPONSIVE_WITHOUT_SCREENS: "warn",
-      INVALID_SCREENS_BREAKPOINT_KEYS: "warn",
-      INVALID_RESPONSIVE_BREAKPOINT_KEYS: "warn",
-      RESPONSIVE_BREAKPOINTS_MISSING_IN_SCREENS: "warn",
-      DRAG_FREE_WITH_DOTS: "warn"
-    } as const
   }
 
   public displayMessage(
@@ -55,9 +29,8 @@ export class Messages extends Validation {
     this.runValidations(options)
 
     this.getIds().forEach(id => {
-      const message = this.getMessageById(id)
-      const level = this.levelMap[id] ?? "error"
-      console[level](message)
+      const level: MessageLevel = ERROR_IDS.has(id) ? "error" : "warn"
+      console[level](this.getMessageById(id))
     })
   }
 
@@ -71,69 +44,80 @@ export class Messages extends Validation {
 
   public displayInvalidGoToIndex(index: number): void {
     this.displayWarning(
-      `[BrickSlider] goTo(index) expects a finite number. Received: ${String(index)}. Ignoring call.`
+      `[BrickSlider] goTo(index) expects a finite number. Received: ${String(index)}.`
     )
   }
 
   public displayDragFreeGoToIgnored(): void {
     this.displayWarning(
-      `[BrickSlider] goTo(index) is ignored when useDragFree is enabled. Drag free mode does not support paginated navigation.`
+      `[BrickSlider] goTo(index) is ignored when useDragFree is enabled.`
     )
   }
 
   public displayInvalidPluginType(): void {
     this.displayError(
-      `[BrickSlider] Plugin rejected. It must implement the BrickSlider plugin contract.\nSee: ${DOCS.GET_STARTED}`
+      `[BrickSlider] Plugin rejected. Invalid plugin contract.\n${START_DOCS}`
     )
   }
 
   public displayPluginRootMismatch(pluginName: string): void {
     this.displayError(
-      `[BrickSlider] Plugin rejected. "${pluginName}" must use the same root selector as the current slider instance.`
+      `[BrickSlider] Plugin rejected. "${pluginName}" must use the same root selector.`
     )
   }
 
   private getMessageById(id: string): string {
     if (id === "DUPLICATE_ELEMENTS") {
-      const duplicateElements = this.getDetails(id)
+      const duplicates = this.getDetails(id)
 
-      if (duplicateElements.length > 0) {
-        return (
-          `Found duplicated core slider elements in ${this.rootSelector}: ` +
-          `${duplicateElements.map(className => `.${className}`).join(", ")}.\n` +
-          `See: ${DOCS.BASIC_HTML_DOC}`
-        )
+      if (duplicates.length) {
+        return `Found duplicated core elements in ${this.rootSelector}: ${duplicates
+          .map(className => `.${className}`)
+          .join(", ")}.\n${BASIC_DOCS}`
       }
     }
 
     if (id === "INVALID_ORDER") {
-      const orderDetails = this.getDetails(id)
+      const details = this.getDetails(id)
 
-      if (orderDetails.length > 0) {
-        return (
-          `Found invalid core slider markup order in ${this.rootSelector}.\n` +
-          `${orderDetails.join("\n")}\n` +
-          `See: ${DOCS.BASIC_HTML_DOC}`
-        )
+      if (details.length) {
+        return `Found invalid core slider markup in ${this.rootSelector}.\n${details.join("\n")}\n${BASIC_DOCS}`
       }
     }
 
     if (id === "RESPONSIVE_BREAKPOINTS_MISSING_IN_SCREENS") {
       const breakpoints = this.getDetails(id)
 
-      if (breakpoints.length > 0) {
-        const highlightedBreakpoints = breakpoints
-          .map(breakpoint => `[${breakpoint.toUpperCase()}]`)
-          .join(", ")
-
-        return (
-          `responsive for ${this.rootSelector} contains breakpoints without prior screen configuration: ` +
-          `${highlightedBreakpoints}. Define the same breakpoint with a numeric value in screens before using it in responsive.\n` +
-          `See: ${DOCS.BASIC_HTML_DOC}`
-        )
+      if (breakpoints.length) {
+        return `responsive in ${this.rootSelector} uses breakpoints missing in screens: ${breakpoints
+          .map(breakpoint => breakpoint.toUpperCase())
+          .join(", ")}.\n${BASIC_DOCS}`
       }
     }
 
-    return this.messageMap[id]
+    switch (id) {
+      case "NO_ROOT":
+        return `Could not find root selector ${this.rootSelector}.\n${START_DOCS}`
+      case "NO_TRACK":
+        return `Could not find .bs-track in ${this.rootSelector}.\n${BASIC_DOCS}`
+      case "NO_CHILDREN":
+        return `Could not find .bs-container in ${this.rootSelector}.\n${BASIC_DOCS}`
+      case "NO_SLIDES":
+        return `Could not find .bs-slide in ${this.rootSelector}.\n${BASIC_DOCS}`
+      case "INVALID_SLIDE_SIZES_VALUES":
+        return `slideSizes in ${this.rootSelector} is invalid and will be ignored. Use only non-negative numbers.\n${BASIC_DOCS}`
+      case "UNSUPPORTED_SLIDE_SIZES_SINGLE_VIEW":
+        return `slideSizes in ${this.rootSelector} is ignored when slidesPerView is 1.\n${BASIC_DOCS}`
+      case "RESPONSIVE_WITHOUT_SCREENS":
+        return `responsive in ${this.rootSelector} is ignored because screens is missing.\n${BASIC_DOCS}`
+      case "INVALID_SCREENS_BREAKPOINT_KEYS":
+        return `screens in ${this.rootSelector} contains unsupported breakpoint names.\n${BASIC_DOCS}`
+      case "INVALID_RESPONSIVE_BREAKPOINT_KEYS":
+        return `responsive in ${this.rootSelector} contains unsupported breakpoint names.\n${BASIC_DOCS}`
+      case "DRAG_FREE_WITH_DOTS":
+        return `dots in ${this.rootSelector} is ignored when useDragFree is enabled.\n${BASIC_DOCS}`
+      default:
+        return `BrickSlider validation warning in ${this.rootSelector}.\n${BASIC_DOCS}`
+    }
   }
 }

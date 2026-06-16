@@ -1,3 +1,10 @@
+/*
+* BrickSlider Stories
+* Version  : 1.0.9
+* License  : MIT
+* Copyright: 2026
+* Repo: github.com/sixsrc/brickslider
+*/
 import { $ as e, ANIMATION_OPTIONS as t, ATTRIBUTES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, TAGS as c, Validation as l, addClass as u, appendToParent as d, closestElement as f, containsElement as p, createNewElement as m, getAllElements as h, getAttribute as g, getChildren as _, getElement as v, getRootSelector as y, getSliderNodeList as b, getTrackChildren as x, hasAttribute as S, hasClass as C, listener as w, removeAttribute as T, removeClass as E, removeElement as D, removeListener as O, setAttribute as k } from "@sixsrc/brick-slider/api";
 //#region src/constants.ts
 var A = {
@@ -696,14 +703,11 @@ var A = {
 			prev: n,
 			goTo: r
 		}, e.next = () => {
-			let e = this.getAdjacentStoryIndex(1);
-			t(), this.syncHostNavigation(e);
+			t();
 		}, e.prev = () => {
-			let e = this.getAdjacentStoryIndex(-1);
-			n(), this.syncHostNavigation(e);
+			n();
 		}, e.goTo = (e) => {
-			let t = this.getSafeStoryIndex(e);
-			r(e), this.syncHostNavigation(t);
+			r(e);
 		};
 	}
 	restoreHostNavigation() {
@@ -711,8 +715,8 @@ var A = {
 		!e || !t || (e.next = t.next, e.prev = t.prev, e.goTo = t.goTo, this.hostMethods = null);
 	}
 	getAdjacentStoryIndex(e) {
-		let { activePage: t } = this.store, n = typeof t == "number" ? t : this.activeStoryIndex;
-		return this.getSafeStoryIndex(n + e);
+		let { activePage: t, slideIndex: n } = this.store, r = typeof n == "number" ? n : typeof t == "number" ? t : this.activeStoryIndex;
+		return this.getSafeStoryIndex(r + e);
 	}
 	syncHostNavigation(e) {
 		this.isOpen && window.requestAnimationFrame(() => {
@@ -750,11 +754,13 @@ var A = {
 		u([e], A.COMPLETED_PROGRESS);
 	}
 	animateProgress(e, n, r, i) {
-		return e.getAnimations().forEach((e) => e.cancel()), this.animate(e, [{ transform: `scaleX(${n})` }, { transform: `scaleX(${r})` }], {
+		if (e.getAnimations().forEach((e) => e.cancel()), e.style.transformOrigin = "left center", e.style.scale = `${n} 1`, i <= 0 || n === r) return e.style.scale = `${r} 1`, [];
+		let a = this.animate(e, [{ scale: `${n} 1` }, { scale: `${r} 1` }], {
 			duration: i,
 			easing: t.LINEAR,
 			fill: t.FORWARDS
 		});
+		return a.forEach((e) => e.play()), a;
 	}
 	startTimer(e, t) {
 		let n = performance.now();
@@ -780,7 +786,7 @@ var A = {
 		return this.activeStoryIndex;
 	}
 	getStoryIndexFromPayload(e) {
-		return e?.activePage ?? e?.slideIndex ?? 0;
+		return e?.slideIndex ?? e?.activePage ?? 0;
 	}
 	getCurrentStoryDuration(e) {
 		let t = this.getPlayableStoryVideo(e), n = this.pluginOptions.duration;

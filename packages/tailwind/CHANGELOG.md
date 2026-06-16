@@ -1,5 +1,11 @@
 # @sixsrc/brick-slider-tailwind
 
+## 1.0.7
+
+### Patch Changes
+
+- Align CDN/browser usage with official browser bundles, update package CDN entrypoints, and refresh related docs/examples.
+
 ## 1.0.5
 
 ### Patch Changes

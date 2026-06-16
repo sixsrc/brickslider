@@ -3,9 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../vendor/brick-slider/brick-slider.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.css" />
     <link rel="stylesheet" href="../shared.css" />
     <title>Stories Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.8/lib/brick-slider-stories.browser.js"></script>
     <style>
       html,
       body {
@@ -158,23 +160,20 @@
       </div>
     </div>
 
-    <script type="module">
-      import { BrickSlider } from "../../vendor/brick-slider/brick-slider.js"
-      import StoriesPlugin from "../../vendor/brick-slider-stories/brick-slider-stories.js"
-
-      const slider = new BrickSlider("#stories-slider", {
+    <script>
+      const slider = new window.BrickSlider("#stories-slider", {
         slidesPerView: 1,
         slidesPerPage: 1,
         useLoop: false
       })
 
       slider.use(
-        new StoriesPlugin({
+        new window.BrickSliderStories({
           trigger: "#open-stories",
           duration: 5000,
           maxStories: 10,
           closeOnEnd: false,
-          pauseOnHover: true,
+          pauseOnHover: false,
           useMuted: true
         })
       )

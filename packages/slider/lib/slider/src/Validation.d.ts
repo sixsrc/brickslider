@@ -1,10 +1,9 @@
 import { SliderOptions } from './types';
 export declare class Validation {
-    private $root;
+    protected readonly $root: string;
     private ids;
     private details;
     private arrElements;
-    private fixedOrder;
     constructor($root: string);
     private getRoot;
     private getElementClasses;

@@ -1,6 +1,7 @@
-import { BrickSlider } from "../vendor/brick-slider/brick-slider.js"
-
-export { BrickSlider }
+document.documentElement.classList.toggle(
+  "example-embedded",
+  window.top !== window.self
+)
 
 export function createSlides(container, total = 8) {
   for (let index = 0; index < total; index += 1) {
@@ -31,7 +32,7 @@ export function createAutoHeightSlides(container) {
 }
 
 export function mountSlider(selector, options) {
-  const slider = new BrickSlider(selector, options)
+  const slider = new window.BrickSlider(selector, options)
   slider.init()
   return slider
 }

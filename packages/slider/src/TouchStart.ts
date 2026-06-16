@@ -1,7 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { EVENTS } from "./helpers"
 import { Draggable } from "./Draggable"
-import { getAxisX, isPrimaryInputButton } from "./helpers"
+import { getAxisX, isPrimaryInputButton } from "./TouchUtils"
 import type { StateType } from "./types"
 import type { MouseEventOrTouchEvent } from "./types"
 

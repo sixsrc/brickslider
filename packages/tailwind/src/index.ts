@@ -183,9 +183,8 @@ export default plugin(function ({ addComponents }): void {
       bottom: "48px"
     },
     ".bs-stories-pause-indicator": {
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      inset: "0",
+      margin: "auto",
       pointerEvents: "none"
     },
     ".bs-stories-pause-indicator--visible": {

@@ -1,7 +1,8 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { EVENTS } from "./helpers"
-import { isPrimaryInputButton, listener, removeListener } from "./helpers"
+import { listener, removeListener } from "./helpers"
+import { isPrimaryInputButton } from "./TouchUtils"
 import type { StateType } from "./types"
 import type {
   DragabbleListenersParams,

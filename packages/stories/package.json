@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Stories plugin package for BrickSlider.",
   "license": "MIT",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "keywords": [
     "brickslider",
     "brick-slider",
@@ -34,19 +34,23 @@
   },
   "main": "./lib/brick-slider-stories.js",
   "module": "./lib/brick-slider-stories.js",
-  "jsdelivr": "./lib/brick-slider-stories.js",
+  "jsdelivr": "./lib/brick-slider-stories.browser.js",
+  "unpkg": "./lib/brick-slider-stories.browser.js",
   "exports": {
     ".": {
       "types": "./lib/stories/src/index.d.ts",
       "import": "./lib/brick-slider-stories.js",
       "default": "./lib/brick-slider-stories.js"
+    },
+    "./browser": {
+      "default": "./lib/brick-slider-stories.browser.js"
     }
   },
   "scripts": {
-    "build": "tsc --noEmit && vite build"
+    "build": "tsc --noEmit && vite build && vite build --config vite.browser.config.ts --emptyOutDir false"
   },
   "peerDependencies": {
-    "@sixsrc/brick-slider": "^1.0.9"
+    "@sixsrc/brick-slider": "^1.0.12"
   },
   "devDependencies": {
     "@sixsrc/brick-slider": "workspace:*"

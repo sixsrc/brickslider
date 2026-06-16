@@ -3,7 +3,7 @@
   "author": "@malopestorres",
   "description": "Simple slider plugin, made to be lightweight and practical.",
   "license": "MIT",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "keywords": [
     "brickslider",
     "brick-slider",
@@ -36,15 +36,12 @@
   "main": "./lib/brick-slider.js",
   "module": "./lib/brick-slider.js",
   "jsdelivr": "./lib/brick-slider.browser.js",
+  "unpkg": "./lib/brick-slider.browser.js",
   "exports": {
     ".": {
       "types": "./lib/slider/src/index.d.ts",
       "import": "./lib/brick-slider.js",
       "default": "./lib/brick-slider.js"
-    },
-    "./browser": {
-      "import": "./lib/brick-slider.browser.js",
-      "default": "./lib/brick-slider.browser.js"
     },
     "./api": {
       "types": "./lib/slider/src/api.d.ts",
@@ -53,6 +50,9 @@
     },
     "./brick-slider.css": {
       "default": "./lib/brick-slider.css"
+    },
+    "./browser": {
+      "default": "./lib/brick-slider.browser.js"
     }
   },
   "scripts": {

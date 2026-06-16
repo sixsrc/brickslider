@@ -1,5 +1,13 @@
 # @sixsrc/brick-slider-stories
 
+## 1.0.9
+
+### Patch Changes
+
+- Align CDN/browser usage with official browser bundles, update package CDN entrypoints, and refresh related docs/examples.
+- Updated dependencies
+  - @sixsrc/brick-slider@1.0.12
+
 ## 1.0.6
 
 ### Patch Changes

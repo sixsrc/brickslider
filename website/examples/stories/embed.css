@@ -52,11 +52,25 @@
   position: relative;
   display: block;
   margin-top: 1rem;
-  max-width: 18rem;
-  font-size: clamp(2.2rem, 8vw, 3.8rem);
+  max-width: min(100%, 16rem);
+  font-size: clamp(1.95rem, 7.2vw, 3rem);
   font-weight: 700;
   line-height: 0.98;
   color: #fff;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.stories-inline-title--hero {
+  max-width: min(100%, 15rem);
+  font-size: clamp(2.15rem, 7.8vw, 3.2rem);
+  line-height: 0.97;
+}
+
+.stories-inline-title--api {
+  max-width: min(100%, 15rem);
+  font-size: clamp(2.05rem, 7.4vw, 3rem);
+  line-height: 0.98;
 }
 
 .stories-inline-copy {
@@ -64,6 +78,25 @@
   margin-top: 1rem;
   font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.72);
+}
+
+@media (min-width: 768px) {
+  .stories-inline-title--hero {
+    max-width: 14rem;
+    font-size: clamp(1.55rem, 2.9vw, 2rem);
+    line-height: 1.08;
+  }
+
+  .stories-inline-title--api {
+    max-width: 14rem;
+    font-size: clamp(1.5rem, 2.9vw, 1.92rem);
+    line-height: 1.08;
+  }
+
+  .stories-inline-copy {
+    margin-top: 0.85rem;
+    font-size: 0.78rem;
+  }
 }
 
 .stories-inline-video {

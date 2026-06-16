@@ -1,17 +1,19 @@
-import { BrickSlider } from "../../vendor/brick-slider/brick-slider.js"
-import StoriesPlugin from "../../vendor/brick-slider-stories/brick-slider-stories.js"
-
 const STYLE_IDS = {
   CORE: "stories-inline-core-style",
   SHARED: "stories-inline-shared-style",
   EMBED: "stories-inline-embed-style"
 }
 
+const SCRIPT_IDS = {
+  CORE: "stories-inline-core-script",
+  STORIES: "stories-inline-stories-script"
+}
+
 function ensureStyles() {
   const styles = [
     {
       id: STYLE_IDS.CORE,
-      href: "/vendor/brick-slider/brick-slider.css"
+      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.css"
     },
     {
       id: STYLE_IDS.SHARED,
@@ -19,7 +21,7 @@ function ensureStyles() {
     },
     {
       id: STYLE_IDS.EMBED,
-      href: "/examples/stories/embed.css?v=2"
+      href: "/examples/stories/embed.css?v=3"
     }
   ]
 
@@ -31,6 +33,49 @@ function ensureStyles() {
     link.rel = "stylesheet"
     link.href = href
     document.head.appendChild(link)
+  })
+}
+
+function loadScript({ id, src }) {
+  return new Promise((resolve, reject) => {
+    const existing = document.getElementById(id)
+
+    if (existing) {
+      if (existing.dataset.loaded === "true") {
+        resolve()
+        return
+      }
+
+      existing.addEventListener("load", () => resolve(), { once: true })
+      existing.addEventListener(
+        "error",
+        () => reject(new Error(`Failed to load ${src}`)),
+        { once: true }
+      )
+      return
+    }
+
+    const script = document.createElement("script")
+    script.id = id
+    script.src = src
+    script.async = false
+    script.onload = () => {
+      script.dataset.loaded = "true"
+      resolve()
+    }
+    script.onerror = () => reject(new Error(`Failed to load ${src}`))
+    document.head.appendChild(script)
+  })
+}
+
+async function ensureScripts() {
+  await loadScript({
+    id: SCRIPT_IDS.CORE,
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.browser.js"
+  })
+  await loadScript({
+    id: SCRIPT_IDS.STORIES,
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.8/lib/brick-slider-stories.browser.js"
   })
 }
 
@@ -56,7 +101,7 @@ function createMarkup(id) {
 
                 <div class="relative mt-4 max-w-[18rem] md:max-w-[14rem]">
                   <strong
-                    class="stories-inline-title"
+                    class="stories-inline-title stories-inline-title--hero"
                   >
                     <span class="block">Visual stories</span>
                     <span class="block">for sliders.</span>
@@ -105,7 +150,7 @@ function createMarkup(id) {
                   class="stories-inline-badge"
                 >Plugin API</span>
                 <strong
-                  class="stories-inline-title"
+                  class="stories-inline-title stories-inline-title--api"
                 >
                   <span class="block">One trigger</span>
                   <span class="block">opens the flow.</span>
@@ -211,14 +256,14 @@ function mountStoriesExample(host, index) {
   document.body.appendChild(sliderRoot)
   document.body.appendChild(storiesLayer)
 
-  const slider = new BrickSlider(`#${id}-slider`, {
+  const slider = new window.BrickSlider(`#${id}-slider`, {
     slidesPerView: 1,
     slidesPerPage: 1,
     useLoop: false
   })
 
   slider.use(
-    new StoriesPlugin({
+    new window.BrickSliderStories({
       trigger: `#${id}-open`,
       duration: 5000,
       maxStories: 10,
@@ -231,8 +276,9 @@ function mountStoriesExample(host, index) {
   slider.init()
 }
 
-function boot() {
+async function boot() {
   ensureStyles()
+  await ensureScripts()
 
   const hosts = Array.from(document.querySelectorAll("[data-inline-stories-example]"))
   hosts.forEach((host, index) => mountStoriesExample(host, index))

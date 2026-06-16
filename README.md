@@ -29,7 +29,7 @@ The core stays small and framework-agnostic, while the default authoring experie
     <img src="https://img.shields.io/npm/v/@sixsrc/brick-slider?color=%23A855F7" />
 
   <a  href="https://bundlephobia.com/package/@sixsrc/brick-slider">
-    <img src="https://img.shields.io/bundlephobia/minzip/@sixsrc/brick-slider?color=%23A855F7&label=gzip%20size" />
+    <img src="https://img.shields.io/bundlephobia/min/@sixsrc/brick-slider?color=%23A855F7&label=package%20size" />
   </a>
 </p>
 
@@ -128,13 +128,14 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 
 ## CDN
 
-Use ESM in the browser and import the plugins you need:
+Use the official browser bundles in plain HTML:
 
 ```html
-<script type="module">
-  import { BrickSlider } from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider/+esm"
-  import AccessibilityPlugin from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility/+esm"
-  import StoriesPlugin from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories/+esm"
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.8/lib/brick-slider-accessibility.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.8/lib/brick-slider-stories.browser.js"></script>
+<script>
+  const { BrickSlider, AccessibilityPlugin, StoriesPlugin } = window
 
   const slider = new BrickSlider("#slider", {
     slidesPerView: 1,
@@ -146,13 +147,13 @@ Use ESM in the browser and import the plugins you need:
     new StoriesPlugin({ trigger: "#open-stories", duration: 5000 })
   )
   slider.init()
-<\/script>
+</script>
 ```
 
 ## Build Formats
 
 - `ESM` is the official runtime format for BrickSlider.
-- Browser usage should use `<script type="module">`.
+- Browser CDN usage should use the official `.browser.js` bundles.
 - npm usage works with modern bundlers through the ESM entry.
 - `UMD` and `CommonJS` builds are no longer maintained.
 
@@ -666,14 +667,14 @@ If you are using BrickSlider directly in HTML or alongside Tailwind loaded from 
 ```html
 <link
   rel="stylesheet"
-  href="https://unpkg.com/@sixsrc/brick-slider-tailwind/brick-slider.css"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.6/brick-slider.css"
 />
 ```
 
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind/brick-slider.css"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.6/brick-slider.css"
 />
 ```
 

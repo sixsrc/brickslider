@@ -958,24 +958,15 @@ export class BrickSliderStories extends Plugin {
     }
 
     host.next = (): void => {
-      const targetIndex = this.getAdjacentStoryIndex(1)
-
       originalNext()
-      this.syncHostNavigation(targetIndex)
     }
 
     host.prev = (): void => {
-      const targetIndex = this.getAdjacentStoryIndex(-1)
-
       originalPrev()
-      this.syncHostNavigation(targetIndex)
     }
 
     host.goTo = (index: number): void => {
-      const targetIndex = this.getSafeStoryIndex(index)
-
       originalGoTo(index)
-      this.syncHostNavigation(targetIndex)
     }
   }
 
@@ -992,9 +983,13 @@ export class BrickSliderStories extends Plugin {
   }
 
   private getAdjacentStoryIndex(offset: number): number {
-    const { activePage } = this.store
+    const { activePage, slideIndex } = this.store
     const currentIndex =
-      typeof activePage === "number" ? activePage : this.activeStoryIndex
+      typeof slideIndex === "number"
+        ? slideIndex
+        : typeof activePage === "number"
+          ? activePage
+          : this.activeStoryIndex
 
     return this.getSafeStoryIndex(currentIndex + offset)
   }
@@ -1087,16 +1082,27 @@ export class BrickSliderStories extends Plugin {
     duration: number
   ): Animation[] {
     progressBar.getAnimations().forEach(animation => animation.cancel())
+    progressBar.style.transformOrigin = "left center"
+    progressBar.style.scale = `${from} 1`
 
-    return this.animate(
+    if (duration <= 0 || from === to) {
+      progressBar.style.scale = `${to} 1`
+      return []
+    }
+
+    const animations = this.animate(
       progressBar,
-      [{ transform: `scaleX(${from})` }, { transform: `scaleX(${to})` }],
+      [{ scale: `${from} 1` }, { scale: `${to} 1` }],
       {
         duration,
         easing: ANIMATION_OPTIONS.LINEAR,
         fill: ANIMATION_OPTIONS.FORWARDS
       }
     )
+
+    animations.forEach(animation => animation.play())
+
+    return animations
   }
 
   private startTimer(time: number, duration: number): void {
@@ -1138,7 +1144,7 @@ export class BrickSliderStories extends Plugin {
   private getStoryIndexFromPayload(
     storyPayload?: BrickSliderStoriesSlideChangePayload
   ): number {
-    return storyPayload?.activePage ?? storyPayload?.slideIndex ?? 0
+    return storyPayload?.slideIndex ?? storyPayload?.activePage ?? 0
   }
 
   private getCurrentStoryDuration(index: number): number {

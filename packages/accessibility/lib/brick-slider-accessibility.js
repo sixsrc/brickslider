@@ -1,3 +1,10 @@
+/*
+* BrickSlider Accessibility
+* Version  : 1.0.9
+* License  : MIT
+* Copyright: 2026
+* Repo: github.com/sixsrc/brickslider
+*/
 import { $ as e, ATTRIBUTES as t, CLASS_VALUES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, SlideMeta as c, TAGS as l, TIMES as u, appendToParent as d, createNewElement as f, getAllElements as p, getAttribute as m, getElement as h, getSliderNodeList as g, hasAttribute as _, hasClass as v, listener as y, removeAttribute as b, removeElement as x, removeListener as S, setAttribute as C, waitFor as w } from "@sixsrc/brick-slider/api";
 //#region src/constants.ts
 var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {

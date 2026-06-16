@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.12
+
+### Patch Changes
+
+- Align CDN/browser usage with official browser bundles, update package CDN entrypoints, and refresh related docs/examples.
+
 ## 1.0.10
 
 ### Patch Changes

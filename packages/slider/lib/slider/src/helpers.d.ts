@@ -119,23 +119,6 @@ export declare const NORMALIZED_ELEMENT_ROLES: {
 export declare const INTERNAL_SELECTORS: {
     readonly PLUGIN_ROOT_PLACEHOLDER: "#__brickslider_plugin_root__";
 };
-export declare const TOUCH_LIMIT = 0;
-export declare const MOVE_TO_LIMIT = 3;
-export declare const TOUCH_CONFIG: {
-    readonly FAST_SWIPE_MAX_MS: 180;
-    readonly FAST_VELOCITY_THRESHOLD: 0.35;
-    readonly SLOW_LIMIT: 35;
-    readonly MAX_LIMIT: 55;
-    readonly DRAG_FREE_SETTLE_FACTOR: 0.12;
-};
-export declare const POSITION: {
-    readonly RIGHT: "right";
-    readonly LEFT: "left";
-};
-export declare const DOCS: {
-    GET_STARTED: string;
-    BASIC_HTML_DOC: string;
-};
 export declare function addClass(elements: (HTMLElement | Element)[], className: string): void;
 export declare function animateElement(element: HTMLElement | HTMLElement[], keyframes: Keyframe[], options: KeyframeAnimationOptions): Animation[];
 export declare function appendToParent(parent: HTMLElement | undefined, element: HTMLElement | undefined): HTMLElement | undefined;
@@ -166,8 +149,6 @@ export declare function removePart<T extends string | unknown[]>(input: T, start
 export declare function setAttribute(el: HTMLElement, attribute: string, value: string): void;
 export declare function setAttributes(element: HTMLElement, attributes: Record<string, string | number | boolean>): void;
 export declare function getEventType(event: MouseEventOrTouchEvent): MouseEvent | Touch;
-export declare function isPrimaryInputButton(event: MouseEventOrTouchEvent): boolean;
-export declare function getAxisX(event: MouseEventOrTouchEvent): number;
 export declare function getSlideMovement(direction: typeof FROM.NEXT | typeof FROM.PREV): UpdateSlideIndexType;
 export declare function isValidSelector(string: string): boolean;
 export declare function listener(events: string[], target: EventTarget, callback: EventListenerOrEventListenerObject | ((event: any) => void), options?: boolean | AddEventListenerOptions): void;

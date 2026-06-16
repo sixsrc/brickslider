@@ -2,7 +2,8 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import type { StateType } from "./types"
-import { EVENTS, FROM, TIMES, TOUCH_CONFIG, TOUCH_LIMIT } from "./helpers"
+import { EVENTS, FROM, TIMES } from "./helpers"
+import { TOUCH_CONFIG, TOUCH_LIMIT } from "./TouchUtils"
 import {
   getSlideMovement,
   getSliderNodeList,

@@ -4,7 +4,7 @@ This example belongs to the separate `@sixsrc/brick-slider-stories` plugin.
 
 ## Live Example
 
-:::example /examples/stories/ 760
+:::example /examples/stories/ 760 nolink
 
 ## Install
 

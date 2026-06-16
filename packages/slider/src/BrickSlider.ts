@@ -12,9 +12,12 @@ import {
   removeAttribute,
   setAttribute
 } from "./helpers"
-import { Mount } from "./Mount"
 import { Slider } from "./Slider"
 import type { SliderOptions, StateType } from "./types"
+
+type MountInstance = {
+  init(): Promise<void>
+}
 
 type SliderPlugin = {
   init(): void
@@ -29,7 +32,7 @@ type SliderPlugin = {
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: SliderOptions
-  private mount: Mount | null = null
+  private mount: MountInstance | null = null
   private plugins: SliderPlugin[] = []
   private validate: Validation
   private message: Messages
@@ -56,7 +59,6 @@ export class BrickSlider extends BaseSlider {
 
   private defineConfigs($root: string, options?: SliderOptions): void {
     this.userOptions = options
-    this.mount = new Mount($root)
     this.setOptions(options)
   }
 
@@ -74,6 +76,11 @@ export class BrickSlider extends BaseSlider {
   }
 
   private async runMount(): Promise<void> {
+    if (!this.mount) {
+      const { Mount } = await import("./Mount")
+      this.mount = new Mount(this.$root)
+    }
+
     await this.mount?.init()
     this.emitMountedWhenReady()
   }
@@ -301,12 +308,10 @@ export class BrickSlider extends BaseSlider {
   private resetMountState(): void {
     const { userOptions } = this
 
-    if (!userOptions) {
-      this.mount = null
-      return
-    }
+    this.mount = null
 
-    this.mount = new Mount(this.$root)
-    this.setOptions(userOptions)
+    if (userOptions) {
+      this.setOptions(userOptions)
+    }
   }
 }

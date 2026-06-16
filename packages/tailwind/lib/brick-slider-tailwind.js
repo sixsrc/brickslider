@@ -1,3 +1,11 @@
+/*
+ * BrickSlider Tailwind
+ * Version  : 1.0.7
+ * License  : MIT
+ * Copyright: 2026
+ * Repo: github.com/sixsrc/brickslider
+ */
+
 import e from "tailwindcss/plugin";
 //#region src/index.ts
 var t = e(function({ addComponents: e }) {
@@ -167,9 +175,8 @@ var t = e(function({ addComponents: e }) {
 			bottom: "48px"
 		},
 		".bs-stories-pause-indicator": {
-			top: "50%",
-			left: "50%",
-			transform: "translate(-50%, -50%)",
+			inset: "0",
+			margin: "auto",
 			pointerEvents: "none"
 		},
 		".bs-stories-pause-indicator--visible": { pointerEvents: "auto" },

@@ -2,11 +2,12 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   publicDir: false,
+  define: { "import.meta.env.DEV": "false", "import.meta.env.PROD": "true" },
   build: {
     outDir: "lib",
     minify: "terser",
     terserOptions: {
-      module: true,
+      module: false,
       toplevel: true,
       compress: {
         passes: 3,
@@ -28,13 +29,18 @@ export default defineConfig({
       }
     },
     lib: {
-      entry: "./src/index.ts",
-      formats: ["es"],
-      fileName: "brick-slider.browser"
+      entry: "./src/browser.ts",
+      formats: ["iife"],
+      name: "BrickSliderBundle",
+      fileName: () => "brick-slider.browser.js"
     },
     rollupOptions: {
       output: {
         inlineDynamicImports: true
+      },
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false
       }
     }
   }

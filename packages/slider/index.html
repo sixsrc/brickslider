@@ -1190,7 +1190,7 @@
           class="hidden pointer-events-none fixed inset-0 z-[10000] flex select-none items-center justify-center p-6 max-md:p-0"
         >
           <div
-            class="bs-track group/stories pointer-events-auto relative z-[10001] aspect-[9/16] h-[min(86vh,760px)] w-[min(92vw,calc(86vh*9/16),430px)] max-w-[min(92vw,430px)] overflow-hidden max-md:h-[100dvh] max-md:w-screen max-md:max-w-none"
+            class="bs-track group/stories pointer-events-auto relative z-[10001] aspect-[9/16] h-[min(86vh,760px)] w-[min(92vw,calc(86vh*9/16),430px)] max-w-[min(92vw,430px)] overflow-hidden max-md:fixed max-md:inset-0 max-md:h-[100dvh] max-md:min-h-[100dvh] max-md:w-[100dvw] max-md:min-w-[100dvw] max-md:max-w-[100dvw] max-md:aspect-auto"
           >
             <div class="bs-container h-full text-white">
               <div class="bs-slide h-full">
@@ -1327,7 +1327,7 @@
             </button>
 
             <button
-              class="bs-stories-pause-indicator pointer-events-none absolute left-1/2 top-1/2 z-[10004] hidden h-16 w-16 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white opacity-0 transition-colors transition-opacity hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:flex"
+              class="bs-stories-pause-indicator pointer-events-none absolute z-[10004] hidden h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white opacity-0 transition-colors transition-opacity hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:flex"
               type="button"
               aria-label="Toggle pause"
             >

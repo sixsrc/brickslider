@@ -17,21 +17,26 @@ import {
 } from "./helpers"
 import type { ResponsiveBreakpoint, SliderOptions } from "./types"
 
+const FIXED_ORDER = [
+  NORMALIZED_ELEMENT_ROLES.TRACK,
+  NORMALIZED_ELEMENT_ROLES.CHILDREN,
+  NORMALIZED_ELEMENT_ROLES.SLIDE
+] as const
+
+const ALLOWED_BEFORE_TRACK: readonly string[] = [
+  NORMALIZED_ELEMENT_ROLES.ARROW,
+  NORMALIZED_ELEMENT_ROLES.PAGES
+]
+
 export class Validation {
-  private $root: string
+  protected readonly $root: string
   private ids: Set<string> = new Set<string>()
   private details: Record<string, string[]> = {}
   private arrElements: HTMLCollection | undefined
-  private fixedOrder: string[]
 
   constructor($root: string) {
     this.$root = $root
     this.arrElements = this.getRoot()?.children
-    this.fixedOrder = [
-      NORMALIZED_ELEMENT_ROLES.TRACK,
-      NORMALIZED_ELEMENT_ROLES.CHILDREN,
-      NORMALIZED_ELEMENT_ROLES.SLIDE
-    ]
   }
 
   private getRoot(): HTMLElement | undefined {
@@ -108,9 +113,7 @@ export class Validation {
   private getBeforeTrack(): string[] {
     const elementClasses = this.getElementClasses(this.arrElements)
     const trackIndex = elementClasses.indexOf(NORMALIZED_ELEMENT_ROLES.TRACK)
-    const arr = this.getElementClasses(this.arrElements)
-
-    return removePart(arr, 0, trackIndex)
+    return removePart(elementClasses, 0, trackIndex)
   }
 
   private areArraysEqual(arr1: string[], arr2: string[]): boolean {
@@ -162,14 +165,7 @@ export class Validation {
 
     return (
       beforeTrack.length > 3 ||
-      !beforeTrack.every(className =>
-        (
-          [
-            NORMALIZED_ELEMENT_ROLES.ARROW,
-            NORMALIZED_ELEMENT_ROLES.PAGES
-          ] as readonly string[]
-        ).includes(className)
-      ) ||
+      !beforeTrack.every(className => ALLOWED_BEFORE_TRACK.includes(className)) ||
       pageElements.length > 1 ||
       !arrowButtons.every(el => el.tagName.toLowerCase() === TAGS.BUTTON)
     )
@@ -183,7 +179,7 @@ export class Validation {
 
     if (this.isInvalidBeforeTrack()) return false
 
-    return this.areArraysEqual(endArr, this.fixedOrder)
+    return this.areArraysEqual(endArr, [...FIXED_ORDER])
   }
 
   private hasDuplicateClasses(): boolean {
@@ -292,7 +288,7 @@ export class Validation {
 
     if (this.isInvalidBeforeTrack()) {
       details.push(
-        `Optional arrows must be <button> elements, and optional .${DOM_ELEMENT_ALIASES.PAGES[0]} must stay before .${DOM_ELEMENT_ALIASES.TRACK[0]}.`
+        `Optional arrows must be <button> elements, and .${DOM_ELEMENT_ALIASES.PAGES[0]} must stay before .${DOM_ELEMENT_ALIASES.TRACK[0]}.`
       )
     }
 
@@ -316,7 +312,7 @@ export class Validation {
 
     if (details.length === 0) {
       details.push(
-        `Expected structure: .${DOM_ELEMENT_ALIASES.TRACK[0]} > .${DOM_ELEMENT_ALIASES.CHILDREN[0]} > .${DOM_ELEMENT_ALIASES.SLIDE[0]}.`
+        `Expected: .${DOM_ELEMENT_ALIASES.TRACK[0]} > .${DOM_ELEMENT_ALIASES.CHILDREN[0]} > .${DOM_ELEMENT_ALIASES.SLIDE[0]}.`
       )
     }
 

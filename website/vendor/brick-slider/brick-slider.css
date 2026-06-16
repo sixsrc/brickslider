@@ -108,3 +108,154 @@
   pointer-events: none;
   border-radius: 20px;
 }
+
+.bs-stories {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bs-stories .bs-track {
+  position: relative;
+  z-index: 10001;
+  width: min(92vw, calc(86vh * 9 / 16), 430px);
+  max-width: min(92vw, 430px);
+  height: min(86vh, 760px);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.bs-stories .bs-container,
+.bs-stories .bs-slide {
+  height: 100%;
+}
+
+.bs-stories-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bs-stories-backdrop {
+  position: fixed;
+  inset: 0;
+}
+
+.bs-stories-progress {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 12px);
+  right: 16px;
+  left: 16px;
+  z-index: 10003;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: auto;
+}
+
+.bs-stories-progress-item {
+  flex: 1 1 0;
+  overflow: hidden;
+}
+
+.bs-stories-progress-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  scale: 0 1;
+}
+
+.bs-stories-close,
+.bs-stories-mute,
+.bs-stories-pause-indicator {
+  position: absolute;
+  z-index: 10004;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bs-stories-close,
+.bs-stories-mute {
+  pointer-events: auto;
+}
+
+.bs-stories-close {
+  top: 6dvh;
+  right: 16px;
+}
+
+.bs-stories-mute {
+  right: 20px;
+  bottom: 48px;
+}
+
+.bs-stories-pause-indicator {
+  inset: 0;
+  margin: auto;
+  pointer-events: none;
+}
+
+.bs-stories-pause-indicator--visible {
+  pointer-events: auto;
+}
+
+.bs-stories-body-open {
+  overflow: hidden;
+}
+
+.bs-stories.hidden,
+.bs-stories-layer.hidden,
+.bs-stories-play.hidden,
+.bs-stories-pause.hidden,
+.bs-stories-mute-on.hidden,
+.bs-stories-mute-off.hidden {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .bs-stories {
+    padding: 0;
+    align-items: stretch;
+    justify-content: stretch;
+    width: 100dvw;
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  .bs-stories .bs-track {
+    position: fixed;
+    inset: 0;
+    width: 100dvw;
+    min-width: 100dvw;
+    max-width: 100dvw;
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    aspect-ratio: auto;
+    border-radius: 0;
+  }
+
+  .bs-stories-close {
+    top: max(16px, env(safe-area-inset-top));
+  }
+
+  .bs-stories-progress {
+    top: max(12px, env(safe-area-inset-top));
+  }
+}

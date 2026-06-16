@@ -11,7 +11,7 @@
     <link rel="icon" href="./favicon.png" type="image/png" />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind/brick-slider.css"
+      href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.6/brick-slider.css"
     />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -562,10 +562,9 @@ slider.<span class="text-yellow-400">init</span>()</code></pre>
               <div class="code-block p-6 text-sm text-gray-300 overflow-x-auto">
                 <pre
                   class="m-0"
-                ><code><span class="text-blue-400">&lt;script</span> <span class="text-yellow-400">type</span>=<span class="text-green-400">"module"</span><span class="text-blue-400">&gt;</span>
-  <span class="text-purple-400">import</span> <span class="text-blue-400">{ BrickSlider }</span> <span class="text-purple-400">from</span> <span class="text-green-400">"https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider/+esm"</span>
-
-  <span class="text-purple-400">const</span> slider = <span class="text-purple-400">new</span> <span class="text-blue-400">BrickSlider</span>(<span class="text-green-400">"#slider"</span>, {
+                ><code><span class="text-blue-400">&lt;script</span> <span class="text-yellow-400">src</span>=<span class="text-green-400">"https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.browser.js"</span><span class="text-blue-400">&gt;&lt;/script&gt;</span>
+<span class="text-blue-400">&lt;script&gt;</span>
+  <span class="text-purple-400">const</span> slider = <span class="text-purple-400">new</span> <span class="text-blue-400">window.BrickSlider</span>(<span class="text-green-400">"#slider"</span>, {
     <span class="text-blue-400">slidesPerView</span>: <span class="text-orange-400">1</span>,
     <span class="text-blue-400">slidesPerPage</span>: <span class="text-orange-400">1</span>
   })
@@ -714,9 +713,8 @@ slider.<span class="text-yellow-400">init</span>()</code></pre>
         </p>
       </div>
     </footer>
-    <script type="module">
-      import { BrickSlider } from "./vendor/brick-slider/brick-slider.js"
-
+    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.browser.js"></script>
+    <script>
       const TYPING_SPEED = 42
       const TYPING_RESTART_DELAY = 2400
       function wait(time) {
@@ -871,7 +869,7 @@ slider.<span class="text-yellow-400">init</span>()</code></pre>
 
         if (!sliderRoot) return
 
-        const slider = new BrickSlider("#terminal-slider", {
+        const slider = new window.BrickSlider("#terminal-slider", {
           slidesPerView: 1,
           slidesPerPage: 1,
           useTouch: true,

@@ -36,13 +36,14 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 
 ## CDN
 
-Use ESM in the browser and import only the packages you need:
+Use the official browser bundles in plain HTML:
 
 ```html
-<script type="module">
-  import { BrickSlider } from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider/+esm"
-  import AccessibilityPlugin from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility/+esm"
-  import StoriesPlugin from "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories/+esm"
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.8/lib/brick-slider-accessibility.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.8/lib/brick-slider-stories.browser.js"></script>
+<script>
+  const { BrickSlider, AccessibilityPlugin, StoriesPlugin } = window
 
   const slider = new BrickSlider("#slider", {
     slidesPerView: 1,
@@ -54,5 +55,5 @@ Use ESM in the browser and import only the packages you need:
     new StoriesPlugin({ trigger: "#open-stories", duration: 5000 })
   )
   slider.init()
-<\/script>
+</script>
 ```
