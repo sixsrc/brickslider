@@ -13,7 +13,7 @@ function ensureStyles() {
   const styles = [
     {
       id: STYLE_IDS.CORE,
-      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.css"
+      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.12/lib/brick-slider.css"
     },
     {
       id: STYLE_IDS.SHARED,
@@ -71,11 +71,11 @@ function loadScript({ id, src }) {
 async function ensureScripts() {
   await loadScript({
     id: SCRIPT_IDS.CORE,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.11/lib/brick-slider.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.12/lib/brick-slider.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.STORIES,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.8/lib/brick-slider-stories.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.9/lib/brick-slider-stories.browser.js"
   })
 }
 
