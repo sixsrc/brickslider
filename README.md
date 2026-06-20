@@ -30,7 +30,7 @@ The core stays small and framework-agnostic, while the default authoring experie
   </a>
 
   <a  href="https://bundlephobia.com/package/@sixsrc/brick-slider">
-    <img src="https://img.shields.io/endpoint?url=https://sixsrc.github.io/brickslider/badges/brick-slider-size.json" />
+    <img src="https://img.shields.io/endpoint?url=https://sixsrc.github.io/brickslider/badges/brick-slider-size.json&cacheSeconds=300&v=2" />
   </a>
 </p>
 
