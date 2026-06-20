@@ -46,14 +46,14 @@ This file includes the default structural layout for BrickSlider markup without 
 ```html
 <link
   rel="stylesheet"
-  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.6/brick-slider.css"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.7/brick-slider.css"
 />
 ```
 
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.6/brick-slider.css"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.7/brick-slider.css"
 />
 ```
 

@@ -33,6 +33,12 @@ The core stays small and framework-agnostic, while the default authoring experie
   </a>
 </p>
 
+<p align="center">
+  <a href="https://sixsrc.github.io/brickslider/">Website</a>
+  &nbsp;•&nbsp;
+  <a href="https://sixsrc.github.io/brickslider/docs/examples-basic-slider/">Demos</a>
+</p>
+
 
 ## Table of Contents
 
@@ -669,14 +675,14 @@ If you are using BrickSlider directly in HTML or alongside Tailwind loaded from 
 ```html
 <link
   rel="stylesheet"
-  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.6/brick-slider.css"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.7/brick-slider.css"
 />
 ```
 
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.6/brick-slider.css"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.7/brick-slider.css"
 />
 ```
 

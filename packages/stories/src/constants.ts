@@ -68,5 +68,5 @@ export const STORIES_DEFAULTS = {
 } as const
 
 export const STORIES_DOCS = {
-  MARKUP: "brickslider.github.io/docs/plugins/stories"
+  MARKUP: "https://sixsrc.github.io/brickslider/docs/stories-plugin/"
 } as const

@@ -6,7 +6,7 @@
     <title>Progress · BrickSlider Docs</title>
     <meta name="description" content="Use the progress rail when you want a visual sense of slider position." />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://brickslider.github.io/docs/examples-progress/" />
+    <link rel="canonical" href="https://sixsrc.github.io/brickslider/docs/examples-progress/" />
 
 
     <script>
@@ -111,7 +111,7 @@
       .docs-home-card p { margin: 0; font-size: 1rem; line-height: 1.7; }
       .topbar-link { color: #374151; transition: color 0.18s ease; }
       .topbar-link:hover { color: #6D28D9; }
-      .docs-top-menu { position: fixed; inset: 0; width: 100vw; height: 100dvh; z-index: 80; overflow-y: auto; background: #fff; cursor: default; }
+      .docs-top-menu { position: fixed; left: 0; right: 0; top: 92px; bottom: 0; width: 100vw; height: calc(100dvh - 92px); z-index: 66; overflow-y: auto; background: #fff; cursor: default; border-top: 1px solid #E5E7EB; box-shadow: 0 18px 40px rgba(17,24,39,0.08); }
       .docs-top-menu[hidden] { display: none !important; }
       .docs-mobile-nav-trigger { display: none; position: fixed; left: 1rem; top: 7rem; z-index: 65; height: 3rem; width: 3rem; align-items: center; justify-content: center; border: 1px solid #E5E7EB; border-radius: 9999px; background: #fff; color: #374151; box-shadow: 0 18px 35px rgba(17,24,39,0.14); }
       .docs-mobile-nav { position: fixed; inset: 0; width: 100vw; height: 100dvh; z-index: 70; overflow-y: auto; background: #fff; cursor: default; }
@@ -155,6 +155,14 @@
           <img src="/logo.svg" alt="BrickSlider" width="208" height="62" class="h-14 w-auto" />
         </a>
         <div class="hidden items-center gap-5 text-sm font-medium md:flex">
+          <a
+            href="https://www.npmjs.com/package/@sixsrc/brick-slider"
+            class="docs-version-badge rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-bold text-primary"
+            target="_blank"
+            rel="noreferrer"
+            data-brickslider-version
+            hidden
+          ></a>
           <a href="/docs/" class="topbar-link flex items-center gap-2">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -187,32 +195,52 @@
           aria-label="Open menu"
           aria-expanded="false"
           data-docs-top-open
+          data-open="false"
         >
-          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <svg class="docs-menu-open-icon h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
             <path d="M5 7h14M5 12h14M5 17h14" />
+          </svg>
+          <svg class="docs-menu-close-icon hidden h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <path d="M6 6l12 12M18 6 6 18" />
           </svg>
         </button>
       </div>
     </header>
     <div class="docs-top-menu" data-docs-top-menu hidden>
-      <div class="flex min-h-[92px] items-center justify-between border-b border-gray-200 px-4">
-        <img src="/logo.svg" alt="BrickSlider" width="208" height="62" class="h-14 w-auto" />
-        <button
-          class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-900 shadow-sm"
-          type="button"
-          aria-label="Close menu"
-          data-docs-top-close
-        >
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
-            <path d="M6 6l12 12M18 6 6 18" />
-          </svg>
-        </button>
-      </div>
       <nav class="grid gap-3 px-6 py-8 text-lg font-semibold">
-        <a href="/docs/" class="topbar-link rounded-2xl px-4 py-3">Docs</a>
-        <a href="https://www.npmjs.com/package/@sixsrc/brick-slider" class="topbar-link rounded-2xl px-4 py-3" target="_blank" rel="noreferrer">npm</a>
-        <a href="https://github.com/sixsrc/brickslider" class="topbar-link rounded-2xl px-4 py-3" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="https://github.com/sponsors/malopestorres" class="topbar-link rounded-2xl px-4 py-3 text-[#bf3989]" target="_blank" rel="noreferrer">Sponsor</a>
+        <a
+          href="https://www.npmjs.com/package/@sixsrc/brick-slider"
+          class="docs-version-badge w-fit rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-bold text-primary"
+          target="_blank"
+          rel="noreferrer"
+          data-brickslider-version
+          hidden
+        ></a>
+        <a href="/docs/" class="topbar-link flex items-center gap-3 rounded-2xl px-4 py-3">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
+          <span>Docs</span>
+        </a>
+        <a href="https://www.npmjs.com/package/@sixsrc/brick-slider" class="topbar-link flex items-center gap-3 rounded-2xl px-4 py-3" target="_blank" rel="noreferrer">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2 7.5v9h10v-6h5v6h5v-9H2z" />
+          </svg>
+          <span>npm</span>
+        </a>
+        <a href="https://github.com/sixsrc/brickslider" class="topbar-link flex items-center gap-3 rounded-2xl px-4 py-3" target="_blank" rel="noreferrer">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.42-4.04-1.42-.54-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.79.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8c1.02 0 2.05.14 3 .41 2.3-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.65-5.48 5.95.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.82.58A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+          </svg>
+          <span>GitHub</span>
+        </a>
+        <a href="https://github.com/sponsors/malopestorres" class="topbar-link flex items-center gap-3 rounded-2xl px-4 py-3 text-[#bf3989]" target="_blank" rel="noreferrer">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span>Sponsor</span>
+        </a>
       </nav>
     </div>
     <button
@@ -513,12 +541,36 @@
     </div>
     <script>
     ;(() => {
+      const syncPackageVersion = async () => {
+        const versionNodes = document.querySelectorAll("[data-brickslider-version]")
+        if (!versionNodes.length) return
+
+        try {
+          const response = await fetch("https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider/package.json", {
+            cache: "no-store"
+          })
+
+          if (!response.ok) return
+
+          const packageInfo = await response.json()
+
+          if (!packageInfo.version) return
+
+          versionNodes.forEach(node => {
+            node.textContent = "v" + packageInfo.version
+            node.setAttribute("aria-label", "BrickSlider version " + packageInfo.version)
+            node.hidden = false
+          })
+        } catch (_error) {
+        }
+      }
+
       const bindLayer = ({ open, close, layer }) => {
         const openButton = document.querySelector(open)
-        const closeButton = document.querySelector(close)
+        const closeButton = close ? document.querySelector(close) : null
         const layerElement = document.querySelector(layer)
 
-        if (!openButton || !closeButton || !layerElement) return
+        if (!openButton || !layerElement) return
 
         const syncBodyLock = () => {
           const hasOpenLayer = document.querySelector("[data-docs-top-menu]:not([hidden]), [data-docs-nav]:not([hidden])")
@@ -528,6 +580,9 @@
         const setOpen = value => {
           layerElement.hidden = !value
           openButton.setAttribute("aria-expanded", String(value))
+          openButton.dataset.open = String(value)
+          openButton.querySelector(".docs-menu-open-icon")?.classList.toggle("hidden", value)
+          openButton.querySelector(".docs-menu-close-icon")?.classList.toggle("hidden", !value)
           syncBodyLock()
 
           if (!value) {
@@ -538,8 +593,8 @@
           }
         }
 
-        openButton.addEventListener("click", () => setOpen(true))
-        closeButton.addEventListener("click", () => setOpen(false))
+        openButton.addEventListener("click", () => setOpen(layerElement.hidden))
+        closeButton?.addEventListener("click", () => setOpen(false))
 
         layerElement.querySelectorAll("a").forEach(link => {
           link.addEventListener("click", () => setOpen(false))
@@ -552,7 +607,6 @@
 
       bindLayer({
         open: "[data-docs-top-open]",
-        close: "[data-docs-top-close]",
         layer: "[data-docs-top-menu]"
       })
 
@@ -561,6 +615,8 @@
         close: "[data-docs-nav-close]",
         layer: "[data-docs-nav]"
       })
+
+      syncPackageVersion()
     })()
   </script>
   </body>

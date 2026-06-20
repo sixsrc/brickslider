@@ -1,4 +1,4 @@
 export const DOCS = {
-  GET_STARTED: "brickslider.github.io/docs/get-started",
-  BASIC_HTML_DOC: "brickslider.github.io/docs/basic-html"
+  GET_STARTED: "https://sixsrc.github.io/brickslider/docs/quick-start/",
+  BASIC_HTML_DOC: "https://sixsrc.github.io/brickslider/docs/basic-markup/"
 } as const
