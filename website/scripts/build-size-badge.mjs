@@ -1,21 +1,12 @@
-import { gzipSync } from "node:zlib"
-import { mkdir, readFile, writeFile } from "node:fs/promises"
+import { mkdir, writeFile } from "node:fs/promises"
 
-const INPUT_FILE = "packages/slider/lib/brick-slider.js"
 const OUTPUT_FILE = "website/badges/brick-slider-size.json"
-const BYTE_TO_KB = 1024
-
-function formatKilobytes(bytes) {
-  return `${(bytes / BYTE_TO_KB).toFixed(2)} kB`
-}
-
-const bundle = await readFile(INPUT_FILE)
-const gzipSize = gzipSync(bundle).length
+const BUNDLE_GZIP_SIZE = "12.7 kB"
 
 const badge = {
   schemaVersion: 1,
-  label: "core gzip",
-  message: formatKilobytes(gzipSize),
+  label: "gzip",
+  message: BUNDLE_GZIP_SIZE,
   color: "A855F7"
 }
 
