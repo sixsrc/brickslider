@@ -27,9 +27,10 @@ The core stays small and framework-agnostic, while the default authoring experie
 
   <a  href="https://www.npmjs.com/package/@sixsrc/brick-slider">
     <img src="https://img.shields.io/npm/v/@sixsrc/brick-slider?color=%23A855F7" />
+  </a>
 
   <a  href="https://bundlephobia.com/package/@sixsrc/brick-slider">
-    <img src="https://img.shields.io/bundlephobia/minzip/@sixsrc/brick-slider?label=package%20gzip&color=%23A855F7&cacheSeconds=3600" />
+    <img src="https://img.shields.io/bundlephobia/minzip/@sixsrc/brick-slider?color=%23A855F7&label=package%20gzip&style=flat" />
   </a>
 </p>
 
