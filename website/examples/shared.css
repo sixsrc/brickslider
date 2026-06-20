@@ -34,29 +34,8 @@ body {
   color: #4c1d95;
 }
 
-.example-notice-actions {
-  display: none;
-  margin-bottom: 14px;
-  justify-content: flex-end;
-}
-
 .example-embedded .example-notice {
   display: block;
-}
-
-.example-embedded .example-notice-actions {
-  display: flex;
-}
-
-.example-notice-actions a {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #6d28d9;
-  text-decoration: none;
-}
-
-.example-notice-actions a:hover {
-  text-decoration: underline;
 }
 
 
@@ -318,7 +297,4 @@ body {
     font-size: 0.9rem;
   }
 
-  .example-notice-actions a {
-    font-size: 0.9rem;
-  }
 }

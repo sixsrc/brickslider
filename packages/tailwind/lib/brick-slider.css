@@ -159,7 +159,8 @@
   left: 16px;
   z-index: 10003;
   display: flex;
-  align-items: center;
+  height: 4px;
+  align-items: stretch;
   gap: 4px;
   margin: 0;
   padding: 0;
@@ -168,11 +169,15 @@
 }
 
 .bs-stories-progress-item {
+  position: relative;
   flex: 1 1 0;
+  height: 100%;
   overflow: hidden;
 }
 
 .bs-stories-progress-bar {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
@@ -183,11 +188,15 @@
 .bs-stories-close,
 .bs-stories-mute,
 .bs-stories-pause-indicator {
-  position: absolute;
   z-index: 10004;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.bs-stories-mute,
+.bs-stories-pause-indicator {
+  position: absolute;
 }
 
 .bs-stories-close,
@@ -196,8 +205,9 @@
 }
 
 .bs-stories-close {
-  top: 6dvh;
-  right: 16px;
+  position: fixed;
+  top: 32px;
+  right: 24px;
 }
 
 .bs-stories-mute {
@@ -221,6 +231,7 @@
 
 .bs-stories.hidden,
 .bs-stories-layer.hidden,
+.bs-stories-mute.hidden,
 .bs-stories-play.hidden,
 .bs-stories-pause.hidden,
 .bs-stories-mute-on.hidden,
@@ -252,10 +263,12 @@
   }
 
   .bs-stories-close {
-    top: max(16px, env(safe-area-inset-top));
+    position: absolute;
+    top: max(96px, calc(env(safe-area-inset-top) + 96px));
+    right: 16px;
   }
 
   .bs-stories-progress {
-    top: max(12px, env(safe-area-inset-top));
+    top: max(12px, calc(env(safe-area-inset-top) + 12px));
   }
 }

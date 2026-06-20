@@ -1,6 +1,6 @@
 /*
 * BrickSlider Stories
-* Version  : 1.0.11
+* Version  : 1.0.12
 * License  : MIT
 * Copyright: 2026
 * Repo: github.com/sixsrc/brickslider
@@ -583,7 +583,7 @@ var A = {
 	}
 	setupProgress(e) {
 		let t = this.storiesLayer ?? e, n = this.getStoriesElement(A.PROGRESS) ?? this.createProgressContainer(), r = this.getStoryCount(), i = this.getProgressItemTemplate(n), a = !n.parentElement;
-		this.destroyProgress(), this.progressContainer = n, this.progressBars = this.createProgressBars(r, i), this.mountProgressBars(n, this.progressBars), a && d(t, n);
+		this.destroyProgress(), n.replaceChildren(), this.progressContainer = n, this.progressBars = this.createProgressBars(r, i), this.mountProgressBars(n, this.progressBars), a && d(t, n);
 	}
 	mountProgressBars(e, t) {
 		t.forEach((t, n) => {
@@ -1050,14 +1050,14 @@ var A = {
 		return u([e], A.PROGRESS), this.createdElements.add(e), e;
 	}
 	createProgressBars(e, t) {
-		return Array.from({ length: e }, (e, n) => this.createProgressItem(n, t));
+		return Array.from({ length: e }, () => this.createProgressItem(t));
 	}
 	getProgressItemTemplate(e) {
 		return v(`.${A.PROGRESS_ITEM}`, e) ?? null;
 	}
-	createProgressItem(e, t) {
-		let n = e === 0 && t, r = n ? t : this.cloneProgressItem(t), i = this.prepareProgressItem(r);
-		return n || (this.createdElements.add(r), this.createdElements.add(i)), i;
+	createProgressItem(e) {
+		let t = this.cloneProgressItem(e), n = this.prepareProgressItem(t);
+		return this.createdElements.add(t), this.createdElements.add(n), n;
 	}
 	cloneProgressItem(e) {
 		return e ? e.cloneNode(!0) : m(c.DIV);

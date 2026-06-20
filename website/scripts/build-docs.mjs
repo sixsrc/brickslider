@@ -10,7 +10,9 @@ const contentRoot = path.join(websiteRoot, "content")
 const docsContentRoot = path.join(contentRoot, "docs")
 const frameworksContentRoot = path.join(contentRoot, "frameworks")
 const examplesContentRoot = path.join(contentRoot, "examples")
+const examplesRoot = path.join(websiteRoot, "examples")
 const outputRoot = path.join(websiteRoot, "docs")
+const downloadsRoot = path.join(websiteRoot, "downloads", "examples")
 
 const navSections = [
   {
@@ -193,6 +195,7 @@ function renderExampleEmbed(src, height = "460", showLink = true) {
 
   if (src === "/examples/stories/") {
     return `<div class="doc-example doc-example--stories">
+    ${renderExampleActions(src)}
     <div class="doc-example-frame doc-example-frame--stories">
       <div data-inline-stories-example></div>
     </div>
@@ -200,11 +203,7 @@ function renderExampleEmbed(src, height = "460", showLink = true) {
   </div>`
   }
 
-  const actions = showLink
-    ? `<div class="doc-example-actions">
-      <a href="${safeSrc}" target="_blank" rel="noreferrer">Open example in new tab</a>
-    </div>`
-    : ""
+  const actions = renderExampleActions(src, showLink)
 
   return `<div class="doc-example">
     ${actions}
@@ -221,12 +220,18 @@ function renderExampleEmbed(src, height = "460", showLink = true) {
   </div>`
 }
 
-function renderExampleLink(src) {
-  const safeSrc = escapeHtml(src)
+function renderExampleActions(src) {
+  const slug = src.split("/").filter(Boolean).pop() || "example"
+  const safeDownloadHref = escapeHtml(`/downloads/examples/${slug}.source`)
+  const safeDownloadName = escapeHtml(`brickslider-${slug}.html`)
 
   return `<div class="doc-example-actions">
-      <a href="${safeSrc}" target="_blank" rel="noreferrer">Open example in new tab</a>
+      <a href="${safeDownloadHref}" download="${safeDownloadName}">Download example</a>
     </div>`
+}
+
+function renderExampleLink(src) {
+  return renderExampleActions(src)
 }
 
 function renderMarkdown(markdown) {
@@ -398,7 +403,7 @@ function renderHeader() {
         <a href="/" class="flex items-center gap-3 py-2">
           <img src="/logo.svg" alt="BrickSlider" width="208" height="62" class="h-14 w-auto" />
         </a>
-        <div class="flex items-center gap-5 text-sm font-medium">
+        <div class="hidden items-center gap-5 text-sm font-medium md:flex">
           <a href="/docs/" class="topbar-link flex items-center gap-2">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -425,8 +430,79 @@ function renderHeader() {
             <span>Sponsor</span>
           </a>
         </div>
+        <button
+          class="docs-top-menu-toggle inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-900 shadow-sm md:hidden"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          data-docs-top-open
+        >
+          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <path d="M5 7h14M5 12h14M5 17h14" />
+          </svg>
+        </button>
       </div>
     </header>`
+}
+
+function renderMobileTopMenu() {
+  return `<div class="docs-top-menu" data-docs-top-menu hidden>
+      <div class="flex min-h-[92px] items-center justify-between border-b border-gray-200 px-4">
+        <img src="/logo.svg" alt="BrickSlider" width="208" height="62" class="h-14 w-auto" />
+        <button
+          class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-900 shadow-sm"
+          type="button"
+          aria-label="Close menu"
+          data-docs-top-close
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <nav class="grid gap-3 px-6 py-8 text-lg font-semibold">
+        <a href="/docs/" class="topbar-link rounded-2xl px-4 py-3">Docs</a>
+        <a href="https://www.npmjs.com/package/@sixsrc/brick-slider" class="topbar-link rounded-2xl px-4 py-3" target="_blank" rel="noreferrer">npm</a>
+        <a href="https://github.com/sixsrc/brickslider" class="topbar-link rounded-2xl px-4 py-3" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://github.com/sponsors/malopestorres" class="topbar-link rounded-2xl px-4 py-3 text-[#bf3989]" target="_blank" rel="noreferrer">Sponsor</a>
+      </nav>
+    </div>`
+}
+
+function renderMobileDocsNav(currentSlug) {
+  return `<button
+      class="docs-mobile-nav-trigger"
+      type="button"
+      aria-label="Open documentation menu"
+      aria-expanded="false"
+      data-docs-nav-open
+    >
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    </button>
+    <div class="docs-mobile-nav" data-docs-nav hidden>
+      <div class="flex min-h-[92px] items-center justify-between border-b border-gray-200 px-4">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary">Documentation</p>
+          <p class="mt-1 text-lg font-extrabold text-gray-950">BrickSlider Docs</p>
+        </div>
+        <button
+          class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-900 shadow-sm"
+          type="button"
+          aria-label="Close documentation menu"
+          data-docs-nav-close
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <nav class="h-[calc(100vh-92px)] overflow-y-auto px-5 py-6">
+        ${renderSidebar(currentSlug)}
+      </nav>
+    </div>`
 }
 
 function renderGeneratedNotice() {
@@ -447,6 +523,61 @@ function renderToc(toc) {
       )
       .join("")}
   </ul>`
+}
+
+function renderDocsUiScript() {
+  return `<script>
+    ;(() => {
+      const bindLayer = ({ open, close, layer }) => {
+        const openButton = document.querySelector(open)
+        const closeButton = document.querySelector(close)
+        const layerElement = document.querySelector(layer)
+
+        if (!openButton || !closeButton || !layerElement) return
+
+        const syncBodyLock = () => {
+          const hasOpenLayer = document.querySelector("[data-docs-top-menu]:not([hidden]), [data-docs-nav]:not([hidden])")
+          document.body.classList.toggle("docs-layer-open", Boolean(hasOpenLayer))
+        }
+
+        const setOpen = value => {
+          layerElement.hidden = !value
+          openButton.setAttribute("aria-expanded", String(value))
+          syncBodyLock()
+
+          if (!value) {
+            document.body.style.cursor = "default"
+            window.setTimeout(() => {
+              document.body.style.cursor = ""
+            }, 80)
+          }
+        }
+
+        openButton.addEventListener("click", () => setOpen(true))
+        closeButton.addEventListener("click", () => setOpen(false))
+
+        layerElement.querySelectorAll("a").forEach(link => {
+          link.addEventListener("click", () => setOpen(false))
+        })
+
+        document.addEventListener("keydown", event => {
+          if (event.key === "Escape") setOpen(false)
+        })
+      }
+
+      bindLayer({
+        open: "[data-docs-top-open]",
+        close: "[data-docs-top-close]",
+        layer: "[data-docs-top-menu]"
+      })
+
+      bindLayer({
+        open: "[data-docs-nav-open]",
+        close: "[data-docs-nav-close]",
+        layer: "[data-docs-nav]"
+      })
+    })()
+  <\/script>`
 }
 
 function renderLayout({ title, description, content, toc, currentSlug }) {
@@ -522,7 +653,7 @@ ${devReloadScript}
       html { scroll-behavior: smooth; }
       body { font-family: Inter, system-ui, sans-serif; }
       .docs-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr) 180px; gap: 0; }
-      .sidebar { position: sticky; top: 4rem; height: calc(100vh - 4rem); overflow-y: auto; }
+      .sidebar { position: fixed; top: 92px; bottom: 0; width: 240px; overflow-y: auto; transform: translateZ(0); }
       .toc { position: sticky; top: 6rem; max-height: calc(100vh - 7rem); overflow-y: auto; }
       .nav-group + .nav-group { margin-top: 1.5rem; }
       .nav-group h2 { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6B7280; margin-bottom: 0.75rem; }
@@ -535,10 +666,11 @@ ${devReloadScript}
       .docs-home-title { white-space: nowrap; }
       .doc-article h2 { font-size: 1.75rem; line-height: 1.15; font-weight: 800; color: #111827; margin: 3rem 0 1rem; scroll-margin-top: 6rem; }
       .doc-article h3 { font-size: 1.25rem; line-height: 1.25; font-weight: 700; color: #4C1D95; margin: 2rem 0 0.75rem; scroll-margin-top: 6rem; }
-      .doc-article p, .doc-article li, .doc-article td, .doc-article th { font-size: 1.05rem; line-height: 1.8; color: #374151; }
+      .doc-article p, .doc-article td, .doc-article th { font-size: 1.05rem; line-height: 1.8; color: #374151; }
+      .doc-article :where(ul:not(.bs-stories-progress), ol) > li { font-size: 1.05rem; line-height: 1.8; color: #374151; }
       .doc-article p + p { margin-top: 1rem; }
-      .doc-article ul { margin: 1rem 0; padding-left: 1.3rem; }
-      .doc-article li + li { margin-top: 0.35rem; }
+      .doc-article :where(ul:not(.bs-stories-progress), ol) { margin: 1rem 0; padding-left: 1.3rem; }
+      .doc-article :where(ul:not(.bs-stories-progress), ol) > li + li { margin-top: 0.35rem; }
       .doc-article a { color: #6D28D9; text-decoration: none; }
       .doc-article a:hover { text-decoration: underline; }
       .doc-article code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; background: #F3F4F6; color: #4C1D95; padding: 0.15rem 0.4rem; border-radius: 0.35rem; border: 1px solid #E5E7EB; }
@@ -550,7 +682,7 @@ ${devReloadScript}
       .doc-example-frame--stories { display: flex; justify-content: flex-start; }
       .doc-example-frame iframe { display: block; width: 100%; border: 0; background: transparent; border-radius: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: opacity 0.12s ease; }
       .doc-example-frame iframe[data-ready="true"] { opacity: 1; visibility: visible; }
-      .doc-example-actions { margin-bottom: 0.75rem; display: flex; justify-content: flex-end; }
+      .doc-example-actions { margin-bottom: 0.75rem; display: flex; justify-content: flex-end; gap: 1rem; flex-wrap: wrap; }
       .doc-example-actions a { font-size: 0.95rem; font-weight: 600; }
       .doc-article .token.keyword { color: #6D28D9; font-weight: 600; }
       .doc-article .token.string { color: #0F766E; }
@@ -576,14 +708,35 @@ ${devReloadScript}
       .docs-home-card p { margin: 0; font-size: 1rem; line-height: 1.7; }
       .topbar-link { color: #374151; transition: color 0.18s ease; }
       .topbar-link:hover { color: #6D28D9; }
+      .docs-top-menu { position: fixed; inset: 0; width: 100vw; height: 100dvh; z-index: 80; overflow-y: auto; background: #fff; cursor: default; }
+      .docs-top-menu[hidden] { display: none !important; }
+      .docs-mobile-nav-trigger { display: none; position: fixed; left: 1rem; top: 7rem; z-index: 65; height: 3rem; width: 3rem; align-items: center; justify-content: center; border: 1px solid #E5E7EB; border-radius: 9999px; background: #fff; color: #374151; box-shadow: 0 18px 35px rgba(17,24,39,0.14); }
+      .docs-mobile-nav { position: fixed; inset: 0; width: 100vw; height: 100dvh; z-index: 70; overflow-y: auto; background: #fff; cursor: default; }
+      .docs-mobile-nav[hidden] { display: none !important; }
+      .docs-top-menu a,
+      .docs-mobile-nav a { cursor: pointer; }
+      .docs-top-menu button,
+      .docs-mobile-nav button,
+      .docs-mobile-nav-trigger,
+      .docs-top-menu-toggle { cursor: default; }
+      body.docs-layer-open { overflow: hidden; }
       @media (max-width: 1180px) {
         .docs-shell { grid-template-columns: 260px minmax(0, 1fr); }
         .toc-column { display: none; }
+        .sidebar { width: 220px; }
       }
       @media (max-width: 960px) {
         .docs-shell { grid-template-columns: 1fr; }
         .sidebar-column { display: none; }
+        .sidebar { position: static; width: auto; height: auto; }
         .doc-article { max-width: 100%; }
+        .doc-article h1 { margin-top: 3.5rem; }
+        .docs-mobile-nav-trigger { display: flex; }
+      }
+      @media (min-width: 961px) {
+        .docs-top-menu { display: none !important; }
+        .docs-mobile-nav,
+        .docs-mobile-nav-trigger { display: none !important; }
       }
       @media (max-width: 640px) {
         .docs-home-grid { grid-template-columns: 1fr; }
@@ -594,6 +747,8 @@ ${devReloadScript}
   <body class="bg-white text-gray-900">
     ${renderGeneratedNotice()}
     ${renderHeader()}
+    ${renderMobileTopMenu()}
+    ${renderMobileDocsNav(currentSlug)}
 
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="docs-shell">
@@ -617,6 +772,7 @@ ${devReloadScript}
         </aside>` : `<div class="toc-column"></div>`}
       </div>
     </div>
+    ${renderDocsUiScript()}
   </body>
 </html>`
 }
@@ -694,8 +850,170 @@ async function cleanOutput() {
   )
 }
 
+async function buildExampleDownloads() {
+  await rm(downloadsRoot, { recursive: true, force: true })
+  await mkdir(downloadsRoot, { recursive: true })
+
+  const entries = await readdir(examplesRoot, { withFileTypes: true })
+  const examples = entries.filter(entry => entry.isDirectory())
+
+  await Promise.all(
+    examples.map(async example => {
+      const sourcePath = path.join(examplesRoot, example.name, "index.html")
+      const outputPath = path.join(downloadsRoot, `${example.name}.source`)
+
+      try {
+        const source = await readFile(sourcePath, "utf8")
+        const standalone =
+          example.name === "stories"
+            ? source
+            : makeStandaloneExampleDownload(source)
+
+        await writeFile(outputPath, standalone, "utf8")
+      } catch {
+        // Some example folders can hold shared assets only.
+      }
+    })
+  )
+}
+
+function makeStandaloneExampleDownload(source) {
+  return materializeExampleSlides(source)
+    .replace(
+      /\s*<link\s+rel="stylesheet"\s+href="\.\.\/shared\.css"\s*\/?>/g,
+      '\n    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>'
+    )
+    .replace("<body>", '<body class="bg-white p-6 font-sans text-gray-950">')
+    .replace(
+      /import\s+\{[\s\S]*?\}\s+from\s+["']\.\.\/shared\.js["'];?\n*/g,
+      `${standaloneExampleHelpers()}\n`
+    )
+    .replace(/^\s*document\.querySelector\("\.bs-prev"\)\.innerHTML = arrowPrevSvg\(\)\s*$/gm, "")
+    .replace(/^\s*document\.querySelector\("\.bs-next"\)\.innerHTML = arrowNextSvg\(\)\s*$/gm, "")
+    .replace(/^\s*createSlides\(document\.querySelector\("\.bs-container"\),\s*\d+\)\s*$/gm, "")
+    .replace(/^\s*createAutoHeightSlides\(document\.querySelector\("\.bs-container"\)\)\s*$/gm, "")
+    .replaceAll("example-pages", "absolute bottom-2 right-0 font-bold text-violet-700")
+    .replaceAll("example-notice-actions", "hidden")
+    .replaceAll("example-notice", "hidden rounded-2xl bg-violet-50 p-4 text-violet-800")
+    .replaceAll("example-slider--auto-height", "")
+    .replaceAll("example-slider--progress", "")
+    .replaceAll("example-slider--wide", "max-w-none")
+    .replaceAll("example-slider", "relative w-full")
+    .replaceAll("example-prev", "left-0")
+    .replaceAll("example-next", "left-14")
+    .replaceAll(
+      "example-arrow",
+      "absolute bottom-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-violet-700 text-violet-700"
+    )
+    .replaceAll("example-page", "mx-auto w-full max-w-5xl")
+    .replaceAll("example-track--peek", "")
+    .replaceAll("example-track", "overflow-hidden pb-16")
+    .replaceAll("example-container", "")
+    .replaceAll("example-dots", "absolute bottom-4 left-1/2 m-0 flex -translate-x-1/2 list-none gap-3 p-0")
+    .replaceAll(
+      "example-dot",
+      "h-3 w-3 rounded-full border-2 border-violet-300 [&.bs-dot--active]:border-violet-700 [&.bs-dot--active]:bg-violet-700"
+    )
+    .replaceAll("example-slide-card--short", "h-44")
+    .replaceAll("example-slide-card--medium", "h-72")
+    .replaceAll("example-slide-card--tall", "h-96")
+    .replaceAll(
+      "example-slide-card",
+      "flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700"
+    )
+    .replaceAll(
+      "example-slide-label",
+      "text-[clamp(4rem,10vw,7rem)] font-bold opacity-90"
+    )
+    .replaceAll("example-progress-bar", "block h-full bg-violet-700")
+    .replaceAll("example-progress", "absolute bottom-16 left-0 right-0 h-2 overflow-hidden rounded-full bg-violet-100")
+}
+
+function materializeExampleSlides(source) {
+  const container = '<div class="bs-container example-container"></div>'
+  const slides = source.includes("createAutoHeightSlides")
+    ? createAutoHeightSlidesMarkup()
+    : createSlidesMarkup(getExampleSlideTotal(source))
+
+  return materializeExampleArrows(source).replace(
+    container,
+    `<div class="bs-container example-container">
+${slides}
+          </div>`
+  )
+}
+
+function materializeExampleArrows(source) {
+  return source
+    .replace(
+      /<button([^>]*\bbs-prev\b[^>]*)><\/button>/,
+      `<button$1>${arrowPrevSvg()}</button>`
+    )
+    .replace(
+      /<button([^>]*\bbs-next\b[^>]*)><\/button>/,
+      `<button$1>${arrowNextSvg()}</button>`
+    )
+}
+
+function getExampleSlideTotal(source) {
+  const match = source.match(/createSlides\(document\.querySelector\("\.bs-container"\),\s*(\d+)\)/)
+
+  return Number(match?.[1] ?? 8)
+}
+
+function createSlidesMarkup(total = 8) {
+  return Array.from({ length: total }, (_, index) => {
+    const label = String(index + 1).padStart(2, "0")
+
+    return `            <div class="bs-slide">
+              <span class="example-slide-card">
+                <span class="example-slide-label">${label}</span>
+              </span>
+            </div>`
+  }).join("\n")
+}
+
+function createAutoHeightSlidesMarkup() {
+  return [
+    ["01", "short"],
+    ["02", "medium"],
+    ["03", "tall"]
+  ].map(([label, size]) => `            <div class="bs-slide">
+              <span class="example-slide-card example-slide-card--${size}">
+                <span class="example-slide-label">${label}</span>
+              </span>
+            </div>`).join("\n")
+}
+
+function standaloneExampleHelpers() {
+  return `
+function mountSlider(selector, options) {
+  const slider = new window.BrickSlider(selector, options)
+
+  if (window.AccessibilityPlugin) {
+    slider.use(
+      new window.AccessibilityPlugin({
+        useKeyboardNavigation: true
+      })
+    )
+  }
+
+  slider.init()
+  return slider
+}`
+}
+
+function arrowPrevSvg() {
+  return `<svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>`
+}
+
+function arrowNextSvg() {
+  return `<svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>`
+}
+
 async function main() {
   await cleanOutput()
+  await buildExampleDownloads()
 
   for (const item of allItems) {
     await buildPage(item)

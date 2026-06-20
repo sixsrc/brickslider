@@ -1299,19 +1299,19 @@
             </button>
 
             <ul
-              class="bs-stories-progress pointer-events-auto absolute left-4 right-4 top-[calc(env(safe-area-inset-top)+12px)] z-[10003] flex list-none items-center gap-1 p-0 m-0 md:top-4"
+              class="bs-stories-progress pointer-events-auto absolute left-4 right-4 top-[calc(env(safe-area-inset-top)+12px)] z-[10003] flex h-1 list-none items-stretch gap-1 p-0 m-0 md:top-4"
             >
               <li
-                class="bs-stories-progress-item h-1 flex-1 overflow-hidden rounded-full bg-white/20 [&.bs-stories-progress-item--active]:bg-white/35 [&.bs-stories-progress-item--completed]:bg-white/45"
+                class="bs-stories-progress-item relative h-full flex-1 overflow-hidden rounded-full bg-white/20 [&.bs-stories-progress-item--active]:bg-white/35 [&.bs-stories-progress-item--completed]:bg-white/45"
               >
                 <span
-                  class="bs-stories-progress-bar block h-full w-full origin-left bg-white"
+                  class="bs-stories-progress-bar absolute inset-0 block h-full w-full origin-left bg-white"
                 ></span>
               </li>
             </ul>
 
             <button
-              class="bs-stories-close pointer-events-auto absolute right-4 top-[6dvh] z-[10004] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 md:fixed md:right-6 md:top-8"
+              class="bs-stories-close pointer-events-auto fixed right-6 top-8 z-[10004] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 max-md:absolute max-md:right-4 max-md:top-24"
               type="button"
               aria-label="Close stories"
             >

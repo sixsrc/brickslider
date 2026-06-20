@@ -140,7 +140,8 @@ var t = e(function({ addComponents: e }) {
 			left: "16px",
 			zIndex: "10003",
 			display: "flex",
-			alignItems: "center",
+			height: "4px",
+			alignItems: "stretch",
 			gap: "4px",
 			margin: "0",
 			padding: "0",
@@ -148,10 +149,14 @@ var t = e(function({ addComponents: e }) {
 			pointerEvents: "auto"
 		},
 		".bs-stories-progress-item": {
+			position: "relative",
 			flex: "1 1 0",
+			height: "100%",
 			overflow: "hidden"
 		},
 		".bs-stories-progress-bar": {
+			position: "absolute",
+			inset: "0",
 			display: "block",
 			width: "100%",
 			height: "100%",
@@ -159,16 +164,17 @@ var t = e(function({ addComponents: e }) {
 			scale: "0 1"
 		},
 		".bs-stories-close, .bs-stories-mute, .bs-stories-pause-indicator": {
-			position: "absolute",
 			zIndex: "10004",
 			display: "flex",
 			alignItems: "center",
 			justifyContent: "center"
 		},
+		".bs-stories-mute, .bs-stories-pause-indicator": { position: "absolute" },
 		".bs-stories-close, .bs-stories-mute": { pointerEvents: "auto" },
 		".bs-stories-close": {
-			top: "6dvh",
-			right: "16px"
+			position: "fixed",
+			top: "32px",
+			right: "24px"
 		},
 		".bs-stories-mute": {
 			right: "20px",

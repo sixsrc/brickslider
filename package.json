@@ -21,7 +21,7 @@
     "contributors:add": "npx all-contributors add",
     "contributors:generate": "npx all-contributors generate",
     "docs:build": "node website/scripts/build-docs.mjs",
-    "docs:watch": "sh -c 'node website/scripts/build-docs.mjs --watch & WATCH_PID=$!; pnpm exec vite website --host localhost --port 3000 & VITE_PID=$!; trap \"kill $WATCH_PID $VITE_PID\" INT TERM EXIT; wait'"
+    "docs:watch": "sh -c 'node website/scripts/build-docs.mjs --watch & WATCH_PID=$!; pnpm exec vite website --host 0.0.0.0 --port 3000 & VITE_PID=$!; trap \"kill $WATCH_PID $VITE_PID\" INT TERM EXIT; wait'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",

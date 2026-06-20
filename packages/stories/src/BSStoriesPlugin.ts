@@ -657,6 +657,7 @@ export class BrickSliderStories extends Plugin {
     const shouldMountProgress = !progressContainer.parentElement
 
     this.destroyProgress()
+    progressContainer.replaceChildren()
     this.progressContainer = progressContainer
     this.progressBars = this.createProgressBars(storyCount, progressTemplate)
     this.mountProgressBars(progressContainer, this.progressBars)
@@ -1794,8 +1795,8 @@ export class BrickSliderStories extends Plugin {
     storyCount: number,
     progressTemplate: HTMLElement | null
   ): HTMLElement[] {
-    return Array.from({ length: storyCount }, (_, index) => {
-      return this.createProgressItem(index, progressTemplate)
+    return Array.from({ length: storyCount }, () => {
+      return this.createProgressItem(progressTemplate)
     })
   }
 
@@ -1810,20 +1811,12 @@ export class BrickSliderStories extends Plugin {
     )
   }
 
-  private createProgressItem(
-    index: number,
-    progressTemplate: HTMLElement | null
-  ): HTMLElement {
-    const useTemplate = index === 0 && progressTemplate
-    const progressItem = useTemplate
-      ? progressTemplate
-      : this.cloneProgressItem(progressTemplate)
+  private createProgressItem(progressTemplate: HTMLElement | null): HTMLElement {
+    const progressItem = this.cloneProgressItem(progressTemplate)
     const progressBar = this.prepareProgressItem(progressItem)
 
-    if (!useTemplate) {
-      this.createdElements.add(progressItem)
-      this.createdElements.add(progressBar)
-    }
+    this.createdElements.add(progressItem)
+    this.createdElements.add(progressBar)
 
     return progressBar
   }

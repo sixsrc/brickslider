@@ -33,6 +33,15 @@ export function createAutoHeightSlides(container) {
 
 export function mountSlider(selector, options) {
   const slider = new window.BrickSlider(selector, options)
+
+  if (window.AccessibilityPlugin) {
+    slider.use(
+      new window.AccessibilityPlugin({
+        useKeyboardNavigation: true
+      })
+    )
+  }
+
   slider.init()
   return slider
 }

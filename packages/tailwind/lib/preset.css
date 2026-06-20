@@ -31,10 +31,18 @@
   .bs-stories-play {}
   .bs-stories-pause-indicator {}
   .bs-stories-progress {}
-  .bs-stories-progress-item {}
-  .bs-stories-progress-item--active {}
-  .bs-stories-progress-item--completed {}
-  .bs-stories-progress-bar {}
+  .bs-stories-progress-item {
+    @apply bg-white/20;
+  }
+  .bs-stories-progress-item--active {
+    @apply bg-white/35;
+  }
+  .bs-stories-progress-item--completed {
+    @apply bg-white/45;
+  }
+  .bs-stories-progress-bar {
+    @apply bg-white;
+  }
 }
 
 @media (max-width: 768px) {

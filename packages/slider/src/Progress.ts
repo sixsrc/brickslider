@@ -178,7 +178,9 @@ export class Progress extends BaseSlider {
     const safePages = Math.max(1, numberOfPages || 0)
     const safePage = Math.max(0, Math.min(activePage || 0, safePages - 1))
 
-    return (100 * (safePage + 1)) / safePages
+    if (safePages === 1) return 100
+
+    return (100 * safePage) / (safePages - 1)
   }
 
   private getDragFreeProgressValue(): number {

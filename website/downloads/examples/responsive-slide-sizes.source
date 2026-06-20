@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.14/lib/brick-slider.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Responsive + SlideSizes Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.14/lib/brick-slider.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.9/lib/brick-slider-accessibility.browser.js"></script>
+  </head>
+  <body class="bg-white p-6 font-sans text-gray-950">
+    <div class="mx-auto w-full max-w-5xl">
+      <div class="hidden rounded-2xl bg-violet-50 p-4 text-violet-800">
+        <strong>Resize this area:</strong> each breakpoint changes both the number of visible slides
+        <strong>and</strong> the slide widths, so the layout should feel noticeably different as the screen gets smaller.
+      </div>
+
+      <div id="slider" class="bs-hidden relative w-full max-w-none">
+        <button class="bs-arrow bs-prev absolute bottom-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-violet-700 text-violet-700 left-0" type="button"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+        <button class="bs-arrow bs-next absolute bottom-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-violet-700 text-violet-700 left-14" type="button"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+        <div class="bs-pages absolute bottom-2 right-0 font-bold text-violet-700"></div>
+        <div class="bs-track overflow-hidden pb-16">
+          <div class="bs-container ">
+            <div class="bs-slide">
+              <span class="flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700">
+                <span class="text-[clamp(4rem,10vw,7rem)] font-bold opacity-90">01</span>
+              </span>
+            </div>
+            <div class="bs-slide">
+              <span class="flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700">
+                <span class="text-[clamp(4rem,10vw,7rem)] font-bold opacity-90">02</span>
+              </span>
+            </div>
+            <div class="bs-slide">
+              <span class="flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700">
+                <span class="text-[clamp(4rem,10vw,7rem)] font-bold opacity-90">03</span>
+              </span>
+            </div>
+            <div class="bs-slide">
+              <span class="flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700">
+                <span class="text-[clamp(4rem,10vw,7rem)] font-bold opacity-90">04</span>
+              </span>
+            </div>
+            <div class="bs-slide">
+              <span class="flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700">
+                <span class="text-[clamp(4rem,10vw,7rem)] font-bold opacity-90">05</span>
+              </span>
+            </div>
+            <div class="bs-slide">
+              <span class="flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700">
+                <span class="text-[clamp(4rem,10vw,7rem)] font-bold opacity-90">06</span>
+              </span>
+            </div>
+            <div class="bs-slide">
+              <span class="flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700">
+                <span class="text-[clamp(4rem,10vw,7rem)] font-bold opacity-90">07</span>
+              </span>
+            </div>
+            <div class="bs-slide">
+              <span class="flex h-72 items-center justify-center rounded-3xl border border-violet-700 bg-violet-50 text-violet-700">
+                <span class="text-[clamp(4rem,10vw,7rem)] font-bold opacity-90">08</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <ul class="bs-dots absolute bottom-4 left-1/2 m-0 flex -translate-x-1/2 list-none gap-3 p-0">
+          <li class="bs-dot h-3 w-3 rounded-full border-2 border-violet-300 [&.bs-dot--active]:border-violet-700 [&.bs-dot--active]:bg-violet-700"></li>
+        </ul>
+      </div>
+    </div>
+
+    <script type="module">
+      
+function mountSlider(selector, options) {
+  const slider = new window.BrickSlider(selector, options)
+
+  if (window.AccessibilityPlugin) {
+    slider.use(
+      new window.AccessibilityPlugin({
+        useKeyboardNavigation: true
+      })
+    )
+  }
+
+  slider.init()
+  return slider
+}
+
+      mountSlider("#slider", {
+        slidesPerView: 1,
+        slidesPerPage: 1,
+        gap: 20,
+        screens: {
+          xs: 320,
+          sm: 540,
+          md: 768,
+          lg: 1024,
+          xl: 1280
+        },
+        responsive: {
+          xs: {
+            slidesPerView: 1,
+            slidesPerPage: 1,
+            useSlideSizes: false
+          },
+          sm: {
+            slidesPerView: 2,
+            slidesPerPage: 1,
+            slideSizes: {
+              0: 65,
+              1: 35
+            }
+          },
+          md: {
+            slidesPerView: 2,
+            slidesPerPage: 2,
+            slideSizes: {
+              0: 30,
+              1: 70
+            }
+          },
+          lg: {
+            slidesPerView: 3,
+            slidesPerPage: 2,
+            slideSizes: {
+              0: 50,
+              1: 30,
+              2: 20
+            }
+          },
+          xl: {
+            slidesPerView: 4,
+            slidesPerPage: 4,
+            slideSizes: {
+              0: 38,
+              1: 22,
+              2: 20,
+              3: 20
+            }
+          }
+        },
+        useLoop: true
+      })
+    </script>
+  </body>
+</html>

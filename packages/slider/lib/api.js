@@ -1,6 +1,6 @@
 /*
  * BrickSlider
- * Version  : 1.0.13
+ * Version  : 1.0.14
  * License  : MIT
  * Copyright: 2026
  * Repo: github.com/sixsrc/brickslider
