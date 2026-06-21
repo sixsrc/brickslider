@@ -52,9 +52,11 @@ export default plugin(function ({ addComponents }): void {
       width: "100%"
     },
     ".bs-dots": {
-      width: "100%",
+      width: "max-content",
+      maxWidth: "100%",
+      pointerEvents: "none",
       textAlign: "center",
-      display: "flex",
+      display: "inline-flex",
       justifyContent: "center",
       alignItems: "center",
       zIndex: "10",
@@ -62,7 +64,8 @@ export default plugin(function ({ addComponents }): void {
     },
     ".bs-dot": {
       display: "inline-block",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
+      pointerEvents: "auto"
     },
     ".bs-progress": {
       height: "4px",

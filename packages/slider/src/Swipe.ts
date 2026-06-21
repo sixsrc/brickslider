@@ -1,11 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { EVENTS } from "./helpers"
 import { listener } from "./helpers"
-import type { MouseEventOrTouchEvent, TouchListenersParams } from "./types"
-
-type TouchHandler = {
-  init: (event: MouseEventOrTouchEvent) => void
-}
+import type { TouchHandler, TouchListenersParams } from "./types"
 
 export class Swipe extends BaseSlider {
   private touchStart?: TouchHandler

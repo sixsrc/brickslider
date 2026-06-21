@@ -14,7 +14,7 @@ function ensureStyles() {
   const styles = [
     {
       id: STYLE_IDS.CORE,
-      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.14/lib/brick-slider.css"
+      href: "/vendor/brick-slider/brick-slider.css"
     },
     {
       id: STYLE_IDS.SHARED,
@@ -72,15 +72,15 @@ async function ensureScripts() {
   })
   await loadScript({
     id: SCRIPT_IDS.CORE,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.14/lib/brick-slider.browser.js"
+    src: "/vendor/brick-slider/brick-slider.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.ACCESSIBILITY,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.9/lib/brick-slider-accessibility.browser.js"
+    src: "/vendor/brick-slider-accessibility/brick-slider-accessibility.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.STORIES,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.12/lib/brick-slider-stories.browser.js"
+    src: "/vendor/brick-slider-stories/brick-slider-stories.browser.js"
   })
 }
 
@@ -122,7 +122,7 @@ function createMarkup(id) {
               >
                 <video
                   class="absolute inset-0 h-full w-full object-cover opacity-85"
-                  src="/video-storie-1.mp4"
+                  src="https://github.com/sixsrc/brickslider/raw/refs/heads/main/website/public/video-storie-1.mp4"
                   playsinline
                   muted
                 ></video>
@@ -155,7 +155,7 @@ function createMarkup(id) {
           </div>
 
           <button
-            class="bs-stories-mute pointer-events-auto absolute bottom-12 right-5 z-[10004] flex h-6 w-6 cursor-pointer items-center justify-center text-white/60 opacity-0 transition-colors transition-opacity hover:text-white/85 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 group-hover/stories:opacity-100"
+            class="bs-stories-mute pointer-events-auto absolute bottom-12 right-5 z-[10004] flex h-6 w-6 cursor-pointer items-center justify-center text-white/60 transition-colors transition-opacity hover:text-white/85 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 md:pointer-events-none md:opacity-0 md:group-hover/stories:pointer-events-auto md:group-hover/stories:opacity-100"
             type="button"
             aria-label="Mute story sound"
           >

@@ -3,13 +3,13 @@ import {
   ATTRIBUTES,
   DOM_ELEMENT_ALIASES,
   FROM,
-  NavigationDirection,
   getAllElements,
   getRootSelector,
   hasClass,
   removeAttribute,
   setAttribute
 } from "./helpers"
+import type { NavigationDirection } from "./types"
 
 export class ArrowSync extends BaseSlider {
   public sync(): void {

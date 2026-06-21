@@ -89,6 +89,100 @@ export class SlideMeta extends BaseSlider {
     removeAttribute(slide, ATTRIBUTES.DATA_NUMBER)
   }
 
+  public syncSlides(slides: HTMLElement[]): void {
+    if (slides.length === 0) return
+
+    const originalSlides = this.getOriginalSlides(slides)
+    const prefixClones = this.getPrefixClones(slides)
+    const suffixClones = this.getSuffixClones(slides)
+
+    this.syncOriginalSlides(originalSlides)
+    this.syncPrefixClones(prefixClones, originalSlides)
+    this.syncSuffixClones(suffixClones, prefixClones, originalSlides)
+    this.syncFallbackSlideMeta(slides)
+  }
+
+  private getOriginalSlides(slides: HTMLElement[]): HTMLElement[] {
+    return slides.filter(slide => !this.isClonedSlide(slide))
+  }
+
+  private getPrefixClones(slides: HTMLElement[]): HTMLElement[] {
+    const firstOriginalIndex = slides.findIndex(slide => !this.isClonedSlide(slide))
+
+    if (firstOriginalIndex === -1) return []
+
+    return slides.filter(
+      (slide, index) => this.isClonedSlide(slide) && index < firstOriginalIndex
+    )
+  }
+
+  private getSuffixClones(slides: HTMLElement[]): HTMLElement[] {
+    const lastOriginalIndex = slides.findLastIndex(
+      slide => !this.isClonedSlide(slide)
+    )
+
+    if (lastOriginalIndex === -1) return []
+
+    return slides.filter(
+      (slide, index) => this.isClonedSlide(slide) && index > lastOriginalIndex
+    )
+  }
+
+  private syncOriginalSlides(slides: HTMLElement[]): void {
+    slides.forEach((slide, index) => {
+      this.setSlideMeta(slide, index, index, false)
+    })
+  }
+
+  private syncPrefixClones(
+    clones: HTMLElement[],
+    originalSlides: HTMLElement[]
+  ): void {
+    clones.forEach((slide, index) => {
+      const originalIndex = originalSlides.length - clones.length + index
+      const originalSlide = originalSlides[originalIndex]
+
+      this.setSlideMeta(
+        slide,
+        this.getSlideDataIndex(originalSlide),
+        index,
+        true
+      )
+    })
+  }
+
+  private syncSuffixClones(
+    clones: HTMLElement[],
+    prefixClones: HTMLElement[],
+    originalSlides: HTMLElement[]
+  ): void {
+    clones.forEach((slide, index) => {
+      const originalSlide = originalSlides[index]
+      const slideNumber = prefixClones.length + originalSlides.length + index
+
+      this.setSlideMeta(
+        slide,
+        this.getSlideDataIndex(originalSlide),
+        slideNumber,
+        true
+      )
+    })
+  }
+
+  private syncFallbackSlideMeta(slides: HTMLElement[]): void {
+    slides.forEach((slide, index) => {
+      const dataIndex = this.getSlideDataIndex(slide)
+      const safeDataIndex = dataIndex >= 0 ? dataIndex : index
+
+      this.setSlideMeta(
+        slide,
+        safeDataIndex,
+        index,
+        this.getIsClonedSlide(slide)
+      )
+    })
+  }
+
   public getSlideDataIndex(slide: HTMLElement | undefined): number {
     const storedMeta = this.getStoredMeta(slide)
 
@@ -125,6 +219,10 @@ export class SlideMeta extends BaseSlider {
     if (!slide) return false
     if (storedMeta) return storedMeta.isCloned
 
+    return hasClass(slide, CLASS_VALUES.CLONED)
+  }
+
+  private isClonedSlide(slide: HTMLElement): boolean {
     return hasClass(slide, CLASS_VALUES.CLONED)
   }
 }

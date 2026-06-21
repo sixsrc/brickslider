@@ -42,9 +42,9 @@ Visual states such as `.active > .bs-content`, `.bs-dot--active`, and Stories pr
 Use the official browser bundles in plain HTML:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.14/lib/brick-slider.browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.9/lib/brick-slider-accessibility.browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.12/lib/brick-slider-stories.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.15/lib/brick-slider.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.10/lib/brick-slider-accessibility.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.13/lib/brick-slider-stories.browser.js"></script>
 <script>
   const { BrickSlider, AccessibilityPlugin, StoriesPlugin } = window
 

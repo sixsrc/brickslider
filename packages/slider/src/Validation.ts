@@ -17,18 +17,18 @@ import {
 } from "./helpers"
 import type { ResponsiveBreakpoint, SliderOptions } from "./types"
 
-const FIXED_ORDER = [
-  NORMALIZED_ELEMENT_ROLES.TRACK,
-  NORMALIZED_ELEMENT_ROLES.CHILDREN,
-  NORMALIZED_ELEMENT_ROLES.SLIDE
-] as const
-
-const ALLOWED_BEFORE_TRACK: readonly string[] = [
-  NORMALIZED_ELEMENT_ROLES.ARROW,
-  NORMALIZED_ELEMENT_ROLES.PAGES
-]
-
 export class Validation {
+  private static readonly FIXED_ORDER = [
+    NORMALIZED_ELEMENT_ROLES.TRACK,
+    NORMALIZED_ELEMENT_ROLES.CHILDREN,
+    NORMALIZED_ELEMENT_ROLES.SLIDE
+  ] as const
+
+  private static readonly ALLOWED_BEFORE_TRACK: readonly string[] = [
+    NORMALIZED_ELEMENT_ROLES.ARROW,
+    NORMALIZED_ELEMENT_ROLES.PAGES
+  ]
+
   protected readonly $root: string
   private ids: Set<string> = new Set<string>()
   private details: Record<string, string[]> = {}
@@ -165,7 +165,9 @@ export class Validation {
 
     return (
       beforeTrack.length > 3 ||
-      !beforeTrack.every(className => ALLOWED_BEFORE_TRACK.includes(className)) ||
+      !beforeTrack.every(className =>
+        Validation.ALLOWED_BEFORE_TRACK.includes(className)
+      ) ||
       pageElements.length > 1 ||
       !arrowButtons.every(el => el.tagName.toLowerCase() === TAGS.BUTTON)
     )
@@ -179,7 +181,7 @@ export class Validation {
 
     if (this.isInvalidBeforeTrack()) return false
 
-    return this.areArraysEqual(endArr, [...FIXED_ORDER])
+    return this.areArraysEqual(endArr, [...Validation.FIXED_ORDER])
   }
 
   private hasDuplicateClasses(): boolean {

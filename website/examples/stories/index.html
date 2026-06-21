@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stories Example</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.14/lib/brick-slider.css" />
+    <link rel="stylesheet" href="/vendor/brick-slider/brick-slider.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.14/lib/brick-slider.browser.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.9/lib/brick-slider-accessibility.browser.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.12/lib/brick-slider-stories.browser.js"></script>
+    <script src="/vendor/brick-slider/brick-slider.browser.js"></script>
+    <script src="/vendor/brick-slider-accessibility/brick-slider-accessibility.browser.js"></script>
+    <script src="/vendor/brick-slider-stories/brick-slider-stories.browser.js"></script>
   </head>
   <body class="min-h-dvh bg-white p-6 font-sans text-gray-950">
     <button
@@ -55,7 +55,7 @@
               >
                 <video
                   class="absolute inset-0 h-full w-full object-cover opacity-85"
-                  src="/video-storie-1.mp4"
+                  src="https://github.com/sixsrc/brickslider/raw/refs/heads/main/website/public/video-storie-1.mp4"
                   playsinline
                   muted
                 ></video>
@@ -88,7 +88,7 @@
           </div>
 
           <button
-            class="bs-stories-mute pointer-events-auto absolute bottom-12 right-5 z-[10004] flex h-6 w-6 cursor-pointer items-center justify-center text-white/60 opacity-0 transition-colors transition-opacity hover:text-white/85 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 group-hover/stories:opacity-100"
+            class="bs-stories-mute pointer-events-auto absolute bottom-12 right-5 z-[10004] flex h-6 w-6 cursor-pointer items-center justify-center text-white/60 transition-colors transition-opacity hover:text-white/85 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 md:pointer-events-none md:opacity-0 md:group-hover/stories:pointer-events-auto md:group-hover/stories:opacity-100"
             type="button"
             aria-label="Mute story sound"
           >

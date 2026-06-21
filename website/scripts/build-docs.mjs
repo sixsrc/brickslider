@@ -13,56 +13,73 @@ const examplesContentRoot = path.join(contentRoot, "examples")
 const examplesRoot = path.join(websiteRoot, "examples")
 const outputRoot = path.join(websiteRoot, "docs")
 const downloadsRoot = path.join(websiteRoot, "downloads", "examples")
+const repoRoot = path.resolve(websiteRoot, "..")
+const sliderPackage = JSON.parse(
+  await readFile(path.join(repoRoot, "packages", "slider", "package.json"), "utf8")
+)
+const accessibilityPackage = JSON.parse(
+  await readFile(path.join(repoRoot, "packages", "accessibility", "package.json"), "utf8")
+)
+const storiesPackage = JSON.parse(
+  await readFile(path.join(repoRoot, "packages", "stories", "package.json"), "utf8")
+)
+const sliderCdnBase = `https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@${sliderPackage.version}/lib`
+const accessibilityCdnBase = `https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@${accessibilityPackage.version}/lib`
+const storiesCdnBase = `https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@${storiesPackage.version}/lib`
+const sliderCssCdn = `${sliderCdnBase}/brick-slider.css`
+const sliderBrowserCdn = `${sliderCdnBase}/brick-slider.browser.js`
+const accessibilityBrowserCdn = `${accessibilityCdnBase}/brick-slider-accessibility.browser.js`
+const storiesBrowserCdn = `${storiesCdnBase}/brick-slider-stories.browser.js`
 
 const navSections = [
   {
     title: "Get Started",
     items: [
-      { slug: "installation", title: "Installation", file: ["docs", "installation.md"], description: "Install packages and choose the runtime format." },
-      { slug: "quick-start", title: "Quick Start", file: ["docs", "quick-start.md"], description: "Mount your first BrickSlider in a few lines." },
-      { slug: "basic-markup", title: "Basic Markup", file: ["docs", "basic-markup.md"], description: "Understand the required HTML structure." },
+      { slug: "installation", title: "Installation", file: ["docs", "installation.md"], description: "Install BrickSlider with npm or CDN and choose the right setup for Tailwind-friendly carousels." },
+      { slug: "quick-start", title: "Quick Start", file: ["docs", "quick-start.md"], description: "Mount a responsive JavaScript carousel with BrickSlider, arrows, dots, touch gestures, and Tailwind-ready markup." },
+      { slug: "basic-markup", title: "Basic Markup", file: ["docs", "basic-markup.md"], description: "Learn the required BrickSlider HTML structure for accessible sliders, controls, dots, progress, and Tailwind styling." },
     ],
   },
   {
     title: "Examples",
     items: [
-      { slug: "examples-basic-slider", title: "Basic Slider", file: ["examples", "basic-slider.md"], description: "The simplest starting point with arrows, track, and slides." },
-      { slug: "examples-per-page", title: "PerPage", file: ["examples", "per-page.md"], description: "Advance slides in fixed groups with paginated navigation." },
-      { slug: "examples-slide-sizes", title: "SlideSizes", file: ["examples", "slide-sizes.md"], description: "Mix custom width percentages for selected slide positions." },
-      { slug: "examples-responsive", title: "Responsive", file: ["examples", "responsive.md"], description: "Change visible slides and page size across breakpoints." },
-      { slug: "examples-responsive-slide-sizes", title: "Responsive + SlideSizes", file: ["examples", "responsive-slide-sizes.md"], description: "Combine breakpoints with slide size overrides." },
-      { slug: "examples-drag-free", title: "Drag Free", file: ["examples", "drag-free.md"], description: "Let the track move freely without page snapping." },
-      { slug: "examples-progress", title: "Progress", file: ["examples", "progress.md"], description: "Add a visual progress rail to the slider flow." },
-      { slug: "examples-auto-height", title: "Auto Height", file: ["examples", "auto-height.md"], description: "Adapt wrapper height to the visible content." },
-      { slug: "examples-stories", title: "Stories", file: ["examples", "stories.md"], description: "Story-style flow powered by the separate Stories plugin." },
+      { slug: "examples-basic-slider", title: "Basic Slider", file: ["examples", "basic-slider.md"], description: "See a clean BrickSlider carousel example with arrows, dots, touch support, and Tailwind-friendly HTML." },
+      { slug: "examples-per-page", title: "PerPage", file: ["examples", "per-page.md"], description: "Build a paginated carousel that advances multiple slides per click while keeping accessible controls." },
+      { slug: "examples-slide-sizes", title: "SlideSizes", file: ["examples", "slide-sizes.md"], description: "Create custom slide widths for editorial layouts, product rails, and Tailwind-styled carousel sections." },
+      { slug: "examples-responsive", title: "Responsive", file: ["examples", "responsive.md"], description: "Configure responsive carousel breakpoints for mobile, tablet, and desktop using BrickSlider options." },
+      { slug: "examples-responsive-slide-sizes", title: "Responsive + SlideSizes", file: ["examples", "responsive-slide-sizes.md"], description: "Combine responsive breakpoints with custom slide widths for advanced Tailwind carousel layouts." },
+      { slug: "examples-drag-free", title: "Drag Free", file: ["examples", "drag-free.md"], description: "Enable free-drag carousel movement for touch and pointer interactions without page snapping." },
+      { slug: "examples-progress", title: "Progress", file: ["examples", "progress.md"], description: "Add a progress bar to a JavaScript carousel while keeping BrickSlider controls and accessibility support." },
+      { slug: "examples-auto-height", title: "Auto Height", file: ["examples", "auto-height.md"], description: "Let the carousel height adapt to each visible slide for dynamic content and responsive layouts." },
+      { slug: "examples-stories", title: "Stories", file: ["examples", "stories.md"], description: "Open an Instagram-style Stories slider with timed progress, media controls, and accessible navigation." },
     ],
   },
   {
     title: "Guides",
     items: [
-      { slug: "auto-height", title: "Auto Height", file: ["docs", "auto-height.md"], description: "Let the wrapper follow the visible slide height." },
+      { slug: "auto-height", title: "Auto Height", file: ["docs", "auto-height.md"], description: "Use BrickSlider auto height to keep responsive carousels aligned with dynamic slide content." },
     ],
   },
   {
     title: "API",
     items: [
-      { slug: "options", title: "Options", file: ["docs", "options.md"], description: "See available configuration keys and breakpoints." },
-      { slug: "methods", title: "Methods", file: ["docs", "methods.md"], description: "Lifecycle, navigation, and integration helpers." },
-      { slug: "events", title: "Events", file: ["docs", "events.md"], description: "Mounted, slide change, destroyed, and stories events." },
+      { slug: "options", title: "Options", file: ["docs", "options.md"], description: "Explore BrickSlider options for responsive breakpoints, looping, touch, dots, arrows, progress, and slide sizing." },
+      { slug: "methods", title: "Methods", file: ["docs", "methods.md"], description: "Use BrickSlider lifecycle and navigation methods to control framework-agnostic carousel integrations." },
+      { slug: "events", title: "Events", file: ["docs", "events.md"], description: "Listen for BrickSlider mount, slide change, destroy, and Stories events in accessible carousel UIs." },
     ],
   },
   {
     title: "Plugins",
     items: [
-      { slug: "accessibility-plugin", title: "Accessibility", file: ["docs", "accessibility-plugin.md"], description: "Labels, focus helpers, and announcements." },
-      { slug: "stories-plugin", title: "Stories", file: ["docs", "stories-plugin.md"], description: "Story-style modal flows with timed progress." },
-      { slug: "tailwind-package", title: "Tailwind", file: ["docs", "tailwind-package.md"], description: "Preset CSS and structural utility classes." },
+      { slug: "accessibility-plugin", title: "Accessibility", file: ["docs", "accessibility-plugin.md"], description: "Add keyboard navigation, labels, focus helpers, and screen reader announcements to BrickSlider." },
+      { slug: "stories-plugin", title: "Stories", file: ["docs", "stories-plugin.md"], description: "Build Instagram-style Stories with BrickSlider, timed progress bars, video controls, and accessible navigation." },
+      { slug: "tailwind-package", title: "Tailwind", file: ["docs", "tailwind-package.md"], description: "Use BrickSlider with Tailwind CSS utilities, structural classes, and preset carousel styling." },
     ],
   },
   {
     title: "Frameworks",
     items: [
-      { slug: "react", title: "React", file: ["frameworks", "react.md"], description: "Minimal integration without wrapper packages." },
+      { slug: "react", title: "React", file: ["frameworks", "react.md"], description: "Integrate BrickSlider with React using framework-agnostic carousel markup and lifecycle hooks." },
     ],
   },
 ]
@@ -561,7 +578,7 @@ function renderDocsUiScript() {
         if (!versionNodes.length) return
 
         try {
-          const response = await fetch("https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider/package.json", {
+          const response = await fetch("https://registry.npmjs.org/@sixsrc%2fbrick-slider/latest", {
             cache: "no-store"
           })
 
@@ -639,6 +656,8 @@ function renderDocsUiScript() {
 function renderLayout({ title, description, content, toc, currentSlug }) {
   const pageTitle = `${title} · BrickSlider Docs`
   const canonicalPath = currentSlug ? `/docs/${currentSlug}/` : "/docs/"
+  const canonicalUrl = `https://sixsrc.github.io/brickslider${canonicalPath}`
+  const seoDescription = description || "BrickSlider documentation for Tailwind-friendly JavaScript carousels, accessible navigation, responsive sliders, and Instagram-style Stories."
   const legacyRedirect = !currentSlug
     ? `
     <script>
@@ -687,9 +706,24 @@ function renderLayout({ title, description, content, toc, currentSlug }) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>${escapeHtml(pageTitle)}</title>
-    <meta name="description" content="${escapeHtml(description)}" />
+    <meta name="description" content="${escapeHtml(seoDescription)}" />
+    <meta
+      name="keywords"
+      content="BrickSlider docs, JavaScript carousel documentation, Tailwind slider, accessible carousel, responsive carousel, Instagram stories slider, Web Animations API"
+    />
+    <meta name="robots" content="index, follow" />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://sixsrc.github.io/brickslider${canonicalPath}" />
+    <link rel="canonical" href="${canonicalUrl}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BrickSlider Docs" />
+    <meta property="og:title" content="${escapeHtml(pageTitle)}" />
+    <meta property="og:description" content="${escapeHtml(seoDescription)}" />
+    <meta property="og:url" content="${canonicalUrl}" />
+    <meta property="og:image" content="https://sixsrc.github.io/brickslider/favicon.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="${escapeHtml(pageTitle)}" />
+    <meta name="twitter:description" content="${escapeHtml(seoDescription)}" />
+    <meta name="twitter:image" content="https://sixsrc.github.io/brickslider/favicon.png" />
 ${legacyRedirect}
 ${devReloadScript}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -862,7 +896,7 @@ function renderDocsHome() {
 
   return renderLayout({
     title: "Documentation",
-    description: "Start here for installation, markup, API, plugins, and framework guides for BrickSlider.",
+    description: "BrickSlider docs for Tailwind-friendly JavaScript carousels, accessible controls, responsive sliders, Web Animations, and Instagram-style Stories.",
     content: intro,
     toc: [],
     currentSlug: "",
@@ -880,7 +914,7 @@ async function buildPage(item) {
   const { html, toc } = renderMarkdown(markdown)
   const titleMatch = /^#\s+(.+)$/m.exec(markdown)
   const title = titleMatch ? titleMatch[1].trim() : item.title
-  const description = getDescription(markdown)
+  const description = item.description || getDescription(markdown)
   const outputDir = path.join(outputRoot, item.slug)
 
   await mkdir(outputDir, { recursive: true })
@@ -922,7 +956,7 @@ async function buildExampleDownloads() {
         const source = await readFile(sourcePath, "utf8")
         const standalone =
           example.name === "stories"
-            ? source
+            ? makeStoriesExampleDownload(source)
             : makeStandaloneExampleDownload(source)
 
         await writeFile(outputPath, standalone, "utf8")
@@ -934,7 +968,22 @@ async function buildExampleDownloads() {
 }
 
 function makeStandaloneExampleDownload(source) {
-  return materializeExampleSlides(source)
+  const isProgressExample = source.includes("example-slider--progress")
+  const controlsRowClass = isProgressExample ? "row-start-3" : "row-start-2"
+  const sliderClass = isProgressExample
+    ? "grid w-full grid-cols-[auto_auto_minmax(0,1fr)_auto] grid-rows-[auto_36px_72px] items-center gap-x-4"
+    : "grid w-full grid-cols-[auto_auto_minmax(0,1fr)_auto] grid-rows-[auto_56px] items-center gap-x-4"
+  const pagesClass = `${controlsRowClass} col-start-4 self-center justify-self-end font-bold text-violet-700`
+  const prevClass = `${controlsRowClass} col-start-1 self-end justify-self-start`
+  const nextClass = `${controlsRowClass} col-start-2 self-end justify-self-start`
+  const arrowClass = "z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-700 bg-white text-violet-700 hover:bg-violet-50"
+  const trackClass = "col-span-full row-start-1 min-w-0 overflow-hidden"
+  const dotsClass = `pointer-events-none ${controlsRowClass} col-span-full self-center justify-self-center inline-flex !w-max max-w-full list-none gap-3 p-0`
+  const progressClass = isProgressExample
+    ? "col-span-full row-start-2 h-2 w-full overflow-hidden rounded-full bg-violet-100"
+    : "hidden h-2 w-full overflow-hidden rounded-full bg-violet-100"
+
+  return normalizeExampleCdnUrls(materializeExampleSlides(source))
     .replace(
       /\s*<link\s+rel="stylesheet"\s+href="\.\.\/shared\.css"\s*\/?>/g,
       '\n    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>'
@@ -948,27 +997,24 @@ function makeStandaloneExampleDownload(source) {
     .replace(/^\s*document\.querySelector\("\.bs-next"\)\.innerHTML = arrowNextSvg\(\)\s*$/gm, "")
     .replace(/^\s*createSlides\(document\.querySelector\("\.bs-container"\),\s*\d+\)\s*$/gm, "")
     .replace(/^\s*createAutoHeightSlides\(document\.querySelector\("\.bs-container"\)\)\s*$/gm, "")
-    .replaceAll("example-pages", "absolute bottom-2 right-0 font-bold text-violet-700")
+    .replaceAll("example-pages", pagesClass)
     .replaceAll("example-notice-actions", "hidden")
     .replaceAll("example-notice", "hidden rounded-2xl bg-violet-50 p-4 text-violet-800")
     .replaceAll("example-slider--auto-height", "")
     .replaceAll("example-slider--progress", "")
     .replaceAll("example-slider--wide", "max-w-none")
-    .replaceAll("example-slider", "relative w-full")
-    .replaceAll("example-prev", "left-0")
-    .replaceAll("example-next", "left-14")
-    .replaceAll(
-      "example-arrow",
-      "absolute bottom-0 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-violet-700 text-violet-700"
-    )
+    .replaceAll("example-slider", sliderClass)
+    .replaceAll("example-prev", prevClass)
+    .replaceAll("example-next", nextClass)
+    .replaceAll("example-arrow", arrowClass)
     .replaceAll("example-page", "mx-auto w-full max-w-5xl")
     .replaceAll("example-track--peek", "")
-    .replaceAll("example-track", "overflow-hidden pb-16")
+    .replaceAll("example-track", trackClass)
     .replaceAll("example-container", "")
-    .replaceAll("example-dots", "absolute bottom-4 left-1/2 m-0 flex -translate-x-1/2 list-none gap-3 p-0")
+    .replaceAll("example-dots", dotsClass)
     .replaceAll(
       "example-dot",
-      "h-3 w-3 rounded-full border-2 border-violet-300 [&.bs-dot--active]:border-violet-700 [&.bs-dot--active]:bg-violet-700"
+      "pointer-events-auto h-3 w-3 cursor-pointer rounded-full border-2 border-violet-300 [&.bs-dot--active]:border-violet-700 [&.bs-dot--active]:bg-violet-700"
     )
     .replaceAll("example-slide-card--short", "h-44")
     .replaceAll("example-slide-card--medium", "h-72")
@@ -982,7 +1028,31 @@ function makeStandaloneExampleDownload(source) {
       "text-[clamp(4rem,10vw,7rem)] font-bold opacity-90"
     )
     .replaceAll("example-progress-bar", "block h-full bg-violet-700")
-    .replaceAll("example-progress", "absolute bottom-16 left-0 right-0 h-2 overflow-hidden rounded-full bg-violet-100")
+    .replaceAll("example-progress", progressClass)
+}
+
+function makeStoriesExampleDownload(source) {
+  return normalizeExampleCdnUrls(source)
+}
+
+function normalizeExampleCdnUrls(source) {
+  return source
+    .replace(
+      /(?:\/vendor\/brick-slider\/brick-slider\.css|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.css)/g,
+      sliderCssCdn
+    )
+    .replace(
+      /(?:\/vendor\/brick-slider\/brick-slider\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.browser\.js)/g,
+      sliderBrowserCdn
+    )
+    .replace(
+      /(?:\/vendor\/brick-slider-accessibility\/brick-slider-accessibility\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-accessibility@[^/]+\/lib\/brick-slider-accessibility\.browser\.js)/g,
+      accessibilityBrowserCdn
+    )
+    .replace(
+      /(?:\/vendor\/brick-slider-stories\/brick-slider-stories\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-stories@[^/]+\/lib\/brick-slider-stories\.browser\.js)/g,
+      storiesBrowserCdn
+    )
 }
 
 function materializeExampleSlides(source) {

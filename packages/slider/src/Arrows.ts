@@ -1,7 +1,11 @@
 import { BaseSlider } from "./BaseSlider"
 import { ArrowSync } from "./ArrowSync"
 import { Slider } from "./Slider"
-import type { StateType, UpdateSlideIndexType } from "./types"
+import type {
+  NavigationDirection,
+  StateType,
+  UpdateSlideIndexType
+} from "./types"
 import { DOM_ELEMENT_ALIASES, EVENTS, FROM, TIMES } from "./helpers"
 import {
   getAllElements,
@@ -9,8 +13,7 @@ import {
   getSlideMovement,
   getRootSelector,
   hasClass,
-  listener,
-  NavigationDirection
+  listener
 } from "./helpers"
 
 export class Arrows extends BaseSlider {
@@ -246,7 +249,6 @@ export class Arrows extends BaseSlider {
     const navigationState = this.getArrowNavigationState(slideIndex, eventType)
 
     this.applyArrowSlideMovementState(slideMovement)
-    this.enableMovement()
     this.applyArrowStartPosState()
     this.applyArrowNavigationTargetState(navigationState)
   }
@@ -273,10 +275,6 @@ export class Arrows extends BaseSlider {
     this.setState({
       currentSlideMovement: slideMovement
     })
-  }
-
-  private enableMovement(): void {
-    this.movement = true
   }
 
   private applyArrowStartPosState(): void {

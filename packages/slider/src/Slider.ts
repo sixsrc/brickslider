@@ -11,7 +11,6 @@ import {
   CLASS_VALUES,
   DOM_ELEMENT_ALIASES,
   FROM,
-  NavigationDirection,
   SLIDER_EVENTS,
   TAGS,
   TIMES,
@@ -30,6 +29,8 @@ import { SlideMeta } from "./SlideMeta"
 import {
   CurrentEventType,
   CurrentSlideMovement,
+  NavigationDirection,
+  PagedAnimationCallbacks,
   TypeTargetSlideParams
 } from "./types"
 
@@ -41,6 +42,7 @@ export class Slider extends BaseSlider {
   private mutate: Mutate
   private observer: Observer
   private slideMeta: SlideMeta
+  private lastPagedNavigationTimestamp: Partial<Record<string, number>>
   private static destroyHandlers = new Map<string, () => void>()
 
   constructor($root: string) {
@@ -51,6 +53,7 @@ export class Slider extends BaseSlider {
     this.mutate = new Mutate($root)
     this.observer = new Observer($root)
     this.slideMeta = new SlideMeta($root)
+    this.lastPagedNavigationTimestamp = {}
     this.validPositions = []
   }
 
@@ -68,16 +71,20 @@ export class Slider extends BaseSlider {
   public prepareForNavigation(): boolean {
     this.syncRootContext(this.$root)
 
-    if (!this.hasMinimumMarkupStructure()) {
+    const hasMinimumMarkupStructure = this.hasMinimumMarkupStructure()
+
+    if (!hasMinimumMarkupStructure) {
       this.handleFatalMarkup()
       return false
     }
 
     this.healSlideClassNames()
-    this.healSlideMetaState()
+    this.slideMeta.syncSlides(this.getDirectSlides())
     this.syncRootContext(this.$root)
 
-    if (!this.hasValidNavigationMarkup()) {
+    const hasValidNavigationMarkup = this.hasValidNavigationMarkup()
+
+    if (!hasValidNavigationMarkup) {
       this.handleFatalMarkup()
       return false
     }
@@ -99,7 +106,9 @@ export class Slider extends BaseSlider {
 
     return !validation
       .getIds()
-      .some(id => ["NO_ROOT", "NO_TRACK", "NO_CHILDREN", "NO_SLIDES"].includes(id))
+      .some(id =>
+        ["NO_ROOT", "NO_TRACK", "NO_CHILDREN", "NO_SLIDES"].includes(id)
+      )
   }
 
   private handleFatalMarkup(): void {
@@ -108,74 +117,17 @@ export class Slider extends BaseSlider {
   }
 
   private healSlideClassNames(): void {
-    const directChildren = Array.from(this.$children?.children ?? []) as HTMLElement[]
+    const directChildren = this.getDirectSlides()
 
     directChildren.forEach(slide => {
       addClass([slide], DOM_ELEMENT_ALIASES.SLIDE[0])
     })
   }
 
-  private healSlideMetaState(): void {
-    const directChildren = Array.from(this.$children?.children ?? []) as HTMLElement[]
-
-    if (directChildren.length === 0) return
-
-    const originalSlides = directChildren.filter(
-      slide => !hasClass(slide, CLASS_VALUES.CLONED)
-    )
-    const prefixClones = directChildren.filter((slide, index) => {
-      if (!hasClass(slide, CLASS_VALUES.CLONED)) return false
-
-      const firstOriginalIndex = directChildren.findIndex(
-        item => !hasClass(item, CLASS_VALUES.CLONED)
-      )
-
-      return firstOriginalIndex !== -1 && index < firstOriginalIndex
-    })
-    const suffixClones = directChildren.filter((slide, index) => {
-      if (!hasClass(slide, CLASS_VALUES.CLONED)) return false
-
-      const lastOriginalIndex = directChildren.findLastIndex(
-        item => !hasClass(item, CLASS_VALUES.CLONED)
-      )
-
-      return lastOriginalIndex !== -1 && index > lastOriginalIndex
-    })
-
-    originalSlides.forEach((slide, index) => {
-      this.slideMeta.setSlideMeta(slide, index, index, false)
-    })
-
-    prefixClones.forEach((slide, index) => {
-      const originalIndex = originalSlides.length - prefixClones.length + index
-      const originalSlide = originalSlides[originalIndex]
-
-      this.slideMeta.setSlideMeta(
-        slide,
-        this.slideMeta.getSlideDataIndex(originalSlide),
-        index,
-        true
-      )
-    })
-
-    suffixClones.forEach((slide, index) => {
-      const originalSlide = originalSlides[index]
-
-      this.slideMeta.setSlideMeta(
-        slide,
-        this.slideMeta.getSlideDataIndex(originalSlide),
-        prefixClones.length + originalSlides.length + index,
-        true
-      )
-    })
-
-    directChildren.forEach((slide, index) => {
-      const isCloned = hasClass(slide, CLASS_VALUES.CLONED)
-      const dataIndex = this.slideMeta.getSlideDataIndex(slide)
-      const safeDataIndex = dataIndex >= 0 ? dataIndex : Math.max(0, index)
-
-      this.slideMeta.setSlideMeta(slide, safeDataIndex, index, isCloned)
-    })
+  private getDirectSlides(): HTMLElement[] {
+    return Array.from(
+      this.$children?.children ?? []
+    ) as HTMLElement[]
   }
 
   private restoreActiveSlides(): void {
@@ -198,14 +150,17 @@ export class Slider extends BaseSlider {
     const view = slidesPerView || 1
     const maxStartIndex = Math.max(this.slides.length - view, 0)
     const positions: number[] = []
+    const shouldUseLoopPositions = useLoop
 
-    if (useLoop) {
+    if (shouldUseLoopPositions) {
       return this.computeLoopValidPositions()
     }
 
     for (let pos = 0; pos <= maxStartIndex; pos += step) positions.push(pos)
 
-    if (!positions.includes(maxStartIndex)) positions.push(maxStartIndex)
+    const shouldAddMaxStartIndex = !positions.includes(maxStartIndex)
+
+    if (shouldAddMaxStartIndex) positions.push(maxStartIndex)
 
     return positions
   }
@@ -242,7 +197,10 @@ export class Slider extends BaseSlider {
         : this.validPositions.length
           ? this.validPositions
           : this.computeValidPositions()
-    if (!arr || arr.length === 0) return 0
+    const hasPositions = arr && arr.length > 0
+
+    if (!hasPositions) return 0
+
     return arr.reduce(
       (prev, curr) =>
         Math.abs(curr - index) < Math.abs(prev - index) ? curr : prev,
@@ -252,10 +210,9 @@ export class Slider extends BaseSlider {
 
   private resolveStartIndex(rawStart: number): number {
     const slideEl = this.slides[rawStart]
+    const dataIndex = this.slideMeta.getSlideDataIndex(slideEl)
 
     if (!slideEl) return rawStart
-
-    const dataIndex = this.slideMeta.getSlideDataIndex(slideEl)
 
     return dataIndex >= 0 ? dataIndex : rawStart
   }
@@ -281,8 +238,13 @@ export class Slider extends BaseSlider {
   }
 
   public setSlideTarget(params: TypeTargetSlideParams): void {
-    if (!this.prepareForNavigation()) return
-    if (this.shouldBlockPagedNavigation(params.from)) return
+    const canNavigate = this.prepareForNavigation()
+
+    if (!canNavigate) return
+
+    const shouldBlockNavigation = this.shouldBlockPagedNavigation(params.from)
+
+    if (shouldBlockNavigation) return
 
     this.updateCurrentIndexFromTranslate()
 
@@ -292,8 +254,13 @@ export class Slider extends BaseSlider {
   }
 
   public goToDotIndex(targetIndex: number): void {
-    if (!this.prepareForNavigation()) return
-    if (this.shouldBlockPagedNavigation(FROM.DOTS)) return
+    const canNavigate = this.prepareForNavigation()
+
+    if (!canNavigate) return
+
+    const shouldBlockNavigation = this.shouldBlockPagedNavigation(FROM.DOTS)
+
+    if (shouldBlockNavigation) return
 
     const normalizedIndex = this.normalizeIndex(targetIndex)
     const navigationState: Partial<StateType> = {
@@ -309,8 +276,13 @@ export class Slider extends BaseSlider {
   }
 
   public goToPageIndex(targetIndex: number): void {
-    if (!this.prepareForNavigation()) return
-    if (this.shouldBlockPagedNavigation(FROM.DOTS)) return
+    const canNavigate = this.prepareForNavigation()
+
+    if (!canNavigate) return
+
+    const shouldBlockNavigation = this.shouldBlockPagedNavigation(FROM.DOTS)
+
+    if (shouldBlockNavigation) return
 
     const positions = [...new Set(this.getPositions())]
     const maxPageIndex = Math.max(0, positions.length - 1)
@@ -331,8 +303,13 @@ export class Slider extends BaseSlider {
   }
 
   public goToFreeDirection(direction: NavigationDirection): void {
-    if (!this.prepareForNavigation()) return
-    if (this.shouldBlockPagedNavigation(direction)) return
+    const canNavigate = this.prepareForNavigation()
+
+    if (!canNavigate) return
+
+    const shouldBlockNavigation = this.shouldBlockPagedNavigation(direction)
+
+    if (shouldBlockNavigation) return
 
     const { currentTranslate: storedTranslate } = this.store
     const currentTranslate = storedTranslate ?? 0
@@ -405,13 +382,40 @@ export class Slider extends BaseSlider {
 
     if (!canGuardNavigation) return false
 
-    const isNavigationLocked = this.isNavigationLocked()
+    const now = Date.now()
+    const lastTimestamp = this.lastPagedNavigationTimestamp[from] ?? 0
+    const elapsed = now - lastTimestamp
+    const isFastNavigation =
+      lastTimestamp > 0 && elapsed < TIMES.DEFAULT_TRANSITION_TIME
 
-    if (isNavigationLocked) return true
+    this.setState({ isFastNavigation })
 
-    this.lockNavigation()
+    const guard = this.getNavigationGuard(from)
+
+    if (guard <= 0) {
+      this.lastPagedNavigationTimestamp[from] = now
+      return false
+    }
+
+    if (elapsed < guard) return true
+
+    this.lastPagedNavigationTimestamp[from] = now
 
     return false
+  }
+
+  private getNavigationGuard(
+    from: TypeTargetSlideParams["from"] | typeof FROM.DOTS
+  ): number {
+    if (from === FROM.NEXT || from === FROM.PREV) {
+      return TIMES.ARROW_NAVIGATION_GUARD
+    }
+
+    if (from === FROM.TOUCHEND) {
+      return TIMES.TOUCH_NAVIGATION_GUARD
+    }
+
+    return 0
   }
 
   private canGuardNavigation(
@@ -420,18 +424,6 @@ export class Slider extends BaseSlider {
     const guardedEvents = [FROM.NEXT, FROM.PREV, FROM.TOUCHEND, FROM.DOTS]
 
     return guardedEvents.includes(from)
-  }
-
-  private isNavigationLocked(): boolean {
-    const { navigationLockUntil = 0 } = this.store
-
-    return Date.now() < navigationLockUntil
-  }
-
-  private lockNavigation(): void {
-    const navigationLockUntil = Date.now() + TIMES.NAVIGATION_GUARD
-
-    this.setState({ navigationLockUntil })
   }
 
   private getPrevPositionIndex(positions: number[]): number {
@@ -448,8 +440,9 @@ export class Slider extends BaseSlider {
     touchIndex?: number
   ): number {
     const { useLoop } = this.store
+    const hasTouchIndex = touchIndex !== undefined
 
-    if (touchIndex === undefined) return this.currentIndex
+    if (!hasTouchIndex) return this.currentIndex
 
     const targetIndex =
       from === FROM.TOUCHEND && useLoop
@@ -471,11 +464,14 @@ export class Slider extends BaseSlider {
     const lastRealIndex = this.getRealSlideDataIndex(
       realSlides[realSlides.length - 1]
     )
+    const shouldUseLoopDots = useLoop
+    const isBeforeFirstRealSlide = startIndex < firstRealIndex
+    const isAfterLastRealSlide = startIndex > lastRealIndex
 
-    if (!useLoop) return dotIndex
+    if (!shouldUseLoopDots) return dotIndex
 
-    if (startIndex < firstRealIndex) return totalGroups - 1
-    if (startIndex > lastRealIndex) return 0
+    if (isBeforeFirstRealSlide) return totalGroups - 1
+    if (isAfterLastRealSlide) return 0
 
     return Math.floor(startIndex / safeSlidesPerPage)
   }
@@ -490,8 +486,9 @@ export class Slider extends BaseSlider {
     const startIndex = this.getDotStartIndex()
     const dotIndex = this.getComputedDotIndex(positions, startIndex)
     const dotState = this.dotState(dotIndex, positions.length)
+    const shouldUpdateDotState = isPagedActive
 
-    if (!isPagedActive) return
+    if (!shouldUpdateDotState) return
 
     this.setState(dotState)
   }
@@ -541,10 +538,6 @@ export class Slider extends BaseSlider {
     return Math.max(0, Math.min(dotIndex, positions.length - 1))
   }
 
-  private dotIndexState(dotIndex: number): Partial<StateType> {
-    return { dotIndex }
-  }
-
   private dotState(
     dotIndex: number,
     numberOfPages: number
@@ -589,8 +582,9 @@ export class Slider extends BaseSlider {
 
   nextAction(): void {
     const loopJumpAction = this.getLoopJumpAction()
+    const shouldCommitCurrentIndex = !loopJumpAction
 
-    if (!loopJumpAction) {
+    if (shouldCommitCurrentIndex) {
       this.commitCurrentIndex()
       return
     }
@@ -619,13 +613,15 @@ export class Slider extends BaseSlider {
   private runLoopJumpAction(loopJumpAction: CurrentSlideMovement): void {
     const incrementMovement = getSlideMovement(FROM.NEXT)
     const decrementMovement = getSlideMovement(FROM.PREV)
+    const shouldJumpForward = loopJumpAction === incrementMovement
+    const shouldJumpBackward = loopJumpAction === decrementMovement
 
-    if (loopJumpAction === incrementMovement) {
+    if (shouldJumpForward) {
       this.runForwardLoopJump()
       return
     }
 
-    if (loopJumpAction === decrementMovement) {
+    if (shouldJumpBackward) {
       this.runBackwardLoopJump()
     }
   }
@@ -655,6 +651,13 @@ export class Slider extends BaseSlider {
   }
 
   private runBackwardLoopJump(): void {
+    const shouldUseResponsiveLoopJump = this.shouldUseResponsiveLoopJump()
+
+    if (shouldUseResponsiveLoopJump) {
+      this.runResponsiveBackwardLoopJump()
+      return
+    }
+
     const { slidesPerPage, numberOfPages } = this.store
     const firstClonedIndex = this.getFirstClonedIndex()
     const targetIndex =
@@ -666,10 +669,70 @@ export class Slider extends BaseSlider {
     waitFor(0, () => this.completeLoopJump(targetIndex))
   }
 
+  private runResponsiveBackwardLoopJump(): void {
+    const targetIndex = this.getLastLoopTargetIndex()
+    const cloneIndex = this.getBackwardLoopEquivalentCloneIndex(targetIndex)
+
+    this.currentIndex = cloneIndex
+    this.enableJumpSlide()
+    this.commitCurrentIndex()
+    waitFor(0, () => this.completeResponsiveLoopJump(targetIndex))
+  }
+
+  private shouldUseResponsiveLoopJump(): boolean {
+    const { activeBreakpoint, slideSizes } = this.store
+    const hasActiveBreakpoint =
+      !!activeBreakpoint && activeBreakpoint !== "base"
+    const hasSlideSizes = Object.keys(slideSizes || {}).length > 0
+
+    return hasActiveBreakpoint || hasSlideSizes
+  }
+
+  private getLastLoopTargetIndex(): number {
+    const positions = [...new Set(this.getPositions())]
+    const lastPosition = positions[positions.length - 1]
+
+    return typeof lastPosition === "number"
+      ? lastPosition
+      : this.getFirstIndex()
+  }
+
+  private getBackwardLoopEquivalentCloneIndex(targetIndex: number): number {
+    const activeSlide = this.slides.find(slide =>
+      hasClass(slide, CLASS_VALUES.ACTIVE)
+    )
+    const activeDataIndex = this.slideMeta.getSlideDataIndex(activeSlide)
+    const firstIndex = this.getFirstIndex()
+    const fallbackDataIndex = this.slideMeta.getSlideDataIndex(
+      this.slides[firstIndex]
+    )
+    const targetDataIndex =
+      activeDataIndex >= 0 ? activeDataIndex : fallbackDataIndex
+    const suffixClone = this.slides.find(slide => {
+      const slideNumber = this.slideMeta.getSlideNumber(slide)
+
+      return (
+        this.slideMeta.getSlideDataIndex(slide) === targetDataIndex &&
+        hasClass(slide, CLASS_VALUES.CLONED) &&
+        slideNumber > targetIndex
+      )
+    })
+    const slideNumber = this.slideMeta.getSlideNumber(suffixClone)
+
+    return slideNumber >= 0 ? slideNumber : this.currentIndex
+  }
+
   private completeLoopJump(targetIndex: number): void {
     this.currentIndex = targetIndex
     this.commitCurrentIndex()
     this.disableJumpSlide()
+  }
+
+  private completeResponsiveLoopJump(targetIndex: number): void {
+    this.disableJumpSlide()
+    this.currentIndex = targetIndex
+    this.commitCurrentIndex()
+    this.forceActiveSlides(targetIndex)
   }
 
   private enableJumpSlide(): void {
@@ -684,10 +747,10 @@ export class Slider extends BaseSlider {
     return { isJumpSlide }
   }
 
-  private commitCurrentIndex(): void {
+  private commitCurrentIndex(callbacks?: PagedAnimationCallbacks): void {
     this.syncCurrentActiveSlides()
     this.syncAutoHeight(this.currentIndex)
-    this.animationFrame()
+    this.animationFrame(callbacks)
     this.setState(this.mainState())
     this.updateDOM()
     this.updateSlider()
@@ -696,8 +759,9 @@ export class Slider extends BaseSlider {
 
   private syncCurrentActiveSlides(): void {
     const { useDragFree } = this.store
+    const shouldSkipActiveSync = useDragFree
 
-    if (useDragFree) return
+    if (shouldSkipActiveSync) return
 
     const maxActive = this.getMaxActiveSlides()
     const activeIndexes = this.getPagedActiveIndexes(
@@ -711,10 +775,18 @@ export class Slider extends BaseSlider {
     this.mutate.updateActiveSlides(activeIndexes, activeIndexes.length)
   }
 
+  private forceActiveSlides(startIndex: number): void {
+    const maxActive = this.getMaxActiveSlides()
+    const activeIndexes = this.getPagedActiveIndexes(startIndex, maxActive)
+
+    this.mutate.updateActiveSlides(activeIndexes, activeIndexes.length)
+  }
+
   private canSyncTargetActiveIndexes(activeIndexes: number[]): boolean {
     const visibleIndexes = this.observer?.getVisibleSlideIndexes() || []
+    const hasVisibleSlides = visibleIndexes.length > 0
 
-    if (visibleIndexes.length === 0) return false
+    if (!hasVisibleSlides) return false
 
     return activeIndexes.every(index => visibleIndexes.includes(index))
   }
@@ -776,6 +848,7 @@ export class Slider extends BaseSlider {
   private mainState(): Partial<StateType> {
     const translate = this.calcTranslateForIndex(this.currentIndex)
     const safe = this.safeTranslate(translate)
+
     return {
       slideIndex: this.currentIndex,
       prevTranslate: -safe,
@@ -783,32 +856,46 @@ export class Slider extends BaseSlider {
     }
   }
 
-  private animationFrame(): void {
+  private animationFrame(callbacks?: PagedAnimationCallbacks): void {
     const { useDragFree } = this.store
+    const shouldRunDragFreeAnimation = useDragFree
 
-    if (useDragFree) {
-      this.runDragFreeAnimation()
+    if (shouldRunDragFreeAnimation) {
+      this.runDragFreeAnimation(callbacks)
       return
     }
 
-    this.runPagedAnimation()
+    this.runPagedAnimation(callbacks)
   }
 
-  private runDragFreeAnimation(): void {
-    this.animation.init().then(() => {})
+  private runDragFreeAnimation(callbacks?: PagedAnimationCallbacks): void {
+    this.animation
+      .init({
+        onEnd: animations => {
+          callbacks?.onEnd?.()
+          return animations
+        }
+      })
+      .then(() => {})
   }
 
-  private runPagedAnimation(): void {
+  private runPagedAnimation(callbacks?: PagedAnimationCallbacks): void {
     const maxActive = this.getMaxActiveSlides()
     let intervalId: number | null = null
 
     this.animation
       .init({
         onStart: () => {
+          const shouldSkipActiveSync = callbacks?.skipActiveSync
+
+          if (shouldSkipActiveSync) return
+
           intervalId = this.startActiveSlidesSync(maxActive)
         },
         onEnd: () => {
           intervalId = this.stopActiveSlidesSync(intervalId)
+          this.setState({ isFastNavigation: false })
+          callbacks?.onEnd?.()
         }
       })
       .then(() => {})
@@ -821,7 +908,9 @@ export class Slider extends BaseSlider {
   }
 
   private stopActiveSlidesSync(intervalId: number | null): null {
-    if (intervalId !== null) clearInterval(intervalId)
+    const hasActiveInterval = intervalId !== null
+
+    if (hasActiveInterval) clearInterval(intervalId)
 
     return null
   }
@@ -842,9 +931,11 @@ export class Slider extends BaseSlider {
     const { sliderWidth } = this.store
     const maxTranslate = this.getTotalWidth() - (sliderWidth ?? 0)
     const minTranslate = -Math.max(0, maxTranslate)
+    const isAfterStart = targetTranslate > 0
+    const isBeforeEnd = targetTranslate < minTranslate
 
-    if (targetTranslate > 0) return 0
-    if (targetTranslate < minTranslate) return minTranslate
+    if (isAfterStart) return 0
+    if (isBeforeEnd) return minTranslate
 
     return targetTranslate
   }

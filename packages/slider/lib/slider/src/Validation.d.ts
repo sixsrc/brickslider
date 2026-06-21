@@ -1,5 +1,7 @@
 import { SliderOptions } from './types';
 export declare class Validation {
+    private static readonly FIXED_ORDER;
+    private static readonly ALLOWED_BEFORE_TRACK;
     protected readonly $root: string;
     private ids;
     private details;

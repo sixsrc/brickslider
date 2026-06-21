@@ -1,1 +1,0 @@
-var t={FAST_SWIPE_MAX_MS:180,FAST_VELOCITY_THRESHOLD:.35,SLOW_LIMIT:35,MAX_LIMIT:55,DRAG_FREE_SETTLE_FACTOR:.12},e={RIGHT:"right",LEFT:"left"};function n(t){return t instanceof MouseEvent?0===t.button:1}function s(t){return t.type.includes("mouse")?t.pageX:t.touches&&t.touches.length>0?t.touches[0].clientX:NaN}export{n as i,t as n,s as r,e as t};

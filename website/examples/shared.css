@@ -59,6 +59,8 @@ body {
 
 .example-slider--auto-height {
   gap: 12px 12px;
+  grid-template-rows: auto 56px auto;
+  min-height: auto;
 }
 
 .example-arrow {
@@ -152,10 +154,13 @@ body {
 .example-dots {
   grid-column: 2;
   grid-row: 2;
+  width: max-content;
+  max-width: 100%;
+  pointer-events: none;
   justify-self: center;
   align-self: center;
   margin: 0;
-  display: flex;
+  display: inline-flex;
   gap: 12px;
   padding: 0;
   list-style: none;
@@ -164,10 +169,13 @@ body {
 .bs-dots {
   grid-column: 2;
   grid-row: 2;
+  width: max-content;
+  max-width: 100%;
+  pointer-events: none;
   justify-self: center;
   align-self: center;
   margin: 0;
-  display: flex;
+  display: inline-flex;
   gap: 12px;
   padding: 0;
   list-style: none;
@@ -175,6 +183,7 @@ body {
 
 .bs-dots .bs-dot {
   display: block;
+  pointer-events: auto;
   width: 14px;
   height: 14px;
   border-radius: 9999px;
@@ -268,6 +277,10 @@ body {
   .example-slider {
     min-height: 320px;
     gap: 10px 10px;
+  }
+
+  .example-slider--auto-height {
+    min-height: auto;
   }
 
   .example-arrow {

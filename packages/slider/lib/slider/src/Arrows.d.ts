@@ -34,7 +34,6 @@ export declare class Arrows extends BaseSlider {
     private getArrowSlideMovement;
     private getArrowNavigationState;
     private applyArrowSlideMovementState;
-    private enableMovement;
     private applyArrowStartPosState;
     private applyArrowNavigationTargetState;
     private runFreeArrowNavigation;

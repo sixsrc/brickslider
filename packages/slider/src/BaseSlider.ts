@@ -34,12 +34,10 @@ export class BaseSlider {
   protected sliderWidth: number | undefined
   protected slides!: HTMLElement[]
   protected translate: number
-  movement: boolean
 
   constructor($root: string) {
     this.syncRootContext($root)
     this.translate = 0
-    this.movement = false
   }
 
   protected syncRootContext($root: string): void {

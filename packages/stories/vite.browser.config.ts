@@ -8,7 +8,7 @@ const repoUrl = String(packageJson.repository?.url ?? "")
   .replace(/\.git$/, "")
 
 const banner = `/*
- * BrickSlider Stories
+ * BrickSliderStories
  * Version  : ${packageJson.version}
  * License  : ${packageJson.license}
  * Copyright: ${currentYear}

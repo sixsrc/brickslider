@@ -1,8 +1,6 @@
-import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
-import { EVENTS } from "./helpers"
+import { EVENTS, isPrimaryInputButton } from "./helpers"
 import { listener, removeListener } from "./helpers"
-import { isPrimaryInputButton } from "./TouchUtils"
 import type { StateType } from "./types"
 import type {
   DragabbleListenersParams,
@@ -10,11 +8,8 @@ import type {
 } from "./types"
 
 export class Draggable extends BaseSlider {
-  animation: AnimationFrame
-
   constructor($root: string) {
     super($root)
-    this.animation = new AnimationFrame($root)
   }
 
   public init(): void {

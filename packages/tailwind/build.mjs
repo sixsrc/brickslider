@@ -18,7 +18,7 @@ const repoUrl = String(packageJson.repository?.url ?? '')
   .replace(/\.git$/, '')
 
 const banner = `/*
- * BrickSlider Tailwind
+ * BrickSliderTailwind
  * Version  : ${packageJson.version}
  * License  : ${packageJson.license}
  * Copyright: ${currentYear}
@@ -31,7 +31,7 @@ async function injectBanner(fileName) {
   const filePath = resolve(libDir, fileName)
   const currentContent = await readFile(filePath, 'utf8')
 
-  if (currentContent.startsWith('/*\n * BrickSlider Tailwind\n')) return
+  if (currentContent.startsWith('/*\n * BrickSliderTailwind\n')) return
 
   await writeFile(filePath, `${banner}${currentContent}`, 'utf8')
 }

@@ -1,19 +1,6 @@
-import { DOCS } from "./Docs"
+import { BASIC_DOCS, ERROR_IDS, START_DOCS } from "./helpers"
 import { Validation } from "./Validation"
-
-type MessageLevel = "warn" | "error"
-
-const ERROR_IDS = new Set([
-  "NO_ROOT",
-  "NO_TRACK",
-  "NO_CHILDREN",
-  "NO_SLIDES",
-  "DUPLICATE_ELEMENTS",
-  "INVALID_ORDER"
-])
-
-const BASIC_DOCS = `See: ${DOCS.BASIC_HTML_DOC}`
-const START_DOCS = `See: ${DOCS.GET_STARTED}`
+import type { MessageLevel } from "./types"
 
 export class Messages extends Validation {
   private readonly rootSelector: string

@@ -58,5 +58,5 @@ export declare const STORIES_DEFAULTS: {
     readonly CLOSE_ON_END: true;
 };
 export declare const STORIES_DOCS: {
-    readonly MARKUP: "brickslider.github.io/docs/plugins/stories";
+    readonly MARKUP: "https://sixsrc.github.io/brickslider/docs/stories-plugin/";
 };

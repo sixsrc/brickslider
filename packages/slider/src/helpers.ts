@@ -13,7 +13,8 @@ export const DOM_ELEMENT_ALIASES = {
   ARROW: ["bs-arrow"],
   ARROW_PREV: ["bs-prev"],
   ARROW_NEXT: ["bs-next"],
-  HIDDEN: ["bs-hidden"]
+  HIDDEN: ["bs-hidden"],
+  DESTROYED: ["bs-destroyed"]
 } as const
 
 export const CLASS_VALUES = {
@@ -45,8 +46,6 @@ export const FROM = {
   TOUCHEND: "touchend"
 } as const
 
-export type NavigationDirection = typeof FROM.PREV | typeof FROM.NEXT
-
 export const ATTRIBUTES = {
   ID: "id",
   TYPE: "type",
@@ -75,9 +74,14 @@ export const ATTRIBUTES = {
 
 export const TIMES = {
   DEFAULT_TRANSITION_TIME: 560,
+  FAST_TRANSITION_TIME: 220,
+  MULTI_PAGE_TRANSITION_TIME: 400,
+  LARGE_PAGE_TRANSITION_TIME: 280,
+  FAST_MULTI_PAGE_TRANSITION_TIME: 220,
   DRAG_FREE_RELEASE_TIME: 1500,
   FAST_NAVIGATION_OFFSET: 100,
-  NAVIGATION_GUARD: 220,
+  ARROW_NAVIGATION_GUARD: 0,
+  TOUCH_NAVIGATION_GUARD: 350,
   PROGRESS_TRANSITION_TIME: 560,
   SWIPE_MOUSE_LEAVE_DELAY: 100
 }
@@ -115,7 +119,7 @@ export const SLIDER_EVENTS = {
 export const ANIMATION_OPTIONS = {
   FORWARDS: "forwards",
   LINEAR: "linear",
-  EASEOUT: "cubic-bezier(0.22, 0.61, 0.36, 1)",
+  EASEOUT: "cubic-bezier(0.25, 0.1, 0.25, 1)",
   DRAG_FREE_EASING: "cubic-bezier(0.22, 1, 0.36, 1)"
 } as const
 
@@ -139,6 +143,41 @@ export const NORMALIZED_ELEMENT_ROLES = {
 export const INTERNAL_SELECTORS = {
   PLUGIN_ROOT_PLACEHOLDER: "#__brickslider_plugin_root__"
 } as const
+
+export const TOUCH_LIMIT = 0
+
+export const MOVE_TO_LIMIT = 3
+
+export const TOUCH_CONFIG = {
+  FAST_SWIPE_MAX_MS: 180,
+  FAST_VELOCITY_THRESHOLD: 0.35,
+  SLOW_LIMIT: 35,
+  MAX_LIMIT: 55,
+  DRAG_FREE_SETTLE_FACTOR: 0.12
+} as const
+
+export const POSITION = {
+  RIGHT: "right",
+  LEFT: "left"
+} as const
+
+export const DOCS = {
+  GET_STARTED: "https://sixsrc.github.io/brickslider/docs/quick-start/",
+  BASIC_HTML_DOC: "https://sixsrc.github.io/brickslider/docs/basic-markup/"
+} as const
+
+export const BASIC_DOCS = `See: ${DOCS.BASIC_HTML_DOC}`
+
+export const START_DOCS = `See: ${DOCS.GET_STARTED}`
+
+export const ERROR_IDS = new Set([
+  "NO_ROOT",
+  "NO_TRACK",
+  "NO_CHILDREN",
+  "NO_SLIDES",
+  "DUPLICATE_ELEMENTS",
+  "INVALID_ORDER"
+])
 
 export function addClass(
   elements: (HTMLElement | Element)[],
@@ -372,6 +411,27 @@ export function getEventType(
   } else {
     const touchEvent = event as TouchEvent
     return touchEvent.touches[0]
+  }
+}
+
+export function isPrimaryInputButton(event: MouseEventOrTouchEvent): boolean {
+  if (event instanceof MouseEvent) {
+    return event.button === 0
+  }
+
+  return true
+}
+
+export function getAxisX(event: MouseEventOrTouchEvent): number {
+  if (event.type.includes("mouse")) {
+    return (event as MouseEvent).pageX
+  } else if (
+    (event as TouchEvent).touches &&
+    (event as TouchEvent).touches.length > 0
+  ) {
+    return (event as TouchEvent).touches[0].clientX
+  } else {
+    return NaN
   }
 }
 

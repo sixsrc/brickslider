@@ -1,6 +1,5 @@
 import { BaseSlider } from './BaseSlider';
-import { NavigationDirection } from './helpers';
-import { TypeTargetSlideParams } from './types';
+import { NavigationDirection, TypeTargetSlideParams } from './types';
 export declare class Slider extends BaseSlider {
     private animation;
     currentIndex: number;
@@ -9,6 +8,7 @@ export declare class Slider extends BaseSlider {
     private mutate;
     private observer;
     private slideMeta;
+    private lastPagedNavigationTimestamp;
     private static destroyHandlers;
     constructor($root: string);
     static registerDestroyHandler($root: string, callback: () => void): void;
@@ -18,7 +18,7 @@ export declare class Slider extends BaseSlider {
     private hasValidNavigationMarkup;
     private handleFatalMarkup;
     private healSlideClassNames;
-    private healSlideMetaState;
+    private getDirectSlides;
     private restoreActiveSlides;
     private computeValidPositions;
     private computeLoopValidPositions;
@@ -36,9 +36,8 @@ export declare class Slider extends BaseSlider {
     private setIndexBased;
     private getNextPositionIndex;
     private shouldBlockPagedNavigation;
+    private getNavigationGuard;
     private canGuardNavigation;
-    private isNavigationLocked;
-    private lockNavigation;
     private getPrevPositionIndex;
     private getTargetIndexFromInput;
     private mapDotIndexForLoop;
@@ -50,7 +49,6 @@ export declare class Slider extends BaseSlider {
     private getDotIndexFromPositions;
     private getNearestPreviousDotIndex;
     private getSafeDotIndex;
-    private dotIndexState;
     private dotState;
     updateSlider(): void;
     protected updateDOM(): void;
@@ -61,12 +59,18 @@ export declare class Slider extends BaseSlider {
     private runForwardLoopJump;
     private getForwardLoopCloneIndex;
     private runBackwardLoopJump;
+    private runResponsiveBackwardLoopJump;
+    private shouldUseResponsiveLoopJump;
+    private getLastLoopTargetIndex;
+    private getBackwardLoopEquivalentCloneIndex;
     private completeLoopJump;
+    private completeResponsiveLoopJump;
     private enableJumpSlide;
     private disableJumpSlide;
     private jumpSlideState;
     private commitCurrentIndex;
     private syncCurrentActiveSlides;
+    private forceActiveSlides;
     private canSyncTargetActiveIndexes;
     private getPagedActiveIndexes;
     private resolveIndexFromTranslate;

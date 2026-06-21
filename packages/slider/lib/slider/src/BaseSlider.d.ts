@@ -14,7 +14,6 @@ export declare class BaseSlider {
     protected sliderWidth: number | undefined;
     protected slides: HTMLElement[];
     protected translate: number;
-    movement: boolean;
     constructor($root: string);
     protected syncRootContext($root: string): void;
     getRootKey(): string;

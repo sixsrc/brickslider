@@ -13,6 +13,7 @@ export declare const DOM_ELEMENT_ALIASES: {
     readonly ARROW_PREV: readonly ["bs-prev"];
     readonly ARROW_NEXT: readonly ["bs-next"];
     readonly HIDDEN: readonly ["bs-hidden"];
+    readonly DESTROYED: readonly ["bs-destroyed"];
 };
 export declare const CLASS_VALUES: {
     ACTIVE: string;
@@ -40,7 +41,6 @@ export declare const FROM: {
     readonly TOUCH: "touch";
     readonly TOUCHEND: "touchend";
 };
-export type NavigationDirection = typeof FROM.PREV | typeof FROM.NEXT;
 export declare const ATTRIBUTES: {
     readonly ID: "id";
     readonly TYPE: "type";
@@ -68,9 +68,14 @@ export declare const ATTRIBUTES: {
 };
 export declare const TIMES: {
     DEFAULT_TRANSITION_TIME: number;
+    FAST_TRANSITION_TIME: number;
+    MULTI_PAGE_TRANSITION_TIME: number;
+    LARGE_PAGE_TRANSITION_TIME: number;
+    FAST_MULTI_PAGE_TRANSITION_TIME: number;
     DRAG_FREE_RELEASE_TIME: number;
     FAST_NAVIGATION_OFFSET: number;
-    NAVIGATION_GUARD: number;
+    ARROW_NAVIGATION_GUARD: number;
+    TOUCH_NAVIGATION_GUARD: number;
     PROGRESS_TRANSITION_TIME: number;
     SWIPE_MOUSE_LEAVE_DELAY: number;
 };
@@ -105,7 +110,7 @@ export declare const SLIDER_EVENTS: {
 export declare const ANIMATION_OPTIONS: {
     readonly FORWARDS: "forwards";
     readonly LINEAR: "linear";
-    readonly EASEOUT: "cubic-bezier(0.22, 0.61, 0.36, 1)";
+    readonly EASEOUT: "cubic-bezier(0.25, 0.1, 0.25, 1)";
     readonly DRAG_FREE_EASING: "cubic-bezier(0.22, 1, 0.36, 1)";
 };
 export declare const RESPONSIVE_BREAKPOINTS: readonly ["xs", "sm", "md", "lg", "xl", "2xl"];
@@ -119,6 +124,26 @@ export declare const NORMALIZED_ELEMENT_ROLES: {
 export declare const INTERNAL_SELECTORS: {
     readonly PLUGIN_ROOT_PLACEHOLDER: "#__brickslider_plugin_root__";
 };
+export declare const TOUCH_LIMIT = 0;
+export declare const MOVE_TO_LIMIT = 3;
+export declare const TOUCH_CONFIG: {
+    readonly FAST_SWIPE_MAX_MS: 180;
+    readonly FAST_VELOCITY_THRESHOLD: 0.35;
+    readonly SLOW_LIMIT: 35;
+    readonly MAX_LIMIT: 55;
+    readonly DRAG_FREE_SETTLE_FACTOR: 0.12;
+};
+export declare const POSITION: {
+    readonly RIGHT: "right";
+    readonly LEFT: "left";
+};
+export declare const DOCS: {
+    readonly GET_STARTED: "https://sixsrc.github.io/brickslider/docs/quick-start/";
+    readonly BASIC_HTML_DOC: "https://sixsrc.github.io/brickslider/docs/basic-markup/";
+};
+export declare const BASIC_DOCS: string;
+export declare const START_DOCS: string;
+export declare const ERROR_IDS: Set<string>;
 export declare function addClass(elements: (HTMLElement | Element)[], className: string): void;
 export declare function animateElement(element: HTMLElement | HTMLElement[], keyframes: Keyframe[], options: KeyframeAnimationOptions): Animation[];
 export declare function appendToParent(parent: HTMLElement | undefined, element: HTMLElement | undefined): HTMLElement | undefined;
@@ -149,6 +174,8 @@ export declare function removePart<T extends string | unknown[]>(input: T, start
 export declare function setAttribute(el: HTMLElement, attribute: string, value: string): void;
 export declare function setAttributes(element: HTMLElement, attributes: Record<string, string | number | boolean>): void;
 export declare function getEventType(event: MouseEventOrTouchEvent): MouseEvent | Touch;
+export declare function isPrimaryInputButton(event: MouseEventOrTouchEvent): boolean;
+export declare function getAxisX(event: MouseEventOrTouchEvent): number;
 export declare function getSlideMovement(direction: typeof FROM.NEXT | typeof FROM.PREV): UpdateSlideIndexType;
 export declare function isValidSelector(string: string): boolean;
 export declare function listener(events: string[], target: EventTarget, callback: EventListenerOrEventListenerObject | ((event: any) => void), options?: boolean | AddEventListenerOptions): void;

@@ -1,10 +1,11 @@
 /*
-* BrickSlider Stories
-* Version  : 1.0.12
-* License  : MIT
-* Copyright: 2026
-* Repo: github.com/sixsrc/brickslider
-*/
+ * BrickSliderStories
+ * Version  : 1.0.13
+ * License  : MIT
+ * Copyright: 2026
+ * Repo: github.com/sixsrc/brickslider
+ */
+
 import { $ as e, ANIMATION_OPTIONS as t, ATTRIBUTES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, TAGS as c, Validation as l, addClass as u, appendToParent as d, closestElement as f, containsElement as p, createNewElement as m, getAllElements as h, getAttribute as g, getChildren as _, getElement as v, getRootSelector as y, getSliderNodeList as b, getTrackChildren as x, hasAttribute as S, hasClass as C, listener as w, removeAttribute as T, removeClass as E, removeElement as D, removeListener as O, setAttribute as k } from "@sixsrc/brick-slider/api";
 //#region src/constants.ts
 var A = {
@@ -60,7 +61,7 @@ var A = {
 	MAX_STORIES: 10,
 	MAX_STORIES_LIMIT: 20,
 	CLOSE_ON_END: !0
-}, I = { MARKUP: "brickslider.github.io/docs/plugins/stories" }, L = class {
+}, I = { MARKUP: "https://sixsrc.github.io/brickslider/docs/stories-plugin/" }, L = class {
 	$root;
 	sliderValidation;
 	ids = /* @__PURE__ */ new Set();

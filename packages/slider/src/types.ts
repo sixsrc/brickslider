@@ -1,6 +1,24 @@
 import type { StateKey } from "./State"
+import type { BrickSlider } from "./BrickSlider"
 
 export type Listener = (...args: unknown[]) => void
+
+export type MessageLevel = "warn" | "error"
+
+export type MountInstance = {
+  init(): Promise<void>
+}
+
+export type SliderPlugin = {
+  init(): void
+  destroy(): void
+  setHost(host: BrickSlider): void
+  getPluginRoot(): string
+  usesExplicitRoot(): boolean
+  constructor?: {
+    name?: string
+  }
+}
 
 export type AnimationCallbacks = {
   onStart?: (animations: Animation[]) => void
@@ -58,6 +76,12 @@ export type invalidationConditions = {
 
 export type MouseEventOrTouchEvent = TouchEvent | MouseEvent
 
+export type TouchHandler = {
+  init: (event: MouseEventOrTouchEvent) => void
+}
+
+export type NavigationDirection = "prev" | "next"
+
 export type PositionSlider = "right" | "left"
 
 export type TouchListenersParams = {
@@ -72,6 +96,11 @@ export type TypeTargetSlideParams = {
   from: "next" | "prev" | "dots" | "touchend"
   touchIndex?: number
   $root: string
+}
+
+export type PagedAnimationCallbacks = {
+  onEnd?: () => void
+  skipActiveSync?: boolean
 }
 
 export type UpdateSlideIndexType = "increment" | "decrement"

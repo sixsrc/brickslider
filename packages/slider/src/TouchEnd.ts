@@ -2,12 +2,10 @@ import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import type { StateType } from "./types"
-import { EVENTS, FROM, TIMES } from "./helpers"
-import { TOUCH_CONFIG, TOUCH_LIMIT } from "./TouchUtils"
+import { EVENTS, FROM, TIMES, TOUCH_CONFIG, TOUCH_LIMIT } from "./helpers"
 import {
   getSlideMovement,
   getSliderNodeList,
-  NavigationDirection,
   translate3d,
   waitFor
 } from "./helpers"
@@ -16,6 +14,7 @@ import {
   CurrentSlideMovement,
   KeyframeAnimation,
   MouseEventOrTouchEvent,
+  NavigationDirection,
   TouchMoveAction,
   UpdateSlideIndexType
 } from "./types"
@@ -336,7 +335,6 @@ export class TouchEnd extends BaseSlider {
   private commitDragFreeTouchEnd(settleTranslate: number): void {
     this.slider.commitFreeTranslate(settleTranslate)
     this.cancelAnimationFrame()
-    this.disableMovement()
   }
 
   private navigateBySwipeDirection(direction: NavigationDirection): void {
@@ -405,7 +403,6 @@ export class TouchEnd extends BaseSlider {
   private handleSwipeNavigation(direction: NavigationDirection): void {
     this.navigateBySwipeDirection(direction)
     this.cancelAnimationFrame()
-    this.enableMovement()
   }
 
   private handleTouchMoveFallback(
@@ -437,7 +434,6 @@ export class TouchEnd extends BaseSlider {
   private commitTouchMoveFallback(): void {
     this.setPosition()
     this.cancelAnimationFrame()
-    this.disableMovement()
   }
 
   protected keyFrames(): KeyframeAnimation[] {
@@ -520,14 +516,6 @@ export class TouchEnd extends BaseSlider {
     const prevSlideState = this.prevSlideState(slideIndex)
 
     this.setState(prevSlideState)
-  }
-
-  private enableMovement(): void {
-    this.movement = true
-  }
-
-  private disableMovement(): void {
-    this.movement = false
   }
 
   private prevSlideState(slideIndex: number): Partial<StateType> {

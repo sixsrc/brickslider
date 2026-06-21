@@ -1,15 +1,5 @@
 import { BaseSlider } from './BaseSlider';
-import { SliderOptions } from './types';
-type SliderPlugin = {
-    init(): void;
-    destroy(): void;
-    setHost(host: BrickSlider): void;
-    getPluginRoot(): string;
-    usesExplicitRoot(): boolean;
-    constructor?: {
-        name?: string;
-    };
-};
+import { SliderOptions, SliderPlugin } from './types';
 export declare class BrickSlider extends BaseSlider {
     userOptions?: SliderOptions;
     private mount;
@@ -46,4 +36,3 @@ export declare class BrickSlider extends BaseSlider {
     private restoreRootStyle;
     private resetMountState;
 }
-export {};

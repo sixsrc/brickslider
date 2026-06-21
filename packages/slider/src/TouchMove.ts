@@ -1,8 +1,7 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import type { StateType } from "./types"
-import { EVENTS } from "./helpers"
-import { MOVE_TO_LIMIT, POSITION, getAxisX } from "./TouchUtils"
+import { EVENTS, MOVE_TO_LIMIT, POSITION, getAxisX } from "./helpers"
 import type { MouseEventOrTouchEvent, PositionSlider } from "./types"
 
 export class TouchMove extends BaseSlider {

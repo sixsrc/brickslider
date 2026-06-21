@@ -59,8 +59,6 @@ export declare class TouchEnd extends BaseSlider {
     private navigateToTouchEndTarget;
     private getTouchMovementState;
     private applyPrevSlideState;
-    private enableMovement;
-    private disableMovement;
     private prevSlideState;
     private eventTargetState;
 }

@@ -13,22 +13,12 @@ import {
   setAttribute
 } from "./helpers"
 import { Slider } from "./Slider"
-import type { SliderOptions, StateType } from "./types"
-
-type MountInstance = {
-  init(): Promise<void>
-}
-
-type SliderPlugin = {
-  init(): void
-  destroy(): void
-  setHost(host: BrickSlider): void
-  getPluginRoot(): string
-  usesExplicitRoot(): boolean
-  constructor?: {
-    name?: string
-  }
-}
+import type {
+  MountInstance,
+  SliderOptions,
+  SliderPlugin,
+  StateType
+} from "./types"
 
 export class BrickSlider extends BaseSlider {
   public userOptions?: SliderOptions

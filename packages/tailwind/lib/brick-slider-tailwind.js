@@ -1,6 +1,6 @@
 /*
- * BrickSlider Tailwind
- * Version  : 1.0.7
+ * BrickSliderTailwind
+ * Version  : 1.0.8
  * License  : MIT
  * Copyright: 2026
  * Repo: github.com/sixsrc/brickslider
@@ -50,9 +50,11 @@ var t = e(function({ addComponents: e }) {
 			width: "100%"
 		},
 		".bs-dots": {
-			width: "100%",
+			width: "max-content",
+			maxWidth: "100%",
+			pointerEvents: "none",
 			textAlign: "center",
-			display: "flex",
+			display: "inline-flex",
 			justifyContent: "center",
 			alignItems: "center",
 			zIndex: "10",
@@ -60,7 +62,8 @@ var t = e(function({ addComponents: e }) {
 		},
 		".bs-dot": {
 			display: "inline-block",
-			boxSizing: "border-box"
+			boxSizing: "border-box",
+			pointerEvents: "auto"
 		},
 		".bs-progress": {
 			height: "4px",

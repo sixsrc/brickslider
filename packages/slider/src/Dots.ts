@@ -210,7 +210,6 @@ export class Dots extends BaseSlider {
 
   private dotHandler(touchIndex: number): void {
     this.setState(this.currentEventType())
-    this.movement = true
     this.slider.goToDotIndex(touchIndex)
     this.slider.updateSlider()
   }
