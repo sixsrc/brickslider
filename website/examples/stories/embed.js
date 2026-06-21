@@ -14,11 +14,11 @@ function ensureStyles() {
   const styles = [
     {
       id: STYLE_IDS.CORE,
-      href: "/vendor/brick-slider/brick-slider.css"
+      href: "../../vendor/brick-slider/brick-slider.css"
     },
     {
       id: STYLE_IDS.SHARED,
-      href: "/examples/shared.css"
+      href: "../../examples/shared.css"
     }
   ]
 
@@ -72,15 +72,15 @@ async function ensureScripts() {
   })
   await loadScript({
     id: SCRIPT_IDS.CORE,
-    src: "/vendor/brick-slider/brick-slider.browser.js"
+    src: "../../vendor/brick-slider/brick-slider.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.ACCESSIBILITY,
-    src: "/vendor/brick-slider-accessibility/brick-slider-accessibility.browser.js"
+    src: "../../vendor/brick-slider-accessibility/brick-slider-accessibility.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.STORIES,
-    src: "/vendor/brick-slider-stories/brick-slider-stories.browser.js"
+    src: "../../vendor/brick-slider-stories/brick-slider-stories.browser.js"
   })
 }
 

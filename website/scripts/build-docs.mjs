@@ -30,6 +30,7 @@ const sliderCssCdn = `${sliderCdnBase}/brick-slider.css`
 const sliderBrowserCdn = `${sliderCdnBase}/brick-slider.browser.js`
 const accessibilityBrowserCdn = `${accessibilityCdnBase}/brick-slider-accessibility.browser.js`
 const storiesBrowserCdn = `${storiesCdnBase}/brick-slider-stories.browser.js`
+const docsAssetBase = "../.."
 
 const navSections = [
   {
@@ -207,8 +208,10 @@ function renderCodeBlock(source, language) {
 }
 
 function renderExampleEmbed(src, height = "460", showLink = true) {
-  const safeSrc = escapeHtml(src)
   const safeHeight = escapeHtml(height)
+  const relativeSrc = src.startsWith("/")
+    ? `${docsAssetBase}${src}`
+    : src
 
   if (src === "/examples/stories/") {
     return `<div class="doc-example doc-example--stories">
@@ -216,7 +219,7 @@ function renderExampleEmbed(src, height = "460", showLink = true) {
     <div class="doc-example-frame doc-example-frame--stories">
       <div data-inline-stories-example></div>
     </div>
-    <script type="module" src="/examples/stories/embed.js"><\/script>
+    <script type="module" src="${docsAssetBase}/examples/stories/embed.js"><\/script>
   </div>`
   }
 
@@ -226,7 +229,7 @@ function renderExampleEmbed(src, height = "460", showLink = true) {
     ${actions}
     <div class="doc-example-frame">
       <iframe
-        src="${safeSrc}"
+        src="${escapeHtml(relativeSrc)}"
         title="BrickSlider live example"
         loading="lazy"
         scrolling="no"
@@ -239,7 +242,7 @@ function renderExampleEmbed(src, height = "460", showLink = true) {
 
 function renderExampleActions(src) {
   const slug = src.split("/").filter(Boolean).pop() || "example"
-  const safeDownloadHref = escapeHtml(`/downloads/examples/${slug}.source`)
+  const safeDownloadHref = escapeHtml(`${docsAssetBase}/downloads/examples/${slug}.source`)
   const safeDownloadName = escapeHtml(`brickslider-${slug}.html`)
 
   return `<div class="doc-example-actions">
@@ -1038,19 +1041,19 @@ function makeStoriesExampleDownload(source) {
 function normalizeExampleCdnUrls(source) {
   return source
     .replace(
-      /(?:\/vendor\/brick-slider\/brick-slider\.css|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.css)/g,
+      /(?:(?:\.\.\/)*vendor\/brick-slider\/brick-slider\.css|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.css)/g,
       sliderCssCdn
     )
     .replace(
-      /(?:\/vendor\/brick-slider\/brick-slider\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.browser\.js)/g,
+      /(?:(?:\.\.\/)*vendor\/brick-slider\/brick-slider\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.browser\.js)/g,
       sliderBrowserCdn
     )
     .replace(
-      /(?:\/vendor\/brick-slider-accessibility\/brick-slider-accessibility\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-accessibility@[^/]+\/lib\/brick-slider-accessibility\.browser\.js)/g,
+      /(?:(?:\.\.\/)*vendor\/brick-slider-accessibility\/brick-slider-accessibility\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-accessibility@[^/]+\/lib\/brick-slider-accessibility\.browser\.js)/g,
       accessibilityBrowserCdn
     )
     .replace(
-      /(?:\/vendor\/brick-slider-stories\/brick-slider-stories\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-stories@[^/]+\/lib\/brick-slider-stories\.browser\.js)/g,
+      /(?:(?:\.\.\/)*vendor\/brick-slider-stories\/brick-slider-stories\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-stories@[^/]+\/lib\/brick-slider-stories\.browser\.js)/g,
       storiesBrowserCdn
     )
 }
