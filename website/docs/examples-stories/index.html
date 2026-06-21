@@ -512,6 +512,61 @@
   </div>
 <h2 id="install">Install</h2>
 <pre><code class="language-bash"><span class="token keyword">pnpm</span> add <span class="token symbol">@sixsrc/brick-slider</span> <span class="token symbol">@sixsrc/brick-slider-stories</span></code></pre>
+<h2 id="markup">Markup</h2>
+<p>The <code>trigger</code> option points to any element that should open the Stories modal. It can be a button, card, thumbnail, avatar, or any selector you control.</p>
+<pre><code class="language-html">&lt;<span class="token keyword">button</span> <span class="token property">id</span>=<span class="token string">&quot;open-stories&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;
+  Open Stories
+&lt;/<span class="token keyword">button</span>&gt;
+
+&lt;<span class="token keyword">div</span> <span class="token property">id</span>=<span class="token string">&quot;stories-slider&quot;</span>&gt;
+  &lt;<span class="token keyword">button</span> <span class="token property">class</span>=<span class="token string">&quot;bs-arrow bs-prev&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;Prev&lt;/<span class="token keyword">button</span>&gt;
+  &lt;<span class="token keyword">button</span> <span class="token property">class</span>=<span class="token string">&quot;bs-arrow bs-next&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;Next&lt;/<span class="token keyword">button</span>&gt;
+
+  &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-track&quot;</span>&gt;
+    &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-container&quot;</span>&gt;
+      &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-slide&quot;</span>&gt;
+        &lt;<span class="token keyword">article</span> <span class="token property">class</span>=<span class="token string">&quot;bs-content&quot;</span>&gt;
+          Story 01
+        &lt;/<span class="token keyword">article</span>&gt;
+      &lt;/<span class="token keyword">div</span>&gt;
+
+      &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-slide&quot;</span>&gt;
+        &lt;<span class="token keyword">article</span> <span class="token property">class</span>=<span class="token string">&quot;bs-content&quot;</span>&gt;
+          Story 02
+        &lt;/<span class="token keyword">article</span>&gt;
+      &lt;/<span class="token keyword">div</span>&gt;
+
+      &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-slide&quot;</span>&gt;
+        &lt;<span class="token keyword">article</span> <span class="token property">class</span>=<span class="token string">&quot;bs-content&quot;</span>&gt;
+          Story 03
+        &lt;/<span class="token keyword">article</span>&gt;
+      &lt;/<span class="token keyword">div</span>&gt;
+    &lt;/<span class="token keyword">div</span>&gt;
+
+    &lt;<span class="token keyword">ul</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress&quot;</span>&gt;
+      &lt;<span class="token keyword">li</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-item&quot;</span>&gt;
+        &lt;<span class="token keyword">span</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-bar&quot;</span>&gt;&lt;/<span class="token keyword">span</span>&gt;
+      &lt;/<span class="token keyword">li</span>&gt;
+      &lt;<span class="token keyword">li</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-item&quot;</span>&gt;
+        &lt;<span class="token keyword">span</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-bar&quot;</span>&gt;&lt;/<span class="token keyword">span</span>&gt;
+      &lt;/<span class="token keyword">li</span>&gt;
+      &lt;<span class="token keyword">li</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-item&quot;</span>&gt;
+        &lt;<span class="token keyword">span</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-bar&quot;</span>&gt;&lt;/<span class="token keyword">span</span>&gt;
+      &lt;/<span class="token keyword">li</span>&gt;
+    &lt;/<span class="token keyword">ul</span>&gt;
+
+    &lt;<span class="token keyword">button</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-pause-indicator&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;
+      &lt;<span class="token keyword">span</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-pause&quot;</span>&gt;Pause&lt;/<span class="token keyword">span</span>&gt;
+      &lt;<span class="token keyword">span</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-play hidden&quot;</span>&gt;Play&lt;/<span class="token keyword">span</span>&gt;
+    &lt;/<span class="token keyword">button</span>&gt;
+  &lt;/<span class="token keyword">div</span>&gt;
+&lt;/<span class="token keyword">div</span>&gt;
+
+&lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-layer hidden&quot;</span>&gt;
+  &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-backdrop&quot;</span>&gt;&lt;/<span class="token keyword">div</span>&gt;
+  &lt;<span class="token keyword">button</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-close&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;Close&lt;/<span class="token keyword">button</span>&gt;
+  &lt;<span class="token keyword">button</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-mute&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;Mute&lt;/<span class="token keyword">button</span>&gt;
+&lt;/<span class="token keyword">div</span>&gt;</code></pre>
 <h2 id="usage">Usage</h2>
 <pre><code class="language-ts"><span class="token keyword">import</span> { <span class="token symbol">BrickSlider</span> } <span class="token keyword">from</span> <span class="token string">&quot;@sixsrc/brick-slider&quot;</span>
 <span class="token keyword">import</span> <span class="token symbol">StoriesPlugin</span> <span class="token keyword">from</span> <span class="token string">&quot;@sixsrc/brick-slider-stories&quot;</span>
@@ -548,6 +603,8 @@
           <a href="#live-example">Live Example</a>
         </li><li class="level-2">
           <a href="#install">Install</a>
+        </li><li class="level-2">
+          <a href="#markup">Markup</a>
         </li><li class="level-2">
           <a href="#usage">Usage</a>
         </li><li class="level-2">
