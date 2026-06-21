@@ -14,7 +14,7 @@ function ensureStyles() {
   const styles = [
     {
       id: STYLE_IDS.CORE,
-      href: "../../vendor/brick-slider/brick-slider.css"
+      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.15/lib/brick-slider.css"
     },
     {
       id: STYLE_IDS.SHARED,
@@ -72,15 +72,15 @@ async function ensureScripts() {
   })
   await loadScript({
     id: SCRIPT_IDS.CORE,
-    src: "../../vendor/brick-slider/brick-slider.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.15/lib/brick-slider.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.ACCESSIBILITY,
-    src: "../../vendor/brick-slider-accessibility/brick-slider-accessibility.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.10/lib/brick-slider-accessibility.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.STORIES,
-    src: "../../vendor/brick-slider-stories/brick-slider-stories.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.13/lib/brick-slider-stories.browser.js"
   })
 }
 
