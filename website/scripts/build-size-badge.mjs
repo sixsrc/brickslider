@@ -80,12 +80,8 @@ try {
   message = formatKilobytes(await getBundlephobiaGzipSizeWithRetry(packageSpec))
   source = "bundlephobia"
 } catch (error) {
-  if (isCi) {
-    throw error
-  }
-
   message = (await readPreviousMessage()) ?? FALLBACK_MESSAGE
-  source = `fallback: ${error.message}`
+  source = `${isCi ? "ci " : ""}fallback: ${error.message}`
 }
 
 const badge = {
