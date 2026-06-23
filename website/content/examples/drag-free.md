@@ -24,6 +24,8 @@ slider.init()
 
 ## Notes
 
-- Drag free is better for loose browsing than strict pagination
-- Loop is typically less important in this mode
-- Dots and progress are usually less meaningful here
+- `useDragFree` makes the track follow pointer/touch movement without snapping to pages after release.
+- `useLoop` is ignored in drag-free mode. Keep `useLoop: false` to make the intent explicit.
+- Dots and page labels are ignored because drag-free movement is not page based.
+- Progress can still be used, but it becomes a track-position indicator instead of a page indicator.
+- Use drag free for loose browsing experiences like horizontal galleries, media rails, and product rows.

@@ -31,6 +31,7 @@ slider.init()
 
 ## Notes
 
-- The progress rail is driven by the built-in core behavior
-- It works best on paginated sliders
-- In loop mode, the bar follows the active real page
+- Add only one `.bs-progress` element per slider. BrickSlider updates the nested `.bs-progress-bar` width as the active page changes.
+- The width is based on pages, not individual slides. If `slidesPerPage` is `2`, each step represents one page jump.
+- In loop mode, cloned slides are ignored, so the bar always reflects the real page position.
+- The rail is structural only. Place it wherever your layout needs it and style the height, color, spacing, and rounded corners with CSS or Tailwind classes.

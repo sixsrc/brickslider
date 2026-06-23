@@ -875,8 +875,7 @@ function renderDocsHome() {
     <h1 class="docs-home-title">BrickSlider Docs</h1>
     <p class="doc-lead">
       Start with the core setup, then move into plugins, framework guides, and
-      practical API references. Everything here is generated from the project
-      markdown sources, so the docs stay aligned with the current library.
+      practical API references.
     </p>
     <div class="docs-home-grid">
       ${[

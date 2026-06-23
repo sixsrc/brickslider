@@ -529,7 +529,7 @@
 
 <span class="token symbol">slider</span>.init()</code></pre>
 <h2 id="notes">Notes</h2>
-<ul><li>Drag free is better for loose browsing than strict pagination</li><li>Loop is typically less important in this mode</li><li>Dots and progress are usually less meaningful here</li></ul>
+<ul><li><code>useDragFree</code> makes the track follow pointer/touch movement without snapping to pages after release.</li><li><code>useLoop</code> is ignored in drag-free mode. Keep <code>useLoop: false</code> to make the intent explicit.</li><li>Dots and page labels are ignored because drag-free movement is not page based.</li><li>Progress can still be used, but it becomes a track-position indicator instead of a page indicator.</li><li>Use drag free for loose browsing experiences like horizontal galleries, media rails, and product rows.</li></ul>
           </article>
         </main>
 
