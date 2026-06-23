@@ -16,7 +16,7 @@
 
 BrickSlider is a TypeScript-first, Tailwind-first carousel engine focused on modern motion, clean markup, and plugin-driven features for production-ready sliders and story-style experiences.
 
-The core stays small and framework-agnostic, while the default authoring experience is built around Tailwind-friendly markup and plugins for accessibility helpers and story-style flows.
+The core is framework-agnostic, while the default authoring experience is built around clear markup, Tailwind-friendly styling, and plugins for accessibility helpers and story-style flows.
 
 
 

@@ -147,4 +147,18 @@ slider.on("storiesClosed", (rootSelector) => { ... })
 
 **Markup order:** Keep structure: arrows → \`bs-track\` → \`bs-container\` → stories elements → \`bs-stories-layer\`.
 
+**Core options:** The Stories plugin forces its own story flow and ignores these core slider options if they are present on the host instance:
+
+- `slidesPerView`
+- `slidesPerPage`
+- `gap`
+- `slideSizes`
+- `screens`
+- `responsive`
+- `useLoop`
+- `useDragFree`
+- `useAutoHeight`
+
+In practice, Stories always runs as a single-story flow with its own internal navigation rules.
+
 **Multiple videos:** Only the first video drives timed progress and mute state.

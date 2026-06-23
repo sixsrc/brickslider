@@ -166,7 +166,7 @@
     <!-- Generated file: do not edit this HTML directly. Edit website/content/**/*.md or website/scripts/build-docs.mjs and regenerate with pnpm docs:build. -->
     <header class="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur">
       <div class="mx-auto flex min-h-[92px] max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        <a href="/" class="flex items-center gap-3 py-2">
+        <a href="/docs/" class="flex items-center gap-3 py-2">
           <img src="/logo.svg" alt="BrickSlider" width="208" height="62" class="h-14 w-auto" />
         </a>
         <div class="hidden items-center gap-5 text-sm font-medium md:flex">
@@ -597,6 +597,9 @@
 <span class="token symbol">slider</span>.on(<span class="token string">&quot;storiesClosed&quot;</span>, (rootSelector) =&gt; { ... })</code></pre>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p><strong>Markup order:</strong> Keep structure: arrows → \<code>bs-track\</code> → \<code>bs-container\</code> → stories elements → \<code>bs-stories-layer\</code>.</p>
+<p><strong>Core options:</strong> The Stories plugin forces its own story flow and ignores these core slider options if they are present on the host instance:</p>
+<ul><li><code>slidesPerView</code></li><li><code>slidesPerPage</code></li><li><code>gap</code></li><li><code>slideSizes</code></li><li><code>screens</code></li><li><code>responsive</code></li><li><code>useLoop</code></li><li><code>useDragFree</code></li><li><code>useAutoHeight</code></li></ul>
+<p>In practice, Stories always runs as a single-story flow with its own internal navigation rules.</p>
 <p><strong>Multiple videos:</strong> Only the first video drives timed progress and mute state.</p>
           </article>
         </main>
