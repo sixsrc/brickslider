@@ -87,4 +87,5 @@ jspm_packages/
 packages/slider/public/*.mp4
 packages/slider/lib/*.mp4
 packages/slider/dist/*.mp4
+website/vendor/
 website-dist/

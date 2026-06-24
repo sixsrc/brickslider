@@ -804,8 +804,12 @@ BrickSlider is framework-agnostic by design. Instead of maintaining official wra
 
 ## Project Links
 
-- 🐞 Found a bug or want to suggest an improvement? Open an issue in the [GitHub issue tracker](https://github.com/sixsrc/brickslider/issues)
-- 🤝 Want to help shape the project? Read [CONTRIBUTING.md](./CONTRIBUTING.md)
+- 🌐 Website: [sixsrc.github.io/brickslider](https://sixsrc.github.io/brickslider/)
+- 🎮 Demos: [BrickSlider examples](https://sixsrc.github.io/brickslider/docs/examples-basic-slider/)
+- 🐞 Bugs: open a [Bug report](https://github.com/sixsrc/brickslider/issues/new?template=bug_report.md) with a minimal reproduction.
+- ✨ Features: open a [Feature request](https://github.com/sixsrc/brickslider/issues/new?template=feature_request.md) with the use case and expected API.
+- ❓ Questions: use the [Question template](https://github.com/sixsrc/brickslider/issues/new?template=question.md) for usage or integration doubts.
+- 🤝 Contributions: read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a pull request.
 
 ## Contributors
 

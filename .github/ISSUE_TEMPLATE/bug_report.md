@@ -1,27 +1,68 @@
 ---
 name: Bug report
-about: Report a bug to help us improve
+about: Report a reproducible BrickSlider bug
+title: "[Bug]: "
+labels: bug
+assignees: ""
 ---
 
-**Descrição do problema**
-Uma breve descrição do problema e o comportamento esperado.
+## Before opening
+- [ ] I tested with the latest version of the affected package.
+- [ ] I searched for similar issues first.
+- [ ] I can reproduce the issue consistently.
+- [ ] I included a minimal reproduction, link, or enough code to reproduce it.
 
-**Passos para reproduzir**
-1. Checkout the repository at `commit`/branch
-2. Run `pnpm install`
-3. Execute `pnpm -w -r test` or the specific command
-4. Observe the failure
+## Affected package
+- [ ] `@sixsrc/brick-slider`
+- [ ] `@sixsrc/brick-slider-accessibility`
+- [ ] `@sixsrc/brick-slider-stories`
+- [ ] `@sixsrc/brick-slider-tailwind`
+- [ ] Documentation / website
 
-**Comportamento observado**
-Descreva o que aconteceu.
+Package version:
 
-**Comportamento esperado**
-Descreva o que você esperava que acontecesse.
+Usage method:
+- [ ] npm/pnpm/yarn
+- [ ] CDN
+- [ ] local repository build
 
-**Ambiente**
-- OS: macOS / Linux / Windows
-- Node: 18.x
-- pnpm: x.x.x
+## Bug description
+Explain clearly what is happening.
 
-**Notas adicionais**
-Inclua logs, stack traces ou screenshots se aplicável.
+## How to reproduce
+Steps:
+1.
+2.
+3.
+
+Minimal reproduction link, if available:
+
+Or paste the minimal HTML/JS:
+
+```html
+<!-- slider markup -->
+```
+
+```ts
+// slider initialization
+```
+
+## Current behavior
+What happens today?
+
+## Expected behavior
+What should happen instead?
+
+## Environment
+- Operating system:
+- Browser and version:
+- Device / viewport size:
+- Node.js:
+- Package manager:
+
+## Evidence
+Paste screenshots, a short video, console logs, or stack traces.
+
+```txt
+// console logs or errors
+```

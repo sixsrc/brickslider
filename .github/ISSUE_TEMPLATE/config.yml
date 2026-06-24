@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: BrickSlider docs
+    url: https://sixsrc.github.io/brickslider/docs/
+    about: Check the documentation before opening an issue.
+  - name: Live examples
+    url: https://sixsrc.github.io/brickslider/docs/examples-basic-slider/
+    about: Check real examples before reporting a problem.

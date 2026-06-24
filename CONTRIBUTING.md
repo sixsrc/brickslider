@@ -1,149 +1,244 @@
 # Contributing to BrickSlider
 
-Thank you for contributing. This guide explains how to set up the project locally, run tests/builds, standardize commits, create changesets, and open pull requests in a way that works smoothly with the release workflow.
+Thank you for considering contributing to BrickSlider. This guide explains how to run the project, report bugs, suggest improvements, and open pull requests in a way that keeps maintenance practical.
 
-**Local prerequisites**
+By submitting a pull request, you agree that your contribution may be incorporated into BrickSlider as part of an open source project published under the MIT license.
+
+## Table of Contents
+
+- [Development](#development)
+- [Monorepo Structure](#monorepo-structure)
+- [Bugs](#bugs)
+- [Features](#features)
+- [Documentation](#documentation)
+- [Code Style](#code-style)
+- [Commits and Changesets](#commits-and-changesets)
+- [Pull Requests](#pull-requests)
+- [Publishing](#publishing)
+- [Code of Conduct](#code-of-conduct)
+
+## Development
+
+### Requirements
+
 - Node.js 18+
-- `pnpm` installed globally: `npm install -g pnpm`
+- `pnpm`
 - Git configured with your name and email
 
-**Installation (one time)**
+Initial setup:
+
 ```bash
-# clone
 git clone https://github.com/sixsrc/brickslider.git
 cd brickslider
-
-# install dependencies (generates pnpm-lock.yaml)
 pnpm install
-
-# prepare hooks (Husky)
 pnpm prepare
 ```
 
-**Basic structure**
-- `packages/slider` — the main slider package
-- `pnpm-workspace.yaml` — configured workspaces
-- `.changeset/` — changeset files used for versioning
-- `.github/workflows/` — CI workflows (release PR + publish)
+Run the main demo:
 
-**Running the project**
-- Run the demo / dev server for the package:
 ```bash
-pnpm --filter @sixsrc/brick-slider start
-```
-- Or run dev scripts recursively across workspaces:
-```bash
-pnpm -w -r start
-```
-- Build all packages:
-```bash
-pnpm -w -r build
+pnpm start
 ```
 
-**Tests, linting, and formatting**
-- Run tests in all workspaces:
+Run the documentation locally:
+
 ```bash
-pnpm -w -r test
-```
-- Run lint:
-```bash
-pnpm -w -r run lint
-```
-- Auto-fix lint issues when possible:
-```bash
-pnpm -w -r run lint -- --fix
-```
-- Format code with Prettier:
-```bash
-pnpm -w -r run format
+pnpm docs:watch
 ```
 
-**Recommended contribution flow**
-1. Create a branch from `main` using a clear prefix such as `feat/xxx`, `fix/xxx`, or `chore/xxx`.
-2. Keep changes focused and small whenever possible.
-3. Write or update tests when applicable.
-4. Run `pnpm -w -r test` and `pnpm -w -r lint` locally before committing.
+Build all packages:
 
-**Standardized commits (Conventional Commits)**
-- Use `pnpm commit` to open Commitizen and generate a Conventional Commit message.
-- Or write commit messages manually, for example:
-  - `feat(slider): add autoplay option`
-  - `fix(core): prevent crash on resize`
-- The Husky `commit-msg` hook runs `commitlint` and blocks invalid commit messages.
+```bash
+pnpm build
+```
 
-**Creating a changeset (for version bumps)**
-If your change should produce a public release, create a changeset:
+Tests, linting, and formatting:
+
+```bash
+pnpm test
+pnpm lint
+pnpm lint:fix
+pnpm format
+```
+
+## Monorepo Structure
+
+Published packages:
+
+- `packages/slider` — BrickSlider core.
+- `packages/accessibility` — accessibility plugin.
+- `packages/stories` — Instagram-style stories plugin.
+- `packages/tailwind` — Tailwind preset/utilities and structural CSS.
+
+Other important areas:
+
+- `website/content/docs` — Markdown documentation content.
+- `website/content/examples` — documentation example pages.
+- `website/examples` — live examples used by the website.
+- `website/downloads/examples` — standalone downloadable examples.
+- `.github/ISSUE_TEMPLATE` — issue templates.
+- `.github/PULL_REQUEST_TEMPLATE` — pull request templates.
+- `.changeset` — package versioning.
+
+## Bugs
+
+Every bug report needs a clear reproduction. Without a minimal reproduction, it is hard to separate an actual bug from implementation details, cache issues, CDN issues, or local CSS.
+
+When reporting a bug, include:
+
+- affected package and version;
+- usage method: npm, CDN, or local build;
+- browser, operating system, and viewport size;
+- minimal slider HTML;
+- initialization code;
+- reproduction steps;
+- current behavior and expected behavior;
+- screenshots, video, or console logs when useful.
+
+Use the `Bug report` template in `.github/ISSUE_TEMPLATE/bug_report.md`.
+
+If you are opening a PR to fix a bug, use a short and clear branch name:
+
+```bash
+git checkout -b fix/short-description
+```
+
+## Features
+
+Feature suggestions are welcome, but they should explain the real problem they solve.
+
+When suggesting a feature, include:
+
+- use case;
+- affected package;
+- expected API, option, or markup;
+- alternative you tried;
+- impact on DX, accessibility, bundle size, or breaking changes;
+- visual examples, if relevant.
+
+Use the `Feature request` template in `.github/ISSUE_TEMPLATE/feature_request.md`.
+
+If you are opening a PR to implement a feature:
+
+```bash
+git checkout -b feat/short-description
+```
+
+Keep the scope small. Large PRs are harder to review and easier to break.
+
+## Documentation
+
+The documentation is generated from the website Markdown files.
+
+To edit docs:
+
+```bash
+pnpm docs:watch
+```
+
+Main files:
+
+- `website/content/docs` — documentation pages.
+- `website/content/examples` — example pages.
+- `website/examples` — interactive examples.
+- `website/downloads/examples` — downloadable examples.
+
+Best practices:
+
+- keep snippets aligned with the current API;
+- prefer real, focused examples;
+- if you change CDN, version, or imports, update docs and examples together;
+- if you add a new example, verify both the live example and the download.
+
+## Code Style
+
+- Follow the style already used in the package you are changing.
+- Prefer small and focused changes.
+- Avoid abstractions before there is a real need.
+- Do not mix a large refactor with a small bug fix.
+- Use explicit names for state and properties.
+- Avoid workaround CSS in examples: if the example sells Tailwind, use utility classes or official package CSS.
+- Run lint/build before opening a PR.
+
+## Commits and Changesets
+
+Use Conventional Commits:
+
+```bash
+pnpm commit
+```
+
+Or write them manually:
+
+```bash
+feat(slider): add new option
+fix(stories): sync progress after keyboard navigation
+docs: update cdn examples
+chore: add issue templates
+```
+
+If the change should produce a public release, create a changeset:
+
 ```bash
 pnpm changeset
 ```
-- Follow the prompts to choose affected packages and the bump type (`patch`, `minor`, or `major`).
-- This generates a file inside `.changeset/`.
-- Commit and push your branch with the changeset included.
 
-**Opening a pull request**
-- When changes are pushed to `main` (or the workflow is triggered manually), `release-pr.yml` will:
-  - run tests and builds across workspaces;
-  - run `pnpm version:changeset` to apply version bumps;
-  - generate a summary of the changesets and create a `release/bump-<timestamp>` branch;
-  - open a release PR with the generated summary.
-- Review the release PR carefully, including changelog changes and updated package versions.
+Use `patch`, `minor`, or `major` depending on the impact.
 
-**Publishing**
-- Automatic publishing is configured through `publish.yml`, which runs when a `v*` tag is pushed to the repository.
-- To publish manually from your machine:
+## Pull Requests
+
+Before opening a PR:
+
+- [ ] The change has a clear scope.
+- [ ] I ran `pnpm lint`.
+- [ ] I ran `pnpm build` when changing a published package.
+- [ ] I updated docs/examples when changing API, markup, or CDN usage.
+- [ ] I added a changeset when the change needs to be published.
+- [ ] I tested the affected examples.
+
+In the PR body, include:
+
+- what changed;
+- why it changed;
+- how it was tested;
+- screenshots or videos for visual changes;
+- related issues, if any.
+
+## Publishing
+
+Useful scripts:
+
 ```bash
 pnpm version:changeset
-pnpm -w -r publish --access public
+pnpm build
+pnpm publish:changeset
 ```
-- To allow CI publishing, add an `NPM_TOKEN` GitHub secret with npm publish permissions.
 
-**Pull request review checklist**
-- Confirm tests passed and the build completed successfully.
-- Check that `CHANGELOG.md` entries are correct.
-- If the PR is a release PR, confirm the summary generated by Changesets is present and accurate.
+The core package and plugins use separate builds for ESM, browser/CDN, and types. If you change public output, verify:
 
-**Code best practices**
-- Keep changes focused and intentional.
-- Add or update tests for bug fixes and new features.
-- Avoid breaking public APIs unless the release is marked as `major`.
-
-**Helping with issues**
-- Leave a comment explaining which area you plan to work on.
-- Open small PRs when possible.
-- Reference related issues with `Fixes #<issue>` when appropriate.
-
-**Framework usage guides**
-- BrickSlider stays framework-agnostic, but community-written framework guides are welcome.
-- Use the template at `website/content/frameworks/TEMPLATE.md` when creating a guide for React, Vue, Svelte, Angular, or any other framework.
-- Add the new Markdown file inside `website/content/frameworks/` using a clear file name such as `vue.md` or `svelte.md`.
-- Keep the tutorial focused on using the core package unless the guide is explicitly about a plugin.
-
-**Support**
-- Open a GitHub issue if you hit a bug, have a question, or want to discuss an idea.
-
----
-
-Thank you again for contributing — your work helps move BrickSlider forward.
+- `lib/**/*.js`
+- `lib/**/*.d.ts`
+- published CSS, when present
+- CDN examples
+- docs and downloads
 
 ## Code of Conduct
 
-This project follows the Contributor Covenant Code of Conduct to help keep the community respectful, welcoming, and safe.
+This project follows the Contributor Covenant.
 
-- Please read `CODE_OF_CONDUCT.md` for expected behavior and reporting steps.
+Read `CODE_OF_CONDUCT.md` for expected behavior and reporting steps.
 
-Quick summary:
-- Be respectful and constructive.
-- Harassment, hate speech, intimidation, and discriminatory language are not tolerated.
-- If you experience or witness inappropriate behavior, report it using the instructions in `CODE_OF_CONDUCT.md`.
+Summary:
 
-## Issue and Pull Request Templates
+- be respectful and objective;
+- criticize code, not people;
+- do not use discriminatory, intimidating, or offensive language;
+- keep technical discussions useful for solving the problem.
 
-Issue and pull request templates are available in:
-- `.github/ISSUE_TEMPLATE/`
-- `.github/PULL_REQUEST_TEMPLATE/`
+## Support
 
-- Use the `bug_report` template when reporting a bug, including reproduction steps, environment details, and expected vs. actual behavior.
-- Use the `feature_request` template when proposing new ideas.
-- Use the default PR template for regular contributions and include linked issues plus validation steps.
+Use the templates in `.github/ISSUE_TEMPLATE`:
 
-These templates help keep triage consistent and make review faster.
+- `Bug report` for reproducible bugs;
+- `Feature request` for suggestions;
+- `Question` for usage questions.

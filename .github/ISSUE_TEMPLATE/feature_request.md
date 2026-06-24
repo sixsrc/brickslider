@@ -1,20 +1,44 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an improvement or new BrickSlider capability
+title: "[Feature]: "
+labels: enhancement
+assignees: ""
 ---
 
-**Resumo da proposta**
-Descreva a funcionalidade desejada de forma concisa.
+## Summary
+Describe the idea in one sentence.
 
-**Motivação**
-Por que essa feature é útil? Qual problema resolve?
+## Problem or use case
+What limitation, workflow, or need does this feature solve?
 
-**Exemplo de uso**
-Forneça um snippet ou descrição de como a API/feature deveria funcionar.
+## Affected package
+- [ ] `@sixsrc/brick-slider`
+- [ ] `@sixsrc/brick-slider-accessibility`
+- [ ] `@sixsrc/brick-slider-stories`
+- [ ] `@sixsrc/brick-slider-tailwind`
+- [ ] Documentation / examples
 
-**Impacto**
-- Backwards-incompatible? (sim/não)
-- Risco técnico ou de design
+## Proposal
+How do you imagine this feature working?
 
-**Notas adicionais**
-Qualquer detalhe extra que ajude a avaliar a proposta.
+```ts
+// expected API, option, or usage example
+```
+
+```html
+<!-- expected markup, if relevant -->
+```
+
+## Alternatives considered
+Is there a workaround today? Did you try another approach that did not work?
+
+## Expected impact
+- [ ] Improves DX / ease of use
+- [ ] Improves accessibility
+- [ ] Improves performance / bundle size
+- [ ] Improves documentation / examples
+- [ ] May require a breaking change
+
+## References
+Links, screenshots, behavior from other libraries, or visual examples that help explain the request.
