@@ -107,7 +107,7 @@ export class TouchEnd extends BaseSlider {
     const isFastSwipe = this.isFastSwipe(duration, velocity)
 
     if (!hasTouchTiming) return TOUCH_LIMIT
-    if (isFastSwipe) return TOUCH_LIMIT
+    if (isFastSwipe) return this.getFastTouchLimit()
 
     return this.getAdaptiveTouchLimit(velocity)
   }
@@ -121,6 +121,13 @@ export class TouchEnd extends BaseSlider {
       duration <= TOUCH_CONFIG.FAST_SWIPE_MAX_MS ||
       velocity >= TOUCH_CONFIG.FAST_VELOCITY_THRESHOLD
     )
+  }
+
+  private getFastTouchLimit(): number {
+    const sliderWidth = Math.max(1, this.sliderWidth ?? this.store.sliderWidth)
+    const touchLimit = (TOUCH_CONFIG.FAST_SWIPE_MIN_PX / sliderWidth) * 100
+
+    return Math.min(TOUCH_CONFIG.SLOW_LIMIT, touchLimit)
   }
 
   private getAdaptiveTouchLimit(velocity: number): number {
@@ -338,6 +345,13 @@ export class TouchEnd extends BaseSlider {
   }
 
   private navigateBySwipeDirection(direction: NavigationDirection): void {
+    const loopPreJumpTargetIndex = this.getLoopPreJumpTargetIndex()
+
+    if (loopPreJumpTargetIndex !== null) {
+      this.navigateToLoopPreJumpTarget(loopPreJumpTargetIndex)
+      return
+    }
+
     const { slideIndex } = this.store
     const slideMovement = getSlideMovement(direction) as UpdateSlideIndexType
     const snappedTranslate = this.calcTranslate()
@@ -349,6 +363,24 @@ export class TouchEnd extends BaseSlider {
 
     this.applySwipeNavigationState(navigationState)
     this.navigateToSwipeTarget(direction)
+  }
+
+  private getLoopPreJumpTargetIndex(): number | null {
+    const targetIndex = this.store["loopPreJumpTargetIndex"]
+
+    return typeof targetIndex === "number" ? targetIndex : null
+  }
+
+  private navigateToLoopPreJumpTarget(targetIndex: number): void {
+    this.setState({
+      currentSlideMovement: null,
+      loopPreJumpTargetIndex: null
+    })
+    this.slider.setSlideTarget({
+      from: FROM.TOUCHEND,
+      touchIndex: targetIndex,
+      $root: this.$root
+    })
   }
 
   private getSwipeNavigationState(

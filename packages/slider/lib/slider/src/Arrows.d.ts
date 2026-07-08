@@ -2,7 +2,6 @@ import { BaseSlider } from './BaseSlider';
 export declare class Arrows extends BaseSlider {
     $root: string;
     private slider;
-    private lastClickTimestamps;
     private lastTouchArrowTimestamp;
     constructor($root: string);
     init(): void;
@@ -12,17 +11,6 @@ export declare class Arrows extends BaseSlider {
     private handleArrowClick;
     private shouldIgnoreSyntheticTouchClick;
     private handleArrowInteraction;
-    private scheduleClickSpeedUpdate;
-    private updateClickSpeed;
-    private createFastNavigationState;
-    private getFastNavigationState;
-    private setFastNavigationState;
-    private hasEnoughClickSamplesAfterNextClick;
-    private registerClickTimestamp;
-    private trimClickTimestamps;
-    private getAverageClickDelta;
-    private setTime;
-    private getTime;
     private getArrowEventType;
     private getExplicitArrowType;
     private matchesArrowClass;

@@ -268,6 +268,12 @@ const options = [
     slidesPerPage: 1,
     gap: 0,
     useLoop: false
+  },
+  {
+    slidesPerView: 1,
+    slidesPerPage: 1,
+    gap: 16,
+    useLoop: true
   }
 ]
 
@@ -305,6 +311,7 @@ export function startDemo(): void {
   const slider6 = createInstance("#slider6", options[6])
   const slider7 = createInstance("#slider7", options[7])
   const slider9 = createInstance("#slider9", options[8])
+  const slider10 = createInstance("#slider10", options[9])
   const storiesPlugin = new BrickSliderStories({
     trigger: "#open-stories",
     duration: 5000,
@@ -325,6 +332,7 @@ export function startDemo(): void {
   slider5.init()
   slider6.init()
   slider7.init()
+  slider10.init()
   slider9.init()
   bindStoriesMethodsDemo(slider9, storiesPlugin)
   bindStoriesEventsPanel(slider9, storiesPlugin)
@@ -336,6 +344,7 @@ export function startDemo(): void {
     slider8,
     slider5,
     slider6,
-    slider7
+    slider7,
+    slider10
   ])
 }

@@ -38,7 +38,7 @@ const navSections = [
     items: [
       { slug: "installation", title: "Installation", file: ["docs", "installation.md"], description: "Install BrickSlider with npm or CDN and choose the right setup for Tailwind-friendly carousels." },
       { slug: "quick-start", title: "Quick Start", file: ["docs", "quick-start.md"], description: "Mount a responsive JavaScript carousel with BrickSlider, arrows, dots, touch gestures, and Tailwind-ready markup." },
-      { slug: "basic-markup", title: "Basic Markup", file: ["docs", "basic-markup.md"], description: "Learn the required BrickSlider HTML structure for accessible sliders, controls, dots, progress, and Tailwind styling." },
+      { slug: "basic-configuration", title: "Basic Configuration", file: ["docs", "basic-configuration.md"], description: "Learn the required BrickSlider HTML structure for accessible sliders, controls, dots, progress, and Tailwind styling." },
     ],
   },
   {
@@ -881,7 +881,7 @@ function renderDocsHome() {
       ${[
         { slug: "installation", title: "Installation", description: "Install packages and choose the runtime format." },
         { slug: "quick-start", title: "Quick Start", description: "Mount your first BrickSlider in a few lines." },
-        { slug: "basic-markup", title: "Basic Markup", description: "Understand the required HTML structure." },
+        { slug: "basic-configuration", title: "Basic Configuration", description: "Understand the required HTML structure." },
         { slug: "examples-basic-slider", title: "Examples", description: "Browse practical slider configurations before diving deeper." },
         { slug: "stories-plugin", title: "Stories", description: "Story-style modal flows with timed progress." },
         { slug: "accessibility-plugin", title: "Accessibility", description: "Labels, focus helpers, and announcements." },

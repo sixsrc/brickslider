@@ -14,6 +14,7 @@ export declare class BrickSlider extends BaseSlider {
     private defineConfigs;
     private setOptions;
     init(): void;
+    private hideUntilMounted;
     private runMount;
     private emitMountedWhenReady;
     next(): void;

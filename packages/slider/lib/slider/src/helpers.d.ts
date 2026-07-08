@@ -73,6 +73,7 @@ export declare const TIMES: {
     LARGE_PAGE_TRANSITION_TIME: number;
     FAST_MULTI_PAGE_TRANSITION_TIME: number;
     DRAG_FREE_RELEASE_TIME: number;
+    FAST_NAVIGATION_THRESHOLD: number;
     FAST_NAVIGATION_OFFSET: number;
     ARROW_NAVIGATION_GUARD: number;
     TOUCH_NAVIGATION_GUARD: number;
@@ -128,6 +129,7 @@ export declare const TOUCH_LIMIT = 0;
 export declare const MOVE_TO_LIMIT = 3;
 export declare const TOUCH_CONFIG: {
     readonly FAST_SWIPE_MAX_MS: 180;
+    readonly FAST_SWIPE_MIN_PX: 16;
     readonly FAST_VELOCITY_THRESHOLD: 0.35;
     readonly SLOW_LIMIT: 35;
     readonly MAX_LIMIT: 55;
@@ -139,7 +141,7 @@ export declare const POSITION: {
 };
 export declare const DOCS: {
     readonly GET_STARTED: "https://sixsrc.github.io/brickslider/docs/quick-start/";
-    readonly BASIC_HTML_DOC: "https://sixsrc.github.io/brickslider/docs/basic-markup/";
+    readonly BASIC_CONFIGURATION_DOC: "https://sixsrc.github.io/brickslider/docs/basic-configuration/";
 };
 export declare const BASIC_DOCS: string;
 export declare const START_DOCS: string;

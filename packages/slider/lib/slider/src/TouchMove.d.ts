@@ -11,6 +11,12 @@ export declare class TouchMove extends BaseSlider {
     init(event: MouseEventOrTouchEvent): void;
     protected updatePosition(event: MouseEvent | TouchEvent): void;
     private eventTargetState;
+    private prepareLoopDrag;
+    private getFirstRealSlideIndex;
+    private getLastRealSlideIndex;
+    private prepareLoopDragFromBoundary;
+    private getEquivalentCloneIndex;
+    private cancelTrackAnimations;
     private infiniteState;
     private mainState;
     protected movingTo(position: PositionSlider): boolean;

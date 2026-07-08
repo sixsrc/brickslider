@@ -37,7 +37,9 @@ The core is framework-agnostic, while the default authoring experience is built 
 <p align="center">
   <a href="https://sixsrc.github.io/brickslider/">Website</a>
   &nbsp;•&nbsp;
-  <a href="https://sixsrc.github.io/brickslider/docs/examples-basic-slider/">Demos</a>
+  <a href="https://sixsrc.github.io/brickslider/docs/">Docs</a>
+  &nbsp;•&nbsp;
+  <a href="https://sixsrc.github.io/brickslider/docs/examples-basic-slider/">Demo</a>
 </p>
 
 
@@ -49,7 +51,7 @@ The core is framework-agnostic, while the default authoring experience is built 
 - [📥 Installation](#installation)
 - [🌐 CDN](#cdn)
 - [🚀 Quick Start](#quick-start)
-- [🏗️ Basic Markup](#basic-markup)
+- [🏗️ Basic Configuration](#basic-configuration)
 - [🧠 TypeScript](#typescript)
 - [⚙️ Options](#options)
 - [🧩 Methods](#methods)
@@ -138,7 +140,7 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 Use the official browser bundles in plain HTML:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.15/lib/brick-slider.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.17/lib/brick-slider.browser.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.10/lib/brick-slider-accessibility.browser.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.13/lib/brick-slider-stories.browser.js"></script>
 <script>
@@ -179,7 +181,7 @@ const slider = new BrickSlider("#slider", {
 slider.init()
 ```
 
-## Basic Markup
+## Basic Configuration
 
 ```html
 <div id="slider">
@@ -204,6 +206,12 @@ slider.init()
   </div>
 </div>
 ```
+
+### Slide spacing
+
+Use the `gap` option for spacing between slides. Do not mix different horizontal margins on the direct child inside each `bs-slide`; apply the same inner spacing to every slide or leave spacing to `gap`.
+
+BrickSlider blocks inconsistent slide inner margins because they can make navigation appear to jump to the wrong slide.
 
 ## TypeScript
 
@@ -676,14 +684,14 @@ If you are using BrickSlider directly in HTML or alongside Tailwind loaded from 
 ```html
 <link
   rel="stylesheet"
-  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.8/brick-slider.css"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.9/brick-slider.css"
 />
 ```
 
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.8/brick-slider.css"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.9/brick-slider.css"
 />
 ```
 

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Basic Markup · BrickSlider Docs</title>
+    <title>Basic Configuration · BrickSlider Docs</title>
     <meta name="description" content="Learn the required BrickSlider HTML structure for accessible sliders, controls, dots, progress, and Tailwind styling." />
     <meta
       name="keywords"
@@ -11,15 +11,15 @@
     />
     <meta name="robots" content="index, follow" />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://sixsrc.github.io/brickslider/docs/basic-markup/" />
+    <link rel="canonical" href="https://sixsrc.github.io/brickslider/docs/basic-configuration/" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="BrickSlider Docs" />
-    <meta property="og:title" content="Basic Markup · BrickSlider Docs" />
+    <meta property="og:title" content="Basic Configuration · BrickSlider Docs" />
     <meta property="og:description" content="Learn the required BrickSlider HTML structure for accessible sliders, controls, dots, progress, and Tailwind styling." />
-    <meta property="og:url" content="https://sixsrc.github.io/brickslider/docs/basic-markup/" />
+    <meta property="og:url" content="https://sixsrc.github.io/brickslider/docs/basic-configuration/" />
     <meta property="og:image" content="https://sixsrc.github.io/brickslider/favicon.png" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Basic Markup · BrickSlider Docs" />
+    <meta name="twitter:title" content="Basic Configuration · BrickSlider Docs" />
     <meta name="twitter:description" content="Learn the required BrickSlider HTML structure for accessible sliders, controls, dots, progress, and Tailwind styling." />
     <meta name="twitter:image" content="https://sixsrc.github.io/brickslider/favicon.png" />
 
@@ -299,8 +299,8 @@
               Quick Start
             </a>
           </li><li>
-            <a href="/docs/basic-markup/" class="nav-link active">
-              Basic Markup
+            <a href="/docs/basic-configuration/" class="nav-link active">
+              Basic Configuration
             </a>
           </li></ul>
       </section><section class="nav-group">
@@ -405,8 +405,8 @@
               Quick Start
             </a>
           </li><li>
-            <a href="/docs/basic-markup/" class="nav-link active">
-              Basic Markup
+            <a href="/docs/basic-configuration/" class="nav-link active">
+              Basic Configuration
             </a>
           </li></ul>
       </section><section class="nav-group">
@@ -498,7 +498,7 @@
 
         <main class="min-w-0 px-0 py-10 md:px-8 lg:px-12">
           <article class="doc-article">
-            <h1 id="basic-markup">Basic Markup</h1>
+            <h1 id="basic-configuration">Basic Configuration</h1>
 <h2 id="required-elements">Required Elements</h2>
 <pre><code class="language-html">&lt;<span class="token keyword">div</span> <span class="token property">id</span>=<span class="token string">&quot;slider&quot;</span>&gt;
   &lt;<span class="token keyword">button</span> <span class="token property">class</span>=<span class="token string">&quot;bs-arrow bs-prev&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;Prev&lt;/<span class="token keyword">button</span>&gt;
@@ -521,11 +521,42 @@
     &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-progress-bar&quot;</span>&gt;&lt;/<span class="token keyword">div</span>&gt;
   &lt;/<span class="token keyword">div</span>&gt;
 &lt;/<span class="token keyword">div</span>&gt;</code></pre>
+<h2 id="slide-spacing">Slide Spacing</h2>
+<p>Use the <code>gap</code> option for spacing between slides.</p>
+<p>Avoid mixing different horizontal margins on the direct child inside each <code>bs-slide</code>. For example, do not give one slide content <code>mx-2</code> and leave another without it. BrickSlider blocks this layout because it can make backward navigation appear to jump to the wrong slide.</p>
+<p>If you need inner spacing, apply the same spacing to every slide:</p>
+<pre><code class="language-html">&lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-slide&quot;</span>&gt;
+  &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;mx-2&quot;</span>&gt;Slide 01&lt;/<span class="token keyword">div</span>&gt;
+&lt;/<span class="token keyword">div</span>&gt;
+&lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-slide&quot;</span>&gt;
+  &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;mx-2&quot;</span>&gt;Slide 02&lt;/<span class="token keyword">div</span>&gt;
+&lt;/<span class="token keyword">div</span>&gt;</code></pre>
+<h2 id="active-dots">Active Dots</h2>
+<p>BrickSlider adds <code>bs-dot--active</code> to the current dot. You control the visual style.</p>
+<h3 id="plain-css">Plain CSS</h3>
+<pre><code class="language-css"><span class="token symbol">.bs-dot</span> {
+  <span class="token property">width</span>: <span class="token string">0.75rem</span>;
+  <span class="token property">height</span>: <span class="token string">0.75rem</span>;
+  <span class="token property">border</span>: <span class="token string">1px solid #c4b5fd</span>;
+  <span class="token property">border-radius</span>: <span class="token string">999px</span>;
+  <span class="token property">background</span>: <span class="token string">transparent</span>;
+}
+
+<span class="token symbol">.bs-dot--active</span> {
+  <span class="token property">border-color</span>: <span class="token string">#6d28d9</span>;
+  <span class="token property">background</span>: <span class="token string">#6d28d9</span>;
+}</code></pre>
+<h3 id="tailwind">Tailwind</h3>
+<p>Keep the dot markup simple:</p>
+<pre><code class="language-html">&lt;<span class="token keyword">ul</span> <span class="token property">class</span>=<span class="token string">&quot;bs-dots flex gap-2&quot;</span>&gt;
+  &lt;<span class="token keyword">li</span> <span class="token property">class</span>=<span class="token string">&quot;bs-dot h-3 w-3 rounded-full border border-violet-300&quot;</span>&gt;&lt;/<span class="token keyword">li</span>&gt;
+&lt;/<span class="token keyword">ul</span>&gt;</code></pre>
+<p>Then define the active state in your Tailwind CSS entry:</p>
+<pre><code class="language-css"><span class="token symbol">.bs-dot--active</span> {
+  @apply border-violet-700 bg-violet-700;
+}</code></pre>
 <h2 id="class-reference">Class Reference</h2>
-<h3 id="core">Core</h3>
-<div class="table-wrap"><table><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>bs-track</code></td><td>Required viewport wrapper</td></tr><tr><td><code>bs-container</code></td><td>Required slide row inside <code>bs-track</code></td></tr><tr><td><code>bs-slide</code></td><td>Required slide item inside <code>bs-container</code></td></tr><tr><td><code>bs-arrow</code> / <code>bs-prev</code> / <code>bs-next</code></td><td>Arrow navigation buttons</td></tr><tr><td><code>bs-pages</code></td><td>Optional current page output</td></tr><tr><td><code>bs-dots</code> / <code>bs-dot</code></td><td>Optional pagination controls</td></tr><tr><td><code>bs-progress</code> / <code>bs-progress-bar</code></td><td>Optional progress rail</td></tr><tr><td><code>bs-hidden</code></td><td>Utility class used before mount</td></tr><tr><td><code>bs-peek</code> / <code>bs-peek-sm</code> / <code>bs-peek-lg</code></td><td>Peek spacing variants</td></tr><tr><td><code>bs-auto-height-layout</code></td><td>Auto-height helper class</td></tr></tbody></table></div>
-<h3 id="stories">Stories</h3>
-<div class="table-wrap"><table><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>bs-stories-progress</code></td><td>Stories progress rail container</td></tr><tr><td><code>bs-stories-progress-item</code></td><td>Stories progress segment</td></tr><tr><td><code>bs-stories-progress-bar</code></td><td>Animated bar inside segment</td></tr><tr><td><code>bs-stories-pause-indicator</code></td><td>Play/pause overlay control</td></tr><tr><td><code>bs-stories-pause</code> / <code>bs-stories-play</code></td><td>Pause/play icons</td></tr><tr><td><code>bs-stories-layer</code></td><td>Stories overlay layer</td></tr><tr><td><code>bs-stories-backdrop</code></td><td>Backdrop inside stories layer</td></tr><tr><td><code>bs-stories-close</code></td><td>Close button</td></tr><tr><td><code>bs-stories-mute</code></td><td>Mute button for video stories</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>bs-track</code></td><td>Core: required viewport wrapper</td></tr><tr><td><code>bs-container</code></td><td>Core: required slide row inside <code>bs-track</code></td></tr><tr><td><code>bs-slide</code></td><td>Core: required slide item inside <code>bs-container</code></td></tr><tr><td><code>bs-arrow</code> / <code>bs-prev</code> / <code>bs-next</code></td><td>Core: arrow navigation buttons</td></tr><tr><td><code>bs-pages</code></td><td>Core: optional current page output</td></tr><tr><td><code>bs-dots</code> / <code>bs-dot</code></td><td>Core: optional pagination controls</td></tr><tr><td><code>bs-progress</code> / <code>bs-progress-bar</code></td><td>Core: optional progress rail</td></tr><tr><td><code>bs-hidden</code></td><td>Core: utility class used before mount</td></tr><tr><td><code>bs-peek</code> / <code>bs-peek-sm</code> / <code>bs-peek-lg</code></td><td>Core: peek spacing variants</td></tr><tr><td><code>bs-auto-height-layout</code></td><td>Core: auto-height helper class</td></tr><tr><td><code>bs-stories-progress</code></td><td>Stories: progress rail container</td></tr><tr><td><code>bs-stories-progress-item</code></td><td>Stories: progress segment</td></tr><tr><td><code>bs-stories-progress-bar</code></td><td>Stories: animated bar inside segment</td></tr><tr><td><code>bs-stories-pause-indicator</code></td><td>Stories: play/pause overlay control</td></tr><tr><td><code>bs-stories-pause</code> / <code>bs-stories-play</code></td><td>Stories: pause/play icons</td></tr><tr><td><code>bs-stories-layer</code></td><td>Stories: overlay layer</td></tr><tr><td><code>bs-stories-backdrop</code></td><td>Stories: backdrop inside stories layer</td></tr><tr><td><code>bs-stories-close</code></td><td>Stories: close button</td></tr><tr><td><code>bs-stories-mute</code></td><td>Stories: mute button for video stories</td></tr></tbody></table></div>
           </article>
         </main>
 
@@ -536,11 +567,15 @@
     <li class="level-2">
           <a href="#required-elements">Required Elements</a>
         </li><li class="level-2">
+          <a href="#slide-spacing">Slide Spacing</a>
+        </li><li class="level-2">
+          <a href="#active-dots">Active Dots</a>
+        </li><li class="level-3">
+          <a href="#plain-css">Plain CSS</a>
+        </li><li class="level-3">
+          <a href="#tailwind">Tailwind</a>
+        </li><li class="level-2">
           <a href="#class-reference">Class Reference</a>
-        </li><li class="level-3">
-          <a href="#core">Core</a>
-        </li><li class="level-3">
-          <a href="#stories">Stories</a>
         </li>
   </ul>
           </div>

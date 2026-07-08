@@ -6,7 +6,7 @@ import plugin from "tailwindcss/plugin"
 // para que o usuário aplique só o visual que quiser no HTML.
 export default plugin(function ({ addComponents }): void {
   addComponents({
-    ".bs-root, .brick-slider": {
+    ".bs-root": {
       position: "relative",
       display: "flex",
       alignItems: "center"
@@ -54,7 +54,6 @@ export default plugin(function ({ addComponents }): void {
     ".bs-dots": {
       width: "max-content",
       maxWidth: "100%",
-      pointerEvents: "none",
       textAlign: "center",
       display: "inline-flex",
       justifyContent: "center",
@@ -64,8 +63,7 @@ export default plugin(function ({ addComponents }): void {
     },
     ".bs-dot": {
       display: "inline-block",
-      boxSizing: "border-box",
-      pointerEvents: "auto"
+      boxSizing: "border-box"
     },
     ".bs-progress": {
       height: "4px",

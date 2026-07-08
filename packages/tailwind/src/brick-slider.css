@@ -1,5 +1,4 @@
-.bs-root,
-.brick-slider {
+.bs-root {
   position: relative;
   display: flex;
   align-items: center;
@@ -56,7 +55,6 @@
 .bs-dots {
   width: max-content;
   max-width: 100%;
-  pointer-events: none;
   text-align: center;
   display: inline-flex;
   justify-content: center;
@@ -68,7 +66,6 @@
 .bs-dot {
   display: inline-block;
   box-sizing: border-box;
-  pointer-events: auto;
 }
 
 .bs-progress {

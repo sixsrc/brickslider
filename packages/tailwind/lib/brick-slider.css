@@ -1,5 +1,4 @@
-.bs-root,
-.brick-slider {
+.bs-root {
   position: relative;
   display: flex;
   align-items: center;
@@ -54,9 +53,10 @@
 }
 
 .bs-dots {
-  width: 100%;
+  width: max-content;
+  max-width: 100%;
   text-align: center;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   z-index: 10;

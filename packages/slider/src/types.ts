@@ -6,7 +6,7 @@ export type Listener = (...args: unknown[]) => void
 export type MessageLevel = "warn" | "error"
 
 export type MountInstance = {
-  init(): Promise<void>
+  init(): Promise<boolean>
 }
 
 export type SliderPlugin = {

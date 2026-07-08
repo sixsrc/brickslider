@@ -9,7 +9,6 @@ import type {
 import { DOM_ELEMENT_ALIASES, EVENTS, FROM, TIMES } from "./helpers"
 import {
   getAllElements,
-  getSliderNodeList,
   getSlideMovement,
   getRootSelector,
   hasClass,
@@ -19,7 +18,6 @@ import {
 export class Arrows extends BaseSlider {
   public $root: string
   private slider: Slider
-  private lastClickTimestamps: number[] = []
   private lastTouchArrowTimestamp = 0
 
   constructor($root: string) {
@@ -85,92 +83,11 @@ export class Arrows extends BaseSlider {
   }
 
   private handleArrowInteraction(button: HTMLElement): void {
-    const delay = this.setTime()
     const targetButton = button as HTMLButtonElement
 
     if (targetButton.disabled) return
 
-    this.scheduleClickSpeedUpdate(delay)
     this.arrowHandler(button, this.$root)
-  }
-
-  private scheduleClickSpeedUpdate(delay: number): void {
-    setTimeout(() => {
-      this.updateClickSpeed()
-    }, delay)
-  }
-
-  private updateClickSpeed(): void {
-    const now = Date.now()
-    const hasEnoughSamples = this.hasEnoughClickSamplesAfterNextClick()
-    const fastNavigationState = this.createFastNavigationState(now)
-
-    if (!hasEnoughSamples) return
-
-    this.registerClickTimestamp(now)
-    this.setFastNavigationState(fastNavigationState)
-  }
-
-  private createFastNavigationState(timestamp: number): Partial<StateType> {
-    const avgDelta = this.getAverageClickDelta(timestamp)
-    const fastNavigationState = this.getFastNavigationState(avgDelta)
-
-    return fastNavigationState
-  }
-
-  private getFastNavigationState(avgDelta: number): Partial<StateType> {
-    return {
-      isFastNavigation:
-        avgDelta < TIMES.DEFAULT_TRANSITION_TIME - TIMES.FAST_NAVIGATION_OFFSET
-    }
-  }
-
-  private setFastNavigationState(state: Partial<StateType>): void {
-    this.setState(state)
-  }
-
-  private hasEnoughClickSamplesAfterNextClick(): boolean {
-    return this.lastClickTimestamps.length + 1 >= 3
-  }
-
-  private registerClickTimestamp(timestamp: number): void {
-    this.lastClickTimestamps.push(timestamp)
-    this.trimClickTimestamps()
-  }
-
-  private trimClickTimestamps(): void {
-    if (this.lastClickTimestamps.length <= 3) return
-
-    this.lastClickTimestamps.shift()
-  }
-
-  private getAverageClickDelta(timestamp?: number): number {
-    const timestamps = timestamp
-      ? [...this.lastClickTimestamps, timestamp]
-      : this.lastClickTimestamps
-
-    const deltas = timestamps
-      .slice(1)
-      .map((currentTimestamp, index) => currentTimestamp - timestamps[index])
-
-    return deltas.reduce((sum, delta) => sum + delta, 0) / deltas.length
-  }
-
-  private setTime(): number {
-    const totalSlides = getSliderNodeList(this.$root, false).length
-
-    return this.getTime(totalSlides)
-      ? TIMES.DEFAULT_TRANSITION_TIME - TIMES.FAST_NAVIGATION_OFFSET
-      : 0
-  }
-
-  private getTime(totalSlides: number): boolean {
-    const { activePage, numberOfPages } = this.store
-    const isAtEnd = activePage >= numberOfPages - 1
-    const hasRemainingSlides = this.hasRemaining(totalSlides)
-    const isFast = !!this.store["isFastNavigation"]
-
-    return isAtEnd && hasRemainingSlides && isFast
   }
 
   private getArrowEventType(button: Element): NavigationDirection {

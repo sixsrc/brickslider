@@ -6,6 +6,7 @@ import {
   DOM_ELEMENT_ALIASES,
   FROM,
   SLIDER_EVENTS,
+  addClass,
   getSliderNodeList,
   getSlideMovement,
   isValidSelector,
@@ -61,8 +62,17 @@ export class BrickSlider extends BaseSlider {
   }
 
   public init(): void {
+    this.hideUntilMounted()
     Slider.registerDestroyHandler(this.$root, () => this.destroy())
     void this.runMount()
+  }
+
+  private hideUntilMounted(): void {
+    const rootSelector = this.getRootSelector
+
+    if (!rootSelector) return
+
+    addClass([rootSelector], DOM_ELEMENT_ALIASES.HIDDEN[0])
   }
 
   private async runMount(): Promise<void> {
@@ -71,7 +81,10 @@ export class BrickSlider extends BaseSlider {
       this.mount = new Mount(this.$root)
     }
 
-    await this.mount?.init()
+    const didMount = await this.mount?.init()
+
+    if (!didMount) return
+
     this.emitMountedWhenReady()
   }
 

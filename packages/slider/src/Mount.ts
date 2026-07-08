@@ -44,14 +44,14 @@ export class Mount extends BaseSlider {
     this.slideMeta = new SlideMeta($root)
   }
 
-  public async init(): Promise<void> {
+  public async init(): Promise<boolean> {
     this.setState(this.mountState())
     this.normalizeSlidesConfig()
     this.setProperties()
     this.cloneSlides()
     this.appendSlider()
     this.handleResize()
-    await this.endMount()
+    return await this.endMount()
   }
 
   private setProperties(): void {
@@ -507,13 +507,14 @@ export class Mount extends BaseSlider {
     return Math.max(1, Math.min(slidesPerView, slidesPerPage))
   }
 
-  private async endMount(): Promise<void> {
+  private async endMount(): Promise<boolean> {
     this.setActiveSlides()
     this.setSlidesWidth()
-    this.setSlidesWidth()
+
     this.syncAutoHeight(0, 0)
     await this.setControls()
     this.slider.updateSlider()
     this.setVisibility()
+    return true
   }
 }

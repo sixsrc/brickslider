@@ -1,7 +1,15 @@
 import { AnimationFrame } from "./AnimationFrame"
 import { BaseSlider } from "./BaseSlider"
 import type { StateType } from "./types"
-import { EVENTS, MOVE_TO_LIMIT, POSITION, getAxisX } from "./helpers"
+import {
+  CLASS_VALUES,
+  EVENTS,
+  MOVE_TO_LIMIT,
+  POSITION,
+  getAxisX,
+  hasClass,
+  translate3d
+} from "./helpers"
 import type { MouseEventOrTouchEvent, PositionSlider } from "./types"
 
 export class TouchMove extends BaseSlider {
@@ -27,6 +35,7 @@ export class TouchMove extends BaseSlider {
 
     if (isDragging) {
       this.updatePosition(event)
+      this.prepareLoopDrag()
       this.setState(this.eventTargetState())
       this.setState(this.skipSlide ? this.infiniteState() : this.mainState())
     }
@@ -41,6 +50,89 @@ export class TouchMove extends BaseSlider {
     return {
       currentEventType: EVENTS.TOUCHMOVE
     }
+  }
+
+  private prepareLoopDrag(): void {
+    const { slideIndex, startPos, useLoop, useDragFree } = this.store
+    const canPrepareLoopDrag =
+      useLoop && !useDragFree && this.store["loopPreJumpTargetIndex"] == null
+
+    if (!canPrepareLoopDrag) return
+
+    const movement = this.currentPosition - startPos
+    const isMovingNext = movement < 0
+    const isMovingPrev = movement > 0
+
+    if (!isMovingNext && !isMovingPrev) return
+
+    const firstRealIndex = this.getFirstRealSlideIndex()
+    const lastRealIndex = this.getLastRealSlideIndex()
+    const shouldPrepareNext = isMovingNext && slideIndex === lastRealIndex
+    const shouldPreparePrev = isMovingPrev && slideIndex === firstRealIndex
+
+    if (shouldPrepareNext) {
+      this.prepareLoopDragFromBoundary(slideIndex, firstRealIndex, "prefix")
+      return
+    }
+
+    if (shouldPreparePrev) {
+      this.prepareLoopDragFromBoundary(slideIndex, lastRealIndex, "suffix")
+    }
+  }
+
+  private getFirstRealSlideIndex(): number {
+    return this.slides.findIndex(slide => !hasClass(slide, CLASS_VALUES.CLONED))
+  }
+
+  private getLastRealSlideIndex(): number {
+    return this.slides.findLastIndex(
+      slide => !hasClass(slide, CLASS_VALUES.CLONED)
+    )
+  }
+
+  private prepareLoopDragFromBoundary(
+    realIndex: number,
+    targetIndex: number,
+    cloneSide: "prefix" | "suffix"
+  ): void {
+    const cloneIndex = this.getEquivalentCloneIndex(realIndex, cloneSide)
+
+    if (cloneIndex < 0) return
+
+    const translate = -this.calcTranslateForIndex(cloneIndex)
+
+    this.cancelTrackAnimations()
+    this.$children.style.transform = translate3d(translate)
+    this.setState({
+      slideIndex: cloneIndex,
+      prevTranslate: translate,
+      currentTranslate: translate,
+      startPos: this.currentPosition,
+      loopPreJumpTargetIndex: targetIndex
+    })
+  }
+
+  private getEquivalentCloneIndex(
+    realIndex: number,
+    cloneSide: "prefix" | "suffix"
+  ): number {
+    const dataIndex = this.getSlideDataIndexValue(this.slides[realIndex])
+    const firstRealIndex = this.getFirstRealSlideIndex()
+    const lastRealIndex = this.getLastRealSlideIndex()
+
+    return this.slides.findIndex((slide, index) => {
+      const isMatchingClone =
+        this.getSlideDataIndexValue(slide) === dataIndex &&
+        hasClass(slide, CLASS_VALUES.CLONED)
+      const isPrefixClone = cloneSide === "prefix" && index < firstRealIndex
+      const isSuffixClone = cloneSide === "suffix" && index > lastRealIndex
+
+      return isMatchingClone && (isPrefixClone || isSuffixClone)
+    })
+  }
+
+  private cancelTrackAnimations(): void {
+    this.$children.getAnimations().forEach(animation => animation.cancel())
   }
 
   private infiniteState(): Partial<StateType> {

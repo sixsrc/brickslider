@@ -386,7 +386,7 @@ export class Slider extends BaseSlider {
     const lastTimestamp = this.lastPagedNavigationTimestamp[from] ?? 0
     const elapsed = now - lastTimestamp
     const isFastNavigation =
-      lastTimestamp > 0 && elapsed < TIMES.DEFAULT_TRANSITION_TIME
+      lastTimestamp > 0 && elapsed < TIMES.FAST_NAVIGATION_THRESHOLD
 
     this.setState({ isFastNavigation })
 

@@ -79,6 +79,7 @@ export const TIMES = {
   LARGE_PAGE_TRANSITION_TIME: 280,
   FAST_MULTI_PAGE_TRANSITION_TIME: 220,
   DRAG_FREE_RELEASE_TIME: 1500,
+  FAST_NAVIGATION_THRESHOLD: 280,
   FAST_NAVIGATION_OFFSET: 100,
   ARROW_NAVIGATION_GUARD: 0,
   TOUCH_NAVIGATION_GUARD: 350,
@@ -150,6 +151,7 @@ export const MOVE_TO_LIMIT = 3
 
 export const TOUCH_CONFIG = {
   FAST_SWIPE_MAX_MS: 180,
+  FAST_SWIPE_MIN_PX: 16,
   FAST_VELOCITY_THRESHOLD: 0.35,
   SLOW_LIMIT: 35,
   MAX_LIMIT: 55,
@@ -163,10 +165,10 @@ export const POSITION = {
 
 export const DOCS = {
   GET_STARTED: "https://sixsrc.github.io/brickslider/docs/quick-start/",
-  BASIC_HTML_DOC: "https://sixsrc.github.io/brickslider/docs/basic-markup/"
+  BASIC_CONFIGURATION_DOC: "https://sixsrc.github.io/brickslider/docs/basic-configuration/"
 } as const
 
-export const BASIC_DOCS = `See: ${DOCS.BASIC_HTML_DOC}`
+export const BASIC_DOCS = `See: ${DOCS.BASIC_CONFIGURATION_DOC}`
 
 export const START_DOCS = `See: ${DOCS.GET_STARTED}`
 

@@ -18,6 +18,7 @@ export declare class TouchEnd extends BaseSlider {
     private getTouchLimit;
     private hasTouchTiming;
     private isFastSwipe;
+    private getFastTouchLimit;
     private getAdaptiveTouchLimit;
     private getTouchSpeedRatio;
     private getTouchThreshold;
@@ -39,6 +40,8 @@ export declare class TouchEnd extends BaseSlider {
     private shouldCommitDragFreeTouchEnd;
     private commitDragFreeTouchEnd;
     private navigateBySwipeDirection;
+    private getLoopPreJumpTargetIndex;
+    private navigateToLoopPreJumpTarget;
     private getSwipeNavigationState;
     private applySwipeNavigationState;
     private navigateToSwipeTarget;

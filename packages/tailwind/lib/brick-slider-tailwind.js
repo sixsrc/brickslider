@@ -1,6 +1,6 @@
 /*
  * BrickSliderTailwind
- * Version  : 1.0.8
+ * Version  : 1.0.9
  * License  : MIT
  * Copyright: 2026
  * Repo: github.com/sixsrc/brickslider
@@ -10,7 +10,7 @@ import e from "tailwindcss/plugin";
 //#region src/index.ts
 var t = e(function({ addComponents: e }) {
 	e({
-		".bs-root, .brick-slider": {
+		".bs-root": {
 			position: "relative",
 			display: "flex",
 			alignItems: "center"
@@ -52,7 +52,6 @@ var t = e(function({ addComponents: e }) {
 		".bs-dots": {
 			width: "max-content",
 			maxWidth: "100%",
-			pointerEvents: "none",
 			textAlign: "center",
 			display: "inline-flex",
 			justifyContent: "center",
@@ -62,8 +61,7 @@ var t = e(function({ addComponents: e }) {
 		},
 		".bs-dot": {
 			display: "inline-block",
-			boxSizing: "border-box",
-			pointerEvents: "auto"
+			boxSizing: "border-box"
 		},
 		".bs-progress": {
 			height: "4px",

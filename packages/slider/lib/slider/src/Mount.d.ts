@@ -9,7 +9,7 @@ export declare class Mount extends BaseSlider {
     private slideMeta;
     private resolvedSlideWidths;
     constructor($root: string);
-    init(): Promise<void>;
+    init(): Promise<boolean>;
     private setProperties;
     normalizeSlidesConfig(): void;
     private getTotalOriginalSlides;
