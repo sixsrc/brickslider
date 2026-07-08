@@ -30,18 +30,7 @@
 
 Use the `gap` option for spacing between slides.
 
-Avoid mixing different horizontal margins on the direct child inside each `bs-slide`. For example, do not give one slide content `mx-2` and leave another without it. BrickSlider blocks this layout because it can make backward navigation appear to jump to the wrong slide.
-
-If you need inner spacing, apply the same spacing to every slide:
-
-```html
-<div class="bs-slide">
-  <div class="mx-2">Slide 01</div>
-</div>
-<div class="bs-slide">
-  <div class="mx-2">Slide 02</div>
-</div>
-```
+Keep visual card spacing inside your slide content when you need custom design details. BrickSlider only needs the structural `bs-*` classes to identify the carousel parts.
 
 ## Active Dots
 

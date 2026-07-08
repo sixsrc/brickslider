@@ -209,9 +209,7 @@ slider.init()
 
 ### Slide spacing
 
-Use the `gap` option for spacing between slides. Do not mix different horizontal margins on the direct child inside each `bs-slide`; apply the same inner spacing to every slide or leave spacing to `gap`.
-
-BrickSlider blocks inconsistent slide inner margins because they can make navigation appear to jump to the wrong slide.
+Use the `gap` option for spacing between slides. Keep visual card spacing inside your slide content when you need custom design details.
 
 ## TypeScript
 

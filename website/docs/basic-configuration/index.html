@@ -523,14 +523,7 @@
 &lt;/<span class="token keyword">div</span>&gt;</code></pre>
 <h2 id="slide-spacing">Slide Spacing</h2>
 <p>Use the <code>gap</code> option for spacing between slides.</p>
-<p>Avoid mixing different horizontal margins on the direct child inside each <code>bs-slide</code>. For example, do not give one slide content <code>mx-2</code> and leave another without it. BrickSlider blocks this layout because it can make backward navigation appear to jump to the wrong slide.</p>
-<p>If you need inner spacing, apply the same spacing to every slide:</p>
-<pre><code class="language-html">&lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-slide&quot;</span>&gt;
-  &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;mx-2&quot;</span>&gt;Slide 01&lt;/<span class="token keyword">div</span>&gt;
-&lt;/<span class="token keyword">div</span>&gt;
-&lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-slide&quot;</span>&gt;
-  &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;mx-2&quot;</span>&gt;Slide 02&lt;/<span class="token keyword">div</span>&gt;
-&lt;/<span class="token keyword">div</span>&gt;</code></pre>
+<p>Keep visual card spacing inside your slide content when you need custom design details. BrickSlider only needs the structural <code>bs-*</code> classes to identify the carousel parts.</p>
 <h2 id="active-dots">Active Dots</h2>
 <p>BrickSlider adds <code>bs-dot--active</code> to the current dot. You control the visual style.</p>
 <h3 id="plain-css">Plain CSS</h3>
