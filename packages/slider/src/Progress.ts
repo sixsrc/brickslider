@@ -12,6 +12,8 @@ import {
   createNewElement,
   getAttribute,
   getProgressContainer,
+  hasAttribute,
+  prefersReducedMotion,
   setAttribute
 } from "./helpers"
 
@@ -38,6 +40,7 @@ export class Progress extends BaseSlider {
 
     if (!progressBar || !containerProgress) return
 
+    this.setProgressSemantics(containerProgress)
     this.updateProgress(progressBar, containerProgress)
   }
 
@@ -72,7 +75,7 @@ export class Progress extends BaseSlider {
     const isInstantProgress = isTouchProgress || isFastNavigation
     const currentScale = this.getCurrentProgressScale(progressBar)
     const nextScale = progressValue / 100
-    const duration = isInstantProgress
+    const duration = isInstantProgress || prefersReducedMotion()
       ? 0
       : this.getResponsiveProgressDuration(elapsedSinceLastSync)
     const progressNow = Math.round(progressValue)
@@ -132,6 +135,15 @@ export class Progress extends BaseSlider {
     progressNow: number
   ): void {
     containerProgress.setAttribute(ATTRIBUTES.ARIA_VALUE_NOW, `${progressNow}`)
+  }
+
+  private setProgressSemantics(containerProgress: HTMLElement): void {
+    setAttribute(containerProgress, ATTRIBUTES.ROLE, "progressbar")
+    setAttribute(containerProgress, ATTRIBUTES.ARIA_VALUE_MIN, "0")
+    setAttribute(containerProgress, ATTRIBUTES.ARIA_VALUE_MAX, "100")
+    if (!hasAttribute(containerProgress, ATTRIBUTES.ARIA_LABEL)) {
+      setAttribute(containerProgress, ATTRIBUTES.ARIA_LABEL, "Slider progress")
+    }
   }
 
   private ensureProgressBar(): HTMLElement | undefined {

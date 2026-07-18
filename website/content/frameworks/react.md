@@ -57,7 +57,9 @@ export function ProductCarousel(): JSX.Element {
       </div>
 
       <ul className="bs-dots">
-        <li className="bs-dot"></li>
+        <li>
+          <button className="bs-dot" type="button"></button>
+        </li>
       </ul>
     </div>
   )

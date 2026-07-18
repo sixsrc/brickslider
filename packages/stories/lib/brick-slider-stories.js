@@ -1,14 +1,14 @@
 /*
  * BrickSliderStories
- * Version  : 1.0.13
+ * Version  : 1.0.14
  * License  : MIT
  * Copyright: 2026
  * Repo: github.com/sixsrc/brickslider
  */
 
-import { $ as e, ANIMATION_OPTIONS as t, ATTRIBUTES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, TAGS as c, Validation as l, addClass as u, appendToParent as d, closestElement as f, containsElement as p, createNewElement as m, getAllElements as h, getAttribute as g, getChildren as _, getElement as v, getRootSelector as y, getSliderNodeList as b, getTrackChildren as x, hasAttribute as S, hasClass as C, listener as w, removeAttribute as T, removeClass as E, removeElement as D, removeListener as O, setAttribute as k } from "@sixsrc/brick-slider/api";
+import { $ as e, ANIMATION_OPTIONS as t, ATTRIBUTES as n, DOM_ELEMENT_ALIASES as r, EVENTS as i, FROM as a, Plugin as o, SLIDER_EVENTS as s, TAGS as c, Validation as l, addClass as u, appendToParent as d, closestElement as f, containsElement as p, createNewElement as m, getAllElements as h, getAttribute as g, getChildren as _, getElement as v, getRootSelector as y, getSliderNodeList as b, getTrackChildren as x, hasAttribute as S, hasClass as C, listener as w, prefersReducedMotion as T, removeAttribute as E, removeClass as D, removeElement as O, removeListener as k, setAttribute as A } from "@sixsrc/brick-slider/api";
 //#region src/constants.ts
-var A = {
+var j = {
 	BODY_OPEN: "bs-stories-body-open",
 	ROOT: "bs-stories",
 	OPEN: "bs-stories--open",
@@ -34,34 +34,34 @@ var A = {
 	PROGRESS_BAR: "bs-stories-progress-bar",
 	ACTIVE_PROGRESS: "bs-stories-progress-item--active",
 	COMPLETED_PROGRESS: "bs-stories-progress-item--completed"
-}, j = {
-	CLOSE: "×",
-	MUTE_ON: "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12zm-2.5-8.7v2.1A7.5 7.5 0 0 1 18.5 12a7.5 7.5 0 0 1-4.5 6.6v2.1A9.5 9.5 0 0 0 20.5 12 9.5 9.5 0 0 0 14 3.3z\"/></svg>",
-	MUTE_OFF: "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 9v6h4l5 4V5L8 9H4zm10.59 3L12 9.41 13.41 8 16 10.59 18.59 8 20 9.41 17.41 12 20 14.59 18.59 16 16 13.41 13.41 16 12 14.59 14.59 12z\"/></svg>",
-	PAUSE: "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M8 6h3v12H8zM13 6h3v12h-3z\"/></svg>",
-	PLAY: "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M8 5v14l11-7z\"/></svg>"
 }, M = {
+	CLOSE: "×",
+	MUTE_ON: "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12zm-2.5-8.7v2.1A7.5 7.5 0 0 1 18.5 12a7.5 7.5 0 0 1-4.5 6.6v2.1A9.5 9.5 0 0 0 20.5 12 9.5 9.5 0 0 0 14 3.3z\"/></svg>",
+	MUTE_OFF: "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M4 9v6h4l5 4V5L8 9H4zm10.59 3L12 9.41 13.41 8 16 10.59 18.59 8 20 9.41 17.41 12 20 14.59 18.59 16 16 13.41 13.41 16 12 14.59 14.59 12z\"/></svg>",
+	PAUSE: "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M8 6h3v12H8zM13 6h3v12h-3z\"/></svg>",
+	PLAY: "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M8 5v14l11-7z\"/></svg>"
+}, N = {
 	CLOSE: "Close stories",
 	MUTE: "Toggle sound",
 	MUTE_ON: "Mute story sound",
 	MUTE_OFF: "Unmute story sound",
 	PAUSE: "Toggle pause"
-}, N = {
+}, P = {
 	SPACE: " ",
 	ESCAPE: "Escape",
 	TAB: "Tab"
-}, P = {
+}, F = {
 	OPENED: "storiesOpened",
 	MOUNTED: "storiesMounted",
 	CLOSED: "storiesClosed"
-}, F = {
+}, I = {
 	DURATION: 5e3,
 	MAX_VIDEO_DURATION: 6e4,
 	MIN_VIDEO_DURATION: 1e3,
 	MAX_STORIES: 10,
 	MAX_STORIES_LIMIT: 20,
 	CLOSE_ON_END: !0
-}, I = { MARKUP: "https://sixsrc.github.io/brickslider/docs/stories-plugin/" }, L = class {
+}, L = { MARKUP: "https://sixsrc.github.io/brickslider/docs/stories-plugin/" }, R = class {
 	$root;
 	sliderValidation;
 	ids = /* @__PURE__ */ new Set();
@@ -141,19 +141,19 @@ var A = {
 		return this.getStoriesLayers()[0];
 	}
 	getProgress() {
-		return this.getScopedStoryElements(A.PROGRESS)[0];
+		return this.getScopedStoryElements(j.PROGRESS)[0];
 	}
 	getPauseIndicator() {
-		return this.getScopedStoryElements(A.PAUSE_INDICATOR)[0];
+		return this.getScopedStoryElements(j.PAUSE_INDICATOR)[0];
 	}
 	getBackdrop() {
-		return this.getOwnedStoryElements(A.BACKDROP)[0];
+		return this.getOwnedStoryElements(j.BACKDROP)[0];
 	}
 	getClose() {
-		return this.getOwnedStoryElements(A.CLOSE)[0];
+		return this.getOwnedStoryElements(j.CLOSE)[0];
 	}
 	getMute() {
-		return this.getOwnedStoryElements(A.MUTE)[0];
+		return this.getOwnedStoryElements(j.MUTE)[0];
 	}
 	getScopedStoryElements(e) {
 		let t = this.getRoot();
@@ -165,10 +165,10 @@ var A = {
 	}
 	getExternalLayer() {
 		let e = this.getRoot()?.nextElementSibling;
-		if (e && e instanceof HTMLElement && C(e, A.LAYER)) return e;
+		if (e && e instanceof HTMLElement && C(e, j.LAYER)) return e;
 	}
 	getStoriesLayers() {
-		let e = this.getScopedStoryElements(A.LAYER), t = this.getExternalLayer();
+		let e = this.getScopedStoryElements(j.LAYER), t = this.getExternalLayer();
 		return !t || e.includes(t) ? e : [...e, t];
 	}
 	hasDuplicateStoriesElements() {
@@ -177,13 +177,13 @@ var A = {
 	}
 	getDuplicateStoriesClassNames() {
 		return [
-			A.LAYER,
-			A.PROGRESS,
-			A.PAUSE_INDICATOR,
-			A.BACKDROP,
-			A.CLOSE,
-			A.MUTE
-		].filter((e) => e === A.LAYER ? this.getStoriesLayers().length > 1 : this.getOwnedStoryElements(e).length > 1);
+			j.LAYER,
+			j.PROGRESS,
+			j.PAUSE_INDICATOR,
+			j.BACKDROP,
+			j.CLOSE,
+			j.MUTE
+		].filter((e) => e === j.LAYER ? this.getStoriesLayers().length > 1 : this.getOwnedStoryElements(e).length > 1);
 	}
 	hasInvalidTrackChildOrder() {
 		let e = this.getTrack(), t = this.getChildren();
@@ -196,7 +196,7 @@ var A = {
 	hasInvalidProgressStructure() {
 		let e = this.getProgress();
 		if (!e) return !1;
-		let t = v(`.${A.PROGRESS_ITEM}`, e), n = v(`.${A.PROGRESS_BAR}`, e);
+		let t = v(`.${j.PROGRESS_ITEM}`, e), n = v(`.${j.PROGRESS_BAR}`, e);
 		return !t || !n;
 	}
 	hasInvalidPausePosition() {
@@ -235,7 +235,7 @@ var A = {
 		let e = this.getChildren();
 		return e ? Array.from(h(`:scope > .${r.SLIDE[0]}`, e)).reduce((e, t, n) => (h(c.VIDEO, t).length > 1 && e.push(String(n + 1)), e), []) : [];
 	}
-}, R = class e extends L {
+}, z = class e extends R {
 	messageMap;
 	levelMap;
 	rootSelector;
@@ -244,22 +244,22 @@ var A = {
 	}
 	static textMessages(e) {
 		return {
-			NO_ROOT: `Could not find root selector ${e}.\nSee: ${I.MARKUP}`,
-			NO_TRACK: `Could not find .bs-track inside ${e}.\nSee: ${I.MARKUP}`,
-			NO_CHILDREN: `Could not find .bs-container inside .bs-track for ${e}.\nSee: ${I.MARKUP}`,
-			NO_SLIDES: `Could not find any .bs-slide inside .bs-container for ${e}.\nSee: ${I.MARKUP}`,
-			DUPLICATE_ELEMENTS: `Found duplicated core slider elements in ${e}.\nSee: ${I.MARKUP}`,
-			INVALID_ORDER: `Found invalid core slider markup order in ${e}.\nSee: ${I.MARKUP}`,
-			DUPLICATE_STORIES_ELEMENTS: `Found duplicated unique stories elements in ${e}.\nSee: ${I.MARKUP}`,
-			INVALID_TRACK_CHILD_ORDER: `Found invalid stories track content order in ${e}. .bs-container must come before stories-only elements inside .bs-track.\nSee: ${I.MARKUP}`,
-			INVALID_PROGRESS_POSITION: `Found .bs-stories-progress in the wrong place for ${e}. Place it inside .bs-track.\nSee: ${I.MARKUP}`,
-			INVALID_PROGRESS_STRUCTURE: `Found incomplete .bs-stories-progress markup for ${e}. Include both .bs-stories-progress-item and .bs-stories-progress-bar.\nSee: ${I.MARKUP}`,
-			INVALID_PAUSE_POSITION: `Found .bs-stories-pause-indicator in the wrong place for ${e}. Place it inside .bs-track.\nSee: ${I.MARKUP}`,
-			INVALID_LAYER_POSITION: `Found .bs-stories-layer in the wrong place for ${e}. Place it outside the slider root and outside .bs-track.\nSee: ${I.MARKUP}`,
-			INVALID_BACKDROP_POSITION: `Found .bs-stories-backdrop in the wrong place for ${e}. Place it inside .bs-stories-layer.\nSee: ${I.MARKUP}`,
-			INVALID_CLOSE_POSITION: `Found invalid .bs-stories-close markup for ${e}. Use a <button> inside .bs-stories-layer or inside .bs-track.\nSee: ${I.MARKUP}`,
-			INVALID_MUTE_POSITION: `Found invalid .bs-stories-mute markup for ${e}. Use a <button> inside .bs-stories-layer or inside .bs-track.\nSee: ${I.MARKUP}`,
-			MULTIPLE_VIDEOS_IN_STORY: `Found more than one video in the same story for ${e}. Only one video per story is supported.\nSee: ${I.MARKUP}`
+			NO_ROOT: `Could not find root selector ${e}.\nSee: ${L.MARKUP}`,
+			NO_TRACK: `Could not find .bs-track inside ${e}.\nSee: ${L.MARKUP}`,
+			NO_CHILDREN: `Could not find .bs-container inside .bs-track for ${e}.\nSee: ${L.MARKUP}`,
+			NO_SLIDES: `Could not find any .bs-slide inside .bs-container for ${e}.\nSee: ${L.MARKUP}`,
+			DUPLICATE_ELEMENTS: `Found duplicated core slider elements in ${e}.\nSee: ${L.MARKUP}`,
+			INVALID_ORDER: `Found invalid core slider markup order in ${e}.\nSee: ${L.MARKUP}`,
+			DUPLICATE_STORIES_ELEMENTS: `Found duplicated unique stories elements in ${e}.\nSee: ${L.MARKUP}`,
+			INVALID_TRACK_CHILD_ORDER: `Found invalid stories track content order in ${e}. .bs-container must come before stories-only elements inside .bs-track.\nSee: ${L.MARKUP}`,
+			INVALID_PROGRESS_POSITION: `Found .bs-stories-progress in the wrong place for ${e}. Place it inside .bs-track.\nSee: ${L.MARKUP}`,
+			INVALID_PROGRESS_STRUCTURE: `Found incomplete .bs-stories-progress markup for ${e}. Include both .bs-stories-progress-item and .bs-stories-progress-bar.\nSee: ${L.MARKUP}`,
+			INVALID_PAUSE_POSITION: `Found .bs-stories-pause-indicator in the wrong place for ${e}. Place it inside .bs-track.\nSee: ${L.MARKUP}`,
+			INVALID_LAYER_POSITION: `Found .bs-stories-layer in the wrong place for ${e}. Place it outside the slider root and outside .bs-track.\nSee: ${L.MARKUP}`,
+			INVALID_BACKDROP_POSITION: `Found .bs-stories-backdrop in the wrong place for ${e}. Place it inside .bs-stories-layer.\nSee: ${L.MARKUP}`,
+			INVALID_CLOSE_POSITION: `Found invalid .bs-stories-close markup for ${e}. Use a <button> inside .bs-stories-layer or inside .bs-track.\nSee: ${L.MARKUP}`,
+			INVALID_MUTE_POSITION: `Found invalid .bs-stories-mute markup for ${e}. Use a <button> inside .bs-stories-layer or inside .bs-track.\nSee: ${L.MARKUP}`,
+			MULTIPLE_VIDEOS_IN_STORY: `Found more than one video in the same story for ${e}. Only one video per story is supported.\nSee: ${L.MARKUP}`
 		};
 	}
 	static textLevels() {
@@ -291,15 +291,15 @@ var A = {
 	getMessageById(e) {
 		if (e === "DUPLICATE_STORIES_ELEMENTS") {
 			let t = this.getDetails(e);
-			if (t.length > 0) return `Found duplicated unique stories elements in ${this.rootSelector}: ${t.map((e) => `.${e}`).join(", ")}.\nSee: ${I.MARKUP}`;
+			if (t.length > 0) return `Found duplicated unique stories elements in ${this.rootSelector}: ${t.map((e) => `.${e}`).join(", ")}.\nSee: ${L.MARKUP}`;
 		}
 		if (e === "MULTIPLE_VIDEOS_IN_STORY") {
 			let t = this.getDetails(e);
-			if (t.length > 0) return `Found more than one video in the following stories for ${this.rootSelector}: ${t.map((e) => `#${e}`).join(", ")}. Only one video per story is supported.\nSee: ${I.MARKUP}`;
+			if (t.length > 0) return `Found more than one video in the following stories for ${this.rootSelector}: ${t.map((e) => `#${e}`).join(", ")}. Only one video per story is supported.\nSee: ${L.MARKUP}`;
 		}
 		return this.messageMap[e];
 	}
-}, z = class extends o {
+}, B = class extends o {
 	activeAnimation = null;
 	activeStoryIndex = 0;
 	closeButton = null;
@@ -347,7 +347,7 @@ var A = {
 	handleWindowControl = (e) => {
 		if (!this.isPrimaryControlEvent(e)) return;
 		let t = this.getControlFromEvent(e);
-		t && (e.preventDefault(), e.stopPropagation(), t === A.CLOSE && this.close());
+		t && (e.preventDefault(), e.stopPropagation(), t === j.CLOSE && this.close());
 	};
 	handleWindowMouseMove = (e) => {
 		let t = this.isPointerInsideStoryRect(e);
@@ -364,7 +364,7 @@ var A = {
 		}
 	};
 	handleKeydown = (e) => {
-		let t = e.key === N.SPACE, n = e.key === N.ESCAPE, r = e.key === N.TAB;
+		let t = e.key === P.SPACE, n = e.key === P.ESCAPE, r = e.key === P.TAB;
 		if (this.isOpen) {
 			if (n) {
 				e.preventDefault(), this.close();
@@ -446,27 +446,27 @@ var A = {
 		});
 	}
 	validateMarkup() {
-		let e = new R(this.$root);
+		let e = new z(this.$root);
 		return e.displayMessage(), e.isValid();
 	}
 	destroy() {
 		let e = this.host;
-		this.restoreHostNavigation(), this.close(), this.clearTriggers(), this.clearTimer(), this.destroyControls(), this.destroyProgress(), this.destroyEdgeSwipeLock(), O([
+		this.restoreHostNavigation(), this.close(), this.clearTriggers(), this.clearTimer(), this.destroyControls(), this.destroyProgress(), this.destroyEdgeSwipeLock(), k([
 			i.POINTERDOWN,
 			i.MOUSEDOWN,
 			i.TOUCHSTART,
 			i.CLICK
-		], window, this.handleWindowControl, !0), O([i.MOUSEMOVE], window, this.handleWindowMouseMove), O([i.KEYDOWN], document, this.handleKeydown), e && e.off(s.SLIDE_CHANGE, this.handleSlideChange);
+		], window, this.handleWindowControl, !0), k([i.MOUSEMOVE], window, this.handleWindowMouseMove), k([i.KEYDOWN], document, this.handleKeydown), e && e.off(s.SLIDE_CHANGE, this.handleSlideChange);
 	}
 	open() {
 		let e = this.host, t = this.getRootSelector;
-		e && t && (this.isOpen = !0, this.isPaused = !1, u([t], A.OPEN), u([document.body], A.BODY_OPEN), E(t, A.ROOT_HIDDEN), this.hideBackgroundFromAssistiveTech(t), this.showStoriesLayer(), window.requestAnimationFrame(() => {
+		e && t && (this.isOpen = !0, this.isPaused = !1, u([t], j.OPEN), u([document.body], j.BODY_OPEN), D(t, j.ROOT_HIDDEN), this.hideBackgroundFromAssistiveTech(t), this.showStoriesLayer(), window.requestAnimationFrame(() => {
 			this.focusInitialControl();
-		}), this.goToStory(0), this.emitStoriesLifecycle(P.OPENED), this.emitStoriesMountedWhenReady());
+		}), this.goToStory(0), this.emitStoriesLifecycle(F.OPENED), this.emitStoriesMountedWhenReady());
 	}
 	close() {
 		let e = this.host, t = this.getRootSelector;
-		t && (this.isOpen = !1, this.isPaused = !1, this.isDraggingStory = !1, this.isTouchHoldingStory = !1, this.shouldResumeAfterTouchHold = !1, this.isStoryHovered = !1, this.storyPointerStartX = null, this.storyTouchStartX = null, this.pauseCurrentVideo(), this.clearTimer(), this.timerState = null, this.resetProgress(), E(t, A.OPEN), E(t, A.PAUSED), E(document.body, A.BODY_OPEN), u([t], A.ROOT_HIDDEN), this.hideStoriesLayer(), this.activeStoryIndex = 0, e?.goTo(0), this.restoreBackgroundForAssistiveTech(), this.restoreTriggerFocus(), this.emitStoriesLifecycle(P.CLOSED));
+		t && (this.isOpen = !1, this.isPaused = !1, this.isDraggingStory = !1, this.isTouchHoldingStory = !1, this.shouldResumeAfterTouchHold = !1, this.isStoryHovered = !1, this.storyPointerStartX = null, this.storyTouchStartX = null, this.pauseCurrentVideo(), this.clearTimer(), this.timerState = null, this.resetProgress(), D(t, j.OPEN), D(t, j.PAUSED), D(document.body, j.BODY_OPEN), u([t], j.ROOT_HIDDEN), this.hideStoriesLayer(), this.activeStoryIndex = 0, e?.goTo(0), this.restoreBackgroundForAssistiveTech(), this.restoreTriggerFocus(), this.emitStoriesLifecycle(F.CLOSED));
 	}
 	pause() {
 		let e = this.getRemainingTime();
@@ -480,13 +480,13 @@ var A = {
 		let e = this.getRootSelector;
 		if (!e) return;
 		let t = 0, n = 0, r = () => {
-			let t = this.getStoriesTrack(), n = this.storiesLayer, r = b(this.$root, !1)[this.activeStoryIndex], i = t?.getBoundingClientRect().width ?? 0, a = r?.getBoundingClientRect().width ?? 0, o = C(e, A.ROOT_HIDDEN), s = n ? C(n, A.LAYER_HIDDEN) : !1;
+			let t = this.getStoriesTrack(), n = this.storiesLayer, r = b(this.$root, !1)[this.activeStoryIndex], i = t?.getBoundingClientRect().width ?? 0, a = r?.getBoundingClientRect().width ?? 0, o = C(e, j.ROOT_HIDDEN), s = n ? C(n, j.LAYER_HIDDEN) : !1;
 			return !this.isOpen || !t || !n || this.progressBars.length === 0 || o || s ? !1 : i > 0 && a > 0;
 		}, i = () => {
 			t ||= requestAnimationFrame(() => {
 				if (t = 0, n += 1, r()) {
 					requestAnimationFrame(() => {
-						this.focusInitialControl(), this.emitStoriesLifecycle(P.MOUNTED);
+						this.focusInitialControl(), this.emitStoriesLifecycle(F.MOUNTED);
 					});
 					return;
 				}
@@ -545,12 +545,12 @@ var A = {
 			this.hiddenBackgroundElements.set(e, {
 				ariaHidden: g(e, n.ARIA_HIDDEN),
 				inert: e.inert
-			}), k(e, n.ARIA_HIDDEN, "true"), e.inert = !0;
+			}), A(e, n.ARIA_HIDDEN, "true"), e.inert = !0;
 		});
 	}
 	restoreBackgroundForAssistiveTech() {
 		this.hiddenBackgroundElements.forEach((e, t) => {
-			e.ariaHidden === null ? T(t, n.ARIA_HIDDEN) : k(t, n.ARIA_HIDDEN, e.ariaHidden), t.inert = e.inert;
+			e.ariaHidden === null ? E(t, n.ARIA_HIDDEN) : A(t, n.ARIA_HIDDEN, e.ariaHidden), t.inert = e.inert;
 		}), this.hiddenBackgroundElements.clear();
 	}
 	getBackgroundSiblings(e) {
@@ -564,26 +564,26 @@ var A = {
 		return t;
 	}
 	setupStoriesRoot(e) {
-		u([e], A.ROOT), u([e], A.ROOT_HIDDEN), k(e, n.ROLE, "dialog"), k(e, n.ARIA_MODAL, "true"), k(e, n.TABINDEX, "-1"), S(e, n.ARIA_LABEL) || k(e, n.ARIA_LABEL, "Stories dialog");
+		u([e], j.ROOT), u([e], j.ROOT_HIDDEN), A(e, n.ROLE, "dialog"), A(e, n.ARIA_MODAL, "true"), A(e, n.TABINDEX, "-1"), S(e, n.ARIA_LABEL) || A(e, n.ARIA_LABEL, "Stories dialog");
 	}
 	setupStoriesLayer(e) {
-		let t = this.getStoriesElement(A.LAYER), n = t ?? this.createStoriesLayer(), r = !t;
+		let t = this.getStoriesElement(j.LAYER), n = t ?? this.createStoriesLayer(), r = !t;
 		this.storiesLayer = n, r && d(e, n);
 	}
 	createStoriesLayer() {
 		let e = m(c.DIV);
-		return u([e], A.LAYER), this.createdElements.add(e), e;
+		return u([e], j.LAYER), this.createdElements.add(e), e;
 	}
 	showStoriesLayer() {
 		let e = this.storiesLayer;
-		e && E(e, A.LAYER_HIDDEN);
+		e && D(e, j.LAYER_HIDDEN);
 	}
 	hideStoriesLayer() {
 		let e = this.storiesLayer;
-		e && u([e], A.LAYER_HIDDEN);
+		e && u([e], j.LAYER_HIDDEN);
 	}
 	setupProgress(e) {
-		let t = this.storiesLayer ?? e, n = this.getStoriesElement(A.PROGRESS) ?? this.createProgressContainer(), r = this.getStoryCount(), i = this.getProgressItemTemplate(n), a = !n.parentElement;
+		let t = this.storiesLayer ?? e, n = this.getStoriesElement(j.PROGRESS) ?? this.createProgressContainer(), r = this.getStoryCount(), i = this.getProgressItemTemplate(n), a = !n.parentElement;
 		this.destroyProgress(), n.replaceChildren(), this.progressContainer = n, this.progressBars = this.createProgressBars(r, i), this.mountProgressBars(n, this.progressBars), a && d(t, n);
 	}
 	mountProgressBars(e, t) {
@@ -593,12 +593,16 @@ var A = {
 		});
 	}
 	bindProgressItem(e, t) {
+		this.setProgressItemAccessibility(e, t);
 		let n = (e) => {
 			e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.goToStory(t);
 		};
 		e.onclick = n, e.onpointerdown = n, this.progressCleanupCallbacks.push(() => {
 			e.onclick = null, e.onpointerdown = null;
 		});
+	}
+	setProgressItemAccessibility(e, t) {
+		e.tagName.toLowerCase() === c.BUTTON ? (A(e, n.TYPE, "button"), E(e, n.ROLE)) : (A(e, n.ROLE, "button"), A(e, n.TABINDEX, "0")), S(e, n.ARIA_LABEL) || A(e, n.ARIA_LABEL, `Go to story ${t + 1}`);
 	}
 	setupEdgeSwipeLock(e) {
 		w([i.MOUSEDOWN], e, this.handleStoryMouseDown, !0), w([i.MOUSEMOVE], e, this.handleStoryMouseMove, !0), w([i.MOUSEUP, i.MOUSELEAVE], e, this.handleStoryPointerEnd), w([i.TOUCHSTART], e, this.handleStoryTouchStart, !0), w([i.TOUCHMOVE], e, this.handleStoryTouchMove, !0), w([i.TOUCHEND], e, this.handleStoryPointerEnd);
@@ -646,11 +650,11 @@ var A = {
 	}
 	isStoryControlTarget(e) {
 		let t = e instanceof Element ? e : null;
-		return t ? !!(f(t, `.${A.CLOSE}`) || f(t, `.${A.MUTE}`) || f(t, `.${A.PAUSE_INDICATOR}`) || f(t, `.${A.PAUSE}`) || f(t, `.${A.PLAY}`) || f(t, `.${A.PROGRESS_ITEM}`)) : !1;
+		return t ? !!(f(t, `.${j.CLOSE}`) || f(t, `.${j.MUTE}`) || f(t, `.${j.PAUSE_INDICATOR}`) || f(t, `.${j.PAUSE}`) || f(t, `.${j.PLAY}`) || f(t, `.${j.PROGRESS_ITEM}`)) : !1;
 	}
 	setupControls(e) {
-		let t = this.storiesLayer ?? e, n = this.getStoriesElement(A.CLOSE) ?? this.createControlButton(A.CLOSE, M.CLOSE, j.CLOSE), r = this.getStoriesElement(A.MUTE) ?? (this.hasVideos() ? this.createMuteControl() : null), i = this.getStoriesElement(A.PAUSE_INDICATOR) ?? this.createPauseControl();
-		this.closeButton = n, this.muteButton = r, this.pauseIndicator = i, this.prepareControlButton(n, M.CLOSE), this.prepareControlButton(r, M.MUTE), this.prepareControlButton(i, M.PAUSE), this.hideMediaControls(), this.bindCloseControlEvents(n), this.bindClickControlEvents(r, this.handleMuteClick), this.bindClickControlEvents(i, this.handlePauseClick), this.bindTrackHoverEvents(), this.mountStoriesElement(t, n), this.mountStoriesElement(t, r), this.mountStoriesElement(t, i);
+		let t = this.storiesLayer ?? e, n = this.getStoriesElement(j.CLOSE) ?? this.createControlButton(j.CLOSE, N.CLOSE, M.CLOSE), r = this.getStoriesElement(j.MUTE) ?? (this.hasVideos() ? this.createMuteControl() : null), i = this.getStoriesElement(j.PAUSE_INDICATOR) ?? this.createPauseControl();
+		this.closeButton = n, this.muteButton = r, this.pauseIndicator = i, this.prepareControlButton(n, N.CLOSE), this.prepareControlButton(r, N.MUTE), this.prepareControlButton(i, N.PAUSE), this.hideMediaControls(), this.bindCloseControlEvents(n), this.bindClickControlEvents(r, this.handleMuteClick), this.bindClickControlEvents(i, this.handlePauseClick), this.bindTrackHoverEvents(), this.mountStoriesElement(t, n), this.mountStoriesElement(t, r), this.mountStoriesElement(t, i);
 	}
 	bindCloseControlEvents(e) {
 		let t = [
@@ -661,7 +665,7 @@ var A = {
 		];
 		e && t.forEach((t) => {
 			w([t], e, this.handleCloseClick, !0), this.controlCleanupCallbacks.push(() => {
-				O([t], e, this.handleCloseClick, !0);
+				k([t], e, this.handleCloseClick, !0);
 			});
 		});
 	}
@@ -677,7 +681,7 @@ var A = {
 			t(e);
 		};
 		w([i.POINTERDOWN], e, n, !0), w([i.CLICK], e, r, !0), this.controlCleanupCallbacks.push(() => {
-			O([i.POINTERDOWN], e, n, !0), O([i.CLICK], e, r, !0);
+			k([i.POINTERDOWN], e, n, !0), k([i.CLICK], e, r, !0);
 		});
 	}
 	isPrimaryControlEvent(e) {
@@ -698,7 +702,7 @@ var A = {
 			t.preventDefault(), this.lastTriggerElement = e, this.open();
 		};
 		w([i.CLICK], e, t), this.triggerCleanupCallbacks.push(() => {
-			O([i.CLICK], e, t);
+			k([i.CLICK], e, t);
 		});
 	}
 	wrapHostNavigation(e) {
@@ -752,16 +756,16 @@ var A = {
 		this.animateProgress(e, 0, 0, 0);
 	}
 	resetProgressItemState(e) {
-		E(e, [A.ACTIVE_PROGRESS, A.COMPLETED_PROGRESS]);
+		D(e, [j.ACTIVE_PROGRESS, j.COMPLETED_PROGRESS]);
 	}
 	setActiveProgressItem(e) {
-		u([e], A.ACTIVE_PROGRESS);
+		u([e], j.ACTIVE_PROGRESS);
 	}
 	setCompletedProgressItem(e) {
-		u([e], A.COMPLETED_PROGRESS);
+		u([e], j.COMPLETED_PROGRESS);
 	}
 	animateProgress(e, n, r, i) {
-		if (e.getAnimations().forEach((e) => e.cancel()), e.style.transformOrigin = "left center", e.style.scale = `${n} 1`, i <= 0 || n === r) return e.style.scale = `${r} 1`, [];
+		if (e.getAnimations().forEach((e) => e.cancel()), e.style.transformOrigin = "left center", e.style.scale = `${n} 1`, T() || i <= 0 || n === r) return e.style.scale = `${r} 1`, [];
 		let a = this.animate(e, [{ scale: `${n} 1` }, { scale: `${r} 1` }], {
 			duration: i,
 			easing: t.LINEAR,
@@ -811,20 +815,20 @@ var A = {
 		let t = this.muteButton;
 		if (!t) return;
 		if (!e) {
-			u([t], A.HIDDEN);
+			u([t], j.HIDDEN);
 			return;
 		}
-		E(t, A.HIDDEN);
+		D(t, j.HIDDEN);
 		let n = this.hasVideoAudio(e);
 		this.syncMuteDisabledState(t, n), this.syncMuteControlVisibility(t);
 	}
 	syncMuteDisabledState(e, t) {
 		let r = e;
-		r.disabled = !t, k(e, n.ARIA_DISABLED, String(!t)), t ? E(e, A.MUTE_DISABLED) : u([e], A.MUTE_DISABLED);
+		r.disabled = !t, A(e, n.ARIA_DISABLED, String(!t)), t ? D(e, j.MUTE_DISABLED) : u([e], j.MUTE_DISABLED);
 	}
 	hideMediaControls() {
 		let e = this.muteButton, t = this.pauseIndicator;
-		this.isTouchControlsVisible = !1, this.clearMobileControlsTimer(), e && u([e], A.HIDDEN), t && (u([t], A.HIDDEN), this.syncPauseControlIcon(t));
+		this.isTouchControlsVisible = !1, this.clearMobileControlsTimer(), e && u([e], j.HIDDEN), t && (u([t], j.HIDDEN), this.syncPauseControlIcon(t));
 	}
 	toggleMuted() {
 		let e = this.getCurrentVideo(), t = e ? this.hasVideoAudio(e) : !1;
@@ -835,20 +839,20 @@ var A = {
 	syncMutedState(e) {
 		let t = this.muteButton, r = e ?? this.getCurrentVideo(), i = r ? this.isVideoMuted(r) : !0;
 		if (!t) return;
-		this.pluginOptions.useMuted = i, i ? u([t], A.MUTED) : E(t, A.MUTED);
-		let a = v(`.${A.MUTE_ON}`, t) ?? null, o = v(`.${A.MUTE_OFF}`, t) ?? null;
-		a && o && (i ? (u([a], A.HIDDEN), E(o, A.HIDDEN), k(t, n.ARIA_LABEL, M.MUTE_OFF)) : (E(a, A.HIDDEN), u([o], A.HIDDEN), k(t, n.ARIA_LABEL, M.MUTE_ON)));
+		this.pluginOptions.useMuted = i, i ? u([t], j.MUTED) : D(t, j.MUTED);
+		let a = v(`.${j.MUTE_ON}`, t) ?? null, o = v(`.${j.MUTE_OFF}`, t) ?? null;
+		a && o && (i ? (u([a], j.HIDDEN), D(o, j.HIDDEN), A(t, n.ARIA_LABEL, N.MUTE_OFF)) : (D(a, j.HIDDEN), u([o], j.HIDDEN), A(t, n.ARIA_LABEL, N.MUTE_ON)));
 	}
 	syncMuteControlVisibility(e) {
 		if (!this.getCurrentVideo()) {
-			u([e], A.HIDDEN);
+			u([e], j.HIDDEN);
 			return;
 		}
 		if (!this.supportsHoverPauseControl()) {
-			this.isTouchControlsVisible ? E(e, A.HIDDEN) : u([e], A.HIDDEN);
+			this.isTouchControlsVisible ? D(e, j.HIDDEN) : u([e], j.HIDDEN);
 			return;
 		}
-		this.isStoryHovered ? E(e, A.HIDDEN) : u([e], A.HIDDEN);
+		this.isStoryHovered ? D(e, j.HIDDEN) : u([e], j.HIDDEN);
 	}
 	bindMediaStateEvents(e) {
 		if (this.clearMediaStateEvents(), !e) return;
@@ -856,7 +860,7 @@ var A = {
 			this.syncMutedState(e);
 		};
 		w(["volumechange"], e, t), this.mediaCleanupCallbacks.push(() => {
-			O(["volumechange"], e, t);
+			k(["volumechange"], e, t);
 		});
 	}
 	clearMediaStateEvents() {
@@ -874,36 +878,36 @@ var A = {
 	}
 	syncPausedState() {
 		let e = this.getRootSelector, t = this.pauseIndicator, n = this.muteButton, r = this.isStoryHovered && this.supportsHoverPauseControl() || this.isTouchControlsVisible;
-		e && t && (this.isPaused ? u([e], A.PAUSED) : E(e, A.PAUSED), r ? this.showPauseControlElement(t) : this.hidePauseControl(t), n && this.syncMuteControlVisibility(n), this.syncPauseControlIcon(t));
+		e && t && (this.isPaused ? u([e], j.PAUSED) : D(e, j.PAUSED), r ? this.showPauseControlElement(t) : this.hidePauseControl(t), n && this.syncMuteControlVisibility(n), this.syncPauseControlIcon(t));
 	}
 	supportsHoverPauseControl() {
 		return typeof window > "u" ? !1 : window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 	}
 	showPauseControlElement(e) {
-		E(e, A.HIDDEN), u([e], "flex"), E(e, "pointer-events-none"), E(e, "opacity-0"), u([e], "pointer-events-auto"), u([e], "opacity-100"), u([e], A.CONTROL_VISIBLE);
+		D(e, j.HIDDEN), u([e], "flex"), D(e, "pointer-events-none"), D(e, "opacity-0"), u([e], "pointer-events-auto"), u([e], "opacity-100"), u([e], j.CONTROL_VISIBLE);
 	}
 	hidePauseControl(e) {
-		!this.supportsHoverPauseControl() && !this.isTouchControlsVisible && (u([e], A.HIDDEN), E(e, "flex")), E(e, "pointer-events-auto"), E(e, "opacity-100"), u([e], "pointer-events-none"), u([e], "opacity-0"), E(e, A.CONTROL_VISIBLE);
+		!this.supportsHoverPauseControl() && !this.isTouchControlsVisible && (u([e], j.HIDDEN), D(e, "flex")), D(e, "pointer-events-auto"), D(e, "opacity-100"), u([e], "pointer-events-none"), u([e], "opacity-0"), D(e, j.CONTROL_VISIBLE);
 	}
 	syncPauseControlIcon(e) {
 		let t = this.getPauseIcon(e), n = this.getPlayIcon(e);
 		if (!t && !n) {
-			e.innerHTML = this.isPaused ? j.PLAY : j.PAUSE;
+			e.innerHTML = this.isPaused ? M.PLAY : M.PAUSE;
 			return;
 		}
 		this.syncIconVisibility(t, !this.isPaused), this.syncIconVisibility(n, this.isPaused);
 	}
 	syncIconVisibility(e, t) {
-		e && (t ? E(e, A.HIDDEN) : u([e], A.HIDDEN));
+		e && (t ? D(e, j.HIDDEN) : u([e], j.HIDDEN));
 	}
 	getPauseIcon(e) {
-		return v(`.${A.PAUSE}`, e) ?? null;
+		return v(`.${j.PAUSE}`, e) ?? null;
 	}
 	getPlayIcon(e) {
-		return v(`.${A.PLAY}`, e) ?? null;
+		return v(`.${j.PLAY}`, e) ?? null;
 	}
 	getControlFromEvent(e) {
-		let t = e.target instanceof Element ? e.target : null, n = this.getPointTargetFromEvent(e), r = e.composedPath(), i = [A.CLOSE], a = i.find((e) => f(t, `.${e}`));
+		let t = e.target instanceof Element ? e.target : null, n = this.getPointTargetFromEvent(e), r = e.composedPath(), i = [j.CLOSE], a = i.find((e) => f(t, `.${e}`));
 		if (a) return a;
 		let o = i.find((e) => f(n, `.${e}`));
 		if (o) return o;
@@ -934,7 +938,7 @@ var A = {
 	}
 	isStoryHoverBlockedByControl(e) {
 		let t = e.target instanceof Element ? e.target : null, n = this.getPointTargetFromEvent(e);
-		return [A.CLOSE].some((e) => f(t, `.${e}`) || f(n, `.${e}`));
+		return [j.CLOSE].some((e) => f(t, `.${e}`) || f(n, `.${e}`));
 	}
 	showTouchControlsTemporarily() {
 		this.supportsHoverPauseControl() || (this.isTouchControlsVisible = !0, this.clearMobileControlsTimer(), this.syncPausedState());
@@ -948,7 +952,7 @@ var A = {
 		this.mobileControlsTimer !== null && (window.clearTimeout(this.mobileControlsTimer), this.mobileControlsTimer = null);
 	}
 	isInteractiveStoryControlTarget(e) {
-		return e instanceof Element ? !!(f(e, `.${A.CLOSE}`) || f(e, `.${A.MUTE}`) || f(e, `.${A.PAUSE_INDICATOR}`) || f(e, `.${A.PROGRESS}`)) : !1;
+		return e instanceof Element ? !!(f(e, `.${j.CLOSE}`) || f(e, `.${j.MUTE}`) || f(e, `.${j.PAUSE_INDICATOR}`) || f(e, `.${j.PROGRESS}`)) : !1;
 	}
 	getStoriesTrack() {
 		return x(this.$root) ?? null;
@@ -1032,7 +1036,7 @@ var A = {
 	}
 	unbindTrackHoverEvents() {
 		let e = this.getStoriesTrack();
-		e && (O([i.MOUSEENTER], e, this.handleMouseEnter), O([i.MOUSEMOVE], e, this.handleMouseMove), O([i.MOUSELEAVE], e, this.handleMouseLeave), O([i.POINTERDOWN], e, this.handleStoryPointerDown), O([i.POINTERUP, i.POINTERCANCEL], e, this.handleStoryPointerUp));
+		e && (k([i.MOUSEENTER], e, this.handleMouseEnter), k([i.MOUSEMOVE], e, this.handleMouseMove), k([i.MOUSELEAVE], e, this.handleMouseLeave), k([i.POINTERDOWN], e, this.handleStoryPointerDown), k([i.POINTERUP, i.POINTERCANCEL], e, this.handleStoryPointerUp));
 	}
 	destroyProgress() {
 		this.progressCleanupCallbacks.forEach((e) => e()), this.progressCleanupCallbacks = [], this.progressBars.forEach((e) => {
@@ -1040,47 +1044,47 @@ var A = {
 		}), this.removeCreatedElement(this.progressContainer), this.progressContainer = null, this.progressBars = [];
 	}
 	removeCreatedElement(e) {
-		e && this.createdElements.has(e) && (D(e), this.createdElements.delete(e));
+		e && this.createdElements.has(e) && (O(e), this.createdElements.delete(e));
 	}
 	destroyEdgeSwipeLock() {
 		let e = this.getRootSelector;
-		e && (O([i.MOUSEDOWN], e, this.handleStoryMouseDown, !0), O([i.MOUSEMOVE], e, this.handleStoryMouseMove, !0), O([i.MOUSEUP, i.MOUSELEAVE], e, this.handleStoryPointerEnd), O([i.TOUCHSTART], e, this.handleStoryTouchStart, !0), O([i.TOUCHMOVE], e, this.handleStoryTouchMove, !0), O([i.TOUCHEND], e, this.handleStoryPointerEnd));
+		e && (k([i.MOUSEDOWN], e, this.handleStoryMouseDown, !0), k([i.MOUSEMOVE], e, this.handleStoryMouseMove, !0), k([i.MOUSEUP, i.MOUSELEAVE], e, this.handleStoryPointerEnd), k([i.TOUCHSTART], e, this.handleStoryTouchStart, !0), k([i.TOUCHMOVE], e, this.handleStoryTouchMove, !0), k([i.TOUCHEND], e, this.handleStoryPointerEnd));
 	}
 	createProgressContainer() {
 		let e = m(c.DIV);
-		return u([e], A.PROGRESS), this.createdElements.add(e), e;
+		return u([e], j.PROGRESS), this.createdElements.add(e), e;
 	}
 	createProgressBars(e, t) {
 		return Array.from({ length: e }, () => this.createProgressItem(t));
 	}
 	getProgressItemTemplate(e) {
-		return v(`.${A.PROGRESS_ITEM}`, e) ?? null;
+		return v(`.${j.PROGRESS_ITEM}`, e) ?? null;
 	}
 	createProgressItem(e) {
 		let t = this.cloneProgressItem(e), n = this.prepareProgressItem(t);
 		return this.createdElements.add(t), this.createdElements.add(n), n;
 	}
 	cloneProgressItem(e) {
-		return e ? e.cloneNode(!0) : m(c.DIV);
+		return e ? e.cloneNode(!0) : m(c.BUTTON);
 	}
 	prepareProgressItem(e) {
-		let t = v(`.${A.PROGRESS_BAR}`, e) ?? null, n = t ?? m(c.DIV);
-		return u([e], A.PROGRESS_ITEM), u([n], A.PROGRESS_BAR), t || d(e, n), n;
+		let t = v(`.${j.PROGRESS_BAR}`, e) ?? null, n = t ?? m(c.DIV);
+		return u([e], j.PROGRESS_ITEM), u([n], j.PROGRESS_BAR), t || d(e, n), n;
 	}
 	createPauseControl() {
-		let e = this.createControlButton(A.PAUSE_INDICATOR, M.PAUSE, ""), t = m(c.SPAN), n = m(c.SPAN);
-		return u([t], A.PAUSE), u([n], A.PLAY), u([n], A.HIDDEN), t.innerHTML = j.PAUSE, n.innerHTML = j.PLAY, d(e, t), d(e, n), e;
+		let e = this.createControlButton(j.PAUSE_INDICATOR, N.PAUSE, ""), t = m(c.SPAN), n = m(c.SPAN);
+		return u([t], j.PAUSE), u([n], j.PLAY), u([n], j.HIDDEN), t.innerHTML = M.PAUSE, n.innerHTML = M.PLAY, d(e, t), d(e, n), e;
 	}
 	createMuteControl() {
-		let e = this.createControlButton(A.MUTE, M.MUTE_ON, ""), t = m(c.SPAN), n = m(c.SPAN);
-		return u([t], A.MUTE_ON), u([n], A.MUTE_OFF), u([n], A.HIDDEN), t.innerHTML = j.MUTE_ON, n.innerHTML = j.MUTE_OFF, d(e, t), d(e, n), e;
+		let e = this.createControlButton(j.MUTE, N.MUTE_ON, ""), t = m(c.SPAN), n = m(c.SPAN);
+		return u([t], j.MUTE_ON), u([n], j.MUTE_OFF), u([n], j.HIDDEN), t.innerHTML = M.MUTE_ON, n.innerHTML = M.MUTE_OFF, d(e, t), d(e, n), e;
 	}
 	createControlButton(e, t, n) {
 		let r = m(c.BUTTON);
 		return u([r], e), this.prepareControlButton(r, t), r.innerHTML = n, this.createdElements.add(r), r;
 	}
 	prepareControlButton(e, t) {
-		e && (k(e, n.TYPE, c.BUTTON), k(e, n.ARIA_LABEL, t));
+		e && (A(e, n.TYPE, c.BUTTON), A(e, n.ARIA_LABEL, t));
 	}
 	getStoriesElement(t) {
 		let n = this.getRootSelector, r = n ? v(`.${t}`, n) ?? null : null, i = e(`.${t}`);
@@ -1098,19 +1102,19 @@ var A = {
 			maxVideoDuration: n,
 			maxStories: r,
 			pauseOnHover: e.pauseOnHover ?? !0,
-			closeOnEnd: e.closeOnEnd ?? F.CLOSE_ON_END,
+			closeOnEnd: e.closeOnEnd ?? I.CLOSE_ON_END,
 			useMuted: e.useMuted ?? !0
 		};
 	}
 	resolveDuration(e) {
-		return Number.isFinite(e) ? Math.max(F.MIN_VIDEO_DURATION, Number(e)) : F.DURATION;
+		return Number.isFinite(e) ? Math.max(I.MIN_VIDEO_DURATION, Number(e)) : I.DURATION;
 	}
 	resolveMaxVideoDuration(e) {
-		return Number.isFinite(e) ? (Number(e) > F.MAX_VIDEO_DURATION && console.warn(`[BrickSlider Stories] maxVideoDuration is too high and was capped at ${F.MAX_VIDEO_DURATION}ms.`), Math.min(Math.max(F.MIN_VIDEO_DURATION, Number(e)), F.MAX_VIDEO_DURATION)) : F.MAX_VIDEO_DURATION;
+		return Number.isFinite(e) ? (Number(e) > I.MAX_VIDEO_DURATION && console.warn(`[BrickSlider Stories] maxVideoDuration is too high and was capped at ${I.MAX_VIDEO_DURATION}ms.`), Math.min(Math.max(I.MIN_VIDEO_DURATION, Number(e)), I.MAX_VIDEO_DURATION)) : I.MAX_VIDEO_DURATION;
 	}
 	resolveMaxStories(e) {
-		return Number.isFinite(e) ? (Number(e) > F.MAX_STORIES_LIMIT && console.warn(`[BrickSlider Stories] maxStories is too high and was capped at ${F.MAX_STORIES_LIMIT}.`), Math.min(Math.max(1, Math.floor(Number(e))), F.MAX_STORIES_LIMIT)) : F.MAX_STORIES;
+		return Number.isFinite(e) ? (Number(e) > I.MAX_STORIES_LIMIT && console.warn(`[BrickSlider Stories] maxStories is too high and was capped at ${I.MAX_STORIES_LIMIT}.`), Math.min(Math.max(1, Math.floor(Number(e))), I.MAX_STORIES_LIMIT)) : I.MAX_STORIES;
 	}
 };
 //#endregion
-export { z as BSStoriesPlugin, z as BrickSliderStories, z as StoriesPlugin, z as default, P as STORIES_EVENTS };
+export { B as BSStoriesPlugin, B as BrickSliderStories, B as StoriesPlugin, B as default, F as STORIES_EVENTS };

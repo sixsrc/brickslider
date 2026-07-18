@@ -65,6 +65,7 @@ export declare const ATTRIBUTES: {
     readonly ARIA_VALUE_MIN: "aria-valuemin";
     readonly ARIA_VALUE_MAX: "aria-valuemax";
     readonly ARIA_VALUE_NOW: "aria-valuenow";
+    readonly ARIA_PRESSED: "aria-pressed";
 };
 export declare const TIMES: {
     DEFAULT_TRANSITION_TIME: number;
@@ -184,4 +185,5 @@ export declare function listener(events: string[], target: EventTarget, callback
 export declare function removeListener(events: string[], target: EventTarget, callback: EventListenerOrEventListenerObject | ((event: any) => void), options?: boolean | EventListenerOptions): void;
 export declare function removeAttribute(el: HTMLElement, attribute: string): void;
 export declare function translate3d(x: number): string;
+export declare function prefersReducedMotion(): boolean;
 export declare function waitFor(time: number, callback: () => void): void;

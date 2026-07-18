@@ -1,7 +1,7 @@
 import { BaseSlider } from "./BaseSlider"
 import { Progress } from "./Progress"
 import { ANIMATION_OPTIONS, EVENTS, TIMES } from "./helpers"
-import { animateElement, translate3d } from "./helpers"
+import { animateElement, prefersReducedMotion, translate3d } from "./helpers"
 import type {
   AnimationCallbacks,
   AnimationOptions,
@@ -83,6 +83,7 @@ export class AnimationFrame extends BaseSlider {
     const { isFastNavigation, isJumpSlide, slidesPerPage } = this.store
     const shouldSkipDuration = this.isTouchMove() || isJumpSlide
 
+    if (prefersReducedMotion()) return 0
     if (shouldSkipDuration) return 0
 
     return this.getPagedDuration(

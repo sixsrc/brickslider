@@ -28,6 +28,7 @@ export {
   hasAttribute,
   hasClass,
   listener,
+  prefersReducedMotion,
   removeAttribute,
   removeClass,
   removeElement,

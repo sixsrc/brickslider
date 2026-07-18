@@ -74,6 +74,7 @@ export declare class BrickSliderStories extends Plugin {
     private setupProgress;
     private mountProgressBars;
     private bindProgressItem;
+    private setProgressItemAccessibility;
     private setupEdgeSwipeLock;
     private readonly handleStoryMouseDown;
     private readonly handleStoryMouseMove;

@@ -23,6 +23,9 @@ export declare class Dots extends BaseSlider {
     private getTemplateDot;
     private renderDots;
     private clearExistingDots;
+    private createDotElement;
+    private createDotMountElement;
+    private getDotMountElement;
     private setInitialActiveDot;
     private toggleDotState;
     private activateDot;

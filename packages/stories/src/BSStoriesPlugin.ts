@@ -22,6 +22,7 @@ import {
   removeClass,
   removeElement,
   removeListener,
+  prefersReducedMotion,
   setAttribute,
   listener,
   hasClass
@@ -677,6 +678,8 @@ export class BrickSliderStories extends Plugin {
   }
 
   private bindProgressItem(progressItem: HTMLElement, index: number): void {
+    this.setProgressItemAccessibility(progressItem, index)
+
     const handleProgressClick = (event: Event): void => {
       event.preventDefault()
       event.stopImmediatePropagation()
@@ -690,6 +693,25 @@ export class BrickSliderStories extends Plugin {
       progressItem.onclick = null
       progressItem.onpointerdown = null
     })
+  }
+
+  private setProgressItemAccessibility(
+    progressItem: HTMLElement,
+    index: number
+  ): void {
+    const isNativeButton = progressItem.tagName.toLowerCase() === TAGS.BUTTON
+
+    if (isNativeButton) {
+      setAttribute(progressItem, ATTRIBUTES.TYPE, "button")
+      removeAttribute(progressItem, ATTRIBUTES.ROLE)
+    } else {
+      setAttribute(progressItem, ATTRIBUTES.ROLE, "button")
+      setAttribute(progressItem, ATTRIBUTES.TABINDEX, "0")
+    }
+
+    if (!hasAttribute(progressItem, ATTRIBUTES.ARIA_LABEL)) {
+      setAttribute(progressItem, ATTRIBUTES.ARIA_LABEL, `Go to story ${index + 1}`)
+    }
   }
 
   private setupEdgeSwipeLock(root: HTMLElement): void {
@@ -1109,7 +1131,7 @@ export class BrickSliderStories extends Plugin {
     progressBar.style.transformOrigin = "left center"
     progressBar.style.scale = `${from} 1`
 
-    if (duration <= 0 || from === to) {
+    if (prefersReducedMotion() || duration <= 0 || from === to) {
       progressBar.style.scale = `${to} 1`
       return []
     }
@@ -1824,7 +1846,7 @@ export class BrickSliderStories extends Plugin {
   private cloneProgressItem(progressTemplate: HTMLElement | null): HTMLElement {
     if (progressTemplate) return progressTemplate.cloneNode(true) as HTMLElement
 
-    return createNewElement(TAGS.DIV)
+    return createNewElement(TAGS.BUTTON)
   }
 
   private prepareProgressItem(progressItem: HTMLElement): HTMLElement {

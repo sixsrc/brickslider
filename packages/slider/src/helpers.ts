@@ -69,7 +69,8 @@ export const ATTRIBUTES = {
   DRAGGABLE: "draggable",
   ARIA_VALUE_MIN: "aria-valuemin",
   ARIA_VALUE_MAX: "aria-valuemax",
-  ARIA_VALUE_NOW: "aria-valuenow"
+  ARIA_VALUE_NOW: "aria-valuenow",
+  ARIA_PRESSED: "aria-pressed"
 } as const
 
 export const TIMES = {
@@ -480,6 +481,13 @@ export function removeAttribute(el: HTMLElement, attribute: string): void {
 
 export function translate3d(x: number): string {
   return `translate3d(${x}px, 0px, 0px)`
+}
+
+export function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined") return false
+  if (typeof window.matchMedia !== "function") return false
+
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
 }
 
 export function waitFor(time: number, callback: () => void): void {

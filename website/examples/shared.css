@@ -104,7 +104,7 @@ body {
   justify-self: end;
   min-width: 40px;
   text-align: center;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: rgba(76, 29, 149, 0.7);
 }
@@ -182,13 +182,17 @@ body {
 }
 
 .bs-dots .bs-dot {
-  display: block;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: auto;
-  width: 14px;
-  height: 14px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
   border-radius: 9999px;
-  border: 2px solid rgba(76, 29, 149, 0.15);
-  background: transparent;
+  border: 2px solid #6d28d9;
+  background: #fff;
   cursor: pointer;
   transition:
     background-color 0.18s ease,
@@ -197,7 +201,8 @@ body {
 }
 
 .bs-dots .bs-dot:hover {
-  border-color: rgba(109, 40, 217, 0.4);
+  background: #ede9fe;
+  border-color: #5b21b6;
 }
 
 .bs-dots .bs-dot.active,
@@ -209,17 +214,26 @@ body {
 }
 
 .example-dot {
-  display: block;
-  width: 14px;
-  height: 14px;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
   border-radius: 9999px;
-  border: 2px solid rgba(76, 29, 149, 0.15);
-  background: transparent;
+  border: 2px solid #6d28d9;
+  background: #fff;
   cursor: pointer;
   transition:
     background-color 0.18s ease,
     border-color 0.18s ease,
     transform 0.18s ease;
+}
+
+.example-dot:hover {
+  background: #ede9fe;
+  border-color: #5b21b6;
 }
 
 .example-dot.active,
@@ -249,6 +263,23 @@ body {
   transform-origin: left;
   border-radius: 9999px;
   background: #5b21b6;
+}
+
+.example-track {
+  cursor: grab;
+}
+
+.example-track:active {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .example-arrow,
+  .example-dot,
+  .bs-dots .bs-dot,
+  .example-progress-bar {
+    transition: none;
+  }
 }
 
 .example-launch {
@@ -290,16 +321,6 @@ body {
 
   .example-next {
     margin-left: 44px;
-  }
-
-  .example-dot {
-    width: 12px;
-    height: 12px;
-  }
-
-  .bs-dots .bs-dot {
-    width: 12px;
-    height: 12px;
   }
 
   .example-slide-card {

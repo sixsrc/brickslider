@@ -1,6 +1,6 @@
 /*
  * BrickSliderAccessibility
- * Version  : 1.0.10
+ * Version  : 1.0.11
  * License  : MIT
  * Copyright: 2026
  * Repo: github.com/sixsrc/brickslider
@@ -131,7 +131,14 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 	}
 	setupDotElementAccessibility(e, n, r) {
 		let i = this.isCurrentDot(e), a = this.createDotKeydownHandler(e);
-		C(e, t.ROLE, "button"), C(e, t.TABINDEX, i ? "0" : "-1"), C(e, t.ARIA_LABEL, this.pluginOptions.labels.page(n + 1)), this.setDotControls(e, r), this.setDotCurrentAttribute(e, i), this.bindDotKeydown(e, a);
+		this.setDotRole(e), C(e, t.TABINDEX, i ? "0" : "-1"), C(e, t.ARIA_LABEL, this.pluginOptions.labels.page(n + 1)), this.setDotControls(e, r), this.setDotCurrentAttribute(e, i), this.bindDotKeydown(e, a);
+	}
+	setDotRole(e) {
+		if (e.tagName.toLowerCase() === l.BUTTON) {
+			b(e, t.ROLE);
+			return;
+		}
+		C(e, t.ROLE, "button");
 	}
 	createDotKeydownHandler(e) {
 		return (t) => {

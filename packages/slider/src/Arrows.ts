@@ -6,13 +6,15 @@ import type {
   StateType,
   UpdateSlideIndexType
 } from "./types"
-import { DOM_ELEMENT_ALIASES, EVENTS, FROM, TIMES } from "./helpers"
+import { ATTRIBUTES, DOM_ELEMENT_ALIASES, EVENTS, FROM, TIMES } from "./helpers"
 import {
   getAllElements,
   getSlideMovement,
   getRootSelector,
+  hasAttribute,
   hasClass,
-  listener
+  listener,
+  setAttribute
 } from "./helpers"
 
 export class Arrows extends BaseSlider {
@@ -29,8 +31,22 @@ export class Arrows extends BaseSlider {
   public init(): void {
     const buttons = this.getArrowButtons()
 
+    this.syncArrowLabels(buttons)
     this.bindArrowEvents(buttons)
     new ArrowSync(this.$root).sync()
+  }
+
+  private syncArrowLabels(buttons: NodeListOf<HTMLElement>): void {
+    this.forEachButton(buttons, button => this.setArrowLabel(button))
+  }
+
+  private setArrowLabel(button: HTMLElement): void {
+    if (hasAttribute(button, ATTRIBUTES.ARIA_LABEL)) return
+
+    const eventType = this.getArrowEventType(button)
+    const label = eventType === FROM.PREV ? "Previous slide" : "Next slide"
+
+    setAttribute(button, ATTRIBUTES.ARIA_LABEL, label)
   }
 
   private getArrowButtons(): NodeListOf<HTMLElement> {

@@ -315,7 +315,7 @@ export class BrickSliderAccessibility extends Plugin {
     const isCurrent = this.isCurrentDot(dot)
     const keydownHandler = this.createDotKeydownHandler(dot)
 
-    setAttribute(dot, ATTRIBUTES.ROLE, "button")
+    this.setDotRole(dot)
     setAttribute(dot, ATTRIBUTES.TABINDEX, isCurrent ? "0" : "-1")
     setAttribute(
       dot,
@@ -325,6 +325,17 @@ export class BrickSliderAccessibility extends Plugin {
     this.setDotControls(dot, rootId)
     this.setDotCurrentAttribute(dot, isCurrent)
     this.bindDotKeydown(dot, keydownHandler)
+  }
+
+  private setDotRole(dot: HTMLElement): void {
+    const isNativeButton = dot.tagName.toLowerCase() === TAGS.BUTTON
+
+    if (isNativeButton) {
+      removeAttribute(dot, ATTRIBUTES.ROLE)
+      return
+    }
+
+    setAttribute(dot, ATTRIBUTES.ROLE, "button")
   }
 
   private createDotKeydownHandler(dot: HTMLElement): (event: KeyboardEvent) => void {

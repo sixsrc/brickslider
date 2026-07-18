@@ -13,6 +13,7 @@ export declare class Progress extends BaseSlider {
     private setProgressSyncedAt;
     private getProgressKeyFrames;
     private setProgressNow;
+    private setProgressSemantics;
     private ensureProgressBar;
     private createProgressBar;
     private mountProgressBar;

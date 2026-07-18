@@ -34,6 +34,7 @@ export declare class BrickSliderAccessibility extends Plugin {
     private setupDotsContainerAccessibility;
     private setupDotsElementsAccessibility;
     private setupDotElementAccessibility;
+    private setDotRole;
     private createDotKeydownHandler;
     private handleDotKeydown;
     private setDotControls;

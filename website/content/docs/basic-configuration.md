@@ -17,7 +17,9 @@
   </div>
 
   <ul class="bs-dots">
-    <li class="bs-dot"></li>
+    <li>
+      <button class="bs-dot" type="button"></button>
+    </li>
   </ul>
 
   <div class="bs-progress">
@@ -59,7 +61,12 @@ Keep the dot markup simple:
 
 ```html
 <ul class="bs-dots flex gap-2">
-  <li class="bs-dot h-3 w-3 rounded-full border border-violet-300"></li>
+  <li>
+    <button
+      class="bs-dot h-6 w-6 rounded-full border-2 border-violet-700 bg-white hover:bg-violet-100"
+      type="button"
+    ></button>
+  </li>
 </ul>
 ```
 

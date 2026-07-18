@@ -58,7 +58,9 @@ For auto height examples, the content should define the height:
   </div>
 
   <ul class="bs-dots">
-    <li class="bs-dot"></li>
+    <li>
+      <button class="bs-dot" type="button"></button>
+    </li>
   </ul>
 </div>
 ```

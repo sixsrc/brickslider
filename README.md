@@ -140,9 +140,9 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 Use the official browser bundles in plain HTML:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.17/lib/brick-slider.browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.10/lib/brick-slider-accessibility.browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.13/lib/brick-slider-stories.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.18/lib/brick-slider.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.11/lib/brick-slider-accessibility.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.14/lib/brick-slider-stories.browser.js"></script>
 <script>
   const { BrickSlider, AccessibilityPlugin, StoriesPlugin } = window
 
@@ -198,7 +198,9 @@ slider.init()
   </div>
 
   <ul class="bs-dots">
-    <li class="bs-dot"></li>
+    <li>
+      <button class="bs-dot" type="button"></button>
+    </li>
   </ul>
 
   <div class="bs-progress">
@@ -682,14 +684,14 @@ If you are using BrickSlider directly in HTML or alongside Tailwind loaded from 
 ```html
 <link
   rel="stylesheet"
-  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.9/brick-slider.css"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.10/brick-slider.css"
 />
 ```
 
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.9/brick-slider.css"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.10/brick-slider.css"
 />
 ```
 

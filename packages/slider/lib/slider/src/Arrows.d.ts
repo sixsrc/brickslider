@@ -5,6 +5,8 @@ export declare class Arrows extends BaseSlider {
     private lastTouchArrowTimestamp;
     constructor($root: string);
     init(): void;
+    private syncArrowLabels;
+    private setArrowLabel;
     private getArrowButtons;
     private bindArrowEvents;
     private handleArrowPointerDown;

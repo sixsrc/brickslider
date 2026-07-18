@@ -2,6 +2,7 @@ import { BaseSlider } from "./BaseSlider"
 import { Slider } from "./Slider"
 import type { StateType } from "./types"
 import {
+  ATTRIBUTES,
   CLASS_VALUES,
   DOM_ELEMENT_ALIASES,
   EVENTS,
@@ -12,13 +13,16 @@ import {
   addClass,
   appendToParent,
   calcNumberOfSlides,
+  createNewElement,
   getAllElements,
   getDotsContainer,
   getSliderNodeList,
   hasClass,
   listener,
+  removeAttribute,
   removeClass,
-  removeElement
+  removeElement,
+  setAttribute
 } from "./helpers"
 
 export class Dots extends BaseSlider {
@@ -156,7 +160,9 @@ export class Dots extends BaseSlider {
   }
 
   private getExistingDots(): NodeListOf<HTMLElement> {
-    return getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
+    const dotSelector = `.${DOM_ELEMENT_ALIASES.DOT[0]}`
+
+    return getAllElements<HTMLElement>(dotSelector, this.containerDots)
   }
 
   private getTemplateDot(): HTMLElement | undefined {
@@ -171,15 +177,50 @@ export class Dots extends BaseSlider {
     this.clearExistingDots()
 
     for (let i = 0; i < numberOfDots; i++) {
-      const dot = templateDot.cloneNode(true) as HTMLElement
-      appendToParent(this.containerDots, dot)
+      const dot = this.createDotElement(templateDot, i)
+      const dotItem = this.createDotMountElement(dot)
+
+      appendToParent(this.containerDots, dotItem)
     }
   }
 
   private clearExistingDots(): void {
     const existingDots = this.getExistingDots()
 
-    Array.from(existingDots).forEach(dot => removeElement(dot))
+    Array.from(existingDots).forEach(dot =>
+      removeElement(this.getDotMountElement(dot))
+    )
+  }
+
+  private createDotElement(templateDot: HTMLElement, index: number): HTMLElement {
+    const dot = createNewElement(TAGS.BUTTON)
+
+    dot.className = templateDot.className
+    dot.innerHTML = templateDot.innerHTML
+    addClass([dot], DOM_ELEMENT_ALIASES.DOT[0])
+    setAttribute(dot, ATTRIBUTES.TYPE, "button")
+    setAttribute(dot, ATTRIBUTES.ARIA_LABEL, `Go to slide ${index + 1}`)
+    removeAttribute(dot, ATTRIBUTES.ROLE)
+
+    return dot
+  }
+
+  private createDotMountElement(dot: HTMLElement): HTMLElement {
+    if (this.containerDots?.tagName.toLowerCase() !== TAGS.UL) return dot
+
+    const dotItem = createNewElement(TAGS.LI)
+
+    appendToParent(dotItem, dot)
+
+    return dotItem
+  }
+
+  private getDotMountElement(dot: HTMLElement): HTMLElement {
+    const parent = dot.parentElement
+    const isWrappedDot = parent?.parentElement === this.containerDots
+    const isListItem = parent?.tagName.toLowerCase() === TAGS.LI
+
+    return isWrappedDot && isListItem ? parent : dot
   }
 
   private setInitialActiveDot(): void {
@@ -202,10 +243,14 @@ export class Dots extends BaseSlider {
   private activateDot(dot: HTMLElement): void {
     addClass([dot], CLASS_VALUES.SELECTED)
     addClass([dot], DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
+    setAttribute(dot, ATTRIBUTES.ARIA_CURRENT, "page")
+    setAttribute(dot, ATTRIBUTES.ARIA_PRESSED, "true")
   }
 
   private deactivateDot(dot: HTMLElement): void {
     removeClass(dot, [CLASS_VALUES.SELECTED, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0]])
+    removeAttribute(dot, ATTRIBUTES.ARIA_CURRENT)
+    setAttribute(dot, ATTRIBUTES.ARIA_PRESSED, "false")
   }
 
   private dotHandler(touchIndex: number): void {
@@ -231,7 +276,9 @@ export class Dots extends BaseSlider {
   }
 
   private getDotElements(): NodeListOf<HTMLElement> {
-    return getAllElements<HTMLElement>(TAGS.LI, this.containerDots)
+    const dotSelector = `.${DOM_ELEMENT_ALIASES.DOT[0]}`
+
+    return getAllElements<HTMLElement>(dotSelector, this.containerDots)
   }
 
   private bindDotEvents(dotElements: NodeListOf<HTMLElement>): void {
