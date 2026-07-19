@@ -530,6 +530,18 @@
 <p>BrickSlider adds <code>bs-dot--active</code> to the current dot. You control the visual style.</p>
 <h3 id="plain-css">Plain CSS</h3>
 <pre><code class="language-css"><span class="token symbol">.bs-dot</span> {
+  <span class="token property">width</span>: <span class="token string">1.5rem</span>;
+  <span class="token property">height</span>: <span class="token string">1.5rem</span>;
+  <span class="token property">display</span>: <span class="token string">inline-flex</span>;
+  <span class="token property">align-items</span>: <span class="token string">center</span>;
+  <span class="token property">justify-content</span>: <span class="token string">center</span>;
+  <span class="token property">border</span>: <span class="token string">0</span>;
+  <span class="token property">border-radius</span>: <span class="token string">999px</span>;
+  <span class="token property">background</span>: <span class="token string">transparent</span>;
+}
+
+.<span class="token property">bs-dot</span>:<span class="token string">:<span class="token symbol">before</span> {
+  content: &quot</span>;&quot;;
   <span class="token property">width</span>: <span class="token string">0.75rem</span>;
   <span class="token property">height</span>: <span class="token string">0.75rem</span>;
   <span class="token property">border</span>: <span class="token string">1px solid #c4b5fd</span>;
@@ -537,8 +549,8 @@
   <span class="token property">background</span>: <span class="token string">transparent</span>;
 }
 
-<span class="token symbol">.bs-dot--active</span> {
-  <span class="token property">border-color</span>: <span class="token string">#6d28d9</span>;
+.<span class="token property">bs-dot--active</span>:<span class="token string">:<span class="token symbol">before</span> {
+  border-color: #6d28d9</span>;
   <span class="token property">background</span>: <span class="token string">#6d28d9</span>;
 }</code></pre>
 <h3 id="tailwind">Tailwind</h3>
@@ -546,14 +558,14 @@
 <pre><code class="language-html">&lt;<span class="token keyword">ul</span> <span class="token property">class</span>=<span class="token string">&quot;bs-dots flex gap-2&quot;</span>&gt;
   &lt;<span class="token keyword">li</span>&gt;
     &lt;<span class="token keyword">button</span>
-      <span class="token property">class</span>=<span class="token string">&quot;bs-dot h-6 w-6 rounded-full border-2 border-violet-700 bg-white hover:bg-violet-100&quot;</span>
+      <span class="token property">class</span>=<span class="token string">&quot;bs-dot flex h-6 w-6 items-center justify-center rounded-full before:block before:h-3 before:w-3 before:rounded-full before:border-2 before:border-violet-700 before:bg-white hover:before:bg-violet-100&quot;</span>
       <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>
     &gt;&lt;/<span class="token keyword">button</span>&gt;
   &lt;/<span class="token keyword">li</span>&gt;
 &lt;/<span class="token keyword">ul</span>&gt;</code></pre>
 <p>Then define the active state in your Tailwind CSS entry:</p>
-<pre><code class="language-css"><span class="token symbol">.bs-dot--active</span> {
-  @apply border-violet-700 bg-violet-700;
+<pre><code class="language-css">.<span class="token property">bs-dot--active</span>:<span class="token string">:<span class="token symbol">before</span> {
+  @apply border-violet-700 bg-violet-700</span>;
 }</code></pre>
 <h2 id="class-reference">Class Reference</h2>
 <div class="table-wrap"><table><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>bs-track</code></td><td>Core: required viewport wrapper</td></tr><tr><td><code>bs-container</code></td><td>Core: required slide row inside <code>bs-track</code></td></tr><tr><td><code>bs-slide</code></td><td>Core: required slide item inside <code>bs-container</code></td></tr><tr><td><code>bs-arrow</code> / <code>bs-prev</code> / <code>bs-next</code></td><td>Core: arrow navigation buttons</td></tr><tr><td><code>bs-pages</code></td><td>Core: optional current page output</td></tr><tr><td><code>bs-dots</code> / <code>bs-dot</code></td><td>Core: optional pagination controls</td></tr><tr><td><code>bs-progress</code> / <code>bs-progress-bar</code></td><td>Core: optional progress rail</td></tr><tr><td><code>bs-hidden</code></td><td>Core: utility class used before mount</td></tr><tr><td><code>bs-peek</code> / <code>bs-peek-sm</code> / <code>bs-peek-lg</code></td><td>Core: peek spacing variants</td></tr><tr><td><code>bs-auto-height-layout</code></td><td>Core: auto-height helper class</td></tr><tr><td><code>bs-stories-progress</code></td><td>Stories: progress rail container</td></tr><tr><td><code>bs-stories-progress-item</code></td><td>Stories: progress segment</td></tr><tr><td><code>bs-stories-progress-bar</code></td><td>Stories: animated bar inside segment</td></tr><tr><td><code>bs-stories-pause-indicator</code></td><td>Stories: play/pause overlay control</td></tr><tr><td><code>bs-stories-pause</code> / <code>bs-stories-play</code></td><td>Stories: pause/play icons</td></tr><tr><td><code>bs-stories-layer</code></td><td>Stories: overlay layer</td></tr><tr><td><code>bs-stories-backdrop</code></td><td>Stories: backdrop inside stories layer</td></tr><tr><td><code>bs-stories-close</code></td><td>Stories: close button</td></tr><tr><td><code>bs-stories-mute</code></td><td>Stories: mute button for video stories</td></tr></tbody></table></div>

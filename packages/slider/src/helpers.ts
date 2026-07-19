@@ -192,13 +192,11 @@ export function addClass(
 }
 
 export function animateElement(
-  element: HTMLElement | HTMLElement[],
+  element: HTMLElement | HTMLElement[] | undefined,
   keyframes: Keyframe[],
   options: KeyframeAnimationOptions
 ): Animation[] {
-  if (!element) {
-    throw new Error("Element is required for animation.")
-  }
+  if (!element) return []
 
   const elements = Array.isArray(element) ? element : [element]
 
@@ -451,10 +449,12 @@ export function isValidSelector(string: string): boolean {
 
 export function listener(
   events: string[],
-  target: EventTarget,
+  target: EventTarget | undefined,
   callback: EventListenerOrEventListenerObject | ((event: any) => void),
   options?: boolean | AddEventListenerOptions
 ): void {
+  if (!target) return
+
   if (Array.isArray(events)) {
     events.forEach(event => {
       target.addEventListener(event, callback as EventListener, options)
@@ -464,10 +464,12 @@ export function listener(
 
 export function removeListener(
   events: string[],
-  target: EventTarget,
+  target: EventTarget | undefined,
   callback: EventListenerOrEventListenerObject | ((event: any) => void),
   options?: boolean | EventListenerOptions
 ): void {
+  if (!target) return
+
   if (Array.isArray(events)) {
     events.forEach(event => {
       target.removeEventListener(event, callback as EventListener, options)

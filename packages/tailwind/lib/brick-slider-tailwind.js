@@ -1,6 +1,6 @@
 /*
  * BrickSliderTailwind
- * Version  : 1.0.10
+ * Version  : 1.0.11
  * License  : MIT
  * Copyright: 2026
  * Repo: github.com/sixsrc/brickslider

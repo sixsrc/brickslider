@@ -140,8 +140,8 @@ npm install @sixsrc/brick-slider @sixsrc/brick-slider-tailwind tailwindcss
 Use the official browser bundles in plain HTML:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.18/lib/brick-slider.browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.11/lib/brick-slider-accessibility.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.19/lib/brick-slider.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.12/lib/brick-slider-accessibility.browser.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-stories@1.0.14/lib/brick-slider-stories.browser.js"></script>
 <script>
   const { BrickSlider, AccessibilityPlugin, StoriesPlugin } = window
@@ -684,14 +684,14 @@ If you are using BrickSlider directly in HTML or alongside Tailwind loaded from 
 ```html
 <link
   rel="stylesheet"
-  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.10/brick-slider.css"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.11/lib/brick-slider.css"
 />
 ```
 
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.10/brick-slider.css"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.11/lib/brick-slider.css"
 />
 ```
 
@@ -709,7 +709,7 @@ Example:
   @apply border border-violet-800 rounded-lg;
 }
 
-.bs-dot--active {
+.bs-dot--active::before {
   @apply bg-violet-800 border border-violet-800;
 }
 ```
@@ -722,7 +722,7 @@ If you are not using Tailwind, the same idea applies with plain CSS:
   border-radius: 0.5rem;
 }
 
-.bs-dot--active {
+.bs-dot--active::before {
   background: #5b21b6;
   border: 1px solid #5b21b6;
 }

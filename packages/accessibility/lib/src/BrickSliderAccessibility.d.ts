@@ -76,5 +76,6 @@ export declare class BrickSliderAccessibility extends Plugin {
     private getFocusedDotIndex;
     private isValidDotIndex;
     private isCurrentDot;
+    private getCurrentDotIndex;
     private resolveOptions;
 }

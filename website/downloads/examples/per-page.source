@@ -3,18 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.18/lib/brick-slider.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.19/lib/brick-slider.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <title>Per Page Example</title>
-    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.18/lib/brick-slider.browser.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.11/lib/brick-slider-accessibility.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.19/lib/brick-slider.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.12/lib/brick-slider-accessibility.browser.js"></script>
   </head>
   <body class="bg-white p-6 font-sans text-gray-950">
     <div class="mx-auto w-full max-w-5xl">
       <div id="slider" class="bs-hidden grid w-full grid-cols-[auto_auto_minmax(0,1fr)_auto] grid-rows-[auto_56px] items-center gap-x-4">
-        <button class="bs-arrow bs-prev z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-700 bg-white text-violet-700 hover:bg-violet-50 row-start-2 col-start-1 self-end justify-self-start" type="button"><svg viewBox="0 0 24 24" class="h-6 w-6" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
-        <button class="bs-arrow bs-next z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-700 bg-white text-violet-700 hover:bg-violet-50 row-start-2 col-start-2 self-end justify-self-start" type="button"><svg viewBox="0 0 24 24" class="h-6 w-6" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
-        <div class="bs-pages row-start-2 col-start-4 self-center justify-self-end font-bold text-violet-700"></div>
+        <button class="bs-arrow bs-prev z-10 flex h-11 w-11 items-center justify-center rounded-full border border-violet-700 bg-white text-violet-700 hover:bg-violet-50 row-start-2 col-start-1 self-end justify-self-start" type="button"><svg viewBox="0 0 24 24" class="h-6 w-6" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+        <button class="bs-arrow bs-next z-10 flex h-11 w-11 items-center justify-center rounded-full border border-violet-700 bg-white text-violet-700 hover:bg-violet-50 row-start-2 col-start-2 self-end justify-self-start" type="button"><svg viewBox="0 0 24 24" class="h-6 w-6" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+        <div class="bs-pages row-start-2 col-start-4 self-center justify-self-end text-base font-bold text-violet-700"></div>
         <div class="bs-track col-span-full row-start-1 min-w-0 overflow-hidden ">
           <div class="bs-container ">
             <div class="bs-slide">
@@ -61,7 +61,7 @@
         </div>
         <ul class="bs-dots pointer-events-none row-start-2 col-span-full self-center justify-self-center inline-flex !w-max max-w-full list-none gap-3 p-0">
           <li>
-            <button class="bs-dot pointer-events-auto h-6 w-6 cursor-pointer rounded-full border-2 border-violet-700 bg-white hover:bg-violet-100 [&.bs-dot--active]:border-violet-700 [&.bs-dot--active]:bg-violet-700" type="button"></button>
+            <button class="bs-dot pointer-events-auto flex h-6 w-6 items-center justify-center rounded-full before:block before:h-3 before:w-3 before:rounded-full before:border-2 before:border-violet-700 before:bg-white hover:before:bg-violet-100 [&.bs-dot--active]:before:border-violet-700 [&.bs-dot--active]:before:bg-violet-700" type="button"></button>
           </li>
         </ul>
       </div>

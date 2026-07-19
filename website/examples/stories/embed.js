@@ -14,7 +14,7 @@ function ensureStyles() {
   const styles = [
     {
       id: STYLE_IDS.CORE,
-      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.18/lib/brick-slider.css"
+      href: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.19/lib/brick-slider.css"
     },
     {
       id: STYLE_IDS.SHARED,
@@ -72,11 +72,11 @@ async function ensureScripts() {
   })
   await loadScript({
     id: SCRIPT_IDS.CORE,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.18/lib/brick-slider.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider@1.0.19/lib/brick-slider.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.ACCESSIBILITY,
-    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.11/lib/brick-slider-accessibility.browser.js"
+    src: "https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-accessibility@1.0.12/lib/brick-slider-accessibility.browser.js"
   })
   await loadScript({
     id: SCRIPT_IDS.STORIES,
@@ -155,7 +155,7 @@ function createMarkup(id) {
           </div>
 
           <button
-            class="bs-stories-mute pointer-events-auto absolute bottom-12 right-5 z-[10004] flex h-6 w-6 cursor-pointer items-center justify-center text-white/60 transition-colors transition-opacity hover:text-white/85 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 md:pointer-events-none md:opacity-0 md:group-hover/stories:pointer-events-auto md:group-hover/stories:opacity-100"
+            class="bs-stories-mute pointer-events-auto absolute bottom-12 right-5 z-[10004] flex h-6 w-6 items-center justify-center text-white/60 transition-colors transition-opacity hover:text-white/85 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 md:pointer-events-none md:opacity-0 md:group-hover/stories:pointer-events-auto md:group-hover/stories:opacity-100"
             type="button"
             aria-label="Mute story sound"
           >
@@ -171,20 +171,21 @@ function createMarkup(id) {
             </span>
           </button>
 
-          <ul
+          <div
             class="bs-stories-progress"
           >
-            <li
+            <button
               class="bs-stories-progress-item rounded-full bg-white/20 [&.bs-stories-progress-item--active]:bg-white/35 [&.bs-stories-progress-item--completed]:bg-white/45"
+              type="button"
             >
               <span
                 class="bs-stories-progress-bar rounded-full bg-white"
               ></span>
-            </li>
-          </ul>
+            </button>
+          </div>
 
           <button
-            class="bs-stories-close pointer-events-auto fixed right-6 top-8 z-[10004] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 max-md:absolute max-md:right-4 max-md:top-24"
+            class="bs-stories-close pointer-events-auto fixed right-6 top-8 z-[10004] flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-violet-950 max-md:absolute max-md:right-4 max-md:top-24"
             type="button"
             aria-label="Close stories"
           >
@@ -194,7 +195,7 @@ function createMarkup(id) {
           </button>
 
           <button
-            class="bs-stories-pause-indicator pointer-events-none absolute z-[10004] hidden h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white opacity-0 transition-colors transition-opacity hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:flex"
+            class="bs-stories-pause-indicator pointer-events-none absolute z-[10004] hidden h-16 w-16 items-center justify-center rounded-full bg-white/20 text-white opacity-0 transition-colors transition-opacity hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white md:flex"
             type="button"
             aria-label="Toggle pause"
           >
@@ -226,7 +227,7 @@ function renderStoriesExample(host, index) {
     <div class="stories-inline-host">
       <button
         id="${id}-open"
-        class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+        class=" focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2 focus:ring-offset-white rounded-full bg-violet-800 px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
         type="button"
       >
         Open Stories

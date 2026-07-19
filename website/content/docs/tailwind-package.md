@@ -29,7 +29,7 @@ Example:
   @apply border border-violet-800 rounded-lg;
 }
 
-.bs-dot--active {
+.bs-dot--active::before {
   @apply bg-violet-800 border border-violet-800;
 }
 ```

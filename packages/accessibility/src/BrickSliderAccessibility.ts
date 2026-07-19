@@ -312,7 +312,7 @@ export class BrickSliderAccessibility extends Plugin {
     index: number,
     rootId?: string | null
   ): void {
-    const isCurrent = this.isCurrentDot(dot)
+    const isCurrent = this.isCurrentDot(index)
     const keydownHandler = this.createDotKeydownHandler(dot)
 
     this.setDotRole(dot)
@@ -407,7 +407,9 @@ export class BrickSliderAccessibility extends Plugin {
   }
 
   private getActiveDot(dots: HTMLElement[]): HTMLElement | undefined {
-    return dots.find(dot => this.isCurrentDot(dot))
+    const currentDotIndex = this.getCurrentDotIndex(dots.length)
+
+    return dots[currentDotIndex]
   }
 
   private syncSlidesAccessibility(): void {
@@ -724,8 +726,18 @@ export class BrickSliderAccessibility extends Plugin {
     return dotIndex >= 0
   }
 
-  private isCurrentDot(dot: HTMLElement): boolean {
-    return getAttribute(dot, ATTRIBUTES.ARIA_CURRENT) === "page"
+  private isCurrentDot(index: number): boolean {
+    return index === this.getCurrentDotIndex()
+  }
+
+  private getCurrentDotIndex(numberOfDots = 0): number {
+    const { activePage, dotIndex } = this.store
+    const currentDotIndex = dotIndex ?? activePage ?? 0
+    const maxDotIndex = Math.max(0, numberOfDots - 1)
+
+    return numberOfDots > 0
+      ? Math.max(0, Math.min(currentDotIndex, maxDotIndex))
+      : Math.max(0, currentDotIndex)
   }
 
   private resolveOptions(

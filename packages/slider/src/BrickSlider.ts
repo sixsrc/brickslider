@@ -27,6 +27,7 @@ export class BrickSlider extends BaseSlider {
   private plugins: SliderPlugin[] = []
   private validate: Validation
   private message: Messages
+  private canMount = false
   private readonly initialInnerHTML: string
   private readonly initialClassName: string
   private readonly initialStyle: string | null
@@ -45,6 +46,7 @@ export class BrickSlider extends BaseSlider {
   private validation($root: string, options?: SliderOptions): void {
     const isValid = isValidSelector($root) && this.validate.isValid()
 
+    this.canMount = isValid
     if (isValid) this.defineConfigs($root, options)
   }
 
@@ -62,6 +64,8 @@ export class BrickSlider extends BaseSlider {
   }
 
   public init(): void {
+    if (!this.canMount) return
+
     this.hideUntilMounted()
     Slider.registerDestroyHandler(this.$root, () => this.destroy())
     void this.runMount()

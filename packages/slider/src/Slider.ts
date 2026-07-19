@@ -8,6 +8,7 @@ import { Validation } from "./Validation"
 import { syncPagesFeature, syncProgressFeature } from "./FeatureLoader"
 import type { StateType } from "./types"
 import {
+  ATTRIBUTES,
   CLASS_VALUES,
   DOM_ELEMENT_ALIASES,
   FROM,
@@ -22,7 +23,9 @@ import {
   getDotsSelector,
   getSliderNodeList,
   hasClass,
+  removeAttribute,
   removeClass,
+  setAttribute,
   waitFor
 } from "./helpers"
 import { SlideMeta } from "./SlideMeta"
@@ -561,7 +564,8 @@ export class Slider extends BaseSlider {
   public updateDots($root: string): void {
     const { dotIndex, dots: isDots } = this.store
     const selectedIndex = dotIndex ?? 0
-    const dots = getAllElements<HTMLElement>(TAGS.LI, getDotsSelector($root))
+    const dotSelector = `.${DOM_ELEMENT_ALIASES.DOT[0]}`
+    const dots = getAllElements<HTMLElement>(dotSelector, getDotsSelector($root))
     const activePageState = { activePage: selectedIndex }
 
     this.setState(activePageState)
@@ -569,14 +573,19 @@ export class Slider extends BaseSlider {
     if (!isDots) return
 
     dots.forEach((dot, i) => {
-      if (hasClass(dot, CLASS_VALUES.SELECTED))
-        removeClass(dot, CLASS_VALUES.SELECTED)
-      if (hasClass(dot, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0]))
-        removeClass(dot, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
       if (i === Math.abs(selectedIndex)) {
         addClass([dot], CLASS_VALUES.SELECTED)
         addClass([dot], DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
+        setAttribute(dot, ATTRIBUTES.ARIA_CURRENT, "page")
+        setAttribute(dot, ATTRIBUTES.ARIA_PRESSED, "true")
+        setAttribute(dot, ATTRIBUTES.TABINDEX, "0")
+        return
       }
+
+      removeClass(dot, [CLASS_VALUES.SELECTED, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0]])
+      removeAttribute(dot, ATTRIBUTES.ARIA_CURRENT)
+      setAttribute(dot, ATTRIBUTES.ARIA_PRESSED, "false")
+      setAttribute(dot, ATTRIBUTES.TABINDEX, "-1")
     })
   }
 

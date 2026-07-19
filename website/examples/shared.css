@@ -73,7 +73,6 @@ body {
   border: 1px solid #5b21b6;
   background: #fff;
   color: #5b21b6;
-  cursor: pointer;
 }
 
 .example-arrow:hover {
@@ -191,16 +190,29 @@ body {
   height: 24px;
   padding: 0;
   border-radius: 9999px;
-  border: 2px solid #6d28d9;
-  background: #fff;
-  cursor: pointer;
+  border: 0;
+  background: transparent;
   transition:
     background-color 0.18s ease,
     border-color 0.18s ease,
     transform 0.18s ease;
 }
 
-.bs-dots .bs-dot:hover {
+.bs-dots .bs-dot::before {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  border: 2px solid #6d28d9;
+  background: #fff;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.bs-dots .bs-dot:hover::before {
   background: #ede9fe;
   border-color: #5b21b6;
 }
@@ -208,9 +220,14 @@ body {
 .bs-dots .bs-dot.active,
 .bs-dots .bs-dot.bs-dot--active,
 .bs-dots .bs-dot.bs-dot-active-default {
+  transform: scale(1.02);
+}
+
+.bs-dots .bs-dot.active::before,
+.bs-dots .bs-dot.bs-dot--active::before,
+.bs-dots .bs-dot.bs-dot-active-default::before {
   background: #6d28d9;
   border-color: #6d28d9;
-  transform: scale(1.02);
 }
 
 .example-dot {
@@ -222,16 +239,29 @@ body {
   height: 24px;
   padding: 0;
   border-radius: 9999px;
-  border: 2px solid #6d28d9;
-  background: #fff;
-  cursor: pointer;
+  border: 0;
+  background: transparent;
   transition:
     background-color 0.18s ease,
     border-color 0.18s ease,
     transform 0.18s ease;
 }
 
-.example-dot:hover {
+.example-dot::before {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  border: 2px solid #6d28d9;
+  background: #fff;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.example-dot:hover::before {
   background: #ede9fe;
   border-color: #5b21b6;
 }
@@ -239,9 +269,14 @@ body {
 .example-dot.active,
 .example-dot.bs-dot--active,
 .example-dot.bs-dot-active-default {
+  transform: scale(1.02);
+}
+
+.example-dot.active::before,
+.example-dot.bs-dot--active::before,
+.example-dot.bs-dot-active-default::before {
   background: #6d28d9;
   border-color: #6d28d9;
-  transform: scale(1.02);
 }
 
 .example-progress {
@@ -266,11 +301,9 @@ body {
 }
 
 .example-track {
-  cursor: grab;
 }
 
 .example-track:active {
-  cursor: grabbing;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -291,7 +324,6 @@ body {
   border: 0;
   background: #5b21b6;
   color: #fff;
-  cursor: pointer;
   font-weight: 600;
 }
 

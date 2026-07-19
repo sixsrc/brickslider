@@ -518,11 +518,11 @@
       &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-slide&quot;</span>&gt;Story 03&lt;/<span class="token keyword">div</span>&gt;
     &lt;/<span class="token keyword">div</span>&gt;
 
-    &lt;<span class="token keyword">ul</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress&quot;</span>&gt;
-      &lt;<span class="token keyword">li</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-item&quot;</span>&gt;
+    &lt;<span class="token keyword">div</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress&quot;</span>&gt;
+      &lt;<span class="token keyword">button</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-item&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;
         &lt;<span class="token keyword">span</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-progress-bar&quot;</span>&gt;&lt;/<span class="token keyword">span</span>&gt;
-      &lt;/<span class="token keyword">li</span>&gt;
-    &lt;/<span class="token keyword">ul</span>&gt;
+      &lt;/<span class="token keyword">button</span>&gt;
+    &lt;/<span class="token keyword">div</span>&gt;
 
     &lt;<span class="token keyword">button</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-pause-indicator&quot;</span> <span class="token property">type</span>=<span class="token string">&quot;button&quot;</span>&gt;
       &lt;<span class="token keyword">span</span> <span class="token property">class</span>=<span class="token string">&quot;bs-stories-pause&quot;</span>&gt;Pause&lt;/<span class="token keyword">span</span>&gt;
@@ -566,8 +566,8 @@
   @apply border border-violet-800 rounded-lg;
 }
 
-<span class="token symbol">.bs-dot--active</span> {
-  @apply bg-violet-800 border border-violet-800;
+.<span class="token property">bs-dot--active</span>:<span class="token string">:<span class="token symbol">before</span> {
+  @apply bg-violet-800 border border-violet-800</span>;
 }</code></pre>
 <h3 id="stories-progress">Stories progress</h3>
 <p>The Stories progress markup is structural by default. You control its look:</p>

@@ -29,11 +29,11 @@ That includes the progress rail colors and any active slide treatment you want t
       <div class="bs-slide">Story 03</div>
     </div>
 
-    <ul class="bs-stories-progress">
-      <li class="bs-stories-progress-item">
+    <div class="bs-stories-progress">
+      <button class="bs-stories-progress-item" type="button">
         <span class="bs-stories-progress-bar"></span>
-      </li>
-    </ul>
+      </button>
+    </div>
 
     <button class="bs-stories-pause-indicator" type="button">
       <span class="bs-stories-pause">Pause</span>
@@ -87,7 +87,7 @@ If you want an active visual treatment around the current story card, theme it y
   @apply border border-violet-800 rounded-lg;
 }
 
-.bs-dot--active {
+.bs-dot--active::before {
   @apply bg-violet-800 border border-violet-800;
 }
 ```

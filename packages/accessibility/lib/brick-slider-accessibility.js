@@ -1,6 +1,6 @@
 /*
  * BrickSliderAccessibility
- * Version  : 1.0.11
+ * Version  : 1.0.12
  * License  : MIT
  * Copyright: 2026
  * Repo: github.com/sixsrc/brickslider
@@ -130,7 +130,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		e.forEach((e, n) => this.setupDotElementAccessibility(e, n, t));
 	}
 	setupDotElementAccessibility(e, n, r) {
-		let i = this.isCurrentDot(e), a = this.createDotKeydownHandler(e);
+		let i = this.isCurrentDot(n), a = this.createDotKeydownHandler(e);
 		this.setDotRole(e), C(e, t.TABINDEX, i ? "0" : "-1"), C(e, t.ARIA_LABEL, this.pluginOptions.labels.page(n + 1)), this.setDotControls(e, r), this.setDotCurrentAttribute(e, i), this.bindDotKeydown(e, a);
 	}
 	setDotRole(e) {
@@ -172,7 +172,7 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		return this.pluginOptions.useFocusManagement && t !== null && e[t] !== void 0;
 	}
 	getActiveDot(e) {
-		return e.find((e) => this.isCurrentDot(e));
+		return e[this.getCurrentDotIndex(e.length)];
 	}
 	syncSlidesAccessibility() {
 		let e = g(this.$root), t = g(this.$root, !1).length;
@@ -310,7 +310,11 @@ var T = "bs-a11y-style", E = "bs-a11y-live", D = .75, O = {
 		return e >= 0;
 	}
 	isCurrentDot(e) {
-		return m(e, t.ARIA_CURRENT) === "page";
+		return e === this.getCurrentDotIndex();
+	}
+	getCurrentDotIndex(e = 0) {
+		let { activePage: t, dotIndex: n } = this.store, r = n ?? t ?? 0, i = Math.max(0, e - 1);
+		return e > 0 ? Math.max(0, Math.min(r, i)) : Math.max(0, r);
 	}
 	resolveOptions(e) {
 		return {

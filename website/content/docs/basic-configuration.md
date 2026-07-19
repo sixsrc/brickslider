@@ -42,6 +42,18 @@ BrickSlider adds `bs-dot--active` to the current dot. You control the visual sty
 
 ```css
 .bs-dot {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.bs-dot::before {
+  content: "";
   width: 0.75rem;
   height: 0.75rem;
   border: 1px solid #c4b5fd;
@@ -49,7 +61,7 @@ BrickSlider adds `bs-dot--active` to the current dot. You control the visual sty
   background: transparent;
 }
 
-.bs-dot--active {
+.bs-dot--active::before {
   border-color: #6d28d9;
   background: #6d28d9;
 }
@@ -63,7 +75,7 @@ Keep the dot markup simple:
 <ul class="bs-dots flex gap-2">
   <li>
     <button
-      class="bs-dot h-6 w-6 rounded-full border-2 border-violet-700 bg-white hover:bg-violet-100"
+      class="bs-dot flex h-6 w-6 items-center justify-center rounded-full before:block before:h-3 before:w-3 before:rounded-full before:border-2 before:border-violet-700 before:bg-white hover:before:bg-violet-100"
       type="button"
     ></button>
   </li>
@@ -73,7 +85,7 @@ Keep the dot markup simple:
 Then define the active state in your Tailwind CSS entry:
 
 ```css
-.bs-dot--active {
+.bs-dot--active::before {
   @apply border-violet-700 bg-violet-700;
 }
 ```

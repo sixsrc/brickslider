@@ -198,9 +198,13 @@ export class Dots extends BaseSlider {
     dot.className = templateDot.className
     dot.innerHTML = templateDot.innerHTML
     addClass([dot], DOM_ELEMENT_ALIASES.DOT[0])
+    removeClass(dot, [CLASS_VALUES.SELECTED, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0]])
     setAttribute(dot, ATTRIBUTES.TYPE, "button")
     setAttribute(dot, ATTRIBUTES.ARIA_LABEL, `Go to slide ${index + 1}`)
     removeAttribute(dot, ATTRIBUTES.ROLE)
+    removeAttribute(dot, ATTRIBUTES.ARIA_CURRENT)
+    setAttribute(dot, ATTRIBUTES.ARIA_PRESSED, "false")
+    setAttribute(dot, ATTRIBUTES.TABINDEX, "-1")
 
     return dot
   }
@@ -245,12 +249,14 @@ export class Dots extends BaseSlider {
     addClass([dot], DOM_ELEMENT_ALIASES.DOT_ACTIVE[0])
     setAttribute(dot, ATTRIBUTES.ARIA_CURRENT, "page")
     setAttribute(dot, ATTRIBUTES.ARIA_PRESSED, "true")
+    setAttribute(dot, ATTRIBUTES.TABINDEX, "0")
   }
 
   private deactivateDot(dot: HTMLElement): void {
     removeClass(dot, [CLASS_VALUES.SELECTED, DOM_ELEMENT_ALIASES.DOT_ACTIVE[0]])
     removeAttribute(dot, ATTRIBUTES.ARIA_CURRENT)
     setAttribute(dot, ATTRIBUTES.ARIA_PRESSED, "false")
+    setAttribute(dot, ATTRIBUTES.TABINDEX, "-1")
   }
 
   private dotHandler(touchIndex: number): void {

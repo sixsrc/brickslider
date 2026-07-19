@@ -6,6 +6,7 @@ export declare class BrickSlider extends BaseSlider {
     private plugins;
     private validate;
     private message;
+    private canMount;
     private readonly initialInnerHTML;
     private readonly initialClassName;
     private readonly initialStyle;

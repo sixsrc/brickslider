@@ -975,10 +975,10 @@ function makeStandaloneExampleDownload(source) {
   const sliderClass = isProgressExample
     ? "grid w-full grid-cols-[auto_auto_minmax(0,1fr)_auto] grid-rows-[auto_36px_72px] items-center gap-x-4"
     : "grid w-full grid-cols-[auto_auto_minmax(0,1fr)_auto] grid-rows-[auto_56px] items-center gap-x-4"
-  const pagesClass = `${controlsRowClass} col-start-4 self-center justify-self-end font-bold text-violet-700`
+  const pagesClass = `${controlsRowClass} col-start-4 self-center justify-self-end text-base font-bold text-violet-700`
   const prevClass = `${controlsRowClass} col-start-1 self-end justify-self-start`
   const nextClass = `${controlsRowClass} col-start-2 self-end justify-self-start`
-  const arrowClass = "z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-700 bg-white text-violet-700 hover:bg-violet-50"
+  const arrowClass = "z-10 flex h-11 w-11 items-center justify-center rounded-full border border-violet-700 bg-white text-violet-700 hover:bg-violet-50"
   const trackClass = "col-span-full row-start-1 min-w-0 overflow-hidden"
   const dotsClass = `pointer-events-none ${controlsRowClass} col-span-full self-center justify-self-center inline-flex !w-max max-w-full list-none gap-3 p-0`
   const progressClass = isProgressExample
@@ -1016,7 +1016,7 @@ function makeStandaloneExampleDownload(source) {
     .replaceAll("example-dots", dotsClass)
     .replaceAll(
       "example-dot",
-      "pointer-events-auto h-6 w-6 cursor-pointer rounded-full border-2 border-violet-700 bg-white hover:bg-violet-100 [&.bs-dot--active]:border-violet-700 [&.bs-dot--active]:bg-violet-700"
+      "pointer-events-auto flex h-6 w-6 items-center justify-center rounded-full before:block before:h-3 before:w-3 before:rounded-full before:border-2 before:border-violet-700 before:bg-white hover:before:bg-violet-100 [&.bs-dot--active]:before:border-violet-700 [&.bs-dot--active]:before:bg-violet-700"
     )
     .replaceAll("example-slide-card--short", "h-44")
     .replaceAll("example-slide-card--medium", "h-72")
@@ -1040,19 +1040,19 @@ function makeStoriesExampleDownload(source) {
 function normalizeExampleCdnUrls(source) {
   return source
     .replace(
-      /(?:(?:\.\.\/)*vendor\/brick-slider\/brick-slider\.css|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.css)/g,
+      /(?:\/?(?:\.\.\/)*vendor\/brick-slider\/brick-slider\.css|\/?https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.css)/g,
       sliderCssCdn
     )
     .replace(
-      /(?:(?:\.\.\/)*vendor\/brick-slider\/brick-slider\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.browser\.js)/g,
+      /(?:\/?(?:\.\.\/)*vendor\/brick-slider\/brick-slider\.browser\.js|\/?https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider@[^/]+\/lib\/brick-slider\.browser\.js)/g,
       sliderBrowserCdn
     )
     .replace(
-      /(?:(?:\.\.\/)*vendor\/brick-slider-accessibility\/brick-slider-accessibility\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-accessibility@[^/]+\/lib\/brick-slider-accessibility\.browser\.js)/g,
+      /(?:\/?(?:\.\.\/)*vendor\/brick-slider-accessibility\/brick-slider-accessibility\.browser\.js|\/?https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-accessibility@[^/]+\/lib\/brick-slider-accessibility\.browser\.js)/g,
       accessibilityBrowserCdn
     )
     .replace(
-      /(?:(?:\.\.\/)*vendor\/brick-slider-stories\/brick-slider-stories\.browser\.js|https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-stories@[^/]+\/lib\/brick-slider-stories\.browser\.js)/g,
+      /(?:\/?(?:\.\.\/)*vendor\/brick-slider-stories\/brick-slider-stories\.browser\.js|\/?https:\/\/cdn\.jsdelivr\.net\/npm\/@sixsrc\/brick-slider-stories@[^/]+\/lib\/brick-slider-stories\.browser\.js)/g,
       storiesBrowserCdn
     )
 }
