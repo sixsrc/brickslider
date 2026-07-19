@@ -684,14 +684,14 @@ If you are using BrickSlider directly in HTML or alongside Tailwind loaded from 
 ```html
 <link
   rel="stylesheet"
-  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.11/lib/brick-slider.css"
+  href="https://unpkg.com/@sixsrc/brick-slider-tailwind@1.0.12/lib/brick-slider.css"
 />
 ```
 
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.11/lib/brick-slider.css"
+  href="https://cdn.jsdelivr.net/npm/@sixsrc/brick-slider-tailwind@1.0.12/lib/brick-slider.css"
 />
 ```
 
