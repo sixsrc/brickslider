@@ -1,0 +1,2 @@
+# GitHub Linguist should report the library source, not the static HTML site output.
+*.html linguist-generated=true
